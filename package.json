@@ -1,0 +1,24 @@
+{
+    "name": "eml-panel",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "license": "ISC",
+    "scripts": {
+        "dev": "env-cmd -e global,development -r env.json nodemon .",
+        "start": "env-cmd -e global,production -r env.json node ."
+    },
+    "dependencies": {
+        "busboy": "^1.6.0",
+        "env-cmd": "^10.1.0",
+        "express": "^4.18.2",
+        "jsonwebtoken": "^8.5.1"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.20"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2.git"
+    }
+}
