@@ -1,24 +1,41 @@
 {
-    "name": "eml-panel",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "license": "ISC",
-    "scripts": {
-        "dev": "env-cmd -e global,development -r env.json nodemon .",
-        "start": "env-cmd -e global,production -r env.json node ."
-    },
-    "dependencies": {
-        "busboy": "^1.6.0",
-        "env-cmd": "^10.1.0",
-        "express": "^4.18.2",
-        "jsonwebtoken": "^8.5.1"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.20"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2.git"
-    }
+  "name": "eml-admintool",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "startClient": "ng serve --proxy-config proxy.config.json -o",
+    "startApi": "node server.js",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^14.0.0",
+    "@angular/common": "^14.0.0",
+    "@angular/compiler": "^14.0.0",
+    "@angular/core": "^14.0.0",
+    "@angular/forms": "^14.0.0",
+    "@angular/platform-browser": "^14.0.0",
+    "@angular/platform-browser-dynamic": "^14.0.0",
+    "@angular/router": "^14.0.0",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^14.0.3",
+    "@angular/cli": "~14.0.3",
+    "@angular/compiler-cli": "^14.0.0",
+    "@types/jasmine": "~4.0.0",
+    "jasmine-core": "~4.1.0",
+    "karma": "~6.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "typescript": "~4.7.2"
+  }
 }
