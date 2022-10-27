@@ -9,31 +9,20 @@
 # Node
 /node_modules
 npm-debug.log
-yarn-error.log
-
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
 
 # Visual Studio Code
 /.vscode/*
-.history/*
+/.history/*
 
 # Miscellaneous
 /.angular/cache
-.sass-cache/
+/.sass-cache/
 /connect.lock
 /coverage
 /libpeerconnection.log
-testem.log
 /typings
-.editorconfig
-.browserslistrc
+/.editorconfig
+/.browserslistrc
 
 # System files
 .DS_Store
