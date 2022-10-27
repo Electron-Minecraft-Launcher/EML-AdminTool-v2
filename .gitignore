@@ -11,12 +11,12 @@
 npm-debug.log
 
 # Visual Studio Code
-/.vscode/*
-/.history/*
+/.vscode
+/.history
 
 # Miscellaneous
-/.angular/cache
-/.sass-cache/
+/.angular
+/.sass-cache
 /connect.lock
 /coverage
 /libpeerconnection.log
