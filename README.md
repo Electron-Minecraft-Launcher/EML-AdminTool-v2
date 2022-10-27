@@ -23,7 +23,7 @@ Then, in a terminal, execute the following command:
 ```
 and follow the instructions.
 
-### If you won't use a VPS:
+#### If you won't use a VPS:
 
 You can download the previous major version of the EML AdminTool. However, be careful, this version is not maintained!
 
