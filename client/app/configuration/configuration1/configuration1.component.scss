@@ -1,0 +1,38 @@
+div.content {
+  width: 75%;
+  margin: 0 auto
+}
+
+h1 {
+  text-align: center;
+  font-size: 56px;
+  margin-top: 33vh;
+  transition: opacity 0.5s, display 0.5s;
+}
+
+h2 {
+  text-align: center;
+  font-size: 32px;
+  margin: 0 0 20px 0;
+  transition: opacity 0.5s, display 0.5s;
+
+  &+p {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+}
+
+form {
+  width: 750px;
+  margin: 15vh auto 0 auto;
+  transition: opacity 0.5s;
+  display: none;
+  opacity: 0;
+
+  background-color: white;
+  padding: 50px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+
+  box-shadow: 0 5px 50px rgba(0, 0, 0, 0.1);
+}
