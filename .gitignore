@@ -27,3 +27,6 @@ npm-debug.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Others
+/_tsconfig.json

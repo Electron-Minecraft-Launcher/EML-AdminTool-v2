@@ -1,23 +1,20 @@
-import express, { Request, Response, NextFunction } from 'express'
+import express from 'express'
 import bodyParser from 'body-parser'
-const app = express()
 
-const notFoundMiddleware = require('./api/middleware/not-found')
+import notFoundMiddlewareRouter from './api/routes/middlewares/not-found'
+import defaultRouter from './api/routes/default'
+
+const app = express()
+var distDir = __dirname + '/dist/'
+
 
 app.use(bodyParser.json())
 
-// Angular
-var distDir = __dirname + '/dist/'
 app.use(express.static(distDir))
 
+app.use(defaultRouter)
 
-app.get('/api', (req, res) => {
-  bodyParser.text({ type: 'text/html' })
-  res.send('<h1>EML AdminTool API</h1>')
-})
-
-// 404
-app.use(notFoundMiddleware)
+app.use(notFoundMiddlewareRouter)
 
 
 // Serve
