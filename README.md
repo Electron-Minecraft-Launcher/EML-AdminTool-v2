@@ -10,12 +10,16 @@
 
 You have to use a compatible **VPS**.
 
-Here is the minimal specs:
+### Choose a VPS
+
+Here is the minimal specs needed:
  * 2 GB storage
  * 1 GB RAM
  * 1 Core 2 GHz CPU
 
 You can choose your Linux distribution, but Debian or Ubuntu is highly recommended.
+
+### Install the EML AdminTool
 
 Then, in a terminal, execute the following command:
 ```bash
@@ -23,7 +27,7 @@ Then, in a terminal, execute the following command:
 ```
 and follow the instructions.
 
-#### If you won't use a VPS:
+### If you won't use a VPS:
 
 You can download the previous major version of the EML AdminTool. However, be careful, this version is not maintained!
 

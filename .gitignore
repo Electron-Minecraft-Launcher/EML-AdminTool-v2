@@ -30,3 +30,4 @@ Thumbs.db
 
 # Others
 /_tsconfig.json
+/.env
