@@ -9,10 +9,32 @@ div {
   span {
     height: 5px;
     width: 0;
-    transition: width 0.5s ease-out;
-    background-color: var(--main-color);
+    transition: width 0.8s cubic-bezier(0, 0, 0.2, 1) ;
+    background-color: var(--primary-color);
     display: block;
     border-top-right-radius: 50rem;
     border-bottom-right-radius: 50rem;
+
+    &.step-0 {
+      width: 1%
+    }
+
+    &.step-1 {
+      width: 17%
+    }
+
+    &.step-2 {
+      width: 50%
+    }
+
+    &.step-3 {
+      width: 84%
+    }
+
+    &.step-5 {
+      width: 100%;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 }

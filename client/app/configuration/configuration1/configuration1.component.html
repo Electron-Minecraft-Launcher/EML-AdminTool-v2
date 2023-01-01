@@ -1,15 +1,28 @@
-<app-progress [step]="1"></app-progress>
+<app-configuration-form-template [prev]="false" [cond]="data.value ? true : false" [data]="data">
+  <h2>Firstly, choose the language of your EML&nbsp;AdminTool:</h2>
+  <p><b>This language will be applied for all users.</b></p>
+  <div class="actions language">
+    <button type="button" class="secondary" id="en-button" (click)="onEn()">
+      <p>
+        <img src="/assets/images/en.png" alt="French flag">
+        English
+      </p>
+    </button>
+    <button type="button" class="secondary" id="fr-button" (click)="onFr()">
+      <p>
+        <img src="/assets/images/fr.png" alt="French flag">
+        Français
+      </p>
+    </button>
+    <p class="center">
+      <a class="small-link" (click)="onLanguageModal(true)">I speak another language.</a>
+    </p>
+  </div>
+</app-configuration-form-template>
+<!-- <form (submit)="onSubmit()">
+  <h2>Firstly, choose the name of your server:</h2>
+  <p><b>This name will be the admin account username. So choose a strong password!</b></p>
+  <input type="text" name="name" id="name" placeholder="Server name">
+</form> -->
 
-<div class="content">
-  <h1></h1>
-  <form (submit)="onSubmit()">
-    <h2>Firstly, choose the language of your EML&nbsp;AdminTool:</h2>
-    <p><b>This language will be applied for all users.</b></p>
-
-  </form>
-  <!-- <form (submit)="onSubmit()">
-    <h2>Firstly, choose the name of your server:</h2>
-    <p><b>This name will be the admin account username. So choose a strong password!</b></p>
-    <input type="text" name="name" id="name" placeholder="Server name">
-  </form> -->
-</div>
+<app-language-modal [id]="'language-modal'"></app-language-modal>

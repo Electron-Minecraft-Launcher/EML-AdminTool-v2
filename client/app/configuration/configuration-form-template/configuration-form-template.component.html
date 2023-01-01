@@ -1,0 +1,13 @@
+<form (ngSubmit)="onSubmit()">
+  <ng-content select="h2"></ng-content>
+  <ng-content select="p"></ng-content>
+  <ng-content select="div.actions"></ng-content>
+  <div class="steps-actions">
+    <div class="prev" *ngIf="prev" [ngStyle]="{'width': !next ? '100%' : ''}">
+      <button class="secondary"><i class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;Previous</button>
+    </div>
+    <div class="next" *ngIf="next" [ngStyle]="{'width': !prev ? '100%' : ''}">
+      <button type="submit" class="primary" [disabled]="!cond">Next&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</form>

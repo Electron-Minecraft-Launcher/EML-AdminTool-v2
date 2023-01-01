@@ -1,30 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { UtilsService } from 'client/app/shared/utils.service';
+import { Component } from '@angular/core';
+import { Config } from 'client/app/shared/types/config';
+import { DisplayUtilsService } from 'client/app/shared/services/display-utils.service';
 
 @Component({
   selector: 'app-configuration1',
   templateUrl: './configuration1.component.html',
   styleUrls: ['./configuration1.component.scss']
 })
-export class Configuration1Component implements OnInit {
+export class Configuration1Component {
 
-  constructor(private utils: UtilsService, private title: Title) { }
-
-  async ngOnInit(): Promise<void> {
-    this.title.setTitle("Configuration • EML AdminTool")
-
-    // await this.utils.changeTexteWithTransition('h1', 1000, 1000, 'Welcome!');
-    // await this.utils.changeTexteWithTransition('h1', 2000, 1000, 'You can now configure the EML&nbsp;AdminTool.');
-    // await this.utils.unDisplayElementWithTransition('h1', 4000, 500);
-    await this.utils.unDisplayElementWithTransition('h1', 0, 500);
-
-    await this.utils.displayElementWithTransition('form', 0, 500)
-
+  data: Config = {
+    data: 'language',
+    value: undefined,
   }
 
-  onSubmit() {
+  constructor(private displayUtils: DisplayUtilsService) { }
 
+  onEn() {
+    let enButton = document.getElementById('en-button')
+    let frButton = document.getElementById('fr-button')
+
+    if (!enButton?.classList.contains('selected')) {
+      if (frButton?.classList.contains('selected')) {
+        frButton.classList.remove('selected')
+      }
+      enButton?.classList.add('selected')
+      this.data.value = 'en'
+    } else {
+      enButton.classList.remove('selected')
+      this.data.value = undefined
+    }
+  }
+
+  onFr() {
+    let enButton = document.getElementById('en-button')
+    let frButton = document.getElementById('fr-button')
+
+    if (!frButton?.classList.contains('selected')) {
+      if (enButton?.classList.contains('selected')) {
+        enButton.classList.remove('selected')
+      }
+      frButton?.classList.add('selected')
+      this.data.value = 'fr'
+    } else {
+      frButton.classList.remove('selected')
+      this.data.value = undefined
+    }
+  }
+
+  async onLanguageModal(open: boolean) {
+    await this.displayUtils.showModal('language-modal')
   }
 
 }
