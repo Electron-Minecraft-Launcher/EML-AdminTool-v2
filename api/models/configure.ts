@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt'
 
 class Configure {
 
-  public async database(body: any, status: number = 200, message: string = 'Success'): Promise<ModelResponse<null>> {
+  async database(body: any, status: number = 200, message: string = 'Success'): Promise<ModelResponse<null>> {
 
     try {
       await query('ALTER USER \'eml\'@\'localhost\' IDENTIFIED BY ?', [body.password])
@@ -60,13 +60,13 @@ JWT_SECRET_KEY="${secret}"
 
   }
 
-  public async language(body: any, status: number = 200, message: string = 'Success'): Promise<ModelResponse<null>> {
+  async language(body: any, status: number = 200, message: string = 'Success'): Promise<ModelResponse<null>> {
 
     const language = body.language == 'fr' ? 'fr' : 'en'
     var data: Config[] = []
 
     try {
-      data = await query<Config[] & RowDataPacket[]>('SELECT * FROM config WHERE data = \'language\'')
+      data = await query<Config[]>('SELECT * FROM config WHERE data = \'language\'')
     } catch (error: any) {
       status = 400
       message = error.code
@@ -99,7 +99,7 @@ JWT_SECRET_KEY="${secret}"
 
   }
 
-  public async admin(body: any, status: number = 200, message: string = 'Success'): Promise<ModelResponse<null>> {
+  async admin(body: any, status: number = 200, message: string = 'Success'): Promise<ModelResponse<null>> {
 
     const name = body.name || 'EML'
     const password = { clear: body.password || 'Temp_password', hash: await bcrypt.hash(body.password, 10) }

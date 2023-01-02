@@ -33,6 +33,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Configuration',
         description: 'Configuration routes of the EML AdminTool.'
+      },
+      {
+        name: 'Environnement',
+        description: 'Environnement of the EML AdminTool'
       }
     ]
   },

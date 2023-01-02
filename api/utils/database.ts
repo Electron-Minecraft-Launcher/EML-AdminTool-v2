@@ -19,12 +19,12 @@ export const db = mysql.createConnection({
  * @param values The values of the query
  * @returns The data or an error
  */
-export async function query<T extends RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader>(query: string, values?: any | any[]): Promise<T> {
+export async function query<T>(query: string, values?: any | any[]): Promise<T & RowDataPacket[]> {
 
   if (values) {
 
     return new Promise((resolve, reject) => {
-      db.query<T>(query, values, (error, results) => {
+      db.query<T & RowDataPacket[]>(query, values, (error, results) => {
         if (error) {
           reject(error);
         } else {
@@ -36,7 +36,7 @@ export async function query<T extends RowDataPacket[] | RowDataPacket[][] | OkPa
   } else {
 
     return new Promise((resolve, reject) => {
-      db.query<T>(query, (error, results) => {
+      db.query<T & RowDataPacket[]>(query, (error, results) => {
         if (error) {
           reject(error);
         } else {

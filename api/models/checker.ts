@@ -8,7 +8,9 @@ export class Checker {
 
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<'Needs configuration' | 'Allowed' | 'Unauthorized'> {
 
-    if (path.startsWith('/api/configure')) {
+    if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
+      return 'Allowed'
+    } else if (path.startsWith('/api/configure')) {
 
       if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB() || (await new Auth().isAdmin(headers['authorization'] + ''))[0]) {
         await dbGenerate(await getTablesToGenerate())

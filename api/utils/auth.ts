@@ -3,10 +3,11 @@ import { query } from './database'
 import { RowDataPacket } from 'mysql2'
 import bcrypt from 'bcrypt'
 import { jwtVerify } from './jwt'
+import { ModelResponse } from 'api/types/response'
 
 export class Auth {
 
-  public async isAdmin(auth: string | undefined): Promise<[true] | [false, number, string]> {
+  public async isAdmin(auth: string | undefined): Promise<[true] | [false, ModelResponse<null>]> {
 
 
     if (auth && auth.startsWith('Basic ')) {
@@ -16,13 +17,13 @@ export class Auth {
       try {
         user = await query<User[] & RowDataPacket[]>('SELECT * FROM users WHERE name = ? AND admin = 1', [name])
       } catch (error: any) {
-        return [false, 400, error.code]
+        return [false, { code: 400, message: error.code }]
       }
 
       if (user[0] && user[0].name && await bcrypt.compare(password, user[0].password + '')) {
         return [true]
       } else {
-        return [false, 401, 'Unauthorized']
+        return [false, { code: 401, message: 'Unauthorized' }]
       }
 
     } else if (auth && auth.startsWith('Bearer ')) {
@@ -34,14 +35,14 @@ export class Auth {
         if (jwt.admin) {
           return [true]
         } else {
-          return [false, 401, 'Unauthorized']
+          return [false, { code: 401, message: 'Unauthorized' }]
         }
       } else {
-        return [false, 401, 'Unauthorized']
+        return [false, { code: 401, message: 'Unauthorized' }]
       }
 
     } else {
-      return [false, 401, 'Unauthorized']
+      return [false, { code: 401, message: 'Unauthorized' }]
     }
 
 
