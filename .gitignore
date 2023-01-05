@@ -29,5 +29,5 @@ npm-debug.log
 Thumbs.db
 
 # Others
-/_tsconfig.json
+_*.*
 /.env
