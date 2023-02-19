@@ -1,5 +1,5 @@
 import { User, UserJWT } from '../models/features/user.model'
-import { query } from '../utils/database'
+import db from '../utils/database2'
 import { RowDataPacket } from 'mysql2'
 import bcrypt from 'bcrypt'
 import { jwtVerify } from '../utils/jwt'
@@ -16,7 +16,7 @@ export class Auth {
       const [name, password] = credentials.split(':')
       var user: User[] | null
       try {
-        user = await query<User[] & RowDataPacket[]>('SELECT * FROM users WHERE name = ? AND admin = 1', [name])
+        user = await db.query<User[]>('SELECT * FROM users WHERE name = ? AND admin = 1', [name])
       } catch (error: any) {
         return { status: false, code: DB_ERROR, message: error.code }
       }

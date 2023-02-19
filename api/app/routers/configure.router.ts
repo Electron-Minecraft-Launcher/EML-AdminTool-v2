@@ -41,8 +41,11 @@ export default class ConfigureRouter implements Route {
      *         description: Unauthorized
      */
     this.router.put(`${this.path}/language`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-      const resp = await new Configure().language(req.body, next)
-      res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      try {
+        const resp = await new Configure().language(req.body, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error) {
+      }
     })
 
 
@@ -74,8 +77,11 @@ export default class ConfigureRouter implements Route {
      *         description: Unauthorized
      */
     this.router.put(`${this.path}/database`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-      const resp = await new Configure().database(req.body, next)
-      res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      try {
+        const resp = await new Configure().database(req.body, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error) {
+      }
     })
 
     /**
@@ -108,8 +114,11 @@ export default class ConfigureRouter implements Route {
      *         description: Unauthorized
      */
     this.router.put(`${this.path}/admin`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-      const resp = await new Configure().admin(req.body, next)
-      res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      try {
+        const resp = await new Configure().admin(req.body, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error) {
+      }
     })
   }
 

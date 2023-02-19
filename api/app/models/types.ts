@@ -10,6 +10,8 @@ export type varchar = string
 
 export type tinyint = number
 
+export type count = { count: number }
+
 /**
  * HTTP `2xx`
  */

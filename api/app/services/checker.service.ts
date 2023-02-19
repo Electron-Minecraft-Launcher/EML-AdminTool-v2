@@ -1,9 +1,9 @@
 import { Auth } from './auth.service';
 import fs from 'fs';
 import path from 'path';
-import { dbGenerate, getTablesToGenerate, query } from '../utils/database';
+import db from '../utils/database2';
 import { IncomingHttpHeaders } from 'http';
-import { AUTH_ERROR, CONFIG_ERROR, ControllerResponse, SUCCESS } from '../models/types';
+import { AUTH_ERROR, CONFIG_ERROR, ControllerResponse, count, SUCCESS } from '../models/types';
 import { DefaultSuccess } from '../responses/success/default-success.response';
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response';
 import { ConfigurationException } from '../responses/exceptions/configuration-exception.response';
@@ -18,7 +18,8 @@ export class Checker {
     } else if (path.startsWith('/api/configure')) {
 
       if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB() || (await new Auth().isAdmin(headers['authorization'] + '')).status) {
-        await dbGenerate(await getTablesToGenerate())
+
+        await db.dbGenerate(await db.getTablesToGenerate())
         return { status: true, code: SUCCESS }
       } else {
         return { status: false, code: AUTH_ERROR }
@@ -46,7 +47,7 @@ export class Checker {
   }
 
   private async checkDB(): Promise<boolean> {
-    const tables: boolean[] = Object.entries(await getTablesToGenerate()).map(([key, value]) => (value))
+    const tables: boolean[] = Object.entries(await db.getTablesToGenerate()).map(([key, value]) => (value))
     for (let table of tables) {
       if (table) {
         return false
@@ -56,10 +57,10 @@ export class Checker {
   }
 
   private async checkAdminInDB(): Promise<boolean> {
-    var [isAdminInDB]: any = []
+    var isAdminInDB: count
 
     try {
-      [isAdminInDB] = await query('SELECT COUNT(*) AS count FROM users WHERE admin = 1')
+      isAdminInDB = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE admin = 1'))[0]
     } catch (error: any) {
       return true
     }

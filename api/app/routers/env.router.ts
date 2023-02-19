@@ -27,8 +27,11 @@ export default class EnvRouter implements Route {
      *         description: Unknown error
      */
     this.router.get('/api/env', async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
-      const resp = await new Env().env(next)
-      res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      try {
+        const resp = await new Env().env(next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error) {
+      }
     })
   }
 

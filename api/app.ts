@@ -6,7 +6,9 @@ import errorMiddleware from './app/middlewares/error.middleware';
 import loggerMiddleware from './app/middlewares/logger.middleware';
 import notFountMiddleware from './app/middlewares/not-found.middleware';
 import { Route } from './app/models/routes/route.model';
-import { db } from './app/utils/database';
+import db from './app/utils/database2';
+import mysql from 'mysql2'
+import dotenv from 'dotenv'
 
 export default class App {
   app: express.Application
@@ -14,6 +16,8 @@ export default class App {
 
   constructor(routers: Route[]) {
     this.app = express()
+
+    dotenv.config()
 
     this.initMiddlewares()
     this.initRoutes(routers)
@@ -23,7 +27,7 @@ export default class App {
   listen() {
     this.app.listen(3000, () => {
       console.log(`App listening on the port ${3000}`)
-    });
+    })
   }
 
   getServer() {
@@ -48,9 +52,12 @@ export default class App {
       this.app.use('/', route.router)
     })
     this.app.get('/api/test/:id', (req, res) => {
-      db.query('SELECT * FROM config', (err, result) => {
-        res.send({ data: result, db: process.env['DATABASE_PASSWORD'] })
-      })
+      try {
+        db.query('SELECT * FROM config')
+        res.send('Success')
+      } catch (e) {
+
+      }
     })
   }
 

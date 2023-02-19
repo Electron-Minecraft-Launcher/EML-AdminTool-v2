@@ -1,10 +1,11 @@
 import { Config } from "../models/configurations/config.model"
-import { query } from "../utils/database"
+import db from "../utils/database2"
 import { User } from "../models/features/user.model"
 import { SUCCESS } from "../models/types"
 import { DBException } from "../responses/exceptions/db-exception.response"
 import { DataSuccess } from "../responses/success/data-success.response"
 import { NextFunction } from "express"
+import { ConfigurationException } from "../responses/exceptions/configuration-exception.response"
 
 class Env {
 
@@ -23,14 +24,14 @@ class Env {
     }
 
     try {
-      config = await query<Config[]>('SELECT * FROM config')
+      config = await db.query<Config[]>('SELECT * FROM config')
     } catch (error: any) {
-      next(new DBException(error.code))
+      return new DataSuccess(200, SUCCESS, 'Success', {})
     }
     try {
-      name = await query<User[]>('SELECT name FROM users WHERE admin = 1')
+      name = await db.query<User[]>('SELECT name FROM users WHERE admin = 1')
     } catch (error: any) {
-      next(new DBException(error.code))
+      return new DataSuccess(200, SUCCESS, 'Success', {})
     }
 
     env.language = config.find(language => language.data == 'language')?.value || 'en'
