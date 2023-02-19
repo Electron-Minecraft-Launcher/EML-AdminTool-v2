@@ -20,8 +20,8 @@ export class Configuration2Component {
   constructor(private displayUtils: DisplayUtilsService, private languageService: LanguageService) { }
 
   ngOnInit() {
-    this.languageService.get().subscribe({ next: (l) => this.l = l })
-    this.onInputChange()
+    this.languageService.get().subscribe({ next: (l) => { this.l = l; this.onInputChange() } })
+
   }
 
   onInputChange() {

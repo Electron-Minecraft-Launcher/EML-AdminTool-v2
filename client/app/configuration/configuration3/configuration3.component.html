@@ -1,1 +1,17 @@
-<p>configuration3 works!</p>
+<app-configuration-form-template [cond]="(+relN >= 3 && name.length > 2)"
+  [adminAccount]="{name: name, password: password}" [id]="'config-3'">
+  <h2 [innerHTML]="l.configuration.step3.title | html"></h2>
+  <p><b [innerHTML]="l.configuration.step3.subtitle | html"></b></p>
+  <div class="actions">
+    <input type="text" name="name" id="name" [placeholder]="l.main.username" [(ngModel)]="name">
+    <input type="text" name="password" id="password" [placeholder]="l.main.password" [(ngModel)]="password"
+      (ngModelChange)="onInputChange()">
+
+    <div class="rel-progress">
+      <div [class]="'rel-progress-in progress-' + relN"></div>
+    </div>
+
+    <span [innerHTML]="rel" class="rel"></span>
+
+  </div>
+</app-configuration-form-template>

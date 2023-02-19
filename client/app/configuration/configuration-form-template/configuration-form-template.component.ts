@@ -51,7 +51,7 @@ export class ConfigurationFormComponent implements OnInit {
           next: async (val) => {
             this.stepManagerService.updateStep(2)
             await this.utils.sleep(500)
-            document.querySelector<HTMLElement>('app-loading-splash')!.style.display = 'none'
+            document.querySelector<HTMLElement>('app-loading-splash#config-1')!.style.display = 'none'
           }
         }
       )
@@ -64,7 +64,20 @@ export class ConfigurationFormComponent implements OnInit {
           next: async (val) => {
             this.stepManagerService.updateStep(3)
             await this.utils.sleep(500)
-            document.querySelector<HTMLElement>('app-loading-splash')!.style.display = 'none'
+            document.querySelector<HTMLElement>('app-loading-splash#config-2')!.style.display = 'none'
+          }
+        }
+      )
+    }
+    if (this.adminAccount) {
+      document.querySelector<HTMLElement>('app-loading-splash#config-3')!.style.display = 'block'
+      this.putDbPassword$ = this.apiConfigureService.putAdmin(this.adminAccount.name + '', this.adminAccount.password + '')
+      this.putDbPassword$.subscribe(
+        {
+          next: async (val) => {
+            this.stepManagerService.updateStep(4)
+            await this.utils.sleep(500)
+            document.querySelector<HTMLElement>('app-loading-splash#config-3')!.style.display = 'none'
           }
         }
       )

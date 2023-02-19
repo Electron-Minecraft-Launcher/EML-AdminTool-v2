@@ -13,6 +13,28 @@ export default class ConfigureRouter implements Route {
   }
 
   private init() {
+
+    /**
+     * @openapi
+     * /configure:
+     *   get:
+     *     tags:
+     *       - Configuration
+     *     summary: If needs to configure
+     *     responses:
+     *       200:
+     *         description: Needs to configure
+     *       400:
+     *         description: Unknown error
+     */
+    this.router.get(`${this.path}`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+      try {
+        const resp = await new Configure().check(req.body, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error) {
+      }
+    })
+
     /**
      * @openapi
      * /configure/language:

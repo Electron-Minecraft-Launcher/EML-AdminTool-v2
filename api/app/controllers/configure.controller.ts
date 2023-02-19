@@ -10,6 +10,12 @@ import { NextFunction } from 'express';
 
 export default class Configure {
 
+  async check(body: any, next: NextFunction): Promise<DefaultSuccess> {
+
+    return new DefaultSuccess()
+
+  }
+
   async database(body: any, next: NextFunction): Promise<DefaultSuccess> {
 
     try {

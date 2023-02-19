@@ -14,6 +14,10 @@ export class ApiConfigureService {
 
   constructor(private http: HttpClient) { }
 
+  getConfigure(): Observable<HttpResponse<DefaultResponse>> {
+    return this.http.get<DefaultResponse>(this.apiPath + '/configure', { observe: 'response' })
+  }
+
   putLanguage(language: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
     const headers = new HttpHeaders(
       {
@@ -36,6 +40,18 @@ export class ApiConfigureService {
     const params = new HttpParams({ fromObject: { password: password }, encoder: new HttpUrlEncodingCodec() })
 
     return this.http.put<DefaultResponse>(this.apiPath + '/configure/database', params, { headers, observe: 'response' })
+  }
+
+  putAdmin(name: string, password: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
+    const headers = new HttpHeaders(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization': auth
+      }
+    )
+    const params = new HttpParams({ fromObject: { password: password, name: name }, encoder: new HttpUrlEncodingCodec() })
+
+    return this.http.put<DefaultResponse>(this.apiPath + '/configure/admin', params, { headers, observe: 'response' })
   }
 
 }

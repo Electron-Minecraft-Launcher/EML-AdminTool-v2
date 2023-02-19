@@ -13,9 +13,10 @@ export class Checker {
 
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
 
+
     if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
       return { status: true, code: SUCCESS }
-    } else if (path.startsWith('/api/configure')) {
+    } else if (path.startsWith('/api/configure') && path != '/api/configure' && path != '/api/configure/') {
 
       if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB() || (await new Auth().isAdmin(headers['authorization'] + '')).status) {
 

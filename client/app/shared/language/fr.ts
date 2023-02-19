@@ -2,7 +2,10 @@ export default {
   main: {
     prev: `Précédent`,
     next: `Suivant`,
-    more: `Plus`
+    more: `Plus`,
+    name: `Nom`,
+    username: `Nom d'utilisateur`,
+    password: `Mot de passe`
   },
   configuration: {
     step1: {
@@ -20,6 +23,10 @@ export default {
       ok: `Ok`,
       strong: `Fort`,
       veryStrong: `Très fort`
+    },
+    step3: {
+      title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
+      subtitle: `Ce nom d'utilisateur et mot de passe seront les identifiants de votre compte administrateur.`
     }
   },
   modals: {
