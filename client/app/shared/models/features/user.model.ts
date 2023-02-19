@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
-import { tinyint, varchar } from "./types";
+import { tinyint, varchar } from "../types";
 
 export interface User {
   id?: number,

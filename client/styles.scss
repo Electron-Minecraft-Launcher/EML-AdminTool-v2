@@ -37,11 +37,13 @@ body {
   padding: 0;
   background-color: var(--background-color);
   height: 100vh;
+  overflow-x: hidden;
 }
 
 p {
   font-size: 15px;
   line-height: 1.6;
+
   &.center {
     text-align: center;
   }
@@ -90,6 +92,17 @@ input {
   outline: none;
   background-color: var(--background-light-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  outline: 0px solid var(--primary-tr-color-hover);
+  transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
+
+  &:hover:not(:disabled) {
+    box-shadow: none;
+  }
+
+  &:focus:not(:disabled) {
+    box-shadow: none;
+    outline: 6px solid var(--primary-tr-color-hover);
+  }
 }
 
 button {
@@ -104,7 +117,7 @@ button {
   &.primary {
     margin-top: 30px;
     background: var(--primary-dark-color);
-    box-shadow: 0 2px  0 var(--primary-shadow-dark-color);
+    box-shadow: 0 2px 0 var(--primary-shadow-dark-color);
     color: var(--text-light-color);
 
     &:hover:not(:disabled) {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LanguageService } from '../shared/services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  constructor() { }
+  ready = false
 
-  ngOnInit(): void {
+  constructor(private languageService: LanguageService) { }
+
+  async ngOnInit() {
+    this.ready = await this.languageService.init()
   }
 
 }

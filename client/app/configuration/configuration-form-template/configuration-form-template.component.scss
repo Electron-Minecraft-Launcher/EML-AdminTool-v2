@@ -3,7 +3,11 @@ h2 {
   font-size: 32px;
   margin: 0 0 20px 0;
   transition: opacity 0.5s, display 0.5s;
+}
 
+app-loading-splash {
+  border-radius: 5px;
+  display: none;
 }
 
 h2+p {
@@ -17,6 +21,7 @@ form {
   transition: opacity 0.5s;
   display: none;
   opacity: 0;
+  position: relative;
 
   background-color: white;
   padding: 50px;

@@ -1,4 +1,4 @@
-import { varchar } from "./types"
+import { varchar } from "../types"
 
 export interface News {
   id?: number,

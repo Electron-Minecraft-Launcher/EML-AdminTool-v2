@@ -1,4 +1,4 @@
-import { tinyint, varchar } from "./types";
+import { tinyint, varchar } from "../types";
 
 export interface Backgroud {
   id?: number,

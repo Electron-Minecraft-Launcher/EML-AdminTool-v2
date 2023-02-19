@@ -45,4 +45,13 @@ div.language {
       font-weight: 600;
     }
   }
+
+  p.center {
+    margin-bottom: 0
+  }
+}
+
+app-language-modal {
+  position: absolute;
+  top: -5px
 }

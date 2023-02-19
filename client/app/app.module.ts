@@ -7,11 +7,14 @@ import { AppComponent } from './app/app.component';
 import { ConfigurationRoutingModule } from './configuration/configuration-routing.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { ManagerModule } from './manager/manager.module';
-import { ManagerRoutingModule } from './manager/manager-routing.module';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { LanguageService } from './shared/services/language.service';
+import { HtmlPipeModule } from './shared/pipes/html-pipe/html-pipe.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -20,7 +23,6 @@ import { ManagerRoutingModule } from './manager/manager-routing.module';
     ConfigurationModule,
     ConfigurationRoutingModule,
     ManagerModule,
-    ManagerRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

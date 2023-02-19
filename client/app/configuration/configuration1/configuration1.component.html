@@ -1,6 +1,6 @@
-<app-configuration-form-template [prev]="false" [cond]="data.value ? true : false" [data]="data">
-  <h2>Firstly, choose the language of your EML&nbsp;AdminTool:</h2>
-  <p><b>This language will be applied for all users.</b></p>
+<app-configuration-form-template [prev]="false" [cond]="language.value ? true : false" [language]="language" [id]="'config-1'">
+  <h2 [innerHTML]="l.configuration.step1.title | html"></h2>
+  <p><b [innerHTML]="l.configuration.step1.subtitle | html"></b></p>
   <div class="actions language">
     <button type="button" class="secondary" id="en-button" (click)="onEn()">
       <p>
@@ -15,14 +15,9 @@
       </p>
     </button>
     <p class="center">
-      <a class="small-link" (click)="onLanguageModal(true)">I speak another language.</a>
+      <a class="small-link" (click)="onLanguageModal(true)" [innerHTML]="l.configuration.step1.other | html"></a>
     </p>
   </div>
 </app-configuration-form-template>
-<!-- <form (submit)="onSubmit()">
-  <h2>Firstly, choose the name of your server:</h2>
-  <p><b>This name will be the admin account username. So choose a strong password!</b></p>
-  <input type="text" name="name" id="name" placeholder="Server name">
-</form> -->
 
 <app-language-modal [id]="'language-modal'"></app-language-modal>

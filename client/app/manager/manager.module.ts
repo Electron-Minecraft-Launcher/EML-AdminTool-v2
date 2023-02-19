@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotFoundComponent } from './not-found/not-found.component';
+import { LoadingSplashComponent } from './loading-splash/loading-splash.component';
 
 
 
 @NgModule({
   declarations: [
-    NotFoundComponent,
+    LoadingSplashComponent,
   ],
   imports: [
     CommonModule
+  ],
+  exports: [
+    LoadingSplashComponent
   ]
 })
 export class ManagerModule { }

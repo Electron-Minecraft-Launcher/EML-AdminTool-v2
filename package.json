@@ -9,7 +9,7 @@
   "scripts": {
     "ng": "ng",
     "testClient": "ng serve --proxy-config proxy.config.json -o --host 0.0.0.0",
-    "testApi": "ts-node-dev api/server.ts",
+    "testApi": "ts-node-dev api/server",
     "buildClient": "ng build"
   },
   "private": true,
