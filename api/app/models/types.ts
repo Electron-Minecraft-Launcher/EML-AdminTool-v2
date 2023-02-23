@@ -2,7 +2,7 @@ import { DefaultException } from "../responses/exceptions/default-exception.resp
 import { UnauthorizedException } from "../responses/exceptions/unauthorized-exception.response"
 import { ServerException } from "../responses/exceptions/server-exception.response"
 import { DBException } from "../responses/exceptions/db-exception.response"
-import { UnknownException } from "../responses/exceptions/unknown-exception.response"
+import { RequestException } from "../responses/exceptions/request-exception.response"
 import { DefaultSuccess } from "../responses/success/default-success.response"
 import { DataSuccess } from "../responses/success/data-success.response"
 
@@ -47,7 +47,7 @@ export type SuccessCode = typeof SUCCESS
 export type ErrorCode = typeof CLIENT_ERROR | typeof AUTH_ERROR | typeof CONFIG_ERROR | typeof SERVER_ERROR | typeof DB_ERROR | typeof UNKNOWN_ERROR
 export type Code = SuccessCode | ErrorCode
 
-export type ControllerException = DefaultException | UnauthorizedException | ServerException | DBException | UnknownException
+export type ControllerException = DefaultException | UnauthorizedException | ServerException | DBException | RequestException
 export type ControllerSuccess<T> = DefaultSuccess | DataSuccess<T>
 export type ControllerResponse<T> = ControllerException | ControllerSuccess<T>
 

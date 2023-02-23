@@ -1,5 +1,5 @@
 import { Config } from "../models/configurations/config.model"
-import db from "../utils/database2"
+import db from "../utils/database"
 import { User } from "../models/features/user.model"
 import { SUCCESS } from "../models/types"
 import { DBException } from "../responses/exceptions/db-exception.response"

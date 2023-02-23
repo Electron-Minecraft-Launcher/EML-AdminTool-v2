@@ -1,19 +1,18 @@
 import { Auth } from './auth.service';
 import fs from 'fs';
 import path from 'path';
-import db from '../utils/database2';
+import db from '../utils/database';
+import pin from '../utils/pin';
 import { IncomingHttpHeaders } from 'http';
-import { AUTH_ERROR, CONFIG_ERROR, ControllerResponse, count, SUCCESS } from '../models/types';
-import { DefaultSuccess } from '../responses/success/default-success.response';
-import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response';
-import { ConfigurationException } from '../responses/exceptions/configuration-exception.response';
+import { AUTH_ERROR, CONFIG_ERROR, count, SUCCESS } from '../models/types';
 import { DefaultServiceResponse } from '../models/responses/services/default-service-response.model';
 
 export class Checker {
 
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
 
-
+    await pin.check()
+    
     if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
       return { status: true, code: SUCCESS }
     } else if (path.startsWith('/api/configure') && path != '/api/configure' && path != '/api/configure/') {
@@ -29,8 +28,8 @@ export class Checker {
     } else {
 
       if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB()) {
-        return { status: false, code: CONFIG_ERROR }
-      } else {
+        return { status: true, code: CONFIG_ERROR }
+      } else {      
         return { status: true, code: SUCCESS }
       }
 
@@ -63,7 +62,7 @@ export class Checker {
     try {
       isAdminInDB = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE admin = 1'))[0]
     } catch (error: any) {
-      return true
+      return false
     }
 
     if (isAdminInDB.count > 1) {

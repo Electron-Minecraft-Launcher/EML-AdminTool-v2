@@ -1,12 +1,15 @@
 import { DefaultSuccess } from '../responses/success/default-success.response';
-import db from '../utils/database2';
+import db from '../utils/database';
 import { setEnv } from '../services/env.service'
 import { Config } from '../models/configurations/config.model';
 import bcrypt from 'bcrypt';
-import { ControllerResponse } from '../models/types';
+import { count, AUTH_ERROR, CLIENT_ERROR, DB_ERROR } from '../models/types';
 import { DBException } from '../responses/exceptions/db-exception.response';
 import { ServerException } from '../responses/exceptions/server-exception.response';
 import { NextFunction } from 'express';
+import { Auth } from '../services/auth.service';
+import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response';
+import { User } from '../models/features/user.model';
 
 export default class Configure {
 
@@ -21,8 +24,6 @@ export default class Configure {
     try {
       await db.query('ALTER USER \'eml\'@\'localhost\' IDENTIFIED BY ?', [body.password])
     } catch (error: any) {
-      console.log(error);
-
       next(new DBException(error.code))
       throw null
     }
@@ -66,7 +67,6 @@ export default class Configure {
       }
     }
 
-
     return new DefaultSuccess()
 
   }
@@ -75,12 +75,22 @@ export default class Configure {
 
     const name = body.name || 'EML'
     const password = { clear: body.password || 'Temp_password', hash: await bcrypt.hash(body.password, 10) }
-    var [isAdminInDB]: any = []
+    var isAdminInDB: count
 
     try {
-      [isAdminInDB] = await db.query('SELECT COUNT(*) AS count FROM users WHERE admin = 1')
+      isAdminInDB = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE admin = 1'))[0]
     } catch (error: any) {
-      next(new DBException(error.code))
+      next(new DBException())
+      throw null
+    }
+
+    var isNameAvailable = (await new Auth().isNameAvailable(name, true)).code
+
+    if (isNameAvailable == CLIENT_ERROR) {
+      next(new UnauthorizedException('Name used'))
+      throw null
+    } else if (isNameAvailable == DB_ERROR) {
+      next(new DBException())
       throw null
     }
 
@@ -92,10 +102,10 @@ export default class Configure {
         throw null
       }
     } else {
-      try {
-        await db.query('INSERT INTO users(name, password, status, admin, p_files_updater_add_del, p_bootstrap_mod, p_maintenance_mod, p_news_add, p_news_mod_del, p_news_category_add_mod_del, p_news_tag_add_mod_del, p_background_mod, p_stats_del) VALUES (?, ?, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)', [name, password.hash])
-      } catch (error: any) {
-        next(new DBException(error.code))
+      const admin: User = { name: name, password: password.hash, status: 1, admin: 1, p_files_updater_add_del: 1, p_bootstrap_mod: 1, p_maintenance_mod: 1, p_news_add: 1, p_news_mod_del: 1, p_news_category_add_mod_del: 1, p_news_tag_add_mod_del: 1, p_background_mod: 1, p_stats_del: 1, }
+      let addAdmin = (await new Auth().insertUser(admin))
+      if (addAdmin.code == DB_ERROR) {
+        next(new DBException())
         throw null
       }
     }

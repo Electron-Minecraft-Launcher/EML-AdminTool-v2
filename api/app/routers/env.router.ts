@@ -23,8 +23,6 @@ export default class EnvRouter implements Route {
      *     responses:
      *       200:
      *         description: Environnement
-     *       400:
-     *         description: Unknown error
      */
     this.router.get('/api/env', async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
       try {

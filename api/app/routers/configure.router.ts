@@ -24,8 +24,6 @@ export default class ConfigureRouter implements Route {
      *     responses:
      *       200:
      *         description: Needs to configure
-     *       400:
-     *         description: Unknown error
      */
     this.router.get(`${this.path}`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
@@ -57,8 +55,6 @@ export default class ConfigureRouter implements Route {
      *     responses:
      *       200:
      *         description: Password set
-     *       400:
-     *         description: Unknown error
      *       401:
      *         description: Unauthorized
      */
@@ -93,8 +89,6 @@ export default class ConfigureRouter implements Route {
      *     responses:
      *       200:
      *         description: Password set
-     *       400:
-     *         description: Unknown error
      *       401:
      *         description: Unauthorized
      */
@@ -130,8 +124,6 @@ export default class ConfigureRouter implements Route {
      *     responses:
      *       200:
      *         description: Password set
-     *       400:
-     *         description: Unknown error
      *       401:
      *         description: Unauthorized
      */

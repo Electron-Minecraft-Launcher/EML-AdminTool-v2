@@ -6,7 +6,7 @@ import errorMiddleware from './app/middlewares/error.middleware';
 import loggerMiddleware from './app/middlewares/logger.middleware';
 import notFountMiddleware from './app/middlewares/not-found.middleware';
 import { Route } from './app/models/routes/route.model';
-import db from './app/utils/database2';
+import db from './app/utils/database';
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
 
