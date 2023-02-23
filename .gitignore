@@ -23,6 +23,7 @@ npm-debug.log
 /typings
 /.editorconfig
 /.browserslistrc
+/_client
 
 # System files
 .DS_Store
