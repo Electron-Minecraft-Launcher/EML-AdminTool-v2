@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpUrlEncodingCodec } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
 import { DefaultResponse } from '../../models/responses/response.model';
 import { environment } from 'client/environments/environment';
 
@@ -21,8 +20,7 @@ export class ApiConfigureService {
   putLanguage(language: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
     const headers = new HttpHeaders(
       {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': auth
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       }
     )
     const params = new HttpParams({ fromObject: { language: language }, encoder: new HttpUrlEncodingCodec() })
@@ -33,8 +31,7 @@ export class ApiConfigureService {
   putDbPassword(password: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
     const headers = new HttpHeaders(
       {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': auth
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       }
     )
     const params = new HttpParams({ fromObject: { password: password }, encoder: new HttpUrlEncodingCodec() })
@@ -45,8 +42,7 @@ export class ApiConfigureService {
   putAdmin(name: string, password: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
     const headers = new HttpHeaders(
       {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization': auth
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       }
     )
     const params = new HttpParams({ fromObject: { password: password, name: name }, encoder: new HttpUrlEncodingCodec() })

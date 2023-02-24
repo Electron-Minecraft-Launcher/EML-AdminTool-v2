@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Config } from 'client/app/shared/models/configurations/config.model';
 import { DisplayUtilsService } from 'client/app/shared/services/display-utils.service';
-import { LanguageService } from 'client/app/shared/services/language.service';
+import { EnvService } from 'client/app/shared/services/env.service';
 import en from 'client/app/shared/language/en';
 
 @Component({
@@ -12,6 +12,7 @@ import en from 'client/app/shared/language/en';
 export class Configuration1Component implements OnInit {
 
   l = en
+  private env: any
 
   @Output() stepUpdated = new EventEmitter<any>();
   language: Config = {
@@ -19,10 +20,10 @@ export class Configuration1Component implements OnInit {
     value: undefined,
   }
 
-  constructor(private displayUtils: DisplayUtilsService, private languageService: LanguageService) { }
+  constructor(private displayUtils: DisplayUtilsService, private envService: EnvService) { }
 
   ngOnInit() {
-    this.languageService.get().subscribe({ next: (l) => this.l = l })
+    this.envService.get().subscribe({ next: (env) => {this.l = env.language; this.env = env} })
   }
 
   onEn() {
@@ -35,7 +36,9 @@ export class Configuration1Component implements OnInit {
       }
       enButton?.classList.add('selected')
       this.language.value = 'en'
-      this.languageService.set('en')
+      let env = this.env
+      env.language = 'en'
+      this.envService.set(env)
     } else {
       enButton.classList.remove('selected')
       this.language.value = undefined
@@ -52,11 +55,15 @@ export class Configuration1Component implements OnInit {
       }
       frButton?.classList.add('selected')
       this.language.value = 'fr'
-      this.languageService.set('fr')
+      let env = this.env
+      env.language = 'fr'
+      this.envService.set(env)
     } else {
       frButton.classList.remove('selected')
       this.language.value = undefined
-      this.languageService.set('en')
+      let env = this.env
+      env.language = 'en'
+      this.envService.set(env)
     }
   }
 

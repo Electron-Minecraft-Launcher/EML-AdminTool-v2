@@ -8,8 +8,8 @@ import { ConfigurationRoutingModule } from './configuration/configuration-routin
 import { ConfigurationModule } from './configuration/configuration.module';
 import { ManagerModule } from './manager/manager.module';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { LanguageService } from './shared/services/language.service';
-import { HtmlPipeModule } from './shared/pipes/html-pipe/html-pipe.module';
+import { HomeModule } from './home/home.module';
+import { HomeRoutingModule } from './home/home-routing.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +22,8 @@ import { HtmlPipeModule } from './shared/pipes/html-pipe/html-pipe.module';
     AppRoutingModule,
     ConfigurationModule,
     ConfigurationRoutingModule,
+    HomeModule,
+    HomeRoutingModule,
     ManagerModule,
   ],
   providers: [],

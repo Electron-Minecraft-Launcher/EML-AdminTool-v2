@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms'
 import { Configuration1Component } from './configuration1/configuration1.component';
 import { ProgressComponent } from './progress/progress.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
-import { ConfigurationFormComponent } from './configuration-form-template/configuration-form-template.component';
+import { ConfigurationFormTemplateComponent } from './configuration-form-template/configuration-form-template.component';
 import { ModalsModule } from '../modals/modals.module';
 import { Configuration2Component } from './configuration2/configuration2.component';
 import { ManagerModule } from '../manager/manager.module';
@@ -15,9 +15,9 @@ import { Configuration3Component } from './configuration3/configuration3.compone
 @NgModule({
   declarations: [
     ConfigurationComponent,
-    Configuration1Component,
     ProgressComponent,
-    ConfigurationFormComponent,
+    ConfigurationFormTemplateComponent,
+    Configuration1Component,
     Configuration2Component,
     Configuration3Component,
   ],

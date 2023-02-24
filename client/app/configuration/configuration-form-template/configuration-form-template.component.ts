@@ -1,9 +1,9 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { DefaultResponse } from 'client/app/shared/models/responses/response.model';
 import { ApiConfigureService } from 'client/app/shared/services/api/api-configure.service';
 import { StepManagerService } from 'client/app/shared/services/configure/step-manager.service';
-import { LanguageService } from 'client/app/shared/services/language.service';
+import { EnvService } from 'client/app/shared/services/env.service';
 import { UtilsService } from 'client/app/shared/services/utils.service';
 import { Config } from 'client/app/shared/models/configurations/config.model';
 import { User } from 'client/app/shared/models/features/user.model';
@@ -15,7 +15,7 @@ import en from 'client/app/shared/language/en';
   templateUrl: './configuration-form-template.component.html',
   styleUrls: ['./configuration-form-template.component.scss']
 })
-export class ConfigurationFormComponent implements OnInit {
+export class ConfigurationFormTemplateComponent implements OnInit {
 
   l = en
 
@@ -30,16 +30,16 @@ export class ConfigurationFormComponent implements OnInit {
 
   private putLanguage$!: Observable<HttpResponse<DefaultResponse>>
   private putDbPassword$!: Observable<HttpResponse<DefaultResponse>>
-  private step: 0 | 1 | 2 | 3 | 4 = 0
+  step: 0 | 1 | 2 | 3 | 4 = 0
 
-  constructor(private apiConfigureService: ApiConfigureService, private stepManagerService: StepManagerService, private utils: UtilsService, private languageService: LanguageService) {
+  constructor(private apiConfigureService: ApiConfigureService, private stepManagerService: StepManagerService, private utils: UtilsService, private envService: EnvService) {
     this.stepManagerService.getStep().subscribe((step) => {
       this.step = step
     })
   }
 
   ngOnInit() {
-    this.languageService.get().subscribe({ next: (l) => this.l = l })
+    this.envService.get().subscribe({ next: (env) => this.l = env.language })
   }
 
   async onSubmit() {
@@ -48,7 +48,7 @@ export class ConfigurationFormComponent implements OnInit {
       this.putLanguage$ = this.apiConfigureService.putLanguage(this.language.value)
       this.putLanguage$.subscribe(
         {
-          next: async (val) => {
+          next: async (res) => {
             this.stepManagerService.updateStep(2)
             await this.utils.sleep(500)
             document.querySelector<HTMLElement>('app-loading-splash#config-1')!.style.display = 'none'
@@ -61,7 +61,7 @@ export class ConfigurationFormComponent implements OnInit {
       this.putDbPassword$ = this.apiConfigureService.putDbPassword(this.dbPassword)
       this.putDbPassword$.subscribe(
         {
-          next: async (val) => {
+          next: async (res) => {
             this.stepManagerService.updateStep(3)
             await this.utils.sleep(500)
             document.querySelector<HTMLElement>('app-loading-splash#config-2')!.style.display = 'none'
@@ -74,7 +74,7 @@ export class ConfigurationFormComponent implements OnInit {
       this.putDbPassword$ = this.apiConfigureService.putAdmin(this.adminAccount.name + '', this.adminAccount.password + '')
       this.putDbPassword$.subscribe(
         {
-          next: async (val) => {
+          next: async (res) => {
             this.stepManagerService.updateStep(4)
             await this.utils.sleep(500)
             document.querySelector<HTMLElement>('app-loading-splash#config-3')!.style.display = 'none'

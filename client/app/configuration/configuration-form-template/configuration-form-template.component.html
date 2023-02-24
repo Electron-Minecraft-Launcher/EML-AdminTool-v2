@@ -9,7 +9,7 @@
           class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;<span [innerHTML]="l.main.prev | html"></span></button>
     </div>
     <div class="next" *ngIf="next" [ngStyle]="{'width': !prev ? '100%' : ''}">
-      <button type="submit" class="primary" [disabled]="!cond"><span [innerHTML]="l.main.next | html"></span>&nbsp;&nbsp;<i
+      <button type="submit" class="primary" [disabled]="!cond"><span [innerHTML]="step < 3 ? l.main.next : l.main.finish | html"></span>&nbsp;&nbsp;<i
           class="fa-solid fa-arrow-right"></i></button>
     </div>
   </div>

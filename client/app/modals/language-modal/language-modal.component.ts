@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import en from 'client/app/shared/language/en';
-import { LanguageService } from 'client/app/shared/services/language.service';
+import { EnvService } from 'client/app/shared/services/env.service';
 
 @Component({
   selector: 'app-language-modal',
@@ -12,9 +12,9 @@ export class LanguageModalComponent implements OnInit {
 
   l = en
 
-  constructor(private languageService: LanguageService) {}
+  constructor(private envService: EnvService) {}
 
   async ngOnInit() {
-    this.languageService.get().subscribe({ next: (l) => this.l = l })
+    this.envService.get().subscribe({ next: (env) => this.l = env.language })
   }
 }

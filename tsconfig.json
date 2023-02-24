@@ -19,7 +19,7 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "module": "commonjs",
-    "target": "es6",
+    "target": "es6"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import en from 'client/app/shared/language/en';
 import { Config } from 'client/app/shared/models/configurations/config.model';
 import { DisplayUtilsService } from 'client/app/shared/services/display-utils.service';
-import { LanguageService } from 'client/app/shared/services/language.service';
+import { EnvService } from 'client/app/shared/services/env.service';
 
 @Component({
   selector: 'app-configuration3',
@@ -18,10 +18,10 @@ export class Configuration3Component {
   relN!: string
   rel: string = this.l.configuration.step2.veryWeak
 
-  constructor(private displayUtils: DisplayUtilsService, private languageService: LanguageService) { }
+  constructor(private displayUtils: DisplayUtilsService, private envService: EnvService) { }
 
   ngOnInit() {
-    this.languageService.get().subscribe({ next: (l) => { this.l = l;; this.onInputChange() } })
+    this.envService.get().subscribe({ next: (env) => { this.l = env.language; this.onInputChange() } })
     this.onInputChange()
   }
 

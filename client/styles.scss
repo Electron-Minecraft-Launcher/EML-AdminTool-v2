@@ -36,7 +36,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
-  height: 100vh;
+  // height: 100vh;
   overflow-x: hidden;
 }
 
@@ -86,6 +86,7 @@ a.not-a {
 input {
   display: block;
   width: calc(100% - 32px);
+  margin-top: 15px;
   padding: 12px 15px;
   border: 1px solid var(--border-color2);
   border-radius: 5px;
@@ -119,6 +120,7 @@ button {
     background: var(--primary-dark-color);
     box-shadow: 0 2px 0 var(--primary-shadow-dark-color);
     color: var(--text-light-color);
+    width: 100%;
 
     &:hover:not(:disabled) {
       background: var(--primary-color-hover);

@@ -19,6 +19,9 @@ export class ConfigurationComponent implements OnInit {
       document.getElementById('config-slider')?.classList.remove('step-' + (this.step))
       this.step = step
       document.getElementById('config-slider')?.classList.add('step-' + step)
+      if (this.step == 4) {
+        this.finish()
+      }
     })
   }
 
@@ -26,21 +29,28 @@ export class ConfigurationComponent implements OnInit {
     this.title.setTitle("Configuration • EML AdminTool")
 
     this.apiConfigureService.getConfigure().subscribe({
-      next: (val) => {
-        if (val.body?.code == 'SUCCESS') {
+      next: (res) => {
+        if (res.body?.code == 'SUCCESS') {
           this.router.navigate(['/'])
+        } else {
+          this.start()
         }
       },
-      error: (val) => {
-        if (val.body?.code == 'SUCCESS') {
+      error: (err) => {
+        if (err.body?.code == 'SUCCESS') {
           this.router.navigate(['/'])
+        } else {
+          this.start()
         }
       }
     })
 
-    // await this.displayUtils.changeTexteWithTransition('h1', 1000, 1000, 'Welcome!')
-    // await this.displayUtils.changeTexteWithTransition('h1', 2000, 1000, 'You can now configure the EML&nbsp;AdminTool.')
-    // await this.displayUtils.unDisplayElementWithTransition('h1', 4000, 500)
+  }
+
+  async start() {
+    await this.displayUtils.changeTexteWithTransition('h1', 1000, 1000, 'Welcome!')
+    await this.displayUtils.changeTexteWithTransition('h1', 2000, 1000, 'You can now configure the EML&nbsp;AdminTool.')
+    await this.displayUtils.unDisplayElementWithTransition('h1', 4000, 500)
     await this.displayUtils.unDisplayElementWithTransition('h1', 0, 500)
 
     document.querySelector<HTMLElement>('div.config-slider')!.style.display = 'block'
@@ -48,6 +58,16 @@ export class ConfigurationComponent implements OnInit {
     await this.displayUtils.displayElementWithTransition('app-configuration2 form', 0, 500)
     await this.displayUtils.displayElementWithTransition('app-configuration3 form', 0, 500)
     this.stepManagerService.updateStep(1)
+  }
+
+  async finish() {
+    await this.displayUtils.changeTexteWithTransition('h1', 0, 500, '')
+    document.querySelector<HTMLElement>('div.config-slider')!.style.display = 'none'
+    await this.displayUtils.displayElementWithTransition('h1', 0, 0)
+    await this.displayUtils.changeTexteWithTransition('h1', 500, 1000, 'You can now use the EML&nbsp;AdminTool!')
+    await this.displayUtils.unDisplayElementWithTransition('h1', 1500, 500)
+    await this.displayUtils.unDisplayElementWithTransition('h1', 0, 500)
+    this.router.navigate(['/'])
   }
 
 }

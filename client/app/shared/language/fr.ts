@@ -1,11 +1,14 @@
 export default {
+  l: 'fr',
   main: {
     prev: `Précédent`,
     next: `Suivant`,
+    finish: 'Terminer',
     more: `Plus`,
     name: `Nom`,
     username: `Nom d'utilisateur`,
-    password: `Mot de passe`
+    password: `Mot de passe`,
+    pin: `Code de sécurité`
   },
   configuration: {
     step1: {
@@ -28,6 +31,13 @@ export default {
       title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
       subtitle: `Ce nom d'utilisateur et mot de passe seront les identifiants de votre compte administrateur.`
     }
+  },
+  auth: {
+    login: `Connexion`,
+    register: `Inscription`,
+    confirmPassword: `Confirmation du mot de passe`,
+    createAccount: `Créer un compte ici.`,
+    alreadyAnAccount: `Se connecter ici.`
   },
   modals: {
     language: {

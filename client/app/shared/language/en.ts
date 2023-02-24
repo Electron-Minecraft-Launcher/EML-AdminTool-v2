@@ -1,11 +1,14 @@
 export default {
+  l: 'en',
   main: {
     prev: `Previous`,
     next: `Next`,
+    finish: 'Finish',
     more: `More`,
     name: `Name`,
     username :`Username`,
-    password: `Password`
+    password: `Password`,
+    pin: `PIN`
   },
   configuration: {
     step1: {
@@ -28,6 +31,13 @@ export default {
       title: `Then, choose your server name and a password:`,
       subtitle: `This username and password will be your admin account login.`
     }
+  },
+  auth: {
+    login: `Log in`,
+    register: `Register`,
+    confirmPassword: `Confirm password`,
+    createAccount: `Create an account here.`,
+    alreadyAnAccount: `Log in here.`
   },
   modals: {
     language: {
