@@ -32,8 +32,8 @@ export default class AuthRouter implements Route {
      */
     this.router.get(`${this.path}/auth`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
       try {
-        // const resp = await new Auth().auth(req.body, next)
-        // res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        const resp = await new Auth().auth(req.headers, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error) {
       }
     })

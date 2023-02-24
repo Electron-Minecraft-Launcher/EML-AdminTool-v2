@@ -18,17 +18,40 @@ import jwt from "../utils/jwt";
 
 class Auth {
 
-  async auth(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<any>> {
+  async auth(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string }>> {
 
-    // TODO
+    const auth = headers['authorization']
 
-    return new DataSuccess(200, SUCCESS, 'Success', 'env')
+    if (!auth || !auth.startsWith('Basic ')) {
+      next(new UnauthorizedException())
+      throw null
+    }
+    const credentials = Buffer.from(auth.split(' ')[1], 'base64').toString('ascii')
+    const [name, password] = credentials.split(':')
+    var user: User[] | null
+
+    try {
+      user = await db.query<User[]>('SELECT * FROM users WHERE name = ?', [name])
+    } catch (error: any) {
+      next(new DBException())
+      throw null
+    }
+
+    if (!user[0] || !user[0].name || !(await bcrypt.compare(password, user[0].password + ''))) {
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user[0]) })
 
   }
 
   async verify(body: any, next: NextFunction): Promise<DefaultSuccess> {
 
-    // TODO
+    if (!body.name || body.name == '' || !body.password || body.password == '') {
+      next(new RequestException('Missing parameters'))
+      throw null
+    }
 
     return new DefaultSuccess()
 
