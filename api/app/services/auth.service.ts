@@ -1,7 +1,8 @@
-import { User, UserJWT } from '../models/features/user.model'
+import { User } from '../models/features/user.model'
 import db from '../utils/database'
 import bcrypt from 'bcrypt'
 import jwt from '../utils/jwt'
+import jwt_ from 'jsonwebtoken'
 import { DefaultServiceResponse } from '../models/responses/services/default-service-response.model'
 import { AUTH_ERROR, CLIENT_ERROR, count, DB_ERROR, SUCCESS } from '../models/types'
 import { DBException } from '../responses/exceptions/db-exception.response'
@@ -31,11 +32,11 @@ export class Auth {
 
     } else if (auth && auth.startsWith('Bearer ')) {
 
-      const resp: [true, string | UserJWT] | [false, number, string] = await jwt.verify(auth.split(' ')[1])
+      const resp: [true, string | jwt_.JwtPayload] | [false, number, string] = await jwt.verify(auth.split(' ')[1])
 
-      if (resp[0] && typeof resp[1] == 'object') {
+      if (resp[0] && jwt.isJwtPayload(resp[1])) {
         var token = resp[1]
-        if (token.admin) {
+        if (token['admin']) {
           return { status: true, code: SUCCESS }
         } else {
           return { status: false, code: AUTH_ERROR }
@@ -116,29 +117,29 @@ export class Auth {
 
   /**
    * Check is the name is available before with `await new Auth().isNameAvailable()`!
-   * 
+   *
    * `user`'s password must be hashed.
    */
   async insertUser(user: User): Promise<DataServiceResponse<{ id: number }>> {
 
     try {
       let insertUser: ResultSetHeader = await db.query<ResultSetHeader>(
-        `INSERT INTO users 
+        `INSERT INTO users
         (
-          name, 
-          password, 
-          status, 
-          admin, 
-          p_files_updater_add_del, 
-          p_bootstrap_mod, 
-          p_maintenance_mod, 
-          p_news_add, 
-          p_news_mod_del, 
-          p_news_category_add_mod_del, 
-          p_news_tag_add_mod_del, 
-          p_background_mod, 
+          name,
+          password,
+          status,
+          admin,
+          p_files_updater_add_del,
+          p_bootstrap_mod,
+          p_maintenance_mod,
+          p_news_add,
+          p_news_mod_del,
+          p_news_category_add_mod_del,
+          p_news_tag_add_mod_del,
+          p_background_mod,
           p_stats_del
-        ) 
+        )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           user.name + '',

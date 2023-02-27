@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit {
   async onSubmit() {
 
     document.querySelector<HTMLElement>('app-loading-splash#register-loading-splash')!.style.display = 'block'
-    this.putRegister$ = this.apiAuthService.putRegister(this.name + '', this.password + '', this.pin[0] + '' + this.pin[1] + '' + this.pin[2])
+    this.putRegister$ = this.apiAuthService.postRegister(this.name + '', this.password + '', this.pin[0] + '' + this.pin[1] + '' + this.pin[2])
     this.putRegister$.subscribe(
       {
         next: async (res) => {

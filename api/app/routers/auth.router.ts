@@ -4,6 +4,7 @@ import { Request, Response } from 'express'
 import { DefaultHttpResponse } from "../models/responses/http/default-http-response.model";
 import { DataHttpResponse } from "../models/responses/http/data-http-response.model";
 import Auth from "../controllers/auth.controller";
+import { User } from "../models/features/user.model";
 
 export default class AuthRouter implements Route {
   path = '/api'
@@ -41,7 +42,7 @@ export default class AuthRouter implements Route {
     /**
      * @openapi
      * /verify:
-     *   put:
+     *   get:
      *     tags:
      *       - Auth
      *     security:
@@ -53,10 +54,10 @@ export default class AuthRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(`${this.path}/verify`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+    this.router.get(`${this.path}/verify`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string, user: User }>>, next: NextFunction) => {
       try {
-        // const resp = await new Auth().verify(req.body, next)
-        // res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+        const resp = await new Auth().verify(req.headers, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error) {
       }
     })
@@ -65,7 +66,7 @@ export default class AuthRouter implements Route {
     /**
      * @openapi
      * /register:
-     *   put:
+     *   post:
      *     tags:
      *      - Auth
      *     summary: Register to the EML AdminTool
@@ -88,10 +89,10 @@ export default class AuthRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.put(`${this.path}/register`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
+    this.router.post(`${this.path}/register`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string, user: User }>>, next: NextFunction) => {
       try {
         const resp = await new Auth().register(req.body, next)
-        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: { jwt: resp.data.jwt } })
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error) {
       }
     })
@@ -99,7 +100,7 @@ export default class AuthRouter implements Route {
     /**
      * @openapi
      * /logout:
-     *   put:
+     *   delete:
      *     tags:
      *      - Auth
      *     security:
@@ -109,7 +110,7 @@ export default class AuthRouter implements Route {
      *       200:
      *         description: Logged out
      */
-    this.router.put(`${this.path}/admin`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+    this.router.delete(`${this.path}/logout`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       // try {
       //   const resp = await new Auth().logout(req.body, next)
       //   res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })

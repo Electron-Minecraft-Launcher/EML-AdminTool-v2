@@ -18,36 +18,18 @@ export class ApiConfigureService {
   }
 
   putLanguage(language: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
-    const headers = new HttpHeaders(
-      {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      }
-    )
     const params = new HttpParams({ fromObject: { language: language }, encoder: new HttpUrlEncodingCodec() })
-
-    return this.http.put<DefaultResponse>(this.apiPath + '/configure/language', params, { headers, observe: 'response' })
+    return this.http.put<DefaultResponse>(this.apiPath + '/configure/language', params, { observe: 'response' })
   }
 
   putDbPassword(password: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
-    const headers = new HttpHeaders(
-      {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      }
-    )
     const params = new HttpParams({ fromObject: { password: password }, encoder: new HttpUrlEncodingCodec() })
-
-    return this.http.put<DefaultResponse>(this.apiPath + '/configure/database', params, { headers, observe: 'response' })
+    return this.http.put<DefaultResponse>(this.apiPath + '/configure/database', params, { observe: 'response' })
   }
 
   putAdmin(name: string, password: string, auth: string = ''): Observable<HttpResponse<DefaultResponse>> {
-    const headers = new HttpHeaders(
-      {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      }
-    )
     const params = new HttpParams({ fromObject: { password: password, name: name }, encoder: new HttpUrlEncodingCodec() })
-
-    return this.http.put<DefaultResponse>(this.apiPath + '/configure/admin', params, { headers, observe: 'response' })
+    return this.http.put<DefaultResponse>(this.apiPath + '/configure/admin', params, { observe: 'response' })
   }
 
 }

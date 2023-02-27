@@ -16,19 +16,19 @@ export interface User {
   password?: varchar,
   /**
    * Not in the JWT
-   * 
+   *
    * ` 1` Accepted
-   * 
+   *
    * ` 0` Waiting for acceptation
-   * 
+   *
    * `-1` Bad PIN
-   * 
-   * `-2` Deleted  
+   *
+   * `-2` Deleted
    */
   status?: tinyint,
   /**
    * In the JWT
-   * 
+   *
    * `p_*` are not in the JWT
    */
   admin?: tinyint,
@@ -43,4 +43,4 @@ export interface User {
   p_stats_del?: tinyint
 }
 
-export type UserJWT = JwtPayload & User
+// export type UserJWT = JwtPayload & User

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'client/environments/environment';
 import { DataResponse, DefaultResponse } from '../../types/response';
 import { Buffer } from 'buffer'
+import { User } from '../../types/user';
 
 @Injectable({
   providedIn: 'root'
@@ -13,24 +14,22 @@ export class ApiAuthService {
 
   constructor(private http: HttpClient) { }
 
-  getAuth(name: string, password: string): Observable<HttpResponse<DataResponse<{ jwt: string }>>> {
+  getAuth(name: string, password: string): Observable<HttpResponse<DataResponse<{ jwt: string, user: User }>>> {
     const headers = new HttpHeaders(
       {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization': 'Basic ' + Buffer.from(name + ':' + password).toString('base64')
       }
     )
-    return this.http.get <DataResponse<{ jwt: string }>>(this.apiPath + '/auth', { headers, observe: 'response' })
+    return this.http.get <DataResponse<{ jwt: string, user: User }>>(this.apiPath + '/auth', { headers, observe: 'response' })
   }
 
-  putRegister(name: string, password: string, pin: string): Observable<HttpResponse<DataResponse<{ jwt: string }>>> {
-    const headers = new HttpHeaders(
-      {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      }
-    )
+  postRegister(name: string, password: string, pin: string): Observable<HttpResponse<DataResponse<{ jwt: string, user: User }>>> {
     const params = new HttpParams({ fromObject: { name: name, password: password, pin: pin }, encoder: new HttpUrlEncodingCodec() })
+    return this.http.post<DataResponse<{ jwt: string, user: User }>>(this.apiPath + '/register', params, { observe: 'response' })
+  }
 
-    return this.http.put<DataResponse<{ jwt: string }>>(this.apiPath + '/register', params, { headers, observe: 'response' })
+  getVerify(): Observable<HttpResponse<DataResponse<{ jwt: string, user: User }>>> {
+    return this.http.get<DataResponse<{ jwt: string, user: User }>>(this.apiPath + '/verify', { observe: 'response' })
   }
 }

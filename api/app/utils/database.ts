@@ -150,7 +150,6 @@ class DataBase {
     try {
       isTable = (await this.query<count[]>('SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = \'eml_admintool\' AND table_name = ?', [table]))[0]
     } catch (error: any) {
-
       throw new Error(error)
     }
 

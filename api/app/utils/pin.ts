@@ -35,8 +35,8 @@ class PIN {
   async get(): Promise<string> {
     try {
       return (await db.query<Config[]>('SELECT * FROM config WHERE data = \'pin\''))[0].value + ''
-    } catch (error) {
-      throw error
+    } catch (error: any) {
+      throw new Error(error)
     }
   }
 

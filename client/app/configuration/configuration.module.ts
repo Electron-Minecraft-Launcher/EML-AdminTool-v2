@@ -11,6 +11,8 @@ import { Configuration2Component } from './configuration2/configuration2.compone
 import { ManagerModule } from '../manager/manager.module';
 import { HtmlPipeModule } from '../shared/pipes/html-pipe/html-pipe.module';
 import { Configuration3Component } from './configuration3/configuration3.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from '../shared/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,13 @@ import { Configuration3Component } from './configuration3/configuration3.compone
     ManagerModule,
     HtmlPipeModule
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ]
 })
 export class ConfigurationModule { }

@@ -4,7 +4,7 @@ import { Auth as Auth_ } from '../services/auth.service'
 import pin_ from '../utils/pin'
 import bcrypt from 'bcrypt';
 import { User } from "../models/features/user.model"
-import { CLIENT_ERROR, DB_ERROR, SUCCESS } from "../models/types"
+import { CLIENT_ERROR, DB_ERROR, SUCCESS, UNKNOWN_ERROR } from "../models/types"
 import { DBException } from "../responses/exceptions/db-exception.response"
 import { DataSuccess } from "../responses/success/data-success.response"
 import { NextFunction } from "express"
@@ -15,10 +15,11 @@ import { UnauthorizedException } from "../responses/exceptions/unauthorized-exce
 import { ResultSetHeader } from "mysql2";
 import { DataServiceResponse } from "../models/responses/services/data-service-response.model";
 import jwt from "../utils/jwt";
+import { DefaultException } from "../responses/exceptions/default-exception.response";
 
 class Auth {
 
-  async auth(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string }>> {
+  async auth(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string, user: User }>> {
 
     const auth = headers['authorization']
 
@@ -42,22 +43,65 @@ class Auth {
       throw null
     }
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user[0]) })
+    delete user[0].password
+    delete user[0].status
+
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user[0]), user: user[0] })
 
   }
 
-  async verify(body: any, next: NextFunction): Promise<DefaultSuccess> {
+  async verify(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string, user: User }>> {
 
-    if (!body.name || body.name == '' || !body.password || body.password == '') {
-      next(new RequestException('Missing parameters'))
+    const auth = headers['authorization']
+
+    if (!auth || !auth.startsWith('Bearer ')) {
+      next(new UnauthorizedException())
       throw null
     }
 
-    return new DefaultSuccess()
+    const token = auth.split(' ')[1]
+
+    const dec = await jwt.verify(token)
+
+    if (!dec[0] && dec[1] == 401) {
+      next(new UnauthorizedException(dec[2]))
+      throw null
+    } else if (!dec[0] && dec[1] == 500) {
+      next(new DBException())
+      throw null
+    } else if (!dec[0]) {
+      next(new DefaultException(500, UNKNOWN_ERROR, 'Unknown error'))
+      throw null
+    }
+
+    var user: User[] | null
+
+    if (!jwt.isJwtPayload(dec[1])) {
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    try {
+      user = await db.query<User[]>('SELECT * FROM users WHERE id = ?', [dec[1].sub])
+    } catch (error: any) {
+      next(new DBException())
+      throw null
+    }
+
+    if (!user[0] || !user[0].name) {
+
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    delete user[0].password
+    delete user[0].status
+
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: token, user: user[0] })
 
   }
 
-  async register(body: any, next: NextFunction): Promise<DataSuccess<{ jwt: string }>> {
+  async register(body: any, next: NextFunction): Promise<DataSuccess<{ jwt: string, user: User }>> {
 
     if (!body.name || body.name == '' || !body.password || body.password == '' || !body.pin) {
       next(new RequestException('Missing parameters'))
@@ -98,8 +142,10 @@ class Auth {
     }
 
     user.id = addUser.data?.id
+    delete user.password
+    delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user) })
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user: user })
 
   }
 

@@ -1,13 +1,13 @@
-import { User, UserJWT } from "../models/features/user.model"
+import { User } from "../models/features/user.model"
 import db from './database'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { count } from "../models/types"
 
 class JWT {
 
-  async verify(token: string): Promise<[true, UserJWT | string] | [false, number, string]> {
+  async verify(token: string): Promise<[true, JwtPayload | string] | [false, number, string]> {
     const secretKey = process.env['JWT_SECRET_KEY']
-    var decoded: UserJWT | string
+    var decoded: JwtPayload | string
     var isJwt: count
 
     try {
@@ -23,7 +23,7 @@ class JWT {
     try {
       isJwt = (await db.query<count[]>('SELECT COUNT(*) AS count FROM exp_jwt WHERE jwt = ?', [token]))[0]
     } catch (error: any) {
-      return [false, 500, 'Unknown']
+      return [false, 500, 'DataBase']
     }
 
     if (isJwt.count > 0) {
@@ -42,6 +42,10 @@ class JWT {
       admin: user.admin! + 0
     }, secretKey, { subject: user.id + '', expiresIn: '30 days' })
 
+  }
+
+  isJwtPayload(object: any): object is JwtPayload {
+    return 'exp' in object && 'iat' in object;
   }
 
 }
