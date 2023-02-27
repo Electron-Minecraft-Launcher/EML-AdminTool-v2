@@ -1,0 +1,23 @@
+<app-configuration-form-template [prev]="false" [cond]="language.value ? true : false" [language]="language" [id]="'config-1'">
+  <h2 [innerHTML]="l.configuration.step1.title | html"></h2>
+  <p><b [innerHTML]="l.configuration.step1.subtitle | html"></b></p>
+  <div class="actions language">
+    <button type="button" class="secondary" id="en-button" (click)="onEn()">
+      <p>
+        <img src="/assets/images/en.png" alt="French flag">
+        English
+      </p>
+    </button>
+    <button type="button" class="secondary" id="fr-button" (click)="onFr()">
+      <p>
+        <img src="/assets/images/fr.png" alt="French flag">
+        Français
+      </p>
+    </button>
+    <p class="center">
+      <a class="small-link" (click)="onLanguageModal(true)" [innerHTML]="l.configuration.step1.other | html"></a>
+    </p>
+  </div>
+</app-configuration-form-template>
+
+<app-language-modal [id]="'language-modal'"></app-language-modal>

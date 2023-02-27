@@ -1,0 +1,20 @@
+<app-configuration-form-template [cond]="+relN >= 3" [dbPassword]="dbPassword" [id]="'config-2'">
+  <h2 [innerHTML]="l.configuration.step2.title | html"></h2>
+  <p><b [innerHTML]="l.configuration.step2.subtitle | html"></b></p>
+  <div class="actions">
+    <div class="flex">
+      <input type="text" name="db-password" id="db-password" [placeholder]="l.configuration.step2.placeholder"
+        [(ngModel)]="dbPassword" (ngModelChange)="onInputChange()">
+
+      <button class="secondary" (click)="generatePassword()" type="button"><i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;<span
+          [innerHTML]="l.configuration.step2.generate"></span></button>
+    </div>
+
+    <div class="rel-progress">
+      <div [class]="'rel-progress-in progress-' + relN"></div>
+    </div>
+
+    <span [innerHTML]="rel" class="rel"></span>
+
+  </div>
+</app-configuration-form-template>

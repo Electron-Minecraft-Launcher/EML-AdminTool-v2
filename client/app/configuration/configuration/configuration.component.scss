@@ -1,0 +1,41 @@
+h1 {
+  text-align: center;
+  font-size: 56px;
+  margin-top: 33vh;
+  transition: opacity 0.5s, display 0.5s;
+}
+
+div.config-slider {
+  width: 400vw;
+  overflow-x: hidden;
+  position: relative;
+  transition: left 0.5s ease;
+  display: none;
+
+  &.step-1,
+  &.step-0 {
+    left: 0
+  }
+
+  &.step-2 {
+    left: -100vw
+  }
+
+  &.step-3 {
+    left: -200vw
+  }
+
+  &.step-4 {
+    left: -300vw
+  }
+
+  div.config-1,
+  div.config-2,
+  div.config-3,
+  div.config-4 {
+    width: 100vw;
+    display: inline-block;
+    vertical-align: top;
+    height: calc(100vh - 5px);
+  }
+}

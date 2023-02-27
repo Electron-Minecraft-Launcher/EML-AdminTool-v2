@@ -1,0 +1,18 @@
+<form (ngSubmit)="onSubmit()">
+  <app-loading-splash [transparent]="true" id="register-loading-splash"></app-loading-splash>
+  <h2 [innerHTML]="l.auth.register | html"></h2>
+  <p>{{ env.name }} AdminTool</p>
+  <input type="text" [placeholder]="l.main.username" [(ngModel)]="name" name="name">
+  <input type="password" [placeholder]="l.main.password" [(ngModel)]="password" name="password">
+  <input type="password" [placeholder]="l.auth.confirmPassword" [(ngModel)]="passwordCfr" name="password-cfr">
+  <label for="pin-1" [innerHTML]="l.main.pin + (l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')"></label>
+  <input type="text" maxlength="1" size="1" id="pin-1" (keyup)="focusNext($event, 1)" [(ngModel)]="pin[0]" name="pin-1">
+  <input type="text" maxlength="1" size="1" id="pin-2" (keyup)="focusNext($event, 2)" [(ngModel)]="pin[1]" name="pin-2">
+  <input type="text" maxlength="1" size="1" id="pin-3" (keyup)="focusNext($event, 3)" [(ngModel)]="pin[2]" name="pin-3">
+
+  <button class="primary" [innerHTML]="l.auth.register | html"
+    [disabled]="!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]"></button>
+  <p class="center">
+    <a class="small-link" routerLink="/login" [innerHTML]="l.auth.alreadyAnAccount | html"></a>
+  </p>
+</form>

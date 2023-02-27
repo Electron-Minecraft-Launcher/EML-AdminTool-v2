@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary-color: rgb(194, 81, 5);
+  --primary-color-hover: rgb(224, 96, 10);
+  --primary-tr-color-hover: rgb(194, 81, 5, 0.2);
+  --primary-dark-color: rgb(184, 77, 7);
+  --primary-light-color: rgb(255, 210, 151);
+  --primary-light-color-hover: rgb(255, 221, 177);
+
+  --secondary-color: rgb(240, 240, 240);
+  --secondary-color-hover: rgb(245, 245, 245);
+
+  --border-color: rgb(230, 230, 230);
+  --border-color2: rgb(200, 200, 200);
+
+  --primary-shadow-dark-color: rgb(138, 57, 4);
+  --primary-shadow-dark-color-hover: rgb(155, 65, 6);
+  --secondary-shadow-dark-color: rgb(213, 213, 213);
+  --secondary-shadow-dark-color-hover: rgb(222, 222, 222);
+
+  --background-light-color: rgb(254, 254, 254);
+  --background-color: rgb(247, 247, 247);
+  --background-medium-color: rgb(235, 232, 230);
+
+  --text-light-color: #fafafa;
+  --text-dark-color: #303030;
+
+  --gray-gradient: linear-gradient(#fefefe, #fcfcfc);
+}
+
+
+body {
+  font-family: 'Poppins', 'Arial', 'Helvetica', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  // height: 100vh;
+  overflow-x: hidden;
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.6;
+
+  &.center {
+    text-align: center;
+  }
+}
+
+a:not(.not-a) {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-color);
+  transition: all 0.2s ease;
+  display: inline-block;
+  cursor: pointer;
+
+  &.small-link {
+    font-size: 14px;
+
+    i.fa-solid.fa-arrow-up-right-from-square {
+      font-size: 12px
+    }
+  }
+
+  i.fa-solid.fa-arrow-up-right-from-square {
+    font-size: 14px
+  }
+
+  &:hover {
+    color: var(--primary-color-hover);
+    border-bottom-color: var(--primary-color-hover);
+  }
+
+  &:hover:active {
+    transform: translateY(1px);
+  }
+}
+
+a.not-a {
+  text-decoration: none;
+}
+
+input {
+  display: block;
+  width: calc(100% - 32px);
+  margin-top: 15px;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color2);
+  border-radius: 5px;
+  outline: none;
+  background-color: var(--background-light-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  outline: 0px solid var(--primary-tr-color-hover);
+  transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
+
+  &:hover:not(:disabled) {
+    box-shadow: none;
+  }
+
+  &:focus:not(:disabled) {
+    box-shadow: none;
+    outline: 6px solid var(--primary-tr-color-hover);
+  }
+}
+
+button {
+  display: block;
+  border: 0;
+  border-radius: 5px;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
+  outline: 0px solid var(--primary-tr-color-hover);
+
+  &.primary {
+    margin-top: 30px;
+    background: var(--primary-dark-color);
+    box-shadow: 0 2px 0 var(--primary-shadow-dark-color);
+    color: var(--text-light-color);
+    width: 100%;
+
+    &:hover:not(:disabled) {
+      background: var(--primary-color-hover);
+      box-shadow: 0 2px 0 var(--primary-shadow-dark-color-hover);
+    }
+
+    &:hover:active:not(:disabled) {
+      box-shadow: 0 0 var(--primary-shadow-dark-color-hover);
+      outline: 6px solid var(--primary-tr-color-hover);
+    }
+  }
+
+  &.secondary {
+    margin-top: 25px;
+    background: var(--secondary-color);
+    box-shadow: 0 2px 0 var(--secondary-shadow-dark-color);
+    color: var(--text-dark-color);
+
+    &:hover:not(:disabled) {
+      background: var(--secondary-color-hover);
+      box-shadow: 0 2px 0 var(--secondary-shadow-dark-color-hover);
+    }
+
+    &:hover:active:not(:disabled) {
+      box-shadow: 0 0 0 var(--secondary-shadow-dark-color-hover);
+      outline: 6px solid var(--primary-tr-color-hover);
+    }
+  }
+
+  &:hover:active:not(:disabled) {
+    transform: translateY(2px);
+  }
+
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
+  }
+}
