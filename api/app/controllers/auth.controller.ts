@@ -89,7 +89,6 @@ class Auth {
     }
 
     if (!user[0] || !user[0].name) {
-
       next(new UnauthorizedException())
       throw null
     }
@@ -151,7 +150,41 @@ class Auth {
 
   async logout(headers: IncomingHttpHeaders, next: NextFunction): Promise<DefaultSuccess> {
 
-    // TODO
+    const auth = headers['authorization']
+
+    if (!auth || !auth.startsWith('Bearer ')) {
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    const token = auth.split(' ')[1]
+
+    const dec = await jwt.verify(token)
+
+    if (!dec[0] && dec[1] == 401) {
+      next(new UnauthorizedException(dec[2]))
+      throw null
+    } else if (!dec[0] && dec[1] == 500) {
+      next(new DBException())
+      throw null
+    } else if (!dec[0]) {
+      next(new DefaultException(500, UNKNOWN_ERROR, 'Unknown error'))
+      throw null
+    }
+
+    var user: User[] | null
+
+    if (!jwt.isJwtPayload(dec[1])) {
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    try {
+      user = await db.query<User[]>('INSERT INTO exp_jwt (jwt) VALUES (?)', [token])
+    } catch (error: any) {
+      next(new DBException())
+      throw null
+    }
 
     return new DefaultSuccess()
 
