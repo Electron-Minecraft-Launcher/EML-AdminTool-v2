@@ -1,6 +1,7 @@
 export default {
   l: 'fr',
   main: {
+    home: 'Accueil',
     prev: `Précédent`,
     next: `Suivant`,
     finish: 'Terminer',

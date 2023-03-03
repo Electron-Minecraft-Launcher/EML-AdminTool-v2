@@ -34,6 +34,13 @@ export class RegisterComponent implements OnInit {
 
     this.title.setTitle(this.l.auth.register + ' • ' + this.env.name + ' AdminTool')
 
+    if (this.cookiesService.getCookie('JWT')) {
+      this.apiAuthService.getVerify().subscribe({
+        next: (res) => {
+          this.router.navigate(['/dashboard'])
+        }
+      })
+    }
   }
 
   focusNext(e: KeyboardEvent, n: number) {

@@ -7,50 +7,101 @@ nav {
   top: 0;
   width: 200px;
   height: 100%;
+}
 
-  h4 {
-    color: #505050;
-    margin-top: 30px;
-    font-size: 14px;
+h1 {
+  margin: 5px 0 40px 0;
+  font-size: 20px;
+  color: #202020;
+  text-align: center;
+}
+
+h4 {
+  color: #505050;
+  margin-top: 30px;
+  font-size: 14px;
+}
+
+a {
+  display: block;
+  margin-top: 10px;
+  border-bottom: none;
+  color: #1e1e1e;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  position: relative;
+
+  &:hover:not(.account),
+  &.active:hover:not(.account) {
+    color: var(--primary-color-hover);
+    background: #eeeeee;
   }
 
-  a {
-    display: block;
-    margin-top: 10px;
-    border-bottom: none;
-    color: #1e1e1e;
+  &.active {
+    background: #f5f5f5;
+  }
+
+  i.fa-solid {
+    display: inline-block;
+    margin-right: 15px;
+    height: 16px;
+    width: 16px;
+  }
+
+  &.account {
+    position: absolute;
+    bottom: 90px;
+    width: 170px;
+  }
+
+  i.fa-solid.fa-caret-up {
+    padding: 14px 15px 13px 15px;
+    margin-right: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
     border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 14px;
+    transition: all 0.2s ease;
+    width: auto;
+    height: 14px
+  }
 
-    &.account {
-      position: absolute;
-      bottom: 90px;
-      width: 160px;
-    }
+  &.account:hover {
+    color: #1e1e1e;
 
-    &:hover,
-    &.active:hover {
+    i.fa-caret-up {
       color: var(--primary-color-hover);
       background: #eeeeee;
-    }
-
-    &.active {
-      background: #f5f5f5;
-    }
-
-    i.fa-solid {
-      display: inline-block;
-      margin-right: 15px;
-      height: 16px;
-      width: 16px;
     }
   }
 }
 
-h1 {
-  margin: 0 0 50px 0;
-  font-size: 18px;
-  color: #202020;
-  text-align: center;
+div.account-dropdown {
+  overflow-y: hidden;
+  border-radius: 5px;
+  transition: opacity 0.2s, height 0.2s ease, display 0s;
+  background: white;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  z-index: 100;
+  position: absolute;
+  width: 178px;
+  bottom: 142px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  height: 0;
+  display: none;
+
+  >a:nth-of-type(1) {
+    margin-top: 0
+  }
+
+  a.account-logout {
+    color: var(--red-color);
+
+    &:hover {
+      background: #faeeee;
+    }
+  }
 }

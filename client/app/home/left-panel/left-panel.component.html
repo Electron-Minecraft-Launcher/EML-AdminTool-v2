@@ -1,5 +1,5 @@
 <nav>
-  <h1>AdminTool</h1>
+  <h1>EML AdminTool</h1>
   <a routerLink="/dashboard" [routerLinkActive]="'active'"><i class="fa-solid fa-house"></i>Home</a>
   <h4>Features</h4>
   <a routerLink="/dashboard/files-updater"><i class="fa-solid fa-folder-open"></i>Files Updater</a>
@@ -9,5 +9,10 @@
   <a routerLink="/dashboard/background"><i class="fa-solid fa-image"></i>Background</a>
   <a routerLink="/dashboard/stats"><i class="fa-solid fa-chart-simple"></i>Stats</a>
 
-  <a routerLink="/dashboard/account" class="account"><i class="fa-solid fa-circle-user"></i>User</a>
+  <a  class="account" (click)="onAccountClick()"><i class="fa-solid fa-circle-user"></i>User<i class="fa-solid fa-caret-up"></i></a>
+
+  <div class="account-dropdown" id="account-dropdown">
+    <a routerLink="/dashboard/account" class="account-settings"><i class="fa-solid fa-gear"></i>Settings</a>
+    <a class="account-logout" (click)="onLogoutClick()"><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+  </div>
 </nav>
