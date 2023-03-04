@@ -33,7 +33,6 @@ class Admin {
 
     for (let user of users) {
       delete user.password
-
       users_.push(user)
     }
 
@@ -41,53 +40,41 @@ class Admin {
 
   }
 
-  async verify(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string, user: User }>> {
+  async getUser(headers: IncomingHttpHeaders, userId: number | 'me', next: NextFunction): Promise<DataSuccess<User>> {
 
-    const auth = headers['authorization']
+    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
 
-    if (!auth || !auth.startsWith('Bearer ')) {
+    if (!auth.status) {
+      next(auth.exception)
+      throw null
+    }
+
+    var user: User = auth.data!
+    var getUser: User
+
+    if (user.admin || userId == user.id || userId == 'me') {
+
+      userId = user.id!
+
+      try {
+        getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
+      } catch (error) {
+        next(new DBException())
+        throw null
+      }
+
+      delete getUser.password
+
+      if (!user.admin) {
+        delete getUser.status
+      }
+
+    } else {
       next(new UnauthorizedException())
       throw null
     }
 
-    const token = auth.split(' ')[1]
-
-    const dec = await jwt.verify(token)
-
-    if (!dec[0] && dec[1] == 401) {
-      next(new UnauthorizedException(dec[2]))
-      throw null
-    } else if (!dec[0] && dec[1] == 500) {
-      next(new DBException())
-      throw null
-    } else if (!dec[0]) {
-      next(new DefaultException(500, UNKNOWN_ERROR, 'Unknown error'))
-      throw null
-    }
-
-    var user: User[] | null
-
-    if (!jwt.isJwtPayload(dec[1])) {
-      next(new UnauthorizedException())
-      throw null
-    }
-
-    try {
-      user = await db.query<User[]>('SELECT * FROM users WHERE id = ?', [dec[1].sub])
-    } catch (error: any) {
-      next(new DBException())
-      throw null
-    }
-
-    if (!user[0] || !user[0].name) {
-      next(new UnauthorizedException())
-      throw null
-    }
-
-    delete user[0].password
-    delete user[0].status
-
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: token, user: user[0] })
+    return new DataSuccess(200, SUCCESS, 'Success', getUser)
 
   }
 

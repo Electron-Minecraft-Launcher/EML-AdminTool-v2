@@ -53,18 +53,16 @@ export default class AdminRouter implements Route {
      *       - in: path
      *         name: user_id
      *         required: true
-     *         schema:
-     *           type: integer
      *     responses:
      *       200:
      *         description: Information
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(`${this.path}/users/:user_id`, async (req: Request, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
+    this.router.get(`${this.path}/users/:user_id`, async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
       try {
-        // const resp = await new Admin().getUser(req.headers, next)
-        // res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        const resp = await new Admin().getUser(req.headers, req.params['user_id'], next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error) {
       }
     })
