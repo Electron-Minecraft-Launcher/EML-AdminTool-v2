@@ -4,7 +4,7 @@ import dateFormat from 'moment'
 import { DefaultHttpResponse } from '../models/responses/http/default-http-response.model';
 
 const middleware = (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-  console.log(`LOG  ${dateFormat(moment()).format('YYYY-MM-DD HH:mm:SS')}  ${req.ip} ${req.method} ${req.path}`)
+  console.log(`LOG  ${dateFormat(moment()).format('YYYY-MM-DD HH:mm:ss')}  ${req.ip} ${req.method} ${req.path}`)
   next()
 }
 

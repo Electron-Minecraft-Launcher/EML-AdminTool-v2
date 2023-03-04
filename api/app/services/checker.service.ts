@@ -1,4 +1,4 @@
-import { Auth } from './auth.service';
+import { AuthService } from './auth.service';
 import fs from 'fs';
 import path from 'path';
 import db from '../utils/database';
@@ -7,20 +7,21 @@ import { IncomingHttpHeaders } from 'http';
 import { AUTH_ERROR, CONFIG_ERROR, count, SUCCESS } from '../models/types';
 import { DefaultServiceResponse } from '../models/responses/services/default-service-response.model';
 
-export class Checker {
+export class CheckerService {
 
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
 
     await pin.check()
-    
+
     if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
       return { status: true, code: SUCCESS }
     } else if (path.startsWith('/api/configure') && path != '/api/configure' && path != '/api/configure/') {
 
-      if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB() || (await new Auth().isAdmin(headers['authorization'] + '')).status) {
+      if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB() || (await new AuthService().isAdmin(headers['authorization'] + '')).status) {
 
         await db.dbGenerate(await db.getTablesToGenerate())
         return { status: true, code: SUCCESS }
+
       } else {
         return { status: false, code: AUTH_ERROR }
       }
@@ -29,7 +30,7 @@ export class Checker {
 
       if (!this.checkDotEnv() || !await this.checkDB() || !await this.checkAdminInDB()) {
         return { status: true, code: CONFIG_ERROR }
-      } else {      
+      } else {
         return { status: true, code: SUCCESS }
       }
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Checker } from '../services/checker.service';
+import { CheckerService } from '../services/checker.service';
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response';
 import { DefaultHttpResponse } from '../models/responses/http/default-http-response.model';
 import { AUTH_ERROR, CONFIG_ERROR, SUCCESS } from '../models/types';
@@ -13,7 +13,7 @@ const router = async (req: Request, res: Response<DefaultHttpResponse>, next: Ne
   const path = req.path
   const headers = req.headers
 
-  const resp = await new Checker().check(body, path, headers)
+  const resp = await new CheckerService().check(body, path, headers)
 
   if (resp.code == SUCCESS) {
     next()

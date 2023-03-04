@@ -2,10 +2,8 @@ import { Config } from "../models/configurations/config.model"
 import db from "../utils/database"
 import { User } from "../models/features/user.model"
 import { SUCCESS } from "../models/types"
-import { DBException } from "../responses/exceptions/db-exception.response"
 import { DataSuccess } from "../responses/success/data-success.response"
 import { NextFunction } from "express"
-import { ConfigurationException } from "../responses/exceptions/configuration-exception.response"
 
 class Env {
 

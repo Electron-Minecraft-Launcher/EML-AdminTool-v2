@@ -42,5 +42,3 @@ export interface User {
   p_background_mod?: tinyint,
   p_stats_del?: tinyint
 }
-
-// export type UserJWT = JwtPayload & User
