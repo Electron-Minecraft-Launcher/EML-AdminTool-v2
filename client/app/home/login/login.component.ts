@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
   name: string = ''
   password: string = ''
 
-    private getAuth$!: Observable<HttpResponse<DataResponse<{ jwt: string }>>>
+  private getAuth$!: Observable<HttpResponse<DataResponse<{ jwt: string }>>>
 
   constructor(private router: Router, private title: Title, private envService: EnvService, private apiAuthService: ApiAuthService, private cookiesService: CookiesService) { }
 
@@ -32,16 +32,13 @@ export class LoginComponent implements OnInit {
 
     this.title.setTitle(this.l.auth.login + ' • ' + this.env.name + ' AdminTool')
 
-    /**
-     * Si présence de JWT (cookie)
-     *    -> Faire vérifier le JWT
-     *       Si JWT invalide
-     *          -> Rester à /login
-     *       Si JWT valide
-     *          -> Aller à /dashboard
-     * Si pas de JWT
-     *    -> Rester à /login
-     */
+    if (this.cookiesService.getCookie('JWT')) {
+      this.apiAuthService.getVerify().subscribe({
+        next: (res) => {
+          this.router.navigate(['/dashboard'])
+        }
+      })
+    }
 
   }
 
@@ -57,6 +54,7 @@ export class LoginComponent implements OnInit {
             value: res.body?.data?.jwt + '',
             expireDays: 30,
           })
+          this.router.navigate(['/dashboard'])
         },
         error: (err) => {
           document.querySelector<HTMLElement>('app-loading-splash#login-loading-splash')!.style.display = 'none'

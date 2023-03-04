@@ -1,6 +1,7 @@
 export default {
   l: 'en',
   main: {
+    home: 'Home',
     prev: `Previous`,
     next: `Next`,
     finish: 'Finish',

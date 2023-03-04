@@ -111,11 +111,11 @@ export default class AuthRouter implements Route {
      *         description: Logged out
      */
     this.router.delete(`${this.path}/logout`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-      // try {
-      //   const resp = await new Auth().logout(req.body, next)
-      //   res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      // } catch (error) {
-      // }
+      try {
+        const resp = await new Auth().logout(req.headers, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error) {
+      }
     })
   }
 

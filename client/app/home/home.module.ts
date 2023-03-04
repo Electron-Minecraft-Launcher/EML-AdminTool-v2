@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ConfigureInterceptor } from '../shared/interceptors/configure.interceptor';
@@ -12,14 +11,15 @@ import { HtmlPipeModule } from '../shared/pipes/html-pipe/html-pipe.module';
 import { RegisterComponent } from './register/register.component';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LeftPanelComponent } from './left-panel/left-panel.component';
 
 
 @NgModule({
   declarations: [
-    HomeComponent,
     LoginComponent,
     RegisterComponent,
-    DashboardComponent
+    DashboardComponent,
+    LeftPanelComponent
   ],
   imports: [
     CommonModule,

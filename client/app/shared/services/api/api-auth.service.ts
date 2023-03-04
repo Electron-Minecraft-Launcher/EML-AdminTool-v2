@@ -32,4 +32,8 @@ export class ApiAuthService {
   getVerify(): Observable<HttpResponse<DataResponse<{ jwt: string, user: User }>>> {
     return this.http.get<DataResponse<{ jwt: string, user: User }>>(this.apiPath + '/verify', { observe: 'response' })
   }
+
+  deleteLogout(): Observable<HttpResponse<DefaultResponse>> {
+    return this.http.delete<DefaultResponse>(this.apiPath + '/logout', { observe: 'response' })
+  }
 }
