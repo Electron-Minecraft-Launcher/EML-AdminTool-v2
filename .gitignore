@@ -23,7 +23,8 @@ npm-debug.log
 /typings
 /.editorconfig
 /.browserslistrc
-/_client
+/.client
+/.env
 
 # System files
 .DS_Store
@@ -31,4 +32,3 @@ Thumbs.db
 
 # Others
 _*.*
-/.env

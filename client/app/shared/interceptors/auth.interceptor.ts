@@ -28,8 +28,12 @@ export class AuthInterceptor implements HttpInterceptor {
     ).pipe(
       catchError(err => {
         if (err.error.code == 'AUTH_ERROR') {
-          this.router.navigate(['/login'])
-          this.cookiesService.deleteCookie('JWT')
+          if (req.url.includes('/configure/') || req.url.includes('/verify') || req.url.includes('/logout') || req.url.includes('/users/me') || err.error.message == 'Token expired') {
+            this.router.navigate(['/login'])
+            this.cookiesService.deleteCookie('JWT')
+          } else {
+            this.router.navigate(['/dashboard'])
+          }
         }
         return throwError(() => new Error(err))
       })
