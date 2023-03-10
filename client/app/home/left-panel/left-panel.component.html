@@ -8,7 +8,7 @@
   <a *ngIf="ready && user.p_maintenance_mod" routerLink="/dashboard/maintenance"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
   <a *ngIf="ready && (user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del)" routerLink="/dashboard/news"><i class="fa-solid fa-newspaper"></i>News</a>
   <a *ngIf="ready && user.p_background_mod" routerLink="/dashboard/background"><i class="fa-solid fa-image"></i>Background</a>
-  <a *ngIf="ready && user.p_stats_del" routerLink="/dashboard/stats"><i class="fa-solid fa-chart-simple"></i>Stats</a>
+  <a *ngIf="ready && (user.p_stats_see || user.p_stats_del)" routerLink="/dashboard/stats"><i class="fa-solid fa-chart-simple"></i>Stats</a>
 
   <a *ngIf="ready" class="account" (click)="onAccountClick()"><i class="fa-solid fa-circle-user"></i><span [innerHTML]="user.name"></span><i class="fa-solid fa-caret-up"></i></a>
 

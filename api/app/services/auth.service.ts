@@ -155,9 +155,10 @@ export class AuthService {
           p_news_category_add_mod_del,
           p_news_tag_add_mod_del,
           p_background_mod,
+          p_stats_see,
           p_stats_del
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           user.name + '',
           user.password + '',
@@ -171,6 +172,7 @@ export class AuthService {
           user.p_news_category_add_mod_del! + 0 | 0,
           user.p_news_tag_add_mod_del! + 0 | 0,
           user.p_background_mod! + 0 | 0,
+          user.p_stats_see! + 0 | 0,
           user.p_stats_del! + 0 | 0
         ]
       )

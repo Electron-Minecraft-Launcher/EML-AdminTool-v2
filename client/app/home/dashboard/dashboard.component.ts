@@ -22,7 +22,7 @@ export class DashboardComponent implements OnInit {
 
     this.envService.get().subscribe({ next: (env) => { this.l = env.language; this.env = env; } })
 
-    this.title.setTitle(this.l.auth.login + ' • ' + this.env.name + ' AdminTool')
+    this.title.setTitle(this.env.name + ' AdminTool')
   }
 
 }
