@@ -18,9 +18,6 @@ export class SkeletonComponent implements OnInit {
 
     this.width = (Math.random() * this.randomWidth.times + this.randomWidth.min) + 'px'
 
-    console.log(this.customStyle);
-
-
     this.style += 'padding: ' + this.padding + '; '
     this.style += 'height: ' + this.height + '; '
     this.style += 'width: ' + this.width + '; '
