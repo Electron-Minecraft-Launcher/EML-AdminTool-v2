@@ -14,7 +14,8 @@ import { SkeletonComponent } from './skeleton/skeleton.component';
     CommonModule
   ],
   exports: [
-    LoadingSplashComponent
+    LoadingSplashComponent,
+    SkeletonComponent
   ]
 })
 export class ManagerModule { }

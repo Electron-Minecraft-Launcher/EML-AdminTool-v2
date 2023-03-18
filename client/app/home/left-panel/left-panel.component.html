@@ -1,16 +1,45 @@
 <nav>
   <h1>EML AdminTool</h1>
-  <a *ngIf="ready" routerLink="/dashboard" [routerLinkActive]="'active'"><i class="fa-solid fa-house"></i>Home</a>
-  <a *ngIf="ready && user.admin" routerLink="/dashboard/emlat-settings" [routerLinkActive]="'active'"><i class="fa-solid fa-gear"></i>Settings</a>
-  <h4>Features</h4>
-  <a *ngIf="ready && user.p_files_updater_add_del" routerLink="/dashboard/files-updater"><i class="fa-solid fa-folder-open"></i>Files Updater</a>
-  <a *ngIf="ready && user.p_bootstrap_mod" routerLink="/dashboard/bootstrap"><i class="fa-solid fa-arrows-rotate"></i>Bootstrap</a>
-  <a *ngIf="ready && user.p_maintenance_mod" routerLink="/dashboard/maintenance"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
-  <a *ngIf="ready && (user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del)" routerLink="/dashboard/news"><i class="fa-solid fa-newspaper"></i>News</a>
-  <a *ngIf="ready && user.p_background_mod" routerLink="/dashboard/background"><i class="fa-solid fa-image"></i>Background</a>
-  <a *ngIf="ready && (user.p_stats_see || user.p_stats_del)" routerLink="/dashboard/stats"><i class="fa-solid fa-chart-simple"></i>Stats</a>
 
-  <a *ngIf="ready" class="account" (click)="onAccountClick()"><i class="fa-solid fa-circle-user"></i><span [innerHTML]="user.name"></span><i class="fa-solid fa-caret-up"></i></a>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '50px 15px 20px 15px'}]" *ngIf="!ready"></app-skeleton>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 40px 15px'}]" *ngIf="!ready"></app-skeleton>
+
+  <a *ngIf="ready" routerLink="/dashboard" [routerLinkActive]="'active'"><i class="fa-solid fa-house"></i>Home</a>
+  <a *ngIf="ready && user.admin" routerLink="/dashboard/emlat-settings" [routerLinkActive]="'active'"><i
+      class="fa-solid fa-gear"></i>Settings</a>
+
+  <h4>Features</h4>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 20px 15px'}]" *ngIf="!ready"></app-skeleton>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 20px 15px'}]" *ngIf="!ready"></app-skeleton>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 20px 15px'}]" *ngIf="!ready"></app-skeleton>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 20px 15px'}]" *ngIf="!ready"></app-skeleton>
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 20px 15px'}]" *ngIf="!ready"></app-skeleton>
+
+  <a *ngIf="ready && user.p_files_updater_add_del" routerLink="/dashboard/files-updater"><i
+      class="fa-solid fa-folder-open"></i>Files Updater</a>
+  <a *ngIf="ready && user.p_bootstrap_mod" routerLink="/dashboard/bootstrap"><i
+      class="fa-solid fa-arrows-rotate"></i>Bootstrap</a>
+  <a *ngIf="ready && user.p_maintenance_mod" routerLink="/dashboard/maintenance"><i
+      class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
+  <a *ngIf="ready && (user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del)"
+    routerLink="/dashboard/news"><i class="fa-solid fa-newspaper"></i>News</a>
+  <a *ngIf="ready && user.p_background_mod" routerLink="/dashboard/background"><i
+      class="fa-solid fa-image"></i>Background</a>
+  <a *ngIf="ready && (user.p_stats_see || user.p_stats_del)" routerLink="/dashboard/stats"><i
+      class="fa-solid fa-chart-simple"></i>Stats</a>
+
+  <app-skeleton [randomWidth]="{times: 100, min: 50}" [height]="'21px'"
+    [customStyle]="[{'display': 'block'}, {'margin': '30px 15px 20px 15px'}, {'position': 'absolute'}, {'bottom': '90px'}, {'width': '170px'}]"
+    *ngIf="!ready"></app-skeleton>
+  <a *ngIf="ready" class="account" (click)="onAccountClick()"><i class="fa-solid fa-circle-user"></i><span
+      [innerHTML]="user.name"></span><i class="fa-solid fa-caret-up"></i></a>
 
   <div class="account-dropdown" id="account-dropdown">
     <a routerLink="/dashboard/account" class="account-settings"><i class="fa-solid fa-gear"></i>Settings</a>
