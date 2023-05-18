@@ -11,9 +11,9 @@
 /client/vite.config.ts.timestamp-*
 
 # Express
+/api/.env
 
 # Project
-/.env
 
 # Node
 node_modules
