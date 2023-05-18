@@ -1,0 +1,33 @@
+import http from '../http.module'
+import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
+import type { DataHttpResponse } from '$models/responses/data-http-response.model'
+import type { User } from '$models/features/user.model'
+import { Buffer } from 'buffer'
+
+export class ApiAuthService {
+  getAuth(name: string, password: string) {
+    const req: RequestInit = {
+      headers: {
+        Authorization: 'Basic ' + Buffer.from(name + ':' + password).toString('base64'),
+      },
+    }
+    return http.get<DataHttpResponse<{ jwt: string; user: User }>>('/api/auth', req)
+  }
+
+  postRegister(name: string, password: string, pin: string) {
+    const body = {
+      name: name,
+      password: password,
+      pin: pin,
+    }
+    return http.post<DataHttpResponse<{ jwt: string; user: User }>>('/api/register', body)
+  }
+
+  getVerify() {
+    return http.get<DataHttpResponse<{ jwt: string; user: User }>>('/api/verify')
+  }
+
+  deleteLogout() {
+    return http.delete<DefaultHttpResponse>('/api/logout')
+  }
+}
