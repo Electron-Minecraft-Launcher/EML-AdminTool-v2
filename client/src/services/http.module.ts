@@ -1,6 +1,6 @@
 import type { Observable, HttpResponse } from '$models/responses/api-response.model'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
-import { CookiesService } from './cookies.service'
+import CookiesService from './cookies.service'
 import { goto } from '$app/navigation'
 
 const cookies = new CookiesService()
@@ -67,7 +67,7 @@ class Http {
 
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
     if (!url.includes('/auth') && !url.includes('/register')) {
-      this.headers = { ...this.headers, ...{ Authorization: cookies.get('JWT') } }
+      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
     }
 
     if (method == 'GET') {

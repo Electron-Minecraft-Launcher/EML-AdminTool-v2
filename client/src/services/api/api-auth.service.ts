@@ -4,30 +4,30 @@ import type { DataHttpResponse } from '$models/responses/data-http-response.mode
 import type { User } from '$models/features/user.model'
 import { Buffer } from 'buffer'
 
-export class ApiAuthService {
-  getAuth(name: string, password: string) {
+export default class ApiAuthService {
+  async getAuth(name: string, password: string) {
     const req: RequestInit = {
       headers: {
         Authorization: 'Basic ' + Buffer.from(name + ':' + password).toString('base64'),
       },
     }
-    return http.get<DataHttpResponse<{ jwt: string; user: User }>>('/api/auth', req)
+    return await http.get<DataHttpResponse<{ jwt: string; user: User }>>('/api/auth', req)
   }
 
-  postRegister(name: string, password: string, pin: string) {
+  async postRegister(name: string, password: string, pin: string) {
     const body = {
       name: name,
       password: password,
       pin: pin,
     }
-    return http.post<DataHttpResponse<{ jwt: string; user: User }>>('/api/register', body)
+    return await http.post<DataHttpResponse<{ jwt: string; user: User }>>('/api/register', body)
   }
 
-  getVerify() {
-    return http.get<DataHttpResponse<{ jwt: string; user: User }>>('/api/verify')
+  async getVerify() {
+    return await http.get<DataHttpResponse<{ jwt: string; user: User }>>('/api/verify')
   }
 
-  deleteLogout() {
-    return http.delete<DefaultHttpResponse>('/api/logout')
+  async deleteLogout() {
+    return await http.delete<DefaultHttpResponse>('/api/logout')
   }
 }

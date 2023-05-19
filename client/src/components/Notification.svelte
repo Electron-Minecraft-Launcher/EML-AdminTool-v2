@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { notification } from '$services/store'
+  import { notification$ } from '$services/store'
 
   let notificationValue: {
     type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'
     content: string
   } | null
 
-  notification.subscribe((value) => {
+  notification$.subscribe((value) => {
     notificationValue = value
   })
 </script>

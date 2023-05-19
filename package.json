@@ -11,5 +11,8 @@
   "scripts": {
     "dev:client": "cd client && npm run dev",
     "dev:api": "cd api && npm run dev"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^2.0.2"
   }
 }

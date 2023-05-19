@@ -1,11 +1,11 @@
-import { notification } from './store'
+import { notification$ } from './store'
 import utils from './utils'
 
-export class NotificationsService {
+export default class NotificationsService {
   private async set(n: { type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'; content: string }) {
-    notification.set(null)
+    notification$.set(null)
     await utils.sleep(10)
-    notification.set(n)
+    notification$.set(n)
   }
 
   async update(notification: { type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'; code: string }) {

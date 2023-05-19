@@ -1,6 +1,6 @@
 import utils from './utils'
 
-export class DisplayUtilsService {
+export default class DisplayUtilsService {
   /**
    * @param selector Query selector of the element.
    * @param after Start transition after ... ms after the last transition.

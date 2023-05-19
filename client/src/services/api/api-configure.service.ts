@@ -1,35 +1,23 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpUrlEncodingCodec } from '@angular/common/http'
-import { Observable, throwError } from 'rxjs';
-import { DefaultResponse } from '../../models/responses/response.model';
-import { environment } from 'client/environments/environment';
+import http from '../http.module'
+import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ApiConfigureService {
-
-  private apiPath = environment.apiPath
-
-  constructor(private http: HttpClient) { }
-
-  getConfigure(): Observable<HttpResponse<DefaultResponse>> {
-    return this.http.get<DefaultResponse>(this.apiPath + '/configure', { observe: 'response' })
+export default class ApiConfigureService {
+  async getConfigure() {
+    return await http.get<DefaultHttpResponse>('/api/configure')
   }
 
-  putLanguage(language: string): Observable<HttpResponse<DefaultResponse>> {
-    const params = new HttpParams({ fromObject: { language: language }, encoder: new HttpUrlEncodingCodec() })
-    return this.http.put<DefaultResponse>(this.apiPath + '/configure/language', params, { observe: 'response' })
+  async putLanguage(language: string) {
+    const req = { language: language }
+    return await http.put<DefaultHttpResponse>('/api/configure/language', req)
   }
 
-  putDbPassword(password: string): Observable<HttpResponse<DefaultResponse>> {
-    const params = new HttpParams({ fromObject: { password: password }, encoder: new HttpUrlEncodingCodec() })
-    return this.http.put<DefaultResponse>(this.apiPath + '/configure/database', params, { observe: 'response' })
+  async putDbPassword(password: string) {
+    const req = { password: password }
+    return await http.put<DefaultHttpResponse>('/api/configure/database', req)
   }
 
-  putAdmin(name: string, password: string): Observable<HttpResponse<DefaultResponse>> {
-    const params = new HttpParams({ fromObject: { password: password, name: name }, encoder: new HttpUrlEncodingCodec() })
-    return this.http.put<DefaultResponse>(this.apiPath + '/configure/admin', params, { observe: 'response' })
+  async putAdmin(name: string, password: string) {
+    const req = { password: password, name: name }
+    return await http.put<DefaultHttpResponse>('/api/configure/admin', req)
   }
-
 }

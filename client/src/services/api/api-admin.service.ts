@@ -3,7 +3,7 @@ import type { DefaultHttpResponse } from '$models/responses/default-http-respons
 import type { DataHttpResponse } from '$models/responses/data-http-response.model'
 import type { User } from '$models/features/user.model'
 
-class ApiAdminService {
+export default class ApiAdminService {
   async getUsers() {
     return await http.get<DataHttpResponse<User[]>>('/api/users')
   }
@@ -20,5 +20,3 @@ class ApiAdminService {
     return await http.delete<DefaultHttpResponse>('/api/logout')
   }
 }
-
-export default new ApiAdminService()

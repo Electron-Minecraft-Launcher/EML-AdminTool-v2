@@ -1,20 +1,10 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environment } from 'client/environments/environment';
-import { Observable } from 'rxjs';
-import { DataResponse } from '../../models/responses/response.model';
+import http from '../http.module'
+import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
+import type { DataHttpResponse } from '$models/responses/data-http-response.model'
+import type { User } from '$models/features/user.model'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ApiEnvService {
-
-  private apiPath = environment.apiPath
-
-  constructor(private http: HttpClient) { }
-
-  getEnv(): Observable<HttpResponse<DataResponse<any>>> {
-    return this.http.get<DataResponse<any>>(this.apiPath + '/env', { observe: 'response' })
+export default class ApiEnvService {
+  async getEnv() {
+    return await http.get<DataHttpResponse<any>>('/api/env')
   }
-
 }
