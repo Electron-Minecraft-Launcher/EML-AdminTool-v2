@@ -1,5 +1,95 @@
 <script lang="ts">
-//   import type { PageData } from './$types'
+  //     import '$assets/scss/login.scss'
+  import LoadingSplash from '$components/LoadingSplash.svelte'
+  import { env$ } from '$services/store'
+  import ApiAuthService from '$services/api/api-auth.service'
+  import CookiesService from '$services/cookies.service'
+  import type { Env } from '$models/data/env.model'
+  import type en from '$assets/language/en'
+  import { goto } from '$app/navigation'
 
-//   export let data: PageData
+  const apiAuth = new ApiAuthService()
+  const cookies = new CookiesService()
+
+  let env!: Env
+  let l: typeof en | typeof en
+
+  let name: string = ''
+  let password = ''
+  let passwordCfr = ''
+  let pin = ['', '', '']
+  let splash: boolean = false
+
+  env$.subscribe((value) => {
+    if (value && value.language && typeof value.language !== 'string') {
+      env = value
+      l = value.language
+    }
+  })
+
+  async function submit() {
+    splash = true
+    ;(await apiAuth.postRegister(name + '', password + '', pin[0] + '' + pin[1] + '' + pin[2])).subscribe({
+      next: async (res) => {
+        cookies.add({
+          name: 'JWT',
+          value: res.body?.data?.jwt + '',
+          expireDays: 30,
+        })
+        goto('/dashboard')
+      },
+      error: (err) => {
+        splash = false
+      },
+    })
+  }
+
+  function focusNext(e: KeyboardEvent) {
+    const input = e.target as HTMLInputElement
+    const n = +input.id.split('-')[1]
+
+    if (!/^[0-9]+$/.test(input.value) && input.value != '') {
+      input.value = ''
+      return
+    }
+    if (input.value.length == 1) {
+      var nextInput = document.querySelector<HTMLInputElement>('input#pin-' + (n + 1))
+      if (nextInput) {
+        nextInput.focus()
+      }
+      return
+    }
+    if (e.keyCode == 8 || e.keyCode == 46) {
+      if (input.value == '') {
+        var previousInput = document.querySelector<HTMLInputElement>('input#pin-' + (n - 1))
+        if (previousInput) {
+          previousInput.focus()
+        }
+      }
+      return
+    }
+  }
 </script>
+
+<form on:submit|preventDefault={submit}>
+  {#if splash}
+    <LoadingSplash transparent={true} />
+  {/if}
+
+  <h2>{l.auth.register}</h2>
+  <p>{env.name} AdminTool</p>
+  <input type="text" placeholder={l.main.username} bind:value={name} name="name" />
+  <input type="password" placeholder={l.main.password} bind:value={password} name="password" />
+  <input type="password" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} name="password-cfr" />
+  <label for="pin-1">{@html l.main.pin + (l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
+  <input type="text" maxlength="1" size="1" id="pin-1" on:keyup={focusNext} bind:value={pin[0]} name="pin-1" />
+  <input type="text" maxlength="1" size="1" id="pin-2" on:keyup={focusNext} bind:value={pin[1]} name="pin-2" />
+  <input type="text" maxlength="1" size="1" id="pin-3" on:keyup={focusNext} bind:value={pin[2]} name="pin-3" />
+
+  <button class="primary" disabled={!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}
+    >{l.auth.register}</button
+  >
+  <p class="center">
+    <a class="small-link" href="/login">{l.auth.alreadyAnAccount}</a>
+  </p>
+</form>

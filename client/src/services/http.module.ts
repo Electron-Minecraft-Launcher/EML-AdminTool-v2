@@ -2,8 +2,10 @@ import type { Observable, HttpResponse } from '$models/responses/api-response.mo
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 import CookiesService from './cookies.service'
 import { goto } from '$app/navigation'
+import NotificationsService from './notifications.service'
 
 const cookies = new CookiesService()
+const notification = new NotificationsService()
 
 class Http {
   private headers: HeadersInit = {
@@ -44,8 +46,8 @@ class Http {
           goto('/configure')
         }
         if (response.body.code == 'AUTH_ERROR') {
-          if (url.includes('/auth')) {
-            // notification.set({ type: 'ERROR', code: 'auth' })
+          if ((url.includes('/auth'), url.includes('/register'))) {
+            notification.update({ type: 'ERROR', code: 'auth' })
           } else if (
             url.includes('/configure/') ||
             url.includes('/verify') ||
@@ -54,10 +56,10 @@ class Http {
             response.body.message == 'Token expired'
           ) {
             cookies.delete('JWT')
-            // notification.set({ type: 'ERROR', code: 'login' })
+            notification.update({ type: 'ERROR', code: 'login' })
             goto('/login')
           } else {
-            // notification.set({ type: 'ERROR', code: 'permission' })
+            notification.update({ type: 'ERROR', code: 'permission' })
             goto('/dashboard')
           }
         }

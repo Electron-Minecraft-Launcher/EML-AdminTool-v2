@@ -39,16 +39,15 @@
   div.notification {
     position: fixed;
     top: 20px;
-    right: -250px;
-    padding: 20px 23px;
+    right: -350px;
+    padding: 15px 17px;
     border-radius: 10px;
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(3px);
     background-color: #ffffff90;
     box-shadow: 0 0 30px #00000030;
     font-size: 14px;
     color: #303030;
-    width: 200px;
+    width: 300px;
     z-index: 10000;
     animation: in 0.5s ease 0.5s 1 forwards, out 0.5s ease 5s 1 forwards;
 
@@ -73,7 +72,7 @@
 
   @keyframes in {
     0% {
-      right: -250px;
+      right: -350px;
     }
     100% {
       right: 20px;
@@ -86,7 +85,7 @@
     }
 
     100% {
-      right: -250px;
+      right: -350px;
     }
   }
 </style>

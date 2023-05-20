@@ -1,5 +1,4 @@
 <script lang="ts">
-  // import type { PageData } from './$types';
   import '$assets/scss/login.scss'
   import LoadingSplash from '$components/LoadingSplash.svelte'
   import { env$ } from '$services/store'
@@ -8,13 +7,6 @@
   import type { Env } from '$models/data/env.model'
   import type en from '$assets/language/en'
   import { goto } from '$app/navigation'
-  import type { PageData } from './$types'
-
-  export let data: PageData
-
-  if (data.to !== '') {
-    goto(data.to)
-  }
   
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
@@ -27,7 +19,7 @@
   let splash: boolean = false
 
   env$.subscribe((value) => {
-    if (value && typeof value.language !== 'string' && typeof value.language !== 'undefined') {
+    if (value && value.language && typeof value.language !== 'string') {
       env = value
       l = value.language
     }
@@ -44,7 +36,7 @@
         })
         goto('/dashboard')
       },
-      error: (err) => {
+      error: () => {
         splash = false
       },
     })

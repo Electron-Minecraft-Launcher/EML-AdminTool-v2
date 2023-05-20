@@ -9,7 +9,8 @@
 
   if (data.to !== '') {
     goto(data.to)
-  }
+    data.to = ''
+  }  
 </script>
 
 <div class="app">

@@ -75,9 +75,9 @@ export const load: LayoutLoad = async () => {
   } else {
     ready3 = true
     ready = ready1 && ready2 && ready3
-    console.log('')
-
-    to = '/login'
+    if (window.location.pathname != '/register') {
+      to = '/login'
+    }
   }
 
   return { ready, to }
