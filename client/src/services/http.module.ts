@@ -1,8 +1,8 @@
 import type { Observable, HttpResponse } from '$models/responses/api-response.model'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 import CookiesService from './cookies.service'
-import { goto } from '$app/navigation'
 import NotificationsService from './notifications.service'
+import router from './router'
 
 const cookies = new CookiesService()
 const notification = new NotificationsService()
@@ -42,55 +42,29 @@ class Http {
         return { response: response.response, body: response.body as T }
       })
       .then((response) => {
-        if (response.body.code == 'CONFIG_ERROR' && !url.includes('/env')) {
-          goto('/configure')
-        }
-        if (response.body.code == 'AUTH_ERROR') {
-          if ((url.includes('/auth'), url.includes('/register'))) {
-            notification.update({ type: 'ERROR', code: 'auth' })
-          } else if (
-            url.includes('/configure/') ||
-            url.includes('/verify') ||
-            url.includes('/logout') ||
-            url.includes('/users/me') ||
-            response.body.message == 'Token expired'
-          ) {
-            cookies.delete('JWT')
-            notification.update({ type: 'ERROR', code: 'login' })
-            goto('/login')
-          } else {
-            notification.update({ type: 'ERROR', code: 'permission' })
-            goto('/dashboard')
-          }
-        }
+        this.responseInterceptor(response, url)
         return this.setResponse(response)
       })
   }
 
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
-    if (!url.includes('/auth') && !url.includes('/register')) {
-      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
-    }
+    this.sendInterceptor(url)
 
-    if (method == 'GET') {
-      return {
-        ...req,
-        method: method,
-        headers: {
-          ...this.headers,
-          ...req?.headers,
-        },
-      }
-    }
-    return {
+    let req_: RequestInit = {
       ...req,
       method: method,
       headers: {
         ...this.headers,
         ...req?.headers,
       },
-      body: this.urlEncode(body),
+      body: this.urlEncode(body) + '',
     }
+
+    if (method == 'GET') {
+      delete req_.body
+    }
+
+    return req_
   }
 
   private setResponse<T>(response: { response: Response; body: T }): Observable<T> {
@@ -130,6 +104,40 @@ class Http {
       formBody.push(encodedKey + '=' + encodedValue)
     }
     return formBody.join('&')
+  }
+
+  private sendInterceptor(url: string): void {
+    if (!url.includes('/auth') && !url.includes('/register')) {
+      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
+    }
+  }
+
+  private responseInterceptor<T extends DefaultHttpResponse>(response: { response: Response; body: T }, url: string): void {
+    // const urls = ['/configure/', '/verify', '/logout', '/users/me']
+
+    if (!url.includes('/env') && response.body.code == 'CONFIG_ERROR') {
+      cookies.delete('JWT')
+      router.goto('/configure')
+    }
+
+    if (response.body.code == 'AUTH_ERROR') {
+      if (url.includes('/auth') || url.includes('/register')) {
+        notification.update({ type: 'ERROR', code: 'auth' })
+      } else if (
+        url.includes('/configure/') ||
+        url.includes('/verify') ||
+        url.includes('/logout') ||
+        url.includes('/users/me') ||
+        response.body.message == 'Token expired'
+      ) {
+        cookies.delete('JWT')
+        notification.update({ type: 'ERROR', code: 'login' })
+        router.goto('/login')
+      } else {
+        notification.update({ type: 'ERROR', code: 'permission' })
+        router.goto('/dashboard')
+      }
+    }
   }
 }
 

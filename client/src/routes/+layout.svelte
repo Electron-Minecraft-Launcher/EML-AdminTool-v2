@@ -4,19 +4,22 @@
   // import LoadingSplash from '$components/LoadingSplash.svelte'
   import type { LayoutData } from './$types'
   import { goto } from '$app/navigation'
+  import { redirect$ } from '$services/store'
 
   export let data: LayoutData
 
-  if (data.to !== '') {
-    goto(data.to)
-    data.to = ''
-  }  
+  redirect$.subscribe((value) => {
+    if (value !== null) {
+      goto(value + '')    
+      data.redirect = false
+    }
+  })
 </script>
 
 <div class="app">
   <Notification />
 
-  {#if data.to == ''}
+  {#if !data.redirect}
     <slot />
   {/if}
 </div>

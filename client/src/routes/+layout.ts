@@ -7,6 +7,7 @@ import CookiesService from '$services/cookies.service'
 import en from '$assets/language/en'
 import fr from '$assets/language/fr'
 import type { Env } from '$models/data/env.model'
+import router from '$services/router'
 
 export const prerender = true
 export const ssr = false
@@ -21,7 +22,7 @@ let ready2 = false
 let ready3 = false
 let ready = ready1 && ready2 && ready3
 
-let to = ''
+let redirect = false
 let env!: Env
 
 export const load: LayoutLoad = async () => {
@@ -43,42 +44,32 @@ export const load: LayoutLoad = async () => {
         env.language = en
       }
       env$.set(env)
-      ready1 = true
-      ready = ready1 && ready2 && ready3
-    },
-  })
-  ;(await apiConfigure.getConfigure()).subscribe({
-    next: (resp) => {
-      ready2 = true
-      ready = ready1 && ready2 && ready3
-    },
-    error: (err) => {
-      ready2 = true
-      ready = ready1 && ready2 && ready3
     },
   })
 
   if (cookies.get('JWT')) {
     ;(await apiAuth.getVerify()).subscribe({
-      next: (resp) => {
+      next: () => {
         if (window.location.pathname == '/' || window.location.pathname == '/login' || window.location.pathname == '/register') {
-          to = '/dashboard'
+          router.goto('/dashboard')
+          redirect = true
         }
-        ready3 = true
-        ready = ready1 && ready2 && ready3
-      },
-      error: (err) => {
-        ready3 = true
-        ready = ready1 && ready2 && ready3
       },
     })
   } else {
-    ready3 = true
-    ready = ready1 && ready2 && ready3
     if (window.location.pathname != '/register') {
-      to = '/login'
+      router.goto('/login')
+      redirect = true
     }
   }
 
-  return { ready, to }
+  ;(await apiConfigure.getConfigure()).subscribe({
+    finally: (resp) => {
+      if (resp.body.code == 'CONFIG_ERROR') {
+        redirect = true
+      }
+    }
+  })
+
+  return { redirect }
 }
