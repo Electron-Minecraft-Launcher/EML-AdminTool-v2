@@ -7,12 +7,13 @@
   import type { Env } from '$models/data/env.model'
   import type en from '$assets/language/en'
   import { goto } from '$app/navigation'
+  import type fr from '$assets/language/fr'
 
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
 
   let env!: Env
-  let l: typeof en | typeof en
+  let l: typeof en | typeof fr
 
   let name: string = ''
   let password = ''

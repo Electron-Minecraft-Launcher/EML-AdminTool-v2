@@ -7,16 +7,13 @@
   import type { Env } from '$models/data/env.model'
   import type en from '$assets/language/en'
   import { goto } from '$app/navigation'
+  import type fr from '$assets/language/fr'
   
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
 
   let env!: Env
-  let l: typeof en | typeof en
-
-  let name: string = ''
-  let password = ''
-  let splash: boolean = false
+  let l: typeof en | typeof fr
 
   env$.subscribe((value) => {
     if (value && value.language && typeof value.language !== 'string') {
@@ -24,6 +21,10 @@
       l = value.language
     }
   })
+
+  let name: string = ''
+  let password = ''
+  let splash: boolean = false
 
   async function submit() {
     splash = true

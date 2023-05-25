@@ -13,9 +13,9 @@ export default class DisplayUtilsService {
     if (!element) {
       return
     }
-    await utils.sleep(+after)
+    await utils.sleep(after)
     element.style.opacity = '0'
-    await utils.sleep(+duration / 2)
+    await utils.sleep(duration / 2)
     element.innerHTML = newText + ''
     element.style.opacity = '1'
   }
@@ -31,9 +31,9 @@ export default class DisplayUtilsService {
     if (!element) {
       return
     }
-    await utils.sleep(+after)
+    await utils.sleep(after)
     element.style.display = 'block'
-    await utils.sleep(+duration)
+    await utils.sleep(duration)
     element.style.opacity = '1'
   }
 
@@ -48,9 +48,9 @@ export default class DisplayUtilsService {
     if (!element) {
       return
     }
-    await utils.sleep(+after)
+    await utils.sleep(after)
     element.style.opacity = '0'
-    await utils.sleep(+duration)
+    await utils.sleep(duration)
     element.style.display = 'none'
   }
 

@@ -39,11 +39,11 @@ export default class Configure {
     var data: Config[] = []
 
     try {
-      data = await db.query<Config[]>("SELECT * FROM config WHERE data = \"'language'")
+      data = await db.query<Config[]>("SELECT * FROM config WHERE data = 'language'")
     } catch (error: any) {
       next(new DBException(error.code))
       throw null
-    }
+    }    
 
     if (data.find((language) => language.data == 'language')) {
       try {
