@@ -1,18 +1,15 @@
 <script lang="ts">
   import type en from '$assets/language/en'
   import type fr from '$assets/language/fr'
-  import ConfigurationAdmin from '$components/ConfigurationAdmin.svelte'
-  import ConfigurationDatabase from '$components/ConfigurationDatabase.svelte'
-  import ConfigurationLanguage from '$components/ConfigurationLanguage.svelte'
+  import ConfigurationAdmin from '$components/configuration/ConfigurationAdmin.svelte'
+  import ConfigurationDatabase from '$components/configuration/ConfigurationDatabase.svelte'
+  import ConfigurationLanguage from '$components/configuration/ConfigurationLanguage.svelte'
   import type { Env } from '$models/data/env.model'
   import { env$ } from '$services/store'
-  import DisplayUtilsService from '$services/display-utils.service'
   import { goto } from '$app/navigation'
   import type { PageData } from './$types'
   import utils from '$services/utils'
   import { fade } from 'svelte/transition'
-
-  const displayUtils = new DisplayUtilsService()
 
   export let data: PageData
 
@@ -54,12 +51,12 @@
   }
 
   async function finish() {
-    await displayUtils.changeTexteWithTransition('h1', 0, 500, '')
-    document.querySelector<HTMLElement>('div.config-slider')!.style.display = 'none'
-    await displayUtils.displayElementWithTransition('h1', 0, 0)
-    await displayUtils.changeTexteWithTransition('h1', 500, 1000, 'You can now use the EML&nbsp;AdminTool!')
-    await displayUtils.unDisplayElementWithTransition('h1', 1500, 500)
-    await displayUtils.unDisplayElementWithTransition('h1', 0, 500)
+    // await displayUtils.changeTexteWithTransition('h1', 0, 500, '')
+    // document.querySelector<HTMLElement>('div.config-slider')!.style.display = 'none'
+    // await displayUtils.displayElementWithTransition('h1', 0, 0)
+    // await displayUtils.changeTexteWithTransition('h1', 500, 1000, 'You can now use the EML&nbsp;AdminTool!')
+    // await displayUtils.unDisplayElementWithTransition('h1', 1500, 500)
+    // await displayUtils.unDisplayElementWithTransition('h1', 0, 500)
     goto('/')
   }
 </script>

@@ -5,7 +5,7 @@ h2 {
   transition: opacity 0.5s, display 0.5s;
 }
 
-h2+p {
+h2 + p {
   margin-bottom: 30px;
   text-align: center;
 }
@@ -27,7 +27,6 @@ button.primary {
 }
 
 div.steps-actions {
-
   div.prev,
   div.next {
     display: inline-block;

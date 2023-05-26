@@ -3,7 +3,7 @@
   import type fr from '$assets/language/fr'
   import type { Env } from '$models/data/env.model'
   import { env$ } from '$services/store'
-  import LoadingSplash from './LoadingSplash.svelte'
+  import LoadingSplash from '../LoadingSplash.svelte'
   import ApiConfigureService from '$services/api/api-configure.service'
   import '$assets/scss/configure.scss'
   import utils from '$services/utils'
