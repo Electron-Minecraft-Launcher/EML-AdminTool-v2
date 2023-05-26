@@ -58,11 +58,11 @@
   }
 
   async function languageModal() {
-    showLanguageModal = true
+    showLanguageModal = true   
   }
 </script>
 
-<ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data}>
+<ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data} on:nextStep>
   <h2>{@html l.configuration.step1.title}</h2>
   <p><b>{l.configuration.step1.subtitle}</b></p>
   <div class="actions language">
@@ -79,6 +79,8 @@
       </p>
     </button>
     <p class="center">
+      <!-- svelte-ignore a11y-missing-attribute -->
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <a class="small-link" on:click={languageModal}>{l.configuration.step1.other}</a>
     </p>
   </div>

@@ -19,7 +19,7 @@
   })
 </script>
 
-<ModalTemplate size={'s'} bind:show={show}>
+<ModalTemplate size={'s'} bind:show>
   <h2>{@html l.modals.language.title}</h2>
   <p>{@html l.modals.language.content}</p>
   <div class="actions">

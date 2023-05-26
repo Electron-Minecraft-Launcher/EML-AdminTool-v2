@@ -3,11 +3,15 @@
   import type fr from '$assets/language/fr'
   import type { Env } from '$models/data/env.model'
   import { env$ } from '$services/store'
-  import { cubicOut } from 'svelte/easing';
+  import { cubicOut } from 'svelte/easing'
   import '$assets/scss/modals.scss'
 
   export let size: 's' | 'm' | 'l' = 'm'
   export let show: boolean
+
+  setInterval(() => {
+    console.log(show)
+  }, 1000)
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -38,7 +42,7 @@
 </script>
 
 {#if show}
-  <div class="modal-background" transition:unscale={{duration: 200}}>
+  <div class="modal-background" transition:unscale={{ duration: 200 }}>
     <div class={'modal size-' + size}>
       <section class="close">
         <button class="close" on:click={closeModal}>Close&nbsp;&nbsp;<i class="fa-solid fa-times" /></button>

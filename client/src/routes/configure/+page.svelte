@@ -35,19 +35,27 @@
 
   async function start() {
     await utils.sleep(1000)
-    h1 = 'Welcome!'
-    h1Visible = true
-    await utils.sleep(2000)
-    h1Visible = false
-    await utils.sleep(1000)
-    h1 = 'You can now configure the EML&nbsp;Admintool.'
-    h1Visible = true
-    await utils.sleep(3000)
+    // h1 = 'Welcome!'
+    // h1Visible = true
+    // await utils.sleep(2000)
+    // h1Visible = false
+    // await utils.sleep(1000)
+    // h1 = 'You can now configure the EML&nbsp;Admintool.'
+    // h1Visible = true
+    // await utils.sleep(3000)
     h1Visible = false
     await utils.sleep(500)
 
     sliderVisible = true
     step = 1
+  }
+
+  function nextStep() {
+    step++
+  }
+
+  function prevStep() {
+    step--
   }
 
   async function finish() {
@@ -66,7 +74,7 @@
 </svelte:head>
 
 <div class="progress">
-  <span class={'step-' + step} />
+  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} />
 </div>
 
 {#if h1Visible}
@@ -74,15 +82,15 @@
 {/if}
 
 {#if sliderVisible}
-  <div class="config-slider step-1" id="config-slider" transition:fade>
+  <div class="config-slider" class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} id="config-slider" transition:fade>
     <div class="config-1">
-      <ConfigurationLanguage />
+      <ConfigurationLanguage on:nextStep={nextStep} />
     </div>
     <div class="config-2">
-      <ConfigurationDatabase />
+      <ConfigurationDatabase on:nextStep={nextStep} on:prevStep={prevStep} />
     </div>
     <div class="config-3">
-      <ConfigurationAdmin />
+      <ConfigurationAdmin on:nextStep={nextStep} on:prevStep={prevStep} />
     </div>
   </div>
 {/if}
