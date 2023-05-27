@@ -46,6 +46,16 @@ You can download the previous major version of the EML AdminTool. However, be ca
 
 ## Want to help?
 
+### Translation:
+
+You can help to translate the EML AdminTool!
+
+The languages files are [here](./client/src/assets/language/). You can create another file with your translation. Please make sure to provide a correct translation!
+
+Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
+
+### Development
+
 Install Node.js.
 
 Then, download the code and run the command:
