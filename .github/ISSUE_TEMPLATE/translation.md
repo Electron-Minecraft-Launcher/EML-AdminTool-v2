@@ -2,7 +2,7 @@
 name: Translation
 about: Suggest a translation of the EML AdminTool
 title: "[TRANSLATION]"
-labels: ''
+labels: Translation
 assignees: ''
 
 ---
