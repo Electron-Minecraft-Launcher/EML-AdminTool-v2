@@ -54,7 +54,7 @@ The languages files are [here](./client/src/assets/language/). You can create an
 
 Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
 
-### Development
+### Development:
 
 Install Node.js.
 
