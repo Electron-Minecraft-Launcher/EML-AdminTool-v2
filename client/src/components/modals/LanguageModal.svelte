@@ -28,3 +28,7 @@
     </a>
   </div>
 </ModalTemplate>
+
+<style lang="scss">
+  @import 'modals.scss';
+</style>

@@ -27,7 +27,7 @@ Then, in a terminal, execute the following command:
 ```
 and follow the instructions.
 
-### If you won't use a VPS:
+### If you won't use a VPS
 
 You can download the previous major version of the EML AdminTool. However, be careful, this version is not maintained!
 
@@ -46,7 +46,7 @@ You can download the previous major version of the EML AdminTool. However, be ca
 
 ## Want to help?
 
-### Translation:
+### Translation
 
 You can help to translate the EML AdminTool!
 
@@ -54,7 +54,7 @@ The languages files are [here](./client/src/assets/language/). You can create an
 
 Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
 
-### Development:
+### Development
 
 Install Node.js.
 

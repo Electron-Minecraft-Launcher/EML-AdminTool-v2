@@ -52,6 +52,9 @@
 
   function nextStep() {
     step++
+    if (step == 4) {
+      finish()
+    }
   }
 
   function prevStep() {
@@ -59,12 +62,14 @@
   }
 
   async function finish() {
-    // await displayUtils.changeTexteWithTransition('h1', 0, 500, '')
-    // document.querySelector<HTMLElement>('div.config-slider')!.style.display = 'none'
-    // await displayUtils.displayElementWithTransition('h1', 0, 0)
-    // await displayUtils.changeTexteWithTransition('h1', 500, 1000, 'You can now use the EML&nbsp;AdminTool!')
-    // await displayUtils.unDisplayElementWithTransition('h1', 1500, 500)
-    // await displayUtils.unDisplayElementWithTransition('h1', 0, 500)
+    await utils.sleep(1000)
+    sliderVisible = false
+    await utils.sleep(500)
+    h1 = 'You can now use the EML&nbsp;AdminTool!'
+    h1Visible = true
+    await utils.sleep(2000)
+    h1Visible = false
+    await utils.sleep(1000)
     goto('/')
   }
 </script>
@@ -74,7 +79,7 @@
 </svelte:head>
 
 <div class="progress">
-  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} />
+  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4} />
 </div>
 
 {#if h1Visible}
@@ -82,7 +87,7 @@
 {/if}
 
 {#if sliderVisible}
-  <div class="config-slider" class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} id="config-slider" transition:fade>
+  <div class="config-slider" class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4} id="config-slider" transition:fade>
     <div class="config-1">
       <ConfigurationLanguage on:nextStep={nextStep} />
     </div>
@@ -128,8 +133,7 @@
 
     div.config-1,
     div.config-2,
-    div.config-3,
-    div.config-4 {
+    div.config-3{
       width: 100vw;
       display: inline-block;
       vertical-align: top;

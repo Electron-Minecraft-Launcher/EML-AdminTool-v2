@@ -44,10 +44,10 @@ export default {
   modals: {
     language: {
       title: `Vous parlez une autre langue ?`,
-      content: `L'EML AdminTool est actuellement disponible qu'en français et en anglais.<br>
+      content: `L'EML AdminTool est n'actuellement disponible qu'en français et en anglais.<br>
 Cependant, nous sommes ravis de voir que ce projet atteint de plus en plus de personnes dans différents pays !<br>
 <br>
-Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez trouver les fichiers JSON notre GitHub et un guide vous expliquant comment soumettre votre traduction. Si elles est acceptée, elle sera inclue comme une option par défaut de l'EML AdminTool !`,
+Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez trouver les fichiers JSON sur notre GitHub et un guide vous expliquant comment soumettre votre traduction. Si elle est acceptée, elle sera incluse comme une option par défaut de l'EML AdminTool !`,
     },
   },
 }

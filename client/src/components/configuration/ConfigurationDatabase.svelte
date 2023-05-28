@@ -126,7 +126,6 @@
       <input
         type="text"
         name="db-password"
-        id="db-password"
         placeholder={l.configuration.step2.placeholder}
         bind:value={data.value}
         on:keyup={inputChange}

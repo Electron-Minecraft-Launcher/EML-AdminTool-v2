@@ -2,7 +2,6 @@ import type { PageLoad } from './$types'
 import CookiesService from '$services/cookies.service'
 import ApiAuthService from '$services/api/api-auth.service'
 import ApiConfigureService from '$services/api/api-configure.service'
-import { goto } from '$app/navigation'
 import router from '$services/router'
 
 const cookies = new CookiesService()
@@ -15,7 +14,7 @@ export const load: PageLoad = async () => {
   if (cookies.get('JWT')) {
     ;(await apiAuth.getVerify()).subscribe({
       next: (res) => {
-        goto('/dashboard')
+        router.goto('/dashboard')
       },
     })
   }

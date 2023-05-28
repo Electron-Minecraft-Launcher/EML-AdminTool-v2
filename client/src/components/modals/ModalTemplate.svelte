@@ -9,10 +9,6 @@
   export let size: 's' | 'm' | 'l' = 'm'
   export let show: boolean
 
-  setInterval(() => {
-    console.log(show)
-  }, 1000)
-
   let env!: Env
   let l: typeof en | typeof fr
 

@@ -5,12 +5,14 @@
   import type { LayoutData } from './$types'
   import { goto } from '$app/navigation'
   import { redirect$ } from '$services/store'
+  import utils from '$services/utils'
 
   export let data: LayoutData
 
-  redirect$.subscribe((value) => {
+  redirect$.subscribe(async (value) => {
     if (value !== null) {
-      goto(value + '')    
+      await utils.sleep(10)
+      goto(value + '')
       data.redirect = false
     }
   })

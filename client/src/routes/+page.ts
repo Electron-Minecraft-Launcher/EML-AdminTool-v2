@@ -9,9 +9,6 @@ import fr from '$assets/language/fr'
 import type { Env } from '$models/data/env.model'
 import router from '$services/router'
 
-export const prerender = true
-export const ssr = false
-
 const apiEnv = new ApiEnvService()
 const apiConfigure = new ApiConfigureService()
 const apiAuth = new ApiAuthService()
@@ -63,7 +60,7 @@ export const load: LayoutLoad = async () => {
       if (resp.body.code == 'CONFIG_ERROR') {
         redirect = true
       }
-    }
+    },
   })
 
   return { redirect }
