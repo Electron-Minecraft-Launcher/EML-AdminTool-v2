@@ -9,8 +9,6 @@ import { DefaultServiceResponse } from '$models/responses/services/default-servi
 
 export class CheckerService {
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
-    await pin.check()
-
     if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
       return { status: true, code: SUCCESS }
     } else if (path.startsWith('/api/configure') && path != '/api/configure' && path != '/api/configure/') {
@@ -21,6 +19,7 @@ export class CheckerService {
         (await new AuthService().isAdmin(headers['authorization'] + '')).status
       ) {
         await db.dbGenerate(await db.getTablesToGenerate())
+        await pin.check()
         return { status: true, code: SUCCESS }
       } else {
         return { status: false, code: AUTH_ERROR }
@@ -29,6 +28,7 @@ export class CheckerService {
       if (!this.checkDotEnv() || !(await this.checkDB()) || !(await this.checkAdminInDB())) {
         return { status: true, code: CONFIG_ERROR }
       } else {
+        await pin.check()
         return { status: true, code: SUCCESS }
       }
     }
