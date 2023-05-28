@@ -1,7 +1,7 @@
 <script lang="ts">
   import '$assets/scss/login.scss'
   import LoadingSplash from '$components/LoadingSplash.svelte'
-  import { env$ } from '$services/store'
+  import { env$, user$ } from '$services/store'
   import ApiAuthService from '$services/api/api-auth.service'
   import CookiesService from '$services/cookies.service'
   import type { Env } from '$models/data/env.model'
@@ -35,6 +35,7 @@
           value: res.body?.data?.jwt + '',
           expireDays: 30,
         })
+        user$.set(res.body?.data?.user!)
         goto('/dashboard')
       },
       error: () => {

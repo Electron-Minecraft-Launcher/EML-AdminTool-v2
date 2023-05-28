@@ -1,7 +1,7 @@
 <script lang="ts">
   //     import '$assets/scss/login.scss'
   import LoadingSplash from '$components/LoadingSplash.svelte'
-  import { env$ } from '$services/store'
+  import { env$, user$ } from '$services/store'
   import ApiAuthService from '$services/api/api-auth.service'
   import CookiesService from '$services/cookies.service'
   import type { Env } from '$models/data/env.model'
@@ -15,18 +15,18 @@
   let env!: Env
   let l: typeof en | typeof fr
 
-  let name: string = ''
-  let password = ''
-  let passwordCfr = ''
-  let pin = ['', '', '']
-  let splash: boolean = false
-
   env$.subscribe((value) => {
     if (value && value.language && typeof value.language !== 'string') {
       env = value
       l = value.language
     }
   })
+
+  let name: string = ''
+  let password = ''
+  let passwordCfr = ''
+  let pin = ['', '', '']
+  let splash: boolean = false
 
   async function submit() {
     splash = true
@@ -37,6 +37,7 @@
           value: res.body?.data?.jwt + '',
           expireDays: 30,
         })
+        user$.set(res.body?.data?.user!)
         goto('/dashboard')
       },
       error: (err) => {
