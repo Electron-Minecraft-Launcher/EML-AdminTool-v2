@@ -1,13 +1,13 @@
 import { DefaultSuccess } from '../responses/success/default-success.response';
 import db from '../utils/database';
-import { setEnv } from '../services/env.service'
+import { EnvService } from '../services/env.service'
 import { Config } from '../models/configurations/config.model';
 import bcrypt from 'bcrypt';
 import { count, AUTH_ERROR, CLIENT_ERROR, DB_ERROR } from '../models/types';
 import { DBException } from '../responses/exceptions/db-exception.response';
 import { ServerException } from '../responses/exceptions/server-exception.response';
 import { NextFunction } from 'express';
-import { Auth } from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response';
 import { User } from '../models/features/user.model';
 
@@ -29,7 +29,7 @@ export default class Configure {
     }
 
     try {
-      setEnv(body.password)
+      new EnvService().setEnv(body.password)
     } catch (error: any) {
       next(new ServerException(error.message))
       throw null
@@ -84,7 +84,7 @@ export default class Configure {
       throw null
     }
 
-    var isNameAvailable = (await new Auth().isNameAvailable(name, true)).code
+    var isNameAvailable = (await new AuthService().isNameAvailable(name, true)).code
 
     if (isNameAvailable == CLIENT_ERROR) {
       next(new UnauthorizedException('Name used'))
@@ -103,7 +103,7 @@ export default class Configure {
       }
     } else {
       const admin: User = { name: name, password: password.hash, status: 1, admin: 1, p_files_updater_add_del: 1, p_bootstrap_mod: 1, p_maintenance_mod: 1, p_news_add: 1, p_news_mod_del: 1, p_news_category_add_mod_del: 1, p_news_tag_add_mod_del: 1, p_background_mod: 1, p_stats_del: 1, }
-      let addAdmin = (await new Auth().insertUser(admin))
+      let addAdmin = (await new AuthService().insertUser(admin))
       if (addAdmin.code == DB_ERROR) {
         next(new DBException())
         throw null

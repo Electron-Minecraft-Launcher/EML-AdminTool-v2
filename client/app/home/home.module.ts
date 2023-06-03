@@ -27,7 +27,8 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
     FormsModule,
     ManagerModule,
     HtmlPipeModule,
-    RouterModule
+    RouterModule,
+    ManagerModule
   ],
   providers: [
     {

@@ -8,7 +8,9 @@ import { CookiesService } from 'client/app/shared/services/cookie.service';
 import { UtilsService } from 'client/app/shared/services/utils.service';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { DefaultResponse } from '_client/app/shared/types/response';
+import { DefaultResponse } from 'client/app/shared/types/response';
+import { UserService } from 'client/app/shared/services/user.service';
+import { User } from 'client/app/shared/types/user';
 
 @Component({
   selector: 'app-left-panel',
@@ -26,13 +28,16 @@ export class LeftPanelComponent implements OnInit {
 
   // TODO: @Output() event for minimizing the left panel
 
-  constructor(private router: Router, private title: Title, private envService: EnvService, private apiAuthService: ApiAuthService, public cookiesService: CookiesService, private utils: UtilsService) { }
+  ready = false
+  user!: User
+
+  constructor(private router: Router, private title: Title, private envService: EnvService, private userService: UserService, private apiAuthService: ApiAuthService, public cookiesService: CookiesService, private utils: UtilsService) { }
 
   async ngOnInit() {
 
+    this.ready = await this.userService.init()
+    this.userService.get().subscribe({ next: (user) => this.user = user })
     this.envService.get().subscribe({ next: (env) => { this.l = env.language; this.env = env; } })
-
-    this.title.setTitle(this.l.auth.login + ' • ' + this.env.name + ' AdminTool')
 
     document.addEventListener('click', async () => {
       if (this.accountDropdownOpen) {

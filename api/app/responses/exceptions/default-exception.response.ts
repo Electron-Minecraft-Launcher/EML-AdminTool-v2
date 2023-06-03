@@ -5,7 +5,7 @@ export class DefaultException {
   code: ErrorCode
   message: string
 
-  constructor(httpStatus: number, code: ErrorCode, message: string) {
+  constructor(httpStatus: number, code: ErrorCode, message: string = '') {
     this.httpStatus = httpStatus
     this.code = code
     this.message = message

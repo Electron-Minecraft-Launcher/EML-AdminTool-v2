@@ -1,2 +1,3 @@
 <app-loading-splash [transparent]="false" [id]="'main-splash-loading-screen'" *ngIf="!ready"></app-loading-splash>
+<app-notifications *ngIf="notification.type" [type]="notification.type" [content]="notification.content"></app-notifications>
 <router-outlet *ngIf="ready"></router-outlet>

@@ -40,7 +40,6 @@ export interface User {
   p_news_category_add_mod_del?: tinyint,
   p_news_tag_add_mod_del?: tinyint,
   p_background_mod?: tinyint,
+  p_stats_see?: tinyint,
   p_stats_del?: tinyint
 }
-
-// export type UserJWT = JwtPayload & User

@@ -3,7 +3,7 @@ import { AuthService } from '../services/auth.service'
 import pin_ from '../utils/pin'
 import bcrypt from 'bcrypt';
 import { User } from "../models/features/user.model"
-import { CLIENT_ERROR, DB_ERROR, SUCCESS } from "../models/types"
+import { CLIENT_ERROR, DB_ERROR, SUCCESS, UNKNOWN_ERROR } from "../models/types"
 import { DBException } from "../responses/exceptions/db-exception.response"
 import { DataSuccess } from "../responses/success/data-success.response"
 import { NextFunction } from "express"
@@ -14,30 +14,35 @@ import { UnauthorizedException } from "../responses/exceptions/unauthorized-exce
 import { DataServiceResponse } from "../models/responses/services/data-service-response.model";
 import jwt from "../utils/jwt";
 import nexter from '../utils/nexter'
+import { DefaultException } from "../responses/exceptions/default-exception.response";
 
-class Auth {
+class Admin {
 
-  async auth(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string, user: User }>> {
+  async getUsers(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<User[]>> {
 
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Basic'))
+    const auth = nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
 
     if (!auth.status) {
       next(auth.exception)
       throw null
     }
 
-    var user: User = auth.data!
+    let users: User[] = await db.query<User[]>('SELECT * FROM users')
 
-    delete user.password
-    delete user.status
+    let users_: User[] = []
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user: user })
+    for (let user of users) {
+      delete user.password
+      users_.push(user)
+    }
+
+    return new DataSuccess(200, SUCCESS, 'Success', users_)
 
   }
 
-  async verify(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string, user: User }>> {
+  async getUser(headers: IncomingHttpHeaders, userId: number | 'me', next: NextFunction): Promise<DataSuccess<User>> {
 
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Bearer'))
+    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
 
     if (!auth.status) {
       next(auth.exception)
@@ -45,12 +50,31 @@ class Auth {
     }
 
     var user: User = auth.data!
-    const token = (headers['authorization'] + '').split(' ')[1]
+    var getUser: User
 
-    delete user.password
-    delete user.status
+    if (user.admin || userId == user.id || userId == 'me') {
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: token, user: user })
+      userId = user.id!
+
+      try {
+        getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
+      } catch (error) {
+        next(new DBException())
+        throw null
+      }
+
+      delete getUser.password
+
+      if (!user.admin) {
+        delete getUser.status
+      }
+
+    } else {
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    return new DataSuccess(200, SUCCESS, 'Success', getUser)
 
   }
 
@@ -104,17 +128,37 @@ class Auth {
 
   async logout(headers: IncomingHttpHeaders, next: NextFunction): Promise<DefaultSuccess> {
 
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Bearer'))
+    const auth = headers['authorization']
 
-    if (!auth.status) {
-      next(auth.exception)
+    if (!auth || !auth.startsWith('Bearer ')) {
+      next(new UnauthorizedException())
       throw null
     }
 
-    const token = (headers['authorization'] + '').split(' ')[1]
+    const token = auth.split(' ')[1]
+
+    const dec = await jwt.verify(token)
+
+    if (!dec[0] && dec[1] == 401) {
+      next(new UnauthorizedException(dec[2]))
+      throw null
+    } else if (!dec[0] && dec[1] == 500) {
+      next(new DBException())
+      throw null
+    } else if (!dec[0]) {
+      next(new DefaultException(500, UNKNOWN_ERROR, 'Unknown error'))
+      throw null
+    }
+
+    var user: User[] | null
+
+    if (!jwt.isJwtPayload(dec[1])) {
+      next(new UnauthorizedException())
+      throw null
+    }
 
     try {
-      await db.query<User[]>('INSERT INTO exp_jwt (jwt) VALUES (?)', [token])
+      user = await db.query<User[]>('INSERT INTO exp_jwt (jwt) VALUES (?)', [token])
     } catch (error: any) {
       next(new DBException())
       throw null
@@ -126,4 +170,4 @@ class Auth {
 
 }
 
-export default Auth
+export default Admin

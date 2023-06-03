@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import en from '../language/en';
 import fr from '../language/fr';
+import { User } from '../types/user';
+import { ApiAdminService } from './api/api-admin.service';
 import { ApiEnvService } from './api/api-env.service';
+import { CookiesService } from './cookie.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,24 +13,23 @@ import { ApiEnvService } from './api/api-env.service';
 export class UserService {
 
   private user: BehaviorSubject<any> = new BehaviorSubject(null)
-  static set = false
 
-  constructor(private apiEnvService: ApiEnvService) { }
+  constructor(private apiAdminService: ApiAdminService, private cookiesService: CookiesService) { }
 
   async init() {
-    if (!UserService.set) {
+    return await this.reload()
+  }
+
+  async reload() {
+    if (this.cookiesService.getCookie('JWT')) {
       try {
-        const env = (await this.apiEnvService.getEnv().toPromise())?.body?.data
-        UserService.set = true
-        this.set(env)
+        const user: User | null | undefined = (await this.apiAdminService.getUser().toPromise())?.body?.data
+        if (user && user.name) {
+          this.set(user)
+          return true
+        }
         return true
       } catch (error) {
-        UserService.set = true
-        this.set({
-          language: "en",
-          name: "EML",
-          theme: "eml"
-        })
         return true
       }
     }
@@ -38,13 +40,8 @@ export class UserService {
     return this.user.asObservable()
   }
 
-  set(env: { language: any, name: string, theme: string }) {
-    if (env.language == 'fr') {
-      env.language = fr
-    } else {
-      env.language = en
-    }
-    this.user.next(env)
+  set(user: User) {
+    this.user.next(user)
   }
 
 }
