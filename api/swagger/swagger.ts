@@ -48,7 +48,7 @@ const options: swaggerJSDoc.OAS3Options = {
       }
     ]
   },
-  apis: ['./api/app/routers/**/*.ts'],
+  apis: ['./src/routers/**/*.ts'],
 };
 
 export default swaggerJSDoc(options);
