@@ -148,13 +148,13 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-missing-attribute -->
     <a class="account" on:click={accountClick}>
-      <i class="fa-solid fa-circle-user" />{user.name}<i class="fa-solid fa-caret-up" /></a
-    >
+      <i class="fa-solid fa-circle-user" />{user.name}<i class="fa-solid fa-caret-up" />
+    </a>
   {/if}
 
   {#if accountDropdownOpen}
     <div class="account-dropdown" id="account-dropdown" transition:slide={{ duration: 200 }}>
-      <a href="/configure" class="account-settings"><i class="fa-solid fa-gear" />Settings</a>
+      <a href="/dashboard/account" class="account-settings"><i class="fa-solid fa-gear" />Settings</a>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket" />Log out</a>

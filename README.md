@@ -68,4 +68,4 @@ You can now make pull requests!
 ## Important information
 
 * This Web software is under the `GNU GPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
-* If you need some help, you can join [this Discord](https://discord.gg/FePaQ7v).
+* If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).

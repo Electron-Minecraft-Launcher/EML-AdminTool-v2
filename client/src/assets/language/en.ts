@@ -41,6 +41,9 @@ export default {
     createAccount: `Create an account here.`,
     alreadyAnAccount: `Log in here.`,
   },
+  dashboard: {
+    welcome: `Welcome`,
+  },
   modals: {
     language: {
       title: `You speak another language?`,
