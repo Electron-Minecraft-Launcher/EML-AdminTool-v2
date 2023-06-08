@@ -13,6 +13,8 @@
   import CookiesService from '$services/cookies.service'
   import router from '$services/router'
   import { slide } from 'svelte/transition'
+  import { redirect } from '@sveltejs/kit'
+  import { goto } from '$app/navigation'
 
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
@@ -61,8 +63,9 @@
   async function logoutClick() {
     ;(await apiAuth.deleteLogout()).subscribe({
       finally: () => {
-        router.goto('/login')
         cookies.delete('JWT')
+        // throw redirect(300, '/login')
+        goto('/login')
       },
     })
   }
@@ -151,7 +154,7 @@
 
   {#if accountDropdownOpen}
     <div class="account-dropdown" id="account-dropdown" transition:slide={{ duration: 200 }}>
-      <a href="/dashboard/account" class="account-settings"><i class="fa-solid fa-gear" />Settings</a>
+      <a href="/configure" class="account-settings"><i class="fa-solid fa-gear" />Settings</a>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket" />Log out</a>

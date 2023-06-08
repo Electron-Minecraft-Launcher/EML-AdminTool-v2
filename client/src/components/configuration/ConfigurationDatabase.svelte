@@ -7,7 +7,6 @@
   import enFlag from '$assets/images/en.png'
   import frFlag from '$assets/images/fr.png'
   import { env$ } from '$services/store'
-  import '$assets/scss/configure.scss'
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -139,6 +138,7 @@
     <div class="rel-progress">
       <div
         class="rel-progress-in"
+        class:progress-0={relN == '0'}
         class:progress-1={relN == '1'}
         class:progress-2={relN == '2'}
         class:progress-3={relN == '3'}
@@ -151,6 +151,8 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
+  @import '../../assets/scss/configure.scss';
+
   div.flex {
     display: flex;
     flex-direction: row;

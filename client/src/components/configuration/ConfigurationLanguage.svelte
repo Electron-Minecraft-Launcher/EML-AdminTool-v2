@@ -7,7 +7,6 @@
   import enFlag from '$assets/images/en.png'
   import frFlag from '$assets/images/fr.png'
   import { env$ } from '$services/store'
-  import '$assets/scss/configure.scss'
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -89,6 +88,8 @@
 <LanguageModal bind:show={showLanguageModal} />
 
 <style lang="scss">
+  @import '../../assets/scss/configure.scss';
+  
   div.language {
     width: 500px;
     margin: 0 auto;

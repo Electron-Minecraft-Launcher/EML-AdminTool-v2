@@ -4,7 +4,6 @@
   import type { Env } from '$models/data/env.model'
   import { env$ } from '$services/store'
   import { cubicOut } from 'svelte/easing'
-  import '$assets/scss/modals.scss'
 
   export let size: 's' | 'm' | 'l' = 'm'
   export let show: boolean
@@ -47,3 +46,7 @@
     </div>
   </div>
 {/if}
+
+<style lang="scss">
+  @import '../../assets/scss/modals.scss';
+</style>

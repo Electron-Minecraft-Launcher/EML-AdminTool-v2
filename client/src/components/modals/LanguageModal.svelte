@@ -4,7 +4,6 @@
   import type fr from '$assets/language/fr'
   import type { Env } from '$models/data/env.model'
   import { env$ } from '$services/store'
-  import '$assets/scss/modals.scss'
 
   export let show: boolean
 
@@ -30,5 +29,5 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @import 'modals.scss';
+  @import '../../assets/scss/modals.scss';
 </style>

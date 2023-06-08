@@ -1,8 +1,10 @@
 import type { Observable, HttpResponse } from '$models/responses/api-response.model'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
+import { redirect } from '@sveltejs/kit'
 import CookiesService from './cookies.service'
 import NotificationsService from './notifications.service'
 import router from './router'
+import { goto } from '$app/navigation'
 
 const cookies = new CookiesService()
 const notification = new NotificationsService()
@@ -86,7 +88,7 @@ class Http {
       }): void {
         if (resp.ok && observe.next) {
           observe.next(resp)
-        } else if (observe.error) {
+        } else if (!resp.ok && observe.error) {
           observe.error(resp)
         }
         if (observe.finally) {
@@ -113,14 +115,12 @@ class Http {
   }
 
   private responseInterceptor<T extends DefaultHttpResponse>(response: { response: Response; body: T }, url: string): void {
-    // const urls = ['/configure/', '/verify', '/logout', '/users/me']
-
-    if (!url.includes('/env') && response.body.code == 'CONFIG_ERROR') {
+    if (!url.includes('/env') && !url.includes('/configure') && response.body.code == 'CONFIG_ERROR') {
       cookies.delete('JWT')
-      router.goto('/configure')
+      goto('/configure')
     }
 
-    if (response.body.code == 'AUTH_ERROR') {
+    if (response.body.code == 'AUTH_ERROR') {      
       if (url.includes('/auth') || url.includes('/register')) {
         notification.update({ type: 'ERROR', code: 'auth' })
       } else if (
@@ -132,10 +132,10 @@ class Http {
       ) {
         cookies.delete('JWT')
         notification.update({ type: 'ERROR', code: 'login' })
-        router.goto('/login')
+        goto('/login')
       } else {
         notification.update({ type: 'ERROR', code: 'permission' })
-        router.goto('/dashboard')
+        throw redirect(300, '/dashboard')
       }
     }
   }

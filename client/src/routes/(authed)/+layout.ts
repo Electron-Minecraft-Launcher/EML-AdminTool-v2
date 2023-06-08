@@ -9,10 +9,6 @@ import fr from '$assets/language/fr'
 import type { Env } from '$models/data/env.model'
 import router from '$services/router'
 import { redirect } from '@sveltejs/kit'
-import { page } from '$app/stores'
-
-export const prerender = true
-export const ssr = false
 
 const apiEnv = new ApiEnvService()
 const apiConfigure = new ApiConfigureService()
@@ -22,34 +18,14 @@ const cookies = new CookiesService()
 let env!: Env
 
 export const load: LayoutLoad = async () => {
-  ;(await apiEnv.getEnv()).subscribe({
-    next: (resp) => {
-      env = resp.body.data
-    },
-    error: () => {
-      env = {
-        language: 'en',
-        name: 'EML',
-        theme: 'eml',
-      }
-    },
-    finally: () => {
-      if (env.language == 'fr') {
-        env.language = fr
-      } else {
-        env.language = en
-      }
-      env$.set(env)
-    },
-  })
-  
-  // ;(await apiConfigure.getConfigure()).subscribe({
-  //   finally: (resp) => {
-  //     if (resp.body.code == 'CONFIG_ERROR') {
-  //       throw redirect(300, '/configure')
-  //     }
-  //   },
-  // })
-
+  if (cookies.get('JWT')) {
+    ;(await apiAuth.getVerify()).subscribe({
+      error: (resp) => {      
+        throw redirect(300, '/login')
+      },
+    })
+  } else {
+    throw redirect(300, '/login')
+  }
   return {}
 }

@@ -32,24 +32,15 @@
   <title>{env.name} AdminTool</title>
 </svelte:head>
 
-<LeftPanel />
+<h2>Home</h2>
 
-<div class="container">
-  <h2>Home</h2>
-
-  {#if !user}
-    <Skeleton randomWidth={{ times: 100, min: 200 }} />
-  {:else}
-    <h3>Welcome, {user.name}!</h3>
-  {/if}
-</div>
+{#if !user}
+  <Skeleton randomWidth={{ times: 100, min: 200 }} />
+{:else}
+  <h3>Welcome, {user.name}!</h3>
+{/if}
 
 <style lang="scss">
-  div.container {
-    margin-left: 260px;
-    padding: 30px 100px;
-  }
-
   h2 {
     margin-top: 0;
     font-size: 32px;

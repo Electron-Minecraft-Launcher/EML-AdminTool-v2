@@ -7,7 +7,6 @@
   import ApiConfigureService from '$services/api/api-configure.service'
   import { createEventDispatcher } from 'svelte'
   import utils from '$services/utils'
-  import '$assets/scss/configure.scss'
 
   export let step: number
   export let cond: boolean = true
@@ -99,3 +98,7 @@
     {/if}
   </div>
 </form>
+
+<style lang="scss">
+  @import '../../assets/scss/configure.scss';
+</style>

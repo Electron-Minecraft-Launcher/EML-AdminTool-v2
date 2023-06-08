@@ -1,5 +1,7 @@
+import { goto } from '$app/navigation'
 import { redirect$ } from './store'
 import utils from './utils'
+import { redirect as r_ } from '@sveltejs/kit'
 
 class Router {
   async goto(path: string) {
@@ -8,5 +10,13 @@ class Router {
     redirect$.set(path)   
   }
 }
+
+/**
+ * @debug
+ */
+// export function redirect(code: 300, path: string, from = 'unknown') {
+//   console.log(path, from);
+//   goto(path)
+// }
 
 export default new Router()

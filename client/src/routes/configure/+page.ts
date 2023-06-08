@@ -3,6 +3,7 @@ import CookiesService from '$services/cookies.service'
 import ApiAuthService from '$services/api/api-auth.service'
 import ApiConfigureService from '$services/api/api-configure.service'
 import router from '$services/router'
+import { redirect } from '@sveltejs/kit'
 
 const cookies = new CookiesService()
 const apiAuth = new ApiAuthService()
@@ -13,8 +14,8 @@ export const load: PageLoad = async () => {
 
   if (cookies.get('JWT')) {
     ;(await apiAuth.getVerify()).subscribe({
-      next: (res) => {
-        router.goto('/dashboard')
+      next: () => {
+        throw redirect(300, '/dashboard')
       },
     })
   }
@@ -22,7 +23,7 @@ export const load: PageLoad = async () => {
   ;(await apiConfigure.getConfigure()).subscribe({
     finally: (res) => {
       if (res.body?.code == 'SUCCESS') {
-        router.goto('/')
+        throw redirect(300, '/')
       } else {
         start = true
       }

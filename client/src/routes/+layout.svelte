@@ -9,19 +9,19 @@
 
   export let data: LayoutData
 
-  redirect$.subscribe(async (value) => {
-    if (value !== null) {
-      await utils.sleep(10)
-      goto(value + '')
-      data.redirect = false
-    }
-  })
+  // redirect$.subscribe(async (value) => {
+  //   if (value !== null) {
+  //     await utils.sleep(10)
+  //     goto(value + '')
+  //     data.redirect = false
+  //   }
+  // })
 </script>
 
 <div class="app">
   <Notification />
 
-  {#if !data.redirect}
+  <!-- {#if !data.redirect} -->
     <slot />
-  {/if}
+  <!-- {/if} -->
 </div>

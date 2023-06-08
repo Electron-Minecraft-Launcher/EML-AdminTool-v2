@@ -1,13 +1,9 @@
 <script lang="ts">
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import LanguageModal from '../modals/LanguageModal.svelte'
   import type en from '$assets/language/en'
   import type fr from '$assets/language/fr'
   import type { Env } from '$models/data/env.model'
-  import enFlag from '$assets/images/en.png'
-  import frFlag from '$assets/images/fr.png'
   import { env$ } from '$services/store'
-  import '$assets/scss/configure.scss'
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -131,6 +127,7 @@
     <div class="rel-progress">
       <div
         class="rel-progress-in"
+        class:progress-0={relN == '0'}
         class:progress-1={relN == '1'}
         class:progress-2={relN == '2'}
         class:progress-3={relN == '3'}
@@ -143,20 +140,22 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
-  div.flex {
-    display: flex;
-    flex-direction: row;
+  @import '../../assets/scss/configure.scss';
 
-    input {
-      flex-grow: calc(100% - 50px);
-    }
+  // div.flex {
+  //   display: flex;
+  //   flex-direction: row;
 
-    button.secondary {
-      margin-top: 15px;
-      margin-left: 20px;
-      white-space: nowrap;
-    }
-  }
+  //   input {
+  //     flex-grow: calc(100% - 50px);
+  //   }
+
+  //   button.secondary {
+  //     margin-top: 15px;
+  //     margin-left: 20px;
+  //     white-space: nowrap;
+  //   }
+  // }
 
   div.rel-progress {
     width: 130px;

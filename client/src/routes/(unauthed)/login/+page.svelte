@@ -1,5 +1,4 @@
 <script lang="ts">
-  import '$assets/scss/login.scss'
   import LoadingSplash from '$components/LoadingSplash.svelte'
   import { env$, user$ } from '$services/store'
   import ApiAuthService from '$services/api/api-auth.service'
@@ -8,7 +7,7 @@
   import type en from '$assets/language/en'
   import { goto } from '$app/navigation'
   import type fr from '$assets/language/fr'
-  
+
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
 
@@ -43,7 +42,6 @@
       },
     })
   }
-
 </script>
 
 <svelte:head>
@@ -64,3 +62,7 @@
     <a class="small-link" href="/register">{l.auth.createAccount}</a>
   </p>
 </form>
+
+<style lang="scss">
+  @import 'login.scss';
+</style>

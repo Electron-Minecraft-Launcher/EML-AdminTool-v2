@@ -7,11 +7,11 @@ const cookies = new CookiesService()
 const apiAuth = new ApiAuthService()
 
 export const load: PageLoad = async () => {
-  if (cookies.get('JWT')) {
-    ;(await apiAuth.getVerify()).subscribe({
-      next: () => {
-        router.goto('/dashboard')
-      },
-    })
-  }
+  // if (cookies.get('JWT')) {
+  //   ;(await apiAuth.getVerify()).subscribe({
+  //     next: (res) => {
+  //       router.goto('/dashboard')
+  //     },
+  //   })
+  // }
 }

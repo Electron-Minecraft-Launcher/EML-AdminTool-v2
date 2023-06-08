@@ -8,7 +8,7 @@ const config = {
   // for more information about preprocessors
   preprocess: preprocess({
     scss: {
-      includePaths: ['src/assets/scss'],
+      includePaths: ['src/assets/scss/'],
     },
   }),
 
@@ -37,3 +37,4 @@ const config = {
 }
 
 export default config
+

@@ -1,5 +1,4 @@
 <script lang="ts">
-  //     import '$assets/scss/login.scss'
   import LoadingSplash from '$components/LoadingSplash.svelte'
   import { env$, user$ } from '$services/store'
   import ApiAuthService from '$services/api/api-auth.service'
@@ -73,6 +72,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>{l.auth.register} • {env.name} AdminTool</title>
+</svelte:head>
+
 <form on:submit|preventDefault={submit}>
   {#if splash}
     <LoadingSplash transparent={true} />
@@ -88,10 +91,14 @@
   <input type="text" maxlength="1" size="1" id="pin-2" on:keyup={focusNext} bind:value={pin[1]} name="pin-2" />
   <input type="text" maxlength="1" size="1" id="pin-3" on:keyup={focusNext} bind:value={pin[2]} name="pin-3" />
 
-  <button class="primary" disabled={!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}
-    >{l.auth.register}</button
-  >
+  <button class="primary" disabled={!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}>
+    {l.auth.register}
+  </button>
   <p class="center">
     <a class="small-link" href="/login">{l.auth.alreadyAnAccount}</a>
   </p>
 </form>
+
+<style lang="scss">
+  @import 'login.scss';
+</style>
