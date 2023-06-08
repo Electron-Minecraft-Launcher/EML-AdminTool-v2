@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "$controllers": [
+        "./src/controllers"
+      ],
+      "$controllers/*": [
+        "./src/controllers/*"
+      ],
+      "$middlewares": [
+        "./src/middlewares"
+      ],
+      "$middlewares/*": [
+        "./src/middlewares/*"
+      ],
+      "$models": [
+        "./src/models"
+      ],
+      "$models/*": [
+        "./src/models/*"
+      ],
+      "$responses": [
+        "./src/responses"
+      ],
+      "$responses/*": [
+        "./src/responses/*"
+      ],
+      "$routers": [
+        "./src/routers"
+      ],
+      "$routers/*": [
+        "./src/routers/*"
+      ],
+      "$services": [
+        "./src/services"
+      ],
+      "$services/*": [
+        "./src/services/*"
+      ],
+      "$utils": [
+        "./src/utils"
+      ],
+      "$utils/*": [
+        "./src/utils/*"
+      ],
+    },
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
