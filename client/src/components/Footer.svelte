@@ -12,6 +12,8 @@
     width: 100%;
     text-align: center;
     margin-top: 75px;
+    position: relative;
+    z-index: -1;
   }
 
   p {

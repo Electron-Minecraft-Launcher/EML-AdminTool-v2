@@ -25,6 +25,13 @@ export const load: LayoutLoad = async () => {
   ;(await apiEnv.getEnv()).subscribe({
     next: (resp) => {
       env = resp.body.data
+      if (!env.name) {
+        env = {
+          language: 'en',
+          name: 'EML',
+          theme: 'eml',
+        }
+      }
     },
     error: () => {
       env = {
@@ -42,14 +49,4 @@ export const load: LayoutLoad = async () => {
       env$.set(env)
     },
   })
-  
-  // ;(await apiConfigure.getConfigure()).subscribe({
-  //   finally: (resp) => {
-  //     if (resp.body.code == 'CONFIG_ERROR') {
-  //       throw redirect(300, '/configure')
-  //     }
-  //   },
-  // })
-
-  return {}
 }

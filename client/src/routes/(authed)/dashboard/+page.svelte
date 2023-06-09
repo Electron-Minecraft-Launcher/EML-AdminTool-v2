@@ -1,7 +1,6 @@
 <script lang="ts">
   import type en from '$assets/language/en'
   import type fr from '$assets/language/fr'
-  import LeftPanel from '$components/LeftPanel.svelte'
   import Skeleton from '$components/Skeleton.svelte'
   import type { Env } from '$models/data/env.model'
   import type { User } from '$models/features/user.model'
@@ -43,10 +42,7 @@
 </div>
 
 <style lang="scss">
-  h2 {
-    margin-top: 0;
-    font-size: 32px;
-  }
+  @import '../../../assets/scss/dashboard.scss';
 
   div.wip {
     border-radius: 10px;
@@ -62,7 +58,7 @@
 
     &:hover {
       opacity: 1;
-      box-shadow: 0 0 50px #00000008
+      box-shadow: 0 0 50px #00000008;
     }
 
     p.wip {

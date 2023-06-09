@@ -95,6 +95,7 @@ class Admin {
 
     var user: User = auth.data!
     var getUser: User
+    const token = (headers['authorization'] + '').split(' ')[1]
 
     if (userId == user.id || userId == 'me') {
       userId = user.id!
@@ -151,7 +152,7 @@ class Admin {
       user_.p_stats_del = 1
     }
 
-    if (userId == user.id) {
+    if (userId == user.id && body.password != null && body.password != '') {
       user_.password = await bcrypt.hash(body.password, 10)
     }
 
@@ -178,7 +179,7 @@ class Admin {
       delete user_.status
     }
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? jwt.generate(user) : undefined, user: user_ })
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? token : undefined, user: user_ })
   }
 
   async deleteUser(headers: IncomingHttpHeaders, userId: number | 'me', next: NextFunction): Promise<DefaultSuccess> {

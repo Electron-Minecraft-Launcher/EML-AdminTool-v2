@@ -1,17 +1,29 @@
 import type { PageLoad } from './$types'
-import CookiesService from '$services/cookies.service'
+import ApiConfigureService from '$services/api/api-configure.service'
 import ApiAuthService from '$services/api/api-auth.service'
-import router from '$services/router'
+import CookiesService from '$services/cookies.service'
+import { redirect } from '@sveltejs/kit'
+import { user$ } from '$services/store'
 
-const cookies = new CookiesService()
+const apiConfigure = new ApiConfigureService()
 const apiAuth = new ApiAuthService()
+const cookies = new CookiesService()
 
 export const load: PageLoad = async () => {
-  // if (cookies.get('JWT')) {
-  //   ;(await apiAuth.getVerify()).subscribe({
-  //     next: () => {
-  //       router.goto('/dashboard')
-  //     },
-  //   })
-  // }
+  ;(await apiConfigure.getConfigure()).subscribe({
+    finally: (res) => {
+      if (res.body.code == 'CONFIG_ERROR') {
+        throw redirect(300, '/configure')
+      }
+    },
+  })
+
+  if (cookies.get('JWT')) {
+    ;(await apiAuth.getVerify()).subscribe({
+      next: (res) => {
+        user$.set(res.body.data!.user)
+        throw redirect(300, '/dashboard')
+      },
+    })
+  }
 }

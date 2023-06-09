@@ -43,6 +43,13 @@ export default {
   },
   dashboard: {
     welcome: `Bienvenue`,
+    account: {
+      accountSettings: `Paramètres du compte`,
+      information: `Informations`,
+      nameOrPseudo: `Nom ou Pseudo`,
+      accountType: `Type de compte`,
+      permissions: `Permissions`,
+    },
   },
   modals: {
     language: {
