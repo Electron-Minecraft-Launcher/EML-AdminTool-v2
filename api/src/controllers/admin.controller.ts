@@ -61,6 +61,11 @@ class Admin {
       throw null
     }
 
+    if (!getUser) {
+      next(new RequestException('User does not exist'))
+      throw null
+    }
+
     delete getUser.password
 
     if (!user.admin) {
@@ -91,6 +96,13 @@ class Admin {
     var user: User = auth.data!
     var getUser: User
 
+    if (userId == user.id || userId == 'me') {
+      userId = user.id!
+    } else if (!user.admin) {
+      next(new UnauthorizedException())
+      throw null
+    }
+
     try {
       getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
     } catch (error) {
@@ -98,10 +110,8 @@ class Admin {
       throw null
     }
 
-    if (userId == user.id || userId == 'me') {
-      userId = user.id!
-    } else if (!user.admin) {
-      next(new UnauthorizedException())
+    if (!getUser) {
+      next(new RequestException('User does not exist'))
       throw null
     }
 
@@ -171,44 +181,49 @@ class Admin {
     return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? jwt.generate(user) : undefined, user: user_ })
   }
 
-  async logout(headers: IncomingHttpHeaders, next: NextFunction): Promise<DefaultSuccess> {
-    const auth = headers['authorization']
+  async deleteUser(headers: IncomingHttpHeaders, userId: number | 'me', next: NextFunction): Promise<DefaultSuccess> {
+    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
 
-    if (!auth || !auth.startsWith('Bearer ')) {
-      next(new UnauthorizedException())
+    if (!auth.status) {
+      next(auth.exception)
       throw null
     }
 
-    const token = auth.split(' ')[1]
+    var user: User = auth.data!
+    var getUser: User
 
-    const dec = await jwt.verify(token)
-
-    if (!dec[0] && dec[1] == 401) {
-      next(new UnauthorizedException(dec[2]))
-      throw null
-    } else if (!dec[0] && dec[1] == 500) {
-      next(new DBException())
-      throw null
-    } else if (!dec[0]) {
-      next(new DefaultException(500, UNKNOWN_ERROR, 'Unknown error'))
-      throw null
-    }
-
-    var user: User[] | null
-
-    if (!jwt.isJwtPayload(dec[1])) {
+    if (userId == user.id || userId == 'me') {
+      userId = user.id!
+    } else if (!user.admin) {
       next(new UnauthorizedException())
       throw null
     }
 
     try {
-      user = await db.query<User[]>('INSERT INTO exp_jwt (jwt) VALUES (?)', [token])
-    } catch (error: any) {
+      getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
+    } catch (error) {
       next(new DBException())
       throw null
     }
 
-    return new DefaultSuccess()
+    if (!getUser) {
+      next(new RequestException('User does not exist'))
+      throw null
+    }
+
+    if (getUser.admin) {
+      next(new RequestException('Not allowed to delete admin'))
+      throw null
+    }
+
+    try {
+      await db.query('DELETE FROM users WHERE id = ?', +userId)
+    } catch (error) {
+      next(new DBException())
+      throw null
+    }
+
+    return new DefaultSuccess(200, SUCCESS, 'Success')
   }
 }
 

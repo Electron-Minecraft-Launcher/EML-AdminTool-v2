@@ -153,10 +153,10 @@ export default class AdminRouter implements Route {
      */
     this.router.delete(
       `${this.path}/users/:user_id`,
-      async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+      async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DefaultHttpResponse>, next: NextFunction) => {
         try {
-          // const resp = await new Auth().deleteUser(req.headers, next)
-          // res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+          const resp = await new Admin().deleteUser(req.headers, req.params['user_id'], next)
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
         } catch (error) {}
       }
     )
