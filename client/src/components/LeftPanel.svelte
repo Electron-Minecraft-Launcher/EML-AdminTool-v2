@@ -95,38 +95,37 @@
     <Skeleton {randomWidth} {height} {customStyle} />
   {:else}
     {#if user.p_files_updater_add_del}
-      <a href="/dashboard/files-updater">
+      <a href="/dashboard/files-updater" class:active={$page.url.pathname == '/dashboard/files-updater'}>
         <i class="fa-solid fa-folder-open" />Files Updater
       </a>
     {/if}
 
     {#if user.p_bootstrap_mod}
-      <a href="/dashboard/bootstrap">
+      <a href="/dashboard/bootstrap" class:active={$page.url.pathname == '/dashboard/bootstrap'}>
         <i class="fa-solid fa-arrows-rotate" />Bootstrap
       </a>
     {/if}
 
     {#if user.p_maintenance_mod}
-      <a href="/dashboard/maintenance">
+      <a href="/dashboard/maintenance" class:active={$page.url.pathname == '/dashboard/maintenance'}>
         <i class="fa-solid fa-screwdriver-wrench" />Maintenance
       </a>
     {/if}
 
     {#if user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del}
-      <a href="/dashboard/news"
-        ><i class="fa-solid fa-newspaper" />
-        News
+      <a href="/dashboard/news" class:active={$page.url.pathname == '/dashboard/news'}>
+        <i class="fa-solid fa-newspaper" />News
       </a>
     {/if}
 
     {#if user.p_background_mod}
-      <a href="/dashboard/background">
+      <a href="/dashboard/background" class:active={$page.url.pathname == '/dashboard/background'}>
         <i class="fa-solid fa-image" />Background
       </a>
     {/if}
 
     {#if user.p_stats_see || user.p_stats_del}
-      <a href="/dashboard/stats">
+      <a href="/dashboard/stats" class:active={$page.url.pathname == '/dashboard/stats'}>
         <i class="fa-solid fa-chart-simple" />Stats
       </a>
     {/if}
@@ -148,13 +147,15 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-missing-attribute -->
     <a class="account" on:click={accountClick}>
-      <i class="fa-solid fa-circle-user" />{user.name}<i class="fa-solid fa-caret-up" /></a
-    >
+      <i class="fa-solid fa-circle-user" />{user.name}<i class="fa-solid fa-caret-up" />
+    </a>
   {/if}
 
   {#if accountDropdownOpen}
     <div class="account-dropdown" id="account-dropdown" transition:slide={{ duration: 200 }}>
-      <a href="/configure" class="account-settings"><i class="fa-solid fa-gear" />Settings</a>
+      <a href="/dashboard/account" class="account-settings" class:active={$page.url.pathname == '/dashboard/account'}>
+        <i class="fa-solid fa-gear" />Settings
+      </a>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket" />Log out</a>

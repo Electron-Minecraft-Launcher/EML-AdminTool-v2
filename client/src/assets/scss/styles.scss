@@ -162,3 +162,50 @@ button {
     cursor: not-allowed;
   }
 }
+
+section.section {
+  margin-top: 50px;
+  position: relative;
+  background-color: white;
+  padding: 50px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  // box-shadow: 0 5px 50px rgba(0, 0, 0, 0.1);
+
+  &:hover button.right {
+    opacity: 1
+  }
+
+  button.right {
+    margin-top: 0;
+    float: right;
+    opacity: 0;
+  }
+
+  div.container {
+    display: flex;
+    flex: auto;
+    flex-wrap: wrap;
+
+    div {
+      width: 280px;
+      margin-right: 50px;
+      vertical-align: top;
+    }
+  }
+
+
+  h3 {
+    margin: 0
+  }
+
+  p.label {
+    margin: 30px 0 5px 0;
+    color: #808080;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0
+  }
+}

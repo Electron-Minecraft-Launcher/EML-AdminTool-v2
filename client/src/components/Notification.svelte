@@ -43,7 +43,7 @@
     padding: 15px 17px;
     border-radius: 10px;
     backdrop-filter: blur(3px);
-    background-color: #ffffff90;
+    background-color: #ffffffa0;
     box-shadow: 0 0 30px #00000030;
     font-size: 14px;
     color: #303030;

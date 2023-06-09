@@ -1,13 +1,9 @@
 {
   "name": "eml-admintool",
-  "version": "1.0.0",
+  "version": "2.3.0-alpha",
   "description": "Manage your Minecraft Launcher (working with EML Core) from the Web.",
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
-  "v": {
-    "api": "0.4.1-alpha",
-    "client": "0.1.0-alpha"
-  },
   "scripts": {
     "dev:client": "cd client && npm run dev",
     "dev:api": "cd api && npm run dev"

@@ -44,7 +44,7 @@ class Http {
         return { response: response.response, body: response.body as T }
       })
       .then((response) => {
-        this.responseInterceptor(response, url)
+        this.responseInterceptor(response, url, method)
         return this.setResponse(response)
       })
   }
@@ -114,28 +114,33 @@ class Http {
     }
   }
 
-  private responseInterceptor<T extends DefaultHttpResponse>(response: { response: Response; body: T }, url: string): void {
+  private responseInterceptor<T extends DefaultHttpResponse>(
+    response: { response: Response; body: T },
+    url: string,
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  ): void {
     if (!url.includes('/env') && !url.includes('/configure') && response.body.code == 'CONFIG_ERROR') {
       cookies.delete('JWT')
       goto('/configure')
     }
 
-    if (response.body.code == 'AUTH_ERROR') {      
+    if (response.body.code == 'AUTH_ERROR') {
       if (url.includes('/auth') || url.includes('/register')) {
         notification.update({ type: 'ERROR', code: 'auth' })
       } else if (
         url.includes('/configure/') ||
         url.includes('/verify') ||
         url.includes('/logout') ||
-        url.includes('/users/me') ||
+        (url.includes('/users/me') && method == 'GET') ||
         response.body.message == 'Token expired'
       ) {
         cookies.delete('JWT')
         notification.update({ type: 'ERROR', code: 'login' })
-        goto('/login')
-      } else {
-        notification.update({ type: 'ERROR', code: 'permission' })
-        throw redirect(300, '/dashboard')
+        throw redirect(300, '/login')
+      } else if (response.body.message == 'Name used') {
+        notification.update({ type: 'ERROR', code: 'auth' })
+        // notification.update({ type: 'ERROR', code: 'permission' })
+        // throw redirect(300, '/dashboard')
       }
     }
   }

@@ -1,14 +1,13 @@
 <script lang="ts">
-  import type { LayoutData } from './$types'
   import LeftPanel from '$components/LeftPanel.svelte'
-
-  export let data: LayoutData
+  import Footer from '$components/Footer.svelte'
 </script>
 
 <LeftPanel />
 
 <div class="container">
   <slot />
+  <Footer />
 </div>
 
 <style>

@@ -72,6 +72,7 @@ class Auth {
       p_news_category_add_mod_del: 0,
       p_news_tag_add_mod_del: 0,
       p_background_mod: 0,
+      p_stats_see: 0,
       p_stats_del: 0,
     }
 
@@ -85,24 +86,24 @@ class Auth {
       throw null
     }
 
-    let addUser: DataServiceResponse<{ id: number }>
+    let insertUser: DataServiceResponse<{ id: number }>
 
     if (pin != (await pin_.get())) {
       user.status = -1
-      addUser = await new AuthService().insertUser(user)
-      if (addUser.code == DB_ERROR) {
+      insertUser = await new AuthService().insertUser(user)
+      if (insertUser.code == DB_ERROR) {
         next(new DBException())
         throw null
       }
     } else {
-      addUser = await new AuthService().insertUser(user)
-      if (addUser.code == DB_ERROR) {
+      insertUser = await new AuthService().insertUser(user)
+      if (insertUser.code == DB_ERROR) {
         next(new DBException())
         throw null
       }
     }
 
-    user.id = addUser.data?.id
+    user.id = insertUser.data?.id
     delete user.password
     delete user.status
 

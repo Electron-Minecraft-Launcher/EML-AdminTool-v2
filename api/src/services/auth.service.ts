@@ -91,7 +91,7 @@ export class AuthService {
   }
 
   /**
-   * Check is the name is available before with `await new Auth().isNameAvailable()`!
+   * Check if the name is available before with `await new Auth().isNameAvailable()`!
    *
    * `user`'s password must be hashed.
    */
@@ -140,6 +140,50 @@ export class AuthService {
     }
 
     return { status: true, code: SUCCESS, data: { id: insertUser.insertId } }
+  }
+
+  async updateUser(user: User): Promise<DataServiceResponse<{ id: number }>> {
+    let updateUser: ResultSetHeader
+
+    try {
+      updateUser = await db.query<ResultSetHeader>(
+        `UPDATE users SET
+        name = ?,
+        password = ?,
+        status = ?,
+        p_files_updater_add_del = ?,
+        p_bootstrap_mod = ?,
+        p_maintenance_mod = ?,
+        p_news_add = ?,
+        p_news_mod_del = ?,
+        p_news_category_add_mod_del = ?,
+        p_news_tag_add_mod_del = ?,
+        p_background_mod = ?,
+        p_stats_see = ?,
+        p_stats_del = ?
+        WHERE id = ?`,
+        [
+          user.name + '',
+          user.password + '',
+          (+user.status!) | 0,
+          (+user.p_files_updater_add_del!) | 0,
+          (+user.p_bootstrap_mod!) | 0,
+          (+user.p_maintenance_mod!) | 0,
+          (+user.p_news_add!) | 0,
+          (+user.p_news_mod_del!) | 0,
+          (+user.p_news_category_add_mod_del!) | 0,
+          (+user.p_news_tag_add_mod_del!) | 0,
+          (+user.p_background_mod!) | 0,
+          (+user.p_stats_see!) | 0,
+          (+user.p_stats_del!) | 0,
+          +user.id!
+        ]
+      )
+    } catch (error: any) {
+      return { status: false, code: DB_ERROR, message: error.code }
+    }
+
+    return { status: true, code: SUCCESS, data: { id: updateUser.insertId } }
   }
 
   async checkAuth(auth: string, type: 'Basic' | 'Bearer' | null = null): Promise<DataServiceResponse<User>> {
