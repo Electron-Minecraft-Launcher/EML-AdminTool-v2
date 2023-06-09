@@ -82,7 +82,7 @@ export default class AdminRouter implements Route {
      *         schema:
      *           type: integer
      *     requestBody:
-     *       required: true
+     *       required: false
      *       content:
      *         application/x-www-form-urlencoded:
      *           schema:
@@ -110,6 +110,8 @@ export default class AdminRouter implements Route {
      *                 type: integer
      *               p_background_mod:
      *                 type: integer
+     *               p_stats_see:
+     *                 type: integer
      *               p_stats_del:
      *                 type: integer
      *     responses:
@@ -120,10 +122,10 @@ export default class AdminRouter implements Route {
      */
     this.router.put(
       `${this.path}/users/:user_id`,
-      async (req: Request, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
+      async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DataHttpResponse<{jwt?: string, user: User}>>, next: NextFunction) => {
         try {
-          // const resp = await new Auth().editUser(req.headers, next)
-          // res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+          const resp = await new Admin().putUser(req.headers, req.body, req.params['user_id'], next)
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error) {}
       }
     )

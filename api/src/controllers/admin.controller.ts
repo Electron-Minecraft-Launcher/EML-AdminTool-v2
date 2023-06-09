@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http'
 import { AuthService } from '$services/auth.service'
 import pin_ from '$utils/pin'
 import { User } from '$models/features/user.model'
-import { CLIENT_ERROR, DB_ERROR, SUCCESS, UNKNOWN_ERROR } from '$models/types'
+import { CLIENT_ERROR, Code, DB_ERROR, SUCCESS, UNKNOWN_ERROR } from '$models/types'
 import { DBException } from '$responses/exceptions/db-exception.response'
 import { DataSuccess } from '$responses/success/data-success.response'
 import { DefaultSuccess } from '$responses/success/default-success.response'
@@ -24,7 +24,6 @@ class Admin {
       next(auth.exception)
       throw null
     }
-
     let users: User[] = await db.query<User[]>('SELECT * FROM users')
 
     let users_: User[] = []
@@ -48,56 +47,109 @@ class Admin {
     var user: User = auth.data!
     var getUser: User
 
-    if (user.admin || userId == user.id || userId == 'me') {
+    if (userId == user.id || userId == 'me') {
       userId = user.id!
-
-      try {
-        getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
-      } catch (error) {
-        next(new DBException())
-        throw null
-      }
-
-      delete getUser.password
-
-      if (!user.admin) {
-        delete getUser.status
-      }
-    } else {
+    } else if (!user.admin) {
       next(new UnauthorizedException())
       throw null
+    }
+
+    try {
+      getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
+    } catch (error) {
+      next(new DBException())
+      throw null
+    }
+
+    delete getUser.password
+
+    if (!user.admin) {
+      delete getUser.status
     }
 
     return new DataSuccess(200, SUCCESS, 'Success', getUser)
   }
 
-  async register(body: any, next: NextFunction): Promise<DataSuccess<{ jwt: string; user: User }>> {
-    if (!body.name || body.name == '' || !body.password || body.password == '' || !body.pin) {
+  async putUser(
+    headers: IncomingHttpHeaders,
+    body: any,
+    userId: number | 'me',
+    next: NextFunction
+  ): Promise<DataSuccess<{ jwt?: string; user: User }>> {
+    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+
+    if (!userId) {
       next(new RequestException('Missing parameters'))
       throw null
     }
 
-    const name = body.name
-    const password = { clear: body.password, hash: await bcrypt.hash(body.password, 10) }
-    const pin = body.pin
-
-    const user: User = {
-      name: name,
-      password: password.hash,
-      status: 0,
-      admin: 0,
-      p_files_updater_add_del: 0,
-      p_bootstrap_mod: 0,
-      p_maintenance_mod: 0,
-      p_news_add: 0,
-      p_news_mod_del: 0,
-      p_news_category_add_mod_del: 0,
-      p_news_tag_add_mod_del: 0,
-      p_background_mod: 0,
-      p_stats_del: 0,
+    if (!auth.status) {
+      next(auth.exception)
+      throw null
     }
 
-    var isNameAvailable = (await new AuthService().isNameAvailable(name)).code
+    var user: User = auth.data!
+    var getUser: User
+
+    try {
+      getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
+    } catch (error) {
+      next(new DBException())
+      throw null
+    }
+
+    if (userId == user.id || userId == 'me') {
+      userId = user.id!
+    } else if (!user.admin) {
+      next(new UnauthorizedException())
+      throw null
+    }
+
+    let user_: User = {
+      id: userId,
+      name: body.name || getUser.name,
+      password: getUser.password,
+      admin: getUser.admin,
+      status: user.admin && body.status ? +body.status : getUser.status,
+      p_files_updater_add_del:
+        user.admin && body.p_files_updater_add_del ? +body.p_files_updater_add_del : getUser.p_files_updater_add_del,
+      p_bootstrap_mod: user.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
+      p_maintenance_mod: user.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
+      p_news_add: user.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
+      p_news_mod_del: user.admin && body.p_news_mod_del ? +body.p_news_mod_del : getUser.p_news_mod_del,
+      p_news_category_add_mod_del:
+        user.admin && body.p_news_category_add_mod_del ? +body.p_news_category_add_mod_del : getUser.p_news_category_add_mod_del,
+      p_news_tag_add_mod_del:
+        user.admin && body.p_news_tag_add_mod_del ? +body.p_news_tag_add_mod_del : getUser.p_news_tag_add_mod_del,
+      p_background_mod: user.admin && body.p_background_mod ? +body.p_background_mod : getUser.p_background_mod,
+      p_stats_see: user.admin && body.p_stats_see ? +body.p_stats_see : getUser.p_stats_see,
+      p_stats_del: user.admin && body.p_stats_del ? +body.p_stats_del : getUser.p_stats_del,
+    }
+
+    if (getUser.admin) {
+      user_.admin = 1
+      user_.status = 1
+      user_.p_files_updater_add_del = 1
+      user_.p_bootstrap_mod = 1
+      user_.p_maintenance_mod = 1
+      user_.p_news_add = 1
+      user_.p_news_mod_del = 1
+      user_.p_news_category_add_mod_del = 1
+      user_.p_news_tag_add_mod_del = 1
+      user_.p_background_mod = 1
+      user_.p_stats_see = 1
+      user_.p_stats_del = 1
+    }
+
+    if (userId == user.id) {
+      user_.password = await bcrypt.hash(body.password, 10)
+    }
+
+    if (body.name != getUser.name && body.name != '' && body.name != null) {
+      var isNameAvailable = (await new AuthService().isNameAvailable(body.name)).code
+    } else {
+      var isNameAvailable: Code = SUCCESS
+    }
 
     if (isNameAvailable == CLIENT_ERROR) {
       next(new UnauthorizedException('Name used'))
@@ -107,28 +159,16 @@ class Admin {
       throw null
     }
 
-    let addUser: DataServiceResponse<{ id: number }>
+    let updateUser: DataServiceResponse<{ id: number }>
 
-    if (pin != (await pin_.get())) {
-      user.status = -1
-      addUser = await new AuthService().insertUser(user)
-      if (addUser.code == DB_ERROR) {
-        next(new DBException())
-        throw null
-      }
-    } else {
-      addUser = await new AuthService().insertUser(user)
-      if (addUser.code == DB_ERROR) {
-        next(new DBException())
-        throw null
-      }
+    updateUser = await new AuthService().updateUser(user_)
+
+    delete user_.password
+    if (!user.admin) {
+      delete user_.status
     }
 
-    user.id = addUser.data?.id
-    delete user.password
-    delete user.status
-
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user: user })
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? jwt.generate(user) : undefined, user: user_ })
   }
 
   async logout(headers: IncomingHttpHeaders, next: NextFunction): Promise<DefaultSuccess> {
