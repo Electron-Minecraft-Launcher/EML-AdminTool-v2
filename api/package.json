@@ -1,6 +1,6 @@
 {
   "name": "eml-admintool-api",
-  "version": "2.5.1-alpha",
+  "version": "2.4.5-alpha",
   "private": true,
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
@@ -17,6 +17,7 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "mysql2": "^2.3.3",
+    "os": "^0.1.2",
     "swagger-jsdoc": "^6.2.7",
     "swagger-ui-express": "^4.6.0",
     "tslib": "^2.4.1"

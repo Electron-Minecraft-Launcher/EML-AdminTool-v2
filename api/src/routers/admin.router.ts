@@ -17,6 +17,28 @@ export default class AdminRouter implements Route {
   private init() {
     /**
      * @openapi
+     * /admintool:
+     *   get:
+     *     tags:
+     *       - Admin
+     *     security:
+     *       - bearer: []
+     *     summary: Get EML AdminTool info
+     *     responses:
+     *       200:
+     *         description: EML AdminTool info
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.get(`${this.path}/admintool`, async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
+      try {
+        const resp = await new Admin().getAdminToolInfo(req.headers, next)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error) {}
+    })
+
+    /**
+     * @openapi
      * /users:
      *   get:
      *     tags:
@@ -122,7 +144,11 @@ export default class AdminRouter implements Route {
      */
     this.router.put(
       `${this.path}/users/:user_id`,
-      async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DataHttpResponse<{jwt?: string, user: User}>>, next: NextFunction) => {
+      async (
+        req: Request<{ user_id: number | 'me' }, {}, {}, {}>,
+        res: Response<DataHttpResponse<{ jwt?: string; user: User }>>,
+        next: NextFunction
+      ) => {
         try {
           const resp = await new Admin().putUser(req.headers, req.body, req.params['user_id'], next)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
