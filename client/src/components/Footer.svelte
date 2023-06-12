@@ -13,7 +13,7 @@
     text-align: center;
     margin-top: 75px;
     position: relative;
-    z-index: -1;
+    z-index: 0;
   }
 
   p {

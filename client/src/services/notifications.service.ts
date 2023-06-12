@@ -9,12 +9,20 @@ export default class NotificationsService {
   }
 
   async update(notification: { type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'; code: string }) {
-    if (notification.code == 'login') {
-      this.set({ type: 'ERROR', content: 'Please log in again.' })
-    } else if (notification.code == 'auth') {
-      this.set({ type: 'ERROR', content: 'Wrong username or password.' })
-    } else if (notification.code == 'permission') {
-      this.set({ type: 'ERROR', content: 'You are not allowed to join this page.' })
+    switch (notification.code) {
+      case 'login':
+        this.set({ type: 'ERROR', content: 'Please log in again.' })
+        break
+      case 'auth':
+        this.set({ type: 'ERROR', content: 'Wrong username or password.' })
+        break
+      case 'permission':
+        this.set({ type: 'ERROR', content: 'You are not allowed to join this page.' })
+      case 'db':
+        this.set({ type: 'ERROR', content: 'An unknown Database error appended' })
+      default:
+        this.set({ type: 'ERROR', content: 'An unknown error appended' })
+        break
     }
   }
 }

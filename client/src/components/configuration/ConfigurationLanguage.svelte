@@ -67,7 +67,7 @@
   <div class="actions language">
     <button type="button" class="secondary" class:selected={data.value == 'en'} id="en-button" on:click={toEn}>
       <p>
-        <img src={enFlag} alt="French flag" />
+        <img src={enFlag} alt="English flag" />
         English
       </p>
     </button>

@@ -142,6 +142,8 @@ class Http {
         // notification.update({ type: 'ERROR', code: 'permission' })
         // throw redirect(300, '/dashboard')
       }
+    } else if (response.body.code == 'DB_ERROR') {
+      notification.update({ type: 'ERROR', code: 'db' })
     }
   }
 }
