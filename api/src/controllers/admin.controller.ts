@@ -15,6 +15,8 @@ import nexter from '$utils/nexter'
 import { EnvService } from '$services/env.service'
 import vps from '$utils/vps'
 import { EMLAdminToolInfo } from '$models/features/emlat-info.model'
+import pin_ from '$utils/pin'
+import language_ from '$utils/language'
 
 class Admin {
   async getAdminToolInfo(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<EMLAdminToolInfo>> {
@@ -41,7 +43,82 @@ class Admin {
     } catch (error) {
       next(new DBException())
       throw null
-    } 
+    }
+
+    return new DataSuccess(200, SUCCESS, 'Success', {
+      emlat: { ...env, pin, nbUsers: countUsers.count },
+      vps: { os: vps.getOS(), storage: vps.getStorage() },
+    })
+  }
+
+  async putAdminToolInfo(headers: IncomingHttpHeaders, body: any, next: NextFunction): Promise<DataSuccess<EMLAdminToolInfo>> {
+    const auth = nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+
+    if (!auth.status) {
+      next(auth.exception)
+      throw null
+    }
+
+    var getUser: User
+    var pin: string = ''
+    var countUsers: count
+
+    if (body.name != '' && body.name != null) {
+      try {
+        getUser = (await db.query<User[]>('SELECT * FROM users WHERE admin = 1'))[0]
+      } catch (error) {
+        next(new DBException())
+        throw null
+      }
+
+      var isNameAvailable = (await new AuthService().isNameAvailable(body.name)).code
+
+      if (isNameAvailable == CLIENT_ERROR) {
+        next(new UnauthorizedException('Name used'))
+        throw null
+      } else if (isNameAvailable == DB_ERROR) {
+        next(new DBException())
+        throw null
+      }
+
+      getUser.name = body.name
+
+      let updateUser: DataServiceResponse<{ id: number }> = await new AuthService().updateUser(getUser)
+
+      if (!updateUser.status) {
+        next(new DBException())
+        throw null
+      }
+    }
+
+    try {
+      countUsers = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users'))[0]
+    } catch (error) {
+      next(new DBException())
+      throw null
+    }  
+
+    if (body.pin && body.pin != 'false') {
+      try {
+        pin = (await pin_.check(true)) + ''
+      } catch (error) {
+        next(new DBException())
+        throw null
+      }
+    }
+
+    if (body.language) {
+      const language = body.language == 'fr' ? 'fr' : 'en'
+
+      try {
+        await language_.set(language)
+      } catch (error) {
+        next(new DBException())
+        throw null
+      }
+    }
+
+    var env = await new EnvService().getEnv()
 
     return new DataSuccess(200, SUCCESS, 'Success', {
       emlat: { ...env, pin, nbUsers: countUsers.count },
@@ -202,9 +279,12 @@ class Admin {
       throw null
     }
 
-    let updateUser: DataServiceResponse<{ id: number }>
+    let updateUser: DataServiceResponse<{ id: number }> = await new AuthService().updateUser(user_)
 
-    updateUser = await new AuthService().updateUser(user_)
+    if (!updateUser.status) {
+      next(new DBException())
+      throw null
+    }
 
     delete user_.password
     if (!user.admin) {

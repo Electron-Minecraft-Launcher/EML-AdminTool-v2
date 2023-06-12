@@ -5,6 +5,7 @@ import { DataHttpResponse } from '$models/responses/http/data-http-response.mode
 import { User } from '$models/features/user.model'
 import Admin from '$controllers/admin.controller'
 import { DefaultHttpResponse } from '$models/responses/http/default-http-response.model'
+import { EMLAdminToolInfo } from '$models/features/emlat-info.model'
 
 export default class AdminRouter implements Route {
   path = '/api'
@@ -30,12 +31,53 @@ export default class AdminRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(`${this.path}/admintool`, async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
-      try {
-        const resp = await new Admin().getAdminToolInfo(req.headers, next)
-        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error) {}
-    })
+    this.router.get(
+      `${this.path}/admintool`,
+      async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
+        try {
+          const resp = await new Admin().getAdminToolInfo(req.headers, next)
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error) {}
+      }
+    )
+
+    /**
+     * @openapi
+     * /admintool:
+     *   put:
+     *     tags:
+     *       - Admin
+     *     security:
+     *       - bearer: []
+     *     summary: Update EML AdminTool info
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               name:
+     *                 type: string
+     *               language:
+     *                 type: string
+     *               pin:
+     *                 type: boolean
+     *     responses:
+     *       200:
+     *         description: EML AdminTool info updated
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.put(
+      `${this.path}/admintool`,
+      async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
+        try {
+          const resp = await new Admin().putAdminToolInfo(req.headers, req.body, next)
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error) {}
+      }
+    )
 
     /**
      * @openapi
