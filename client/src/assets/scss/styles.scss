@@ -86,7 +86,7 @@ a.not-a {
   text-decoration: none;
 }
 
-input {
+input:not([type=checkbox]) {
   display: block;
   width: calc(100% - 32px);
   margin-top: 15px;
@@ -107,6 +107,10 @@ input {
     box-shadow: none;
     outline: 6px solid var(--primary-tr-color-hover);
   }
+}
+
+input[type=checkbox] {
+  margin-top: 15px;
 }
 
 button {
@@ -186,10 +190,10 @@ section.section {
     display: flex;
     flex: auto;
     flex-wrap: wrap;
+    gap: 0 50px;
 
     div {
       width: 280px;
-      margin-right: 50px;
       vertical-align: top;
     }
   }

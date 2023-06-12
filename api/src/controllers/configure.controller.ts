@@ -10,6 +10,7 @@ import { NextFunction } from 'express'
 import { AuthService } from '$services/auth.service'
 import { UnauthorizedException } from '$responses/exceptions/unauthorized-exception.response'
 import { User } from '$models/features/user.model'
+import language_ from '$utils/language'
 
 export default class Configure {
   async check(body: any, next: NextFunction): Promise<DefaultSuccess> {
@@ -36,29 +37,12 @@ export default class Configure {
 
   async language(body: any, next: NextFunction): Promise<DefaultSuccess> {
     const language = body.language == 'fr' ? 'fr' : 'en'
-    var data: Config[] = []
-
+    
     try {
-      data = await db.query<Config[]>("SELECT * FROM config WHERE data = 'language'")
-    } catch (error: any) {
-      next(new DBException(error.code))
+      await language_.set(language)
+    } catch (error) {
+      next(new DBException())
       throw null
-    }    
-
-    if (data.find((language) => language.data == 'language')) {
-      try {
-        await db.query("UPDATE config SET value = ? WHERE data = 'language'", [language])
-      } catch (error: any) {
-        next(new DBException(error.code))
-        throw null
-      }
-    } else {
-      try {
-        await db.query("INSERT INTO config(data, value) VALUES ('language', ?)", [language])
-      } catch (error: any) {
-        next(new DBException(error.code))
-        throw null
-      }
     }
 
     return new DefaultSuccess()

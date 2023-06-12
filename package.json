@@ -1,6 +1,6 @@
 {
   "name": "eml-admintool",
-  "version": "2.3.0-alpha",
+  "version": "2.4.5-alpha",
   "description": "Manage your Minecraft Launcher (working with EML Core) from the Web.",
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",

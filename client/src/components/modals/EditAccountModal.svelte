@@ -15,7 +15,7 @@
   let l: typeof en | typeof fr
   let user: User
 
-  let name: string
+  let name: string = ''
   let password: string = ''
   let passwordCfr: string = ''
 
@@ -29,7 +29,6 @@
   user$.subscribe((value) => {
     if (value) {
       user = value
-      name = user.name!
     }
   })
 
@@ -51,18 +50,17 @@
   <form on:submit|preventDefault={submit}>
     <h2>Edit account information</h2>
 
-    <p class="label">{l.dashboard.account.nameOrPseudo}</p>
-    <input type="text" placeholder={l.dashboard.account.nameOrPseudo} bind:value={name} style="margin-top: 0" />
+    <p>Leave empty if you wont change.</p>
 
-    <p class="label">{l.main.password}</p>
-    <input type="password" placeholder={l.main.password} bind:value={password} style="margin-top: 0" />
+    <input type="text" placeholder={l.dashboard.account.newNameOrPseudo} bind:value={name} />
 
-    <p class="label">{l.auth.confirmPassword}</p>
-    <input type="password" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} style="margin-top: 0" />
+    <input type="password" placeholder={l.dashboard.account.newPassword} bind:value={password} />
+
+    <input type="password" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} />
 
     <div class="actions">
-      <button class="secondary" on:click={closeModal} type="button">Cancel</button>
-      <button class="primary" disabled={password != passwordCfr}>Save</button>
+      <button class="secondary" on:click={closeModal} type="button">{l.main.cancel}</button>
+      <button class="primary" disabled={password != passwordCfr}>{l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>

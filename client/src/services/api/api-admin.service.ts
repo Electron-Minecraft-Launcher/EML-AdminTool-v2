@@ -2,8 +2,18 @@ import http from '../http.module'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 import type { DataHttpResponse } from '$models/responses/data-http-response.model'
 import type { User } from '$models/features/user.model'
+import type { EMLAdminToolInfo } from '$models/features/emlat-info.model'
 
 export default class ApiAdminService {
+  async getAdminTool() {
+    return await http.get<DataHttpResponse<EMLAdminToolInfo>>('/api/admintool')
+  }
+
+  async putAdminTool(name: string = 'EML', language: string = 'en', pin: boolean = false) {
+    const body = { name, language, pin }
+    return await http.put<DataHttpResponse<EMLAdminToolInfo>>('/api/admintool', body)
+  }
+
   async getUsers() {
     return await http.get<DataHttpResponse<User[]>>('/api/users')
   }

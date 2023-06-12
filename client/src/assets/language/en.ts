@@ -1,10 +1,13 @@
 export default {
   l: 'en',
+  language: 'English',
   main: {
     home: 'Home',
     prev: `Previous`,
     next: `Next`,
     finish: 'Finish',
+    save: `Save`,
+    cancel: `Cancel`,
     more: `More`,
     name: `Name`,
     username: `Username`,
@@ -43,12 +46,25 @@ export default {
   },
   dashboard: {
     welcome: `Welcome`,
+    information: `Information`,
+    permissions: `Permissions`,
+    emlatSettings: {
+      emlatSettings: `EML AdminTool settings`,
+      language: `Language`,
+      newName: `New name`,
+      nbUsers: `Number of users`,
+      users: `Users`,
+      vps: `VPS`,
+      os: `OS`,
+      storage: `Storage`,
+      emlAdminToolName: `EML AdminTool name`
+    },
     account: {
       accountSettings: `Account settings`,
-      information: `Information`,
       nameOrPseudo: `Name or Pseudo`,
       accountType: `Account type`,
-      permissions: `Permissions`
+      newNameOrPseudo: `New name or pseudo`,
+      newPassword: `New password`,
     },
   },
   modals: {

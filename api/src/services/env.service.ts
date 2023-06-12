@@ -1,8 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 import dotenv from 'dotenv'
+import db from '$utils/database'
 import { DefaultServiceResponse } from '$models/responses/services/default-service-response.model'
 import { SERVER_ERROR, SUCCESS } from '$models/types'
+import { Config } from '$models/configurations/config.model'
+import { User } from '$models/features/user.model'
+import { DataSuccess } from '$responses/success/data-success.response'
 
 export class EnvService {
   setEnv(dbPassword: string): DefaultServiceResponse {
@@ -44,5 +48,36 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
     } catch (error: any) {
       return { status: false, code: SERVER_ERROR, message: error.code }
     }
+  }
+
+  async getEnv() {
+    var config: Config[] = []
+    var name: User[] = []
+    var env: {
+      language: string
+      name: string
+      theme: string
+    } = {
+      language: 'en',
+      name: 'EML',
+      theme: 'eml',
+    }
+
+    try {
+      config = await db.query<Config[]>('SELECT * FROM config')
+    } catch (error: any) {
+      return env
+    }
+    try {
+      name = await db.query<User[]>('SELECT name FROM users WHERE admin = 1')
+    } catch (error: any) {
+      return env
+    }
+
+    env.language = config.find((language) => language.data == 'language')?.value || 'en'
+    env.name = name[0] && name[0].name ? name[0].name : 'EML'
+    env.theme = config.find((theme) => theme.data == 'theme')?.value || 'eml'
+
+    return env
   }
 }

@@ -39,7 +39,7 @@
 
 <section class="section">
   <button class="secondary right" on:click={editAccountModal}><i class="fa-solid fa-pen" /></button>
-  <h3>Information</h3>
+  <h3>{l.dashboard.information}</h3>
 
   <div class="container">
     <div>
@@ -72,7 +72,7 @@
 </section>
 
 <section class="section">
-  <h3>Permissions</h3>
+  <h3>{l.dashboard.permissions}</h3>
 
   <div class="container">
     <div>
