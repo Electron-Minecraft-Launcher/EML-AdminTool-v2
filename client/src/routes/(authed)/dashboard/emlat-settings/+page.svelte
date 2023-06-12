@@ -15,16 +15,12 @@
   let user: User
 
   env$.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') {
-      env = value
-      l = value.language
-    }
+    env = value
+    l = value.language
   })
 
   user$.subscribe((value) => {
-    if (value) {
-      user = value
-    }
+    user = value
   })
 
   let showEditAdminToolModal = false
@@ -86,9 +82,7 @@
 <section class="section">
   <h3>{l.dashboard.emlatSettings.users}</h3>
 
-  <div class="container">
-    
-  </div>
+  <div class="container" />
 </section>
 
 <section class="section">
@@ -110,9 +104,9 @@
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}
         <span class="storage">
-          <span class="storage-progress" style={'width: ' + data.vps.storage[0] / data.vps.storage[1] * 200 + 'px'}></span>
+          <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'} />
         </span>
-        {Math.round(data.vps.storage[0] / data.vps.storage[1] * 100)} %
+        {Math.round((data.vps.storage[0] / data.vps.storage[1]) * 100)} %
       {/if}
     </div>
   </div>
@@ -140,7 +134,7 @@
     background: var(--border-color2);
     position: relative;
     margin-right: 10px;
-    
+
     span.storage-progress {
       display: block;
       position: relative;
