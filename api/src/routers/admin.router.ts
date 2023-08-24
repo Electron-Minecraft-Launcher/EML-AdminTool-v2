@@ -6,6 +6,7 @@ import { User } from '$models/features/user.model'
 import Admin from '$controllers/admin.controller'
 import { DefaultHttpResponse } from '$models/responses/http/default-http-response.model'
 import { EMLAdminToolInfo } from '$models/features/emlat-info.model'
+import { ControllerException } from '$models/types'
 
 export default class AdminRouter implements Route {
   path = '/api'
@@ -35,9 +36,11 @@ export default class AdminRouter implements Route {
       `${this.path}/admintool`,
       async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
         try {
-          const resp = await new Admin().getAdminToolInfo(req.headers, next)
+          const resp = await new Admin().getAdminToolInfo(req.headers)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -73,9 +76,11 @@ export default class AdminRouter implements Route {
       `${this.path}/admintool`,
       async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
         try {
-          const resp = await new Admin().putAdminToolInfo(req.headers, req.body, next)
+          const resp = await new Admin().putAdminToolInfo(req.headers, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -96,9 +101,11 @@ export default class AdminRouter implements Route {
      */
     this.router.get(`${this.path}/users`, async (req: Request, res: Response<DataHttpResponse<User[]>>, next: NextFunction) => {
       try {
-        const resp = await new Admin().getUsers(req.headers, next)
+        const resp = await new Admin().getUsers(req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
 
     /**
@@ -124,9 +131,11 @@ export default class AdminRouter implements Route {
       `${this.path}/users/:user_id`,
       async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
         try {
-          const resp = await new Admin().getUser(req.headers, req.params['user_id'], next)
+          const resp = await new Admin().getUser(req.headers, req.params['user_id'])
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -192,9 +201,11 @@ export default class AdminRouter implements Route {
         next: NextFunction
       ) => {
         try {
-          const resp = await new Admin().putUser(req.headers, req.body, req.params['user_id'], next)
+          const resp = await new Admin().putUser(req.headers, req.body, req.params['user_id'])
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -223,9 +234,11 @@ export default class AdminRouter implements Route {
       `${this.path}/users/:user_id`,
       async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DefaultHttpResponse>, next: NextFunction) => {
         try {
-          const resp = await new Admin().deleteUser(req.headers, req.params['user_id'], next)
+          const resp = await new Admin().deleteUser(req.headers, req.params['user_id'])
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
   }

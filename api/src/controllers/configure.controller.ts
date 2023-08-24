@@ -13,7 +13,7 @@ import { User } from '$models/features/user.model'
 import language_ from '$utils/language'
 
 export default class Configure {
-  async check(body: any, next: NextFunction): Promise<DefaultSuccess> {
+  async check(): Promise<DefaultSuccess> {
     return new DefaultSuccess()
   }
 

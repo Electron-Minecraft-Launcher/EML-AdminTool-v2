@@ -26,7 +26,7 @@ export default class EnvRouter implements Route {
      */
     this.router.get('/api/env', async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
       try {
-        const resp = await new Env().env(next)
+        const resp = await new Env().env()
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error) {}
     })

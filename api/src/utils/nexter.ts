@@ -9,30 +9,27 @@ import { UnauthorizedException } from '$responses/exceptions/unauthorized-except
 
 class Nexter {
   /**
-   *
    * @return `!serviceToException.status ? ERROR : SUCCESS`
    */
-  serviceToException<T>(service: DataServiceResponse<T>): { status: boolean; exception?: any; data?: T } {
-    if (service.status || service.code == SUCCESS) return { status: true, data: service.data }
+  serviceToException<T>(service: DataServiceResponse<T>): T {
+    if (service.status || service.code == SUCCESS) return service.data as T
 
-    if (service.code == CLIENT_ERROR) return { status: false, exception: new RequestException(service.message || 'Bad Request') }
-
-    if (service.code == AUTH_ERROR)
-      return { status: false, exception: new UnauthorizedException(service.message || 'Unauthorized') }
-
-    if (service.code == CONFIG_ERROR)
-      return { status: false, exception: new ConfigurationException(service.message || 'Needs configuration') }
-
-    if (service.code == SERVER_ERROR)
-      return { status: false, exception: new ServerException(service.message || 'Internal Server error') }
-
-    if (service.code == DB_ERROR)
-      return { status: false, exception: new DBException(service.message || 'Unknown Database error') }
-
-    if (service.code == UNKNOWN_ERROR)
-      return { status: false, exception: new DefaultException(500, UNKNOWN_ERROR, 'Unknown error') }
-
-    return { status: false, exception: new ServerException(service.message || 'Internal Server error') }
+    switch (service.code) {
+      case CLIENT_ERROR:
+        throw new RequestException(service.message || 'Bad Request')
+      case AUTH_ERROR:
+        throw new UnauthorizedException(service.message || 'Unauthorized')
+      case CONFIG_ERROR:
+        throw new ConfigurationException(service.message || 'Needs configuration')
+      case SERVER_ERROR:
+        throw new ServerException(service.message || 'Internal Server error')
+      case DB_ERROR:
+        throw new DBException(service.message || 'Unknown Database error')
+      case UNKNOWN_ERROR:
+        throw new DefaultException(500, UNKNOWN_ERROR, 'Unknown error')
+      default:
+        throw new ServerException(service.message || 'Internal Server error')
+    }
   }
 }
 

@@ -1,3 +1,5 @@
+import { User } from "./user.model"
+
 export interface EMLAdminToolInfo {
   emlat: {
     language: string
@@ -9,5 +11,6 @@ export interface EMLAdminToolInfo {
   vps: {
     os: string
     storage: number[]
-  }
+  },
+  users: User[]
 }

@@ -5,6 +5,7 @@ import { DefaultHttpResponse } from '$models/responses/http/default-http-respons
 import { DataHttpResponse } from '$models/responses/http/data-http-response.model'
 import Auth from '$controllers/auth.controller'
 import { User } from '$models/features/user.model'
+import { ControllerException } from '$models/types'
 
 export default class AuthRouter implements Route {
   path = '/api'
@@ -34,9 +35,11 @@ export default class AuthRouter implements Route {
       `${this.path}/auth`,
       async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
         try {
-          const resp = await new Auth().auth(req.headers, next)
+          const resp = await new Auth().auth(req.headers)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -59,9 +62,11 @@ export default class AuthRouter implements Route {
       `${this.path}/verify`,
       async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
         try {
-          const resp = await new Auth().verify(req.headers, next)
+          const resp = await new Auth().verify(req.headers)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -95,9 +100,11 @@ export default class AuthRouter implements Route {
       `${this.path}/register`,
       async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
         try {
-          const resp = await new Auth().register(req.body, next)
+          const resp = await new Auth().register(req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {}
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
     )
 
@@ -116,9 +123,11 @@ export default class AuthRouter implements Route {
      */
     this.router.delete(`${this.path}/logout`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Auth().logout(req.headers, next)
+        const resp = await new Auth().logout(req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
   }
 }

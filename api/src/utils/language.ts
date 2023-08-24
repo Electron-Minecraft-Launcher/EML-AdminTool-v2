@@ -21,13 +21,13 @@ class Language {
 
     if (data.find((language) => language.data == 'language')) {
       try {
-        await db.query("UPDATE config SET value = ? WHERE data = 'language'", language)
+        await db.query("UPDATE config SET value = ? WHERE data = 'language'", [language])
       } catch (error: any) {
         throw Error(error)
       }
     } else {
       try {
-        await db.query("INSERT INTO config(data, value) VALUES ('language', ?)", language)
+        await db.query("INSERT INTO config(data, value) VALUES ('language', ?)", [language])
       } catch (error: any) {
         throw Error(error)
       }

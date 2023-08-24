@@ -1,4 +1,4 @@
-import App from './app'
+import App from './src/app'
 import DefaultRouter from '$routers/default.router'
 import ConfigureRouter from '$routers/configure.router'
 import EnvRouter from '$routers/env.router'

@@ -4,7 +4,7 @@ import db from '$utils/database'
 import { IncomingHttpHeaders } from 'http'
 import { AuthService } from '$services/auth.service'
 import { User } from '$models/features/user.model'
-import { CLIENT_ERROR, Code, DB_ERROR, SUCCESS, UNKNOWN_ERROR, count } from '$models/types'
+import { CLIENT_ERROR, Code, DB_ERROR, SUCCESS, ServiceException, UNKNOWN_ERROR, count } from '$models/types'
 import { DBException } from '$responses/exceptions/db-exception.response'
 import { DataSuccess } from '$responses/success/data-success.response'
 import { DefaultSuccess } from '$responses/success/default-success.response'
@@ -18,13 +18,12 @@ import { EMLAdminToolInfo } from '$models/features/emlat-info.model'
 import pin_ from '$utils/pin'
 import language_ from '$utils/language'
 
-class Admin {
-  async getAdminToolInfo(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<EMLAdminToolInfo>> {
-    const auth = nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+export default class Admin {
+  async getAdminToolInfo(headers: IncomingHttpHeaders): Promise<DataSuccess<EMLAdminToolInfo>> {
+    try {
+      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
     var env = await new EnvService().getEnv()
@@ -34,29 +33,27 @@ class Admin {
     try {
       pin = (await db.query<string[]>("SELECT value FROM config WHERE data = 'pin'"))[0].value
     } catch (error) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
     try {
       countUsers = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users'))[0]
     } catch (error) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
     return new DataSuccess(200, SUCCESS, 'Success', {
       emlat: { ...env, pin, nbUsers: countUsers.count },
       vps: { os: vps.getOS(), storage: vps.getStorage() },
+      users: []
     })
   }
 
-  async putAdminToolInfo(headers: IncomingHttpHeaders, body: any, next: NextFunction): Promise<DataSuccess<EMLAdminToolInfo>> {
-    const auth = nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+  async putAdminToolInfo(headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<EMLAdminToolInfo>> {
+    try {
+      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
     var getUser: User
@@ -67,18 +64,15 @@ class Admin {
       try {
         getUser = (await db.query<User[]>('SELECT * FROM users WHERE admin = 1'))[0]
       } catch (error) {
-        next(new DBException())
-        throw null
+        throw new DBException()
       }
 
       var isNameAvailable = (await new AuthService().isNameAvailable(body.name)).code
 
       if (isNameAvailable == CLIENT_ERROR) {
-        next(new UnauthorizedException('Name used'))
-        throw null
+        throw new UnauthorizedException('Name used')
       } else if (isNameAvailable == DB_ERROR) {
-        next(new DBException())
-        throw null
+        throw new DBException()
       }
 
       getUser.name = body.name
@@ -86,24 +80,21 @@ class Admin {
       let updateUser: DataServiceResponse<{ id: number }> = await new AuthService().updateUser(getUser)
 
       if (!updateUser.status) {
-        next(new DBException())
-        throw null
+        throw new DBException()
       }
     }
 
     try {
       countUsers = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users'))[0]
     } catch (error) {
-      next(new DBException())
-      throw null
-    }  
+      throw new DBException()
+    }
 
     if (body.pin && body.pin != 'false') {
       try {
         pin = (await pin_.check(true)) + ''
       } catch (error) {
-        next(new DBException())
-        throw null
+        throw new DBException()
       }
     }
 
@@ -113,8 +104,7 @@ class Admin {
       try {
         await language_.set(language)
       } catch (error) {
-        next(new DBException())
-        throw null
+        throw new DBException()
       }
     }
 
@@ -123,18 +113,18 @@ class Admin {
     return new DataSuccess(200, SUCCESS, 'Success', {
       emlat: { ...env, pin, nbUsers: countUsers.count },
       vps: { os: vps.getOS(), storage: vps.getStorage() },
+      users: []
     })
   }
 
-  async getUsers(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<User[]>> {
-    const auth = nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+  async getUsers(headers: IncomingHttpHeaders): Promise<DataSuccess<User[]>> {
+    try {
+      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
-    let users: User[] = await db.query<User[]>('SELECT * FROM users')
+    let users = await db.query<User[]>('SELECT * FROM users')
     let users_: User[] = []
 
     for (let user of users) {
@@ -145,34 +135,30 @@ class Admin {
     return new DataSuccess(200, SUCCESS, 'Success', users_)
   }
 
-  async getUser(headers: IncomingHttpHeaders, userId: number | 'me', next: NextFunction): Promise<DataSuccess<User>> {
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+  async getUser(headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DataSuccess<User>> {
+    try {
+      var auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
-    var user: User = auth.data!
+    var user = auth
     var getUser: User
 
     if (userId == user.id || userId == 'me') {
       userId = user.id!
     } else if (!user.admin) {
-      next(new UnauthorizedException())
-      throw null
+      throw new UnauthorizedException()
     }
 
     try {
-      getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
+      getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', [userId]))[0]
     } catch (error) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
     if (!getUser) {
-      next(new RequestException('User does not exist'))
-      throw null
+      throw new RequestException('User does not exist')
     }
 
     delete getUser.password
@@ -184,160 +170,131 @@ class Admin {
     return new DataSuccess(200, SUCCESS, 'Success', getUser)
   }
 
-  async putUser(
-    headers: IncomingHttpHeaders,
-    body: any,
-    userId: number | 'me',
-    next: NextFunction
-  ): Promise<DataSuccess<{ jwt?: string; user: User }>> {
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+  async putUser(headers: IncomingHttpHeaders, body: any, userId: number | 'me'): Promise<DataSuccess<{ jwt?: string; user: User }>> {
+    try {
+      var user = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
 
     if (!userId) {
-      next(new RequestException('Missing parameters'))
-      throw null
+      throw new RequestException('Missing parameters')
     }
 
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
-    }
-
-    var user: User = auth.data!
     var getUser: User
     const token = (headers['authorization'] + '').split(' ')[1]
 
     if (userId == user.id || userId == 'me') {
       userId = user.id!
     } else if (!user.admin) {
-      next(new UnauthorizedException())
-      throw null
+      throw new UnauthorizedException()
     }
 
     try {
       getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
     } catch (error) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
     if (!getUser) {
-      next(new RequestException('User does not exist'))
-      throw null
+      throw new RequestException('User does not exist')
     }
 
-    let user_: User = {
+    let updatedUser: User = {
       id: userId,
       name: body.name || getUser.name,
       password: getUser.password,
       admin: getUser.admin,
       status: user.admin && body.status ? +body.status : getUser.status,
-      p_files_updater_add_del:
-        user.admin && body.p_files_updater_add_del ? +body.p_files_updater_add_del : getUser.p_files_updater_add_del,
+      p_files_updater_add_del: user.admin && body.p_files_updater_add_del ? +body.p_files_updater_add_del : getUser.p_files_updater_add_del,
       p_bootstrap_mod: user.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
       p_maintenance_mod: user.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
       p_news_add: user.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
       p_news_mod_del: user.admin && body.p_news_mod_del ? +body.p_news_mod_del : getUser.p_news_mod_del,
       p_news_category_add_mod_del:
         user.admin && body.p_news_category_add_mod_del ? +body.p_news_category_add_mod_del : getUser.p_news_category_add_mod_del,
-      p_news_tag_add_mod_del:
-        user.admin && body.p_news_tag_add_mod_del ? +body.p_news_tag_add_mod_del : getUser.p_news_tag_add_mod_del,
+      p_news_tag_add_mod_del: user.admin && body.p_news_tag_add_mod_del ? +body.p_news_tag_add_mod_del : getUser.p_news_tag_add_mod_del,
       p_background_mod: user.admin && body.p_background_mod ? +body.p_background_mod : getUser.p_background_mod,
       p_stats_see: user.admin && body.p_stats_see ? +body.p_stats_see : getUser.p_stats_see,
-      p_stats_del: user.admin && body.p_stats_del ? +body.p_stats_del : getUser.p_stats_del,
+      p_stats_del: user.admin && body.p_stats_del ? +body.p_stats_del : getUser.p_stats_del
     }
 
     if (getUser.admin) {
-      user_.admin = 1
-      user_.status = 1
-      user_.p_files_updater_add_del = 1
-      user_.p_bootstrap_mod = 1
-      user_.p_maintenance_mod = 1
-      user_.p_news_add = 1
-      user_.p_news_mod_del = 1
-      user_.p_news_category_add_mod_del = 1
-      user_.p_news_tag_add_mod_del = 1
-      user_.p_background_mod = 1
-      user_.p_stats_see = 1
-      user_.p_stats_del = 1
+      updatedUser.admin = 1
+      updatedUser.status = 1
+      updatedUser.p_files_updater_add_del = 1
+      updatedUser.p_bootstrap_mod = 1
+      updatedUser.p_maintenance_mod = 1
+      updatedUser.p_news_add = 1
+      updatedUser.p_news_mod_del = 1
+      updatedUser.p_news_category_add_mod_del = 1
+      updatedUser.p_news_tag_add_mod_del = 1
+      updatedUser.p_background_mod = 1
+      updatedUser.p_stats_see = 1
+      updatedUser.p_stats_del = 1
     }
 
     if (userId == user.id && body.password != null && body.password != '') {
-      user_.password = await bcrypt.hash(body.password, 10)
+      updatedUser.password = await bcrypt.hash(body.password, 10)
     }
 
-    if (body.name != getUser.name && body.name != '' && body.name != null) {
-      var isNameAvailable = (await new AuthService().isNameAvailable(body.name)).code
-    } else {
-      var isNameAvailable: Code = SUCCESS
+    if (body.name && body.name !== getUser.name) {
+      try {
+        nexter.serviceToException(await new AuthService().isNameAvailable(body.name))
+      } catch (error: unknown) {
+        throw error as ServiceException
+      }
     }
 
-    if (isNameAvailable == CLIENT_ERROR) {
-      next(new UnauthorizedException('Name used'))
-      throw null
-    } else if (isNameAvailable == DB_ERROR) {
-      next(new DBException())
-      throw null
+    try {
+      nexter.serviceToException(await new AuthService().updateUser(updatedUser))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
-    let updateUser: DataServiceResponse<{ id: number }> = await new AuthService().updateUser(user_)
-
-    if (!updateUser.status) {
-      next(new DBException())
-      throw null
-    }
-
-    delete user_.password
+    delete updatedUser.password
     if (!user.admin) {
-      delete user_.status
+      delete updatedUser.status
     }
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? token : undefined, user: user_ })
+    return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? token : undefined, user: updatedUser })
   }
 
-  async deleteUser(headers: IncomingHttpHeaders, userId: number | 'me', next: NextFunction): Promise<DefaultSuccess> {
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+  async deleteUser(headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DefaultSuccess> {
+    try {
+      var user = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
-    var user: User = auth.data!
     var getUser: User
 
     if (userId == user.id || userId == 'me') {
       userId = user.id!
     } else if (!user.admin) {
-      next(new UnauthorizedException())
-      throw null
+      throw new UnauthorizedException()
     }
 
     try {
       getUser = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', +userId))[0]
     } catch (error) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
     if (!getUser) {
-      next(new RequestException('User does not exist'))
-      throw null
+      throw new RequestException('User does not exist')
     }
 
     if (getUser.admin) {
-      next(new RequestException('Not allowed to delete admin'))
-      throw null
+      throw new RequestException('Not allowed to delete admin')
     }
 
     try {
       await db.query('DELETE FROM users WHERE id = ?', +userId)
     } catch (error) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
     return new DefaultSuccess(200, SUCCESS, 'Success')
   }
 }
-
-export default Admin

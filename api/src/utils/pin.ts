@@ -15,6 +15,11 @@ class PIN {
     return Math.floor(Math.random() * 10) + '' + Math.floor(Math.random() * 10) + '' + Math.floor(Math.random() * 10)
   }
 
+  /**
+   * Check if PIN is in DB. If not, generate a new one and save it in DB.
+   * @param regenerate Force regeneration of PIN
+   * @returns Nothing or the new PIN
+   */
   async check(regenerate: boolean = false): Promise<void | string> {
     var isPinInDB: count
 

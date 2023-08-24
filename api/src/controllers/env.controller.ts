@@ -7,7 +7,7 @@ import { NextFunction } from 'express'
 import { EnvService } from '$services/env.service'
 
 class Env {
-  async env(next: NextFunction): Promise<DataSuccess<any>> {
+  async env(): Promise<DataSuccess<any>> {
     const env = await new EnvService().getEnv()
     return new DataSuccess(200, SUCCESS, 'Success', env)
   }

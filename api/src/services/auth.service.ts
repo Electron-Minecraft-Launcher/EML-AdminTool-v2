@@ -25,63 +25,28 @@ export class AuthService {
     return { status: true, code: SUCCESS }
   }
 
-  async isNameAvailable(
-    name: string,
-    excludeAdmin: boolean = false,
-    excludeId: number | false = false
-  ): Promise<DefaultServiceResponse> {
-    var countName: count
+  async isNameAvailable(name: string, excludeAdmin: boolean = false, excludeId: number | false = false): Promise<DefaultServiceResponse> {
+    const query =
+      excludeAdmin && !excludeId
+        ? 'SELECT COUNT(*) AS count FROM users WHERE name = ? AND admin = 0'
+        : !excludeAdmin && excludeId
+        ? 'SELECT COUNT(*) AS count FROM users WHERE name = ? AND id = ?'
+        : excludeAdmin && excludeId
+        ? 'SELECT COUNT(*) AS count FROM users WHERE name = ? AND admin = 1 AND id = ?'
+        : 'SELECT COUNT(*) AS count FROM users WHERE name = ?'
 
-    if (excludeAdmin && !excludeId) {
-      try {
-        countName = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE name = ? AND admin = 0', name))[0]
-        if (countName.count > 0) {
-          return { status: false, code: CLIENT_ERROR }
-        }
-      } catch (error: any) {
-        return { status: false, code: DB_ERROR, message: error.code }
-      }
-
-      return { status: true, code: SUCCESS }
-    }
-
-    if (!excludeAdmin && excludeId !== false) {
-      try {
-        countName = (
-          await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE name = ? AND id = ?', [name, excludeId])
-        )[0]
-        if (countName.count > 0) {
-          return { status: false, code: CLIENT_ERROR }
-        }
-      } catch (error: any) {
-        return { status: false, code: DB_ERROR, message: error.code }
-      }
-
-      return { status: true, code: SUCCESS }
-    }
-
-    if (excludeAdmin && excludeId !== false) {
-      try {
-        countName = (
-          await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE name = ? AND admin = 1 AND id = ?', [
-            name,
-            excludeId,
-          ])
-        )[0]
-        if (countName.count > 0) {
-          return { status: false, code: CLIENT_ERROR }
-        }
-      } catch (error: any) {
-        return { status: false, code: DB_ERROR, message: error.code }
-      }
-
-      return { status: true, code: SUCCESS }
-    }
+    const params =
+      excludeAdmin && !excludeId
+        ? [name]
+        : !excludeAdmin && excludeId
+        ? [name, excludeId]
+        : excludeAdmin && excludeId
+        ? [name, excludeId]
+        : [name]
 
     try {
-      countName = (await db.query<count[]>('SELECT COUNT(*) AS count FROM users WHERE name = ?', name))[0]
-      if (countName.count > 0) {
-        return { status: false, code: CLIENT_ERROR }
+      if ((await db.query<count[]>(query, params))[0].count > 0) {
+        return { status: false, code: CLIENT_ERROR, message: 'Name already taken' }
       }
     } catch (error: any) {
       return { status: false, code: DB_ERROR, message: error.code }
@@ -121,18 +86,18 @@ export class AuthService {
         [
           user.name + '',
           user.password + '',
-          (user.status! + 0) | 0,
-          (user.admin! + 0) | 0,
-          (user.p_files_updater_add_del! + 0) | 0,
-          (user.p_bootstrap_mod! + 0) | 0,
-          (user.p_maintenance_mod! + 0) | 0,
-          (user.p_news_add! + 0) | 0,
-          (user.p_news_mod_del! + 0) | 0,
-          (user.p_news_category_add_mod_del! + 0) | 0,
-          (user.p_news_tag_add_mod_del! + 0) | 0,
-          (user.p_background_mod! + 0) | 0,
-          (user.p_stats_see! + 0) | 0,
-          (user.p_stats_del! + 0) | 0,
+          user.status || 0,
+          user.admin || 0,
+          user.p_files_updater_add_del || 0,
+          user.p_bootstrap_mod || 0,
+          user.p_maintenance_mod || 0,
+          user.p_news_add || 0,
+          user.p_news_mod_del || 0,
+          user.p_news_category_add_mod_del || 0,
+          user.p_news_tag_add_mod_del || 0,
+          user.p_background_mod || 0,
+          user.p_stats_see || 0,
+          user.p_stats_del || 0
         ]
       )
     } catch (error: any) {
@@ -165,18 +130,18 @@ export class AuthService {
         [
           user.name + '',
           user.password + '',
-          (+user.status!) | 0,
-          (+user.p_files_updater_add_del!) | 0,
-          (+user.p_bootstrap_mod!) | 0,
-          (+user.p_maintenance_mod!) | 0,
-          (+user.p_news_add!) | 0,
-          (+user.p_news_mod_del!) | 0,
-          (+user.p_news_category_add_mod_del!) | 0,
-          (+user.p_news_tag_add_mod_del!) | 0,
-          (+user.p_background_mod!) | 0,
-          (+user.p_stats_see!) | 0,
-          (+user.p_stats_del!) | 0,
-          +user.id!
+          user.status || 0,
+          user.p_files_updater_add_del || 0,
+          user.p_bootstrap_mod || 0,
+          user.p_maintenance_mod || 0, 
+          user.p_news_add || 0,
+          user.p_news_mod_del || 0,
+          user.p_news_category_add_mod_del || 0,
+          user.p_news_tag_add_mod_del || 0,
+          user.p_background_mod || 0,
+          user.p_stats_see || 0,
+          user.p_stats_del || 0,
+          user.id!
         ]
       )
     } catch (error: any) {

@@ -5,7 +5,7 @@
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register src/server.ts"
+    "dev": "ts-node-dev -r tsconfig-paths/register index.ts"
   },
   "dependencies": {
     "assert": "^2.0.0",

@@ -12,12 +12,7 @@ export class CheckerService {
     if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
       return { status: true, code: SUCCESS }
     } else if (path.startsWith('/api/configure') && path != '/api/configure' && path != '/api/configure/') {
-      if (
-        !this.checkDotEnv() ||
-        !(await this.checkDB()) ||
-        !(await this.checkAdminInDB()) ||
-        (await new AuthService().isAdmin(headers['authorization'] + '')).status
-      ) {
+      if ((await this.needsConfiguration()) || (await new AuthService().isAdmin(headers['authorization'] + '')).status) {
         await db.dbGenerate(await db.getTablesToGenerate())
         await pin.check()
         return { status: true, code: SUCCESS }
@@ -25,7 +20,7 @@ export class CheckerService {
         return { status: false, code: AUTH_ERROR }
       }
     } else {
-      if (!this.checkDotEnv() || !(await this.checkDB()) || !(await this.checkAdminInDB())) {
+      if (await this.needsConfiguration()) {
         return { status: true, code: CONFIG_ERROR }
       } else {
         await pin.check()
@@ -68,5 +63,9 @@ export class CheckerService {
     } else {
       return false
     }
+  }
+
+  private async needsConfiguration(): Promise<boolean> {
+    return !this.checkDotEnv() || !(await this.checkDB()) || !(await this.checkAdminInDB())
   }
 }
