@@ -1,3 +1,5 @@
+import type { User } from "./user.model"
+
 export interface EMLAdminToolInfo {
   emlat: {
     language: string
@@ -10,4 +12,5 @@ export interface EMLAdminToolInfo {
     os: string
     storage: number[]
   }
+  users: User[]
 }

@@ -1,5 +1,5 @@
-import { JwtPayload } from "jsonwebtoken";
-import { tinyint, varchar } from "../types";
+// import type { JwtPayload } from "jsonwebtoken";
+import type { tinyint, varchar } from "../types";
 
 export interface User {
   id?: number,
@@ -19,4 +19,4 @@ export interface User {
   p_stats_del?: tinyint
 }
 
-export type UserJWT = JwtPayload & User
+// export type UserJWT = JwtPayload & User
