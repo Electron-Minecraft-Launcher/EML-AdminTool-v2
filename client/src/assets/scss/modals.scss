@@ -1,7 +1,5 @@
 div.modal-background {
   position: fixed;
-  display: flex;
-  vertical-align: middle;
   top: 0;
   left: 0;
   width: 100vw;
@@ -12,7 +10,6 @@ div.modal-background {
 }
 
 div.modal {
-  vertical-align: middle;
   transition: opacity 0.3s, transform 0.3s;
 
   background-color: white;
@@ -22,14 +19,15 @@ div.modal {
 
   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.5);
   position: relative;
-  margin: auto;
 
   &.size-s {
     width: 400px;
+    margin: 10vh auto 0 auto;
   }
 
   &.size-m {
     width: 750px;
+    margin: 15vh auto 0 auto;
   }
 
   &.size-l {

@@ -70,7 +70,7 @@
   <h2>Edit EML AdminTool information</h2>
 
   <form on:submit|preventDefault={submit}>
-    <p>Leave blank if you don't want to change.</p>
+    <p>Leave empty if you wont change.</p>
 
     <p class="label">{l.dashboard.emlatSettings.emlAdminToolName}</p>
     <input type="text" placeholder={l.dashboard.emlatSettings.newName} bind:value={name} />

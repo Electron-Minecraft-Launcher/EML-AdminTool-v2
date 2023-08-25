@@ -50,7 +50,7 @@
   <form on:submit|preventDefault={submit}>
     <h2>Edit account information</h2>
 
-    <p>Leave blank if you don't want to change.</p>
+    <p>Leave empty if you wont change.</p>
 
     <input type="text" placeholder={l.dashboard.account.newNameOrPseudo} bind:value={name} />
 

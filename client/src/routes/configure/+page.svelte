@@ -21,8 +21,10 @@
   let l: typeof en | typeof fr
 
   env$.subscribe((value) => {
-    env = value
-    l = value.language
+    if (value && value.language && typeof value.language !== 'string') {
+      env = value
+      l = value.language
+    }
   })
 
   let h1Visible = false
@@ -77,13 +79,7 @@
 </svelte:head>
 
 <div class="progress">
-  <span
-    class:step-0={step == 0}
-    class:step-1={step == 1}
-    class:step-2={step == 2}
-    class:step-3={step == 3}
-    class:step-4={step == 4}
-  />
+  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4} />
 </div>
 
 {#if h1Visible}
@@ -91,16 +87,7 @@
 {/if}
 
 {#if sliderVisible}
-  <div
-    class="config-slider"
-    class:step-0={step == 0}
-    class:step-1={step == 1}
-    class:step-2={step == 2}
-    class:step-3={step == 3}
-    class:step-4={step == 4}
-    id="config-slider"
-    transition:fade
-  >
+  <div class="config-slider" class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4} id="config-slider" transition:fade>
     <div class="config-1">
       <ConfigurationLanguage on:nextStep={nextStep} />
     </div>
@@ -146,7 +133,7 @@
 
     div.config-1,
     div.config-2,
-    div.config-3 {
+    div.config-3{
       width: 100vw;
       display: inline-block;
       vertical-align: top;

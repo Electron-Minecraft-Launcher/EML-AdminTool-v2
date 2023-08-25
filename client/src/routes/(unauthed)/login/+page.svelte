@@ -15,8 +15,10 @@
   let l: typeof en | typeof fr
 
   env$.subscribe((value) => {
-    env = value
-    l = value.language
+    if (value && value.language && typeof value.language !== 'string') {
+      env = value
+      l = value.language
+    }
   })
 
   let name: string = ''
@@ -62,5 +64,5 @@
 </form>
 
 <style lang="scss">
-  @import '../../../assets/scss/login.scss';
+  @import 'login.scss';
 </style>

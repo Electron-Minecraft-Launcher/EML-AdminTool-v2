@@ -14,6 +14,7 @@ export default class UserService {
         next: (res) => {
           user$.set(res.body.data!)
         },
+        error: () => {},
       })
     }
     return true

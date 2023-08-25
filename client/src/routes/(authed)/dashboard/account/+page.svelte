@@ -12,18 +12,22 @@
   let user: User
 
   env$.subscribe((value) => {
-    env = value
-    l = value.language
+    if (value && value.language && typeof value.language !== 'string') {
+      env = value
+      l = value.language
+    }
   })
 
   user$.subscribe((value) => {
-    user = value
+    if (value) {
+      user = value
+    }
   })
 
   let showEditAccountModal = false
 
   async function editAccountModal() {
-    showEditAccountModal = true
+    showEditAccountModal = true   
   }
 </script>
 

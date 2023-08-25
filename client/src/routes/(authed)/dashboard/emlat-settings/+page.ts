@@ -35,11 +35,5 @@ export const load: PageLoad = async () => {
     },
   })
 
-  ;(await apiAdmin.getUsers()).subscribe({
-    next: (res) => {
-      data.users = res.body.data!
-    },
-  })
-
   return data
 }

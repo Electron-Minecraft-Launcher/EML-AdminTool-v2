@@ -19,7 +19,7 @@ const apiConfigure = new ApiConfigureService()
 const apiAuth = new ApiAuthService()
 const cookies = new CookiesService()
 
-let env!: any
+let env!: Env
 
 export const load: LayoutLoad = async () => {
   ;(await apiEnv.getEnv()).subscribe({
