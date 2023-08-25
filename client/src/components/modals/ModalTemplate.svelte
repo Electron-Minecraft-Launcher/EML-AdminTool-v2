@@ -4,6 +4,7 @@
   import type { Env } from '$models/data/env.model'
   import { env$ } from '$services/store'
   import { cubicOut } from 'svelte/easing'
+  import { scale } from 'svelte/transition'
 
   export let size: 's' | 'm' | 'l' = 'm'
   export let show: boolean
@@ -21,23 +22,10 @@
   async function closeModal() {
     show = false
   }
-
-  function unscale(node: any, { duration }: any) {
-    return {
-      duration,
-      easing: cubicOut,
-      css: (t: any) => {
-        return `
-          display: ${t};
-          opacity: ${t};
-					transform: scale(${1.5 - t / 2});`
-      },
-    }
-  }
 </script>
 
 {#if show}
-  <div class="modal-background" transition:unscale={{ duration: 200 }}>
+  <div class="modal-background" transition:scale={{start: 1.5}}>
     <div class={'modal size-' + size}>
       <section class="close">
         <button class="close" on:click={closeModal}>Close&nbsp;&nbsp;<i class="fa-solid fa-times" /></button>

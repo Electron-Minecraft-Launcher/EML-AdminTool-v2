@@ -1,18 +1,41 @@
 <script lang="ts">
   import LeftPanel from '$components/LeftPanel.svelte'
   import Footer from '$components/Footer.svelte'
+
+  let leftPanelOpen = true
 </script>
 
-<LeftPanel />
-
 <div class="container">
-  <slot />
-  <Footer />
+  <div class="nav" class:closed={!leftPanelOpen}>
+    <LeftPanel bind:leftPanelOpen />
+  </div>
+
+  <div class="content">
+    <slot />
+    <Footer />
+  </div>
 </div>
 
-<style>
+<style lang="scss">
   div.container {
-    margin-left: 260px;
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    flex: 1;
+  }
+
+  div.nav {
+    width: 260px;
+    transition: all 0.3s;
+    z-index: 10;
+
+    &.closed {
+      width: 106px;
+    }
+  }
+
+  div.content {
     padding: 30px 100px;
+    flex: 1;
   }
 </style>

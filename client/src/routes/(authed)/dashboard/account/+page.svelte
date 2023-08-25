@@ -139,7 +139,7 @@
       {#if !user}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else if user.p_stats_see}
-        <p>View{user.p_stats_del ? 'and Delete' : ''} stats</p>
+        <p>View{user.p_stats_del ? ' and Delete' : ''} stats</p>
       {:else}
         <p>None</p>
       {/if}

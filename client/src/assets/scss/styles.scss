@@ -52,6 +52,25 @@ p {
   }
 }
 
+label,
+p.label {
+  margin: 20px 0 5px 0;
+  color: #808080;
+  font-size: 14px;
+  display: block;
+
+  &:nth-of-type(1) {
+    margin-top: 30px;
+  }
+}
+
+label.p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: black;
+}
+
 a:not(.not-a) {
   color: var(--primary-color);
   text-decoration: none;
@@ -89,7 +108,7 @@ a.not-a {
 input:not([type=checkbox]) {
   display: block;
   width: calc(100% - 32px);
-  margin-top: 15px;
+  margin-top: 5px;
   padding: 12px 15px;
   border: 1px solid var(--border-color2);
   border-radius: 5px;
@@ -110,7 +129,7 @@ input:not([type=checkbox]) {
 }
 
 input[type=checkbox] {
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 button {
@@ -203,13 +222,18 @@ section.section {
     margin: 0
   }
 
-  p.label {
-    margin: 30px 0 5px 0;
-    color: #808080;
-    font-size: 14px;
-  }
-
   p {
     margin: 0
+  }
+
+  label,
+  p.label {
+    margin: 20px 0 5px 0;
+    color: #808080;
+    font-size: 14px;
+
+    &:nth-of-type(1) {
+      margin-top: 30px;
+    }
   }
 }

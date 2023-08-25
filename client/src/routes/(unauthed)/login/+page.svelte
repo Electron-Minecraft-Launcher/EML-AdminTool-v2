@@ -53,8 +53,13 @@
 
   <h2>{l.auth.login}</h2>
   <p>{env.name} AdminTool</p>
-  <input type="text" placeholder={l.main.username} name="name" bind:value={name} />
-  <input type="password" placeholder={l.main.password} name="password" bind:value={password} />
+
+  <label for="name">{l.main.username}</label>
+  <input type="text" id="name" placeholder={l.main.username} bind:value={name} />
+  
+  <label for="username">{l.main.password}</label>
+  <input type="password" id="username" placeholder={l.main.password} bind:value={password} />
+
   <button class="primary">{l.auth.login}</button>
   <p class="center">
     <a class="small-link" href="/register">{l.auth.createAccount}</a>

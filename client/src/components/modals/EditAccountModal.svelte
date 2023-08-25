@@ -52,11 +52,14 @@
 
     <p>Leave blank if you don't want to change.</p>
 
-    <input type="text" placeholder={l.dashboard.account.newNameOrPseudo} bind:value={name} />
-
-    <input type="password" placeholder={l.dashboard.account.newPassword} bind:value={password} />
-
-    <input type="password" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} />
+    <label for="name">{l.dashboard.account.newNameOrPseudo}</label>
+    <input type="text" id="name" placeholder={l.dashboard.account.newNameOrPseudo} bind:value={name} />
+    
+    <label for="password">{l.dashboard.account.newPassword}</label>
+    <input type="password" id="password" placeholder={l.dashboard.account.newPassword} bind:value={password} />
+    
+    <label for="password-cfr">{l.auth.confirmPassword}</label>
+    <input type="password" id="password-cfr" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} />
 
     <div class="actions">
       <button class="secondary" on:click={closeModal} type="button">{l.main.cancel}</button>

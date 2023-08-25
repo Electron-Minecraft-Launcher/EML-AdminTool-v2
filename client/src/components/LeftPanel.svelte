@@ -19,6 +19,8 @@
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
 
+  export let leftPanelOpen = true
+
   let env!: Env
   let l: typeof en | typeof fr
   let user: User
@@ -40,7 +42,7 @@
   const height = '21px'
   const customStyle: { [key: string]: string }[] = [{ display: 'block' }, { margin: '30px 15px 20px 15px' }]
 
-  let ready: boolean = false
+  let ready = false
   let accountDropdownOpen = false
 
   onMount(async () => {
@@ -69,10 +71,26 @@
       },
     })
   }
+
+  function toggleLeftPanel() {
+    leftPanelOpen = !leftPanelOpen
+  }
 </script>
 
-<nav>
-  <h1>EML AdminTool</h1>
+<nav class:closed={!leftPanelOpen}>
+  <button class="toggle-left-panel" on:click={toggleLeftPanel}>
+    {@html leftPanelOpen ? '<i class="fa-solid fa-chevron-left" />' : '<i class="fa-solid fa-chevron-right" />'}
+  </button>
+
+  <div class="toggle-left-panel" />
+
+  <div class="hoverable" />
+
+  {#if leftPanelOpen}
+    <h1>EML AdminTool</h1>
+  {:else}
+    <h1><span>EML</span>AT</h1>
+  {/if}
 
   {#if !ready}
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '50px 15px 20px 15px' }]} />
@@ -86,7 +104,12 @@
     {/if}
   {/if}
 
-  <h4>Features</h4>
+  {#if leftPanelOpen}
+    <h4>Features</h4>
+  {:else}
+    <h4 style="height: 21px;"><hr style="border-color: #505050; border-top: 0; position: relative; top: 5px;" /></h4>
+  {/if}
+
   {#if !ready}
     <Skeleton {randomWidth} {height} {customStyle} />
     <Skeleton {randomWidth} {height} {customStyle} />
@@ -173,13 +196,54 @@
     top: 0;
     width: 200px;
     height: 100%;
+    transition: all 0.3s;
+
+    &.closed {
+      width: 46px;
+
+      h1 {
+        line-height: 1;
+        max-height: 35px;
+        margin-bottom: 35px;
+
+        span {
+          font-size: 15px;
+          display: block;
+        }
+      }
+
+      a.account {
+        width: 16px;
+
+        i.fa-caret-up {
+          display: none;
+        }
+
+        &:hover,
+        &.active {
+          color: var(--primary-color-hover);
+          background: #eeeeee;
+        }
+
+        &.active {
+          background: #f5f5f5;
+        }
+      }
+    }
   }
 
   h1 {
     margin: 5px 0 40px 0;
     font-size: 20px;
+    max-height: 30px;
     color: #202020;
     text-align: center;
+    transition: all 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    background: white;
+    z-index: 100;
+    position: relative;
   }
 
   h4 {
@@ -197,6 +261,8 @@
     padding: 10px 15px;
     font-size: 14px;
     position: relative;
+    overflow: hidden;
+    white-space: nowrap;
 
     &:hover:not(.account),
     &.active:hover:not(.account) {
@@ -269,6 +335,48 @@
       &:hover {
         background: #faeeee;
       }
+    }
+  }
+
+  nav {
+    div.toggle-left-panel {
+      width: 39px;
+      height: 43px;
+      background: white;
+      position: absolute;
+      right: 0;
+    }
+
+    div.hoverable {
+      height: 100%;
+      width: 39px;
+      position: absolute;
+      top: 0;
+      right: -39px;
+      z-index: -1;
+    }
+
+    // &.closed div.toggle-left-panel {
+    //   width: 30px;
+    // }
+
+    button.toggle-left-panel {
+      width: 39px;
+      border: 1px solid var(--border-color);
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+      background: white;
+      position: absolute;
+      transition: right 0.3s, opacity 0.3s;
+      right: 0;
+      // opacity: 0.5;
+    }
+
+    &:hover button.toggle-left-panel,
+    div.hoverable:hover button.toggle-left-panel,
+    button.toggle-left-panel:hover {
+      right: -39px;
+      // opacity: 1;
     }
   }
 </style>

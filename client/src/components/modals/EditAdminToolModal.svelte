@@ -57,7 +57,7 @@
       },
       finally: () => {
         splash = false
-      }
+      },
     })
   }
 </script>
@@ -72,8 +72,8 @@
   <form on:submit|preventDefault={submit}>
     <p>Leave blank if you don't want to change.</p>
 
-    <p class="label">{l.dashboard.emlatSettings.emlAdminToolName}</p>
-    <input type="text" placeholder={l.dashboard.emlatSettings.newName} bind:value={name} />
+    <label for="name">{l.dashboard.emlatSettings.emlAdminToolName}</label>
+    <input type="text" id="name" placeholder={l.dashboard.emlatSettings.newName} bind:value={name} />
     <p class="warn">Changing the EML AdminTool name will change your username/pseudo too!</p>
 
     <p class="label">{l.dashboard.emlatSettings.language}</p>
@@ -91,7 +91,7 @@
     </button>
 
     <p class="label">{l.main.pin}</p>
-    <label for="regenerate-pin"><input type="checkbox" name="pin" bind:checked={pin} id="regenerate-pin" /> Regenerate PIN</label>
+    <label class="p" for="regenerate-pin"><input type="checkbox" bind:checked={pin} id="regenerate-pin" /> Regenerate PIN</label>
 
     <div class="actions">
       <button class="secondary" on:click={closeModal} type="button">{l.main.cancel}</button>
@@ -104,7 +104,7 @@
   @import '../../assets/scss/modals.scss';
 
   p.warn {
-    margin: 0;
+    margin: 5px 0 0 0;
     color: #fa5650;
     font-size: 12px;
   }
@@ -112,6 +112,7 @@
   button.language {
     display: inline-block !important;
     padding: 0;
+    margin-top: 0px;
     margin-bottom: 15px;
 
     &:hover img {
@@ -149,10 +150,5 @@
       margin: 0;
       font-weight: 600;
     }
-  }
-
-  input,
-  button.language {
-    margin-top: 0;
   }
 </style>

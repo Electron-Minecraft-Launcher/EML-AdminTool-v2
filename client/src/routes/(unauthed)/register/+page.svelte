@@ -81,13 +81,20 @@
 
   <h2>{l.auth.register}</h2>
   <p>{env.name} AdminTool</p>
-  <input type="text" placeholder={l.main.username} bind:value={name} name="name" />
-  <input type="password" placeholder={l.main.password} bind:value={password} name="password" />
-  <input type="password" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} name="password-cfr" />
+
+  <label for="name">{l.main.username}</label>
+  <input type="text" id="name" placeholder={l.main.username} bind:value={name} />
+  
+  <label for="password">{l.main.password}</label>
+  <input type="password" id="password" placeholder={l.main.password} bind:value={password} />
+  
+  <label for="password-cfr">{l.auth.confirmPassword}</label>
+  <input type="password" id="password-cfr" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} />
+
   <label for="pin-1">{@html l.main.pin + (l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
-  <input type="text" maxlength="1" size="1" id="pin-1" on:keyup={focusNext} bind:value={pin[0]} name="pin-1" />
-  <input type="text" maxlength="1" size="1" id="pin-2" on:keyup={focusNext} bind:value={pin[1]} name="pin-2" />
-  <input type="text" maxlength="1" size="1" id="pin-3" on:keyup={focusNext} bind:value={pin[2]} name="pin-3" />
+  <input type="text" maxlength="1" size="1" id="pin-1" on:keyup={focusNext} bind:value={pin[0]} />
+  <input type="text" maxlength="1" size="1" id="pin-2" on:keyup={focusNext} bind:value={pin[1]} />
+  <input type="text" maxlength="1" size="1" id="pin-3" on:keyup={focusNext} bind:value={pin[2]} />
 
   <button class="primary" disabled={!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}>
     {l.auth.register}
