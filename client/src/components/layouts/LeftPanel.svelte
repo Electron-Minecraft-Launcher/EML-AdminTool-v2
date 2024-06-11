@@ -6,7 +6,7 @@
   import { env$, user$ } from '$services/store'
   import UserService from '$services/user.service'
   import { onMount } from 'svelte'
-  import Skeleton from './Skeleton.svelte'
+  import Skeleton from '../Skeleton.svelte'
   import utils from '$services/utils'
   import { page } from '$app/stores'
   import ApiAuthService from '$services/api/api-auth.service'
@@ -35,6 +35,7 @@
   user$.subscribe((value) => {
     if (value) {
       user = value
+      console.log(user)
     }
   })
 
@@ -116,42 +117,44 @@
     <Skeleton {randomWidth} {height} {customStyle} />
     <Skeleton {randomWidth} {height} {customStyle} />
     <Skeleton {randomWidth} {height} {customStyle} />
-  {:else}
-    {#if user.p_files_updater_add_del}
+  {:else if user.status !== 0 && user.status !== -1 && user.status !== -2}
+    {#if user.p_files_updater_add_del || user.admin}
       <a href="/dashboard/files-updater" class:active={$page.url.pathname == '/dashboard/files-updater'}>
         <i class="fa-solid fa-folder-open" />Files Updater
       </a>
     {/if}
 
-    {#if user.p_bootstrap_mod}
+    {#if user.p_bootstrap_mod || user.admin}
       <a href="/dashboard/bootstrap" class:active={$page.url.pathname == '/dashboard/bootstrap'}>
         <i class="fa-solid fa-arrows-rotate" />Bootstrap
       </a>
     {/if}
 
-    {#if user.p_maintenance_mod}
+    {#if user.p_maintenance_mod || user.admin}
       <a href="/dashboard/maintenance" class:active={$page.url.pathname == '/dashboard/maintenance'}>
         <i class="fa-solid fa-screwdriver-wrench" />Maintenance
       </a>
     {/if}
 
-    {#if user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del}
+    {#if user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del || user.admin}
       <a href="/dashboard/news" class:active={$page.url.pathname == '/dashboard/news'}>
         <i class="fa-solid fa-newspaper" />News
       </a>
     {/if}
 
-    {#if user.p_background_mod}
+    {#if user.p_background_mod || user.admin}
       <a href="/dashboard/background" class:active={$page.url.pathname == '/dashboard/background'}>
         <i class="fa-solid fa-image" />Background
       </a>
     {/if}
 
-    {#if user.p_stats_see || user.p_stats_del}
+    {#if user.p_stats_see || user.p_stats_del || user.admin}
       <a href="/dashboard/stats" class:active={$page.url.pathname == '/dashboard/stats'}>
         <i class="fa-solid fa-chart-simple" />Stats
       </a>
     {/if}
+    {:else}
+    {user.status}
   {/if}
 
   {#if !ready}

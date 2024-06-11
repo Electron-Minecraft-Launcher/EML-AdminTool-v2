@@ -1,5 +1,5 @@
 <script lang="ts">
-  import p from '../../../package.json'
+  import p from '../../../../package.json'
 </script>
 
 <footer>

@@ -1,4 +1,4 @@
-import { varchar } from "../types";
+import type { varchar } from "../types";
 
 export interface Maintenance {
   id?: number,

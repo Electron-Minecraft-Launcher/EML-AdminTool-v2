@@ -30,14 +30,14 @@
         cookies.add({
           name: 'JWT',
           value: res.body?.data?.jwt + '',
-          expireDays: 30,
+          expireDays: 30
         })
         user$.set(res.body?.data?.user!)
         goto('/dashboard')
       },
       error: () => {
         splash = false
-      },
+      }
     })
   }
 </script>
@@ -56,7 +56,7 @@
 
   <label for="name">{l.main.username}</label>
   <input type="text" id="name" placeholder={l.main.username} bind:value={name} />
-  
+
   <label for="username">{l.main.password}</label>
   <input type="password" id="username" placeholder={l.main.password} bind:value={password} />
 

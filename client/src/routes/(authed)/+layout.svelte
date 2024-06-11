@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LeftPanel from '$components/LeftPanel.svelte'
-  import Footer from '$components/Footer.svelte'
+  import LeftPanel from '$components/layouts/LeftPanel.svelte'
+  import Footer from '$components/layouts/Footer.svelte'
 
   let leftPanelOpen = true
 </script>
