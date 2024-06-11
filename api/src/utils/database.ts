@@ -8,31 +8,12 @@ import dbSchema from '$models/schemas/database.model'
 dotenv.config()
 
 class DataBase {
-  static db: mysql.Connection | false = false
-
-  constructor() {
-    this.connect()
-  }
-
-  private async connect() {
-    if (!DataBase.db) {
-      DataBase.db = await mysql.createConnection({
-        host: 'localhost',
-        user: 'eml',
-        password: process.env['DATABASE_PASSWORD'],
-        database: 'eml_admintool',
-      })
-
-      try {
-        await DataBase.db.connect()
-        return DataBase.db
-      } catch (error: any) {
-        throw new Error(error)
-      }
-    } else {
-      return DataBase.db
-    }
-  }
+  static db: mysql.Pool = mysql.createPool({
+    host: 'localhost',
+    user: 'eml',
+    password: process.env['DATABASE_PASSWORD'],
+    database: 'eml_admintool'
+  })
 
   /**
    * Make a query to the Database. **Use this function in a try/catch and with async/await!**
@@ -41,14 +22,6 @@ class DataBase {
    * @returns The data or an error
    */
   async query<T>(query: string, values?: any | any[]): Promise<T & RowDataPacket[]> {
-    if (!DataBase.db) {
-      try {
-        DataBase.db = await this.connect()
-      } catch (error: any) {
-        throw new Error(error)
-      }
-    }
-
     if (values) {
       try {
         return (await DataBase.db.query<T & RowDataPacket[]>(query, values))[0]
@@ -96,7 +69,7 @@ class DataBase {
           )
         )[0]
       } catch (error: any) {
-        throw new Error(error)
+        throw error
       }
 
       if (isTable.count == 0) {
@@ -119,17 +92,17 @@ class DataBase {
 
     try {
       isDb = (
-        await this.query<count[]>("SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'eml_admintool'")
+        await this.query<count[]>("SELECT COUNT(*) AS count FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'eml_admintool'")
       )[0]
     } catch (error: any) {
-      throw new Error(error)
+      throw error
     }
 
     if (isDb.count == 0) {
       try {
         this.query(`CREATE DATABASE eml_admintool`)
       } catch (error: any) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -137,7 +110,7 @@ class DataBase {
       try {
         await this.recreateTable(table, dbSchema[table])
       } catch (error: any) {
-        throw new Error(error)
+        throw error
       }
     }
   }
@@ -153,7 +126,7 @@ class DataBase {
         )
       )[0]
     } catch (error: any) {
-      throw new Error(error)
+      throw error
     }
 
     if (isTable.count > 0) {
@@ -161,7 +134,7 @@ class DataBase {
         console.log('DROP TABLE ' + table)
         await this.query('DROP TABLE ?', [table])
       } catch (error: any) {
-        throw new Error(error)
+        throw error
       }
     }
 
@@ -180,7 +153,7 @@ class DataBase {
     try {
       await this.query('CREATE TABLE ' + table + ' (' + columns_ + ')')
     } catch (error: any) {
-      throw new Error(error)
+      throw error
     }
   }
 }

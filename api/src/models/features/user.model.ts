@@ -20,15 +20,15 @@ export interface User {
    *
    * ` 0` Waiting for acceptation
    *
-   * `-1` Bad PIN
+   * `-1` Wrong PIN
    *
    * `-2` Deleted
    */
   status?: tinyint
   /**
-   * In the JWT
+   * **In** the JWT
    *
-   * `p_*` are not in the JWT
+   * `p_*` are **not** in the JWT
    */
   admin?: tinyint
   p_files_updater_add_del?: tinyint

@@ -21,6 +21,7 @@ export class CheckerService {
       }
     } else {
       if (await this.needsConfiguration()) {
+        await db.dbGenerate(await db.getTablesToGenerate())
         return { status: true, code: CONFIG_ERROR }
       } else {
         await pin.check()
@@ -58,10 +59,8 @@ export class CheckerService {
 
     if (isAdminInDB.count > 1) {
       throw new Error('Could not have more than one Admin. Please reset your EML AdminTool!')
-    } else if (isAdminInDB.count == 1) {
-      return true
     } else {
-      return false
+      return isAdminInDB.count == 1
     }
   }
 

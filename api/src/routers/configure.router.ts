@@ -3,6 +3,7 @@ import { Route } from '$models/routes/route.model'
 import { Request, Response } from 'express'
 import Configure from '$controllers/configure.controller'
 import { DefaultHttpResponse } from '$models/responses/http/default-http-response.model'
+import { ControllerException } from '$models/types'
 
 export default class ConfigureRouter implements Route {
   path = '/api/configure'
@@ -58,9 +59,11 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/language`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().language(req.body, next)
+        const resp = await new Configure().language(req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
 
     /**
@@ -90,9 +93,11 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/database`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().database(req.body, next)
+        const resp = await new Configure().database(req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
 
     /**
@@ -124,9 +129,35 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/admin`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().admin(req.body, next)
+        const resp = await new Configure().admin(req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /configure/reset:
+     *   delete:
+     *     tags:
+     *      - Configuration
+     *     security:
+     *       - bearer: []
+     *     summary: Reset the EML AdminTool
+     *     responses:
+     *       200:
+     *         description: Reset
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.delete(`${this.path}/reset`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+      try {
+        const resp = await new Configure().reset(req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
   }
 }
