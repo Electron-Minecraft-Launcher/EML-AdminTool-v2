@@ -162,9 +162,10 @@
     }
 
     button.secondary {
-      margin-top: 15px;
+      margin-top: 7px;
       margin-left: 20px;
       white-space: nowrap;
+      height: 39px;
     }
   }
 

@@ -8,8 +8,13 @@
   import { env$, user$ } from '$services/store'
   import EditAdminToolModal from '$components/modals/EditAdminToolModal.svelte'
   import UserManagement from '$components/UserManagement.svelte'
+  import LoadingSplash from '$components/LoadingSplash.svelte'
+  import ApiConfigureService from '$services/api/api-configure.service'
 
   export let data: PageData
+
+  const apiConfigure = new ApiConfigureService()
+
   data.users = data.users.sort((a, b) => {
     return a.id! - b.id!
   })
@@ -17,6 +22,7 @@
   let env!: Env
   let l: typeof en | typeof fr
   let user: User
+  let splash = false
 
   env$.subscribe((value) => {
     env = value
@@ -33,11 +39,32 @@
   async function editAdminToolModal() {
     showEditAdminToolModal = true
   }
+
+  async function reset() {
+    if (
+      confirm(`Are you sure you want to reset the EML AdminTool? All the data will be lost and the EML AdminTool will be reset to its initial state. This action is irreversible.
+Moreover, be sure that nobody can access the EML AdminTool during the reset: the EML AdminTool is not protected during the setup!`)
+    ) {
+      if (confirm('Are you really sure?')) {
+        splash = true
+        ;(await apiConfigure.deleteReset()).subscribe({
+          finally: () => {
+            splash = false
+            window.location.href = '/'
+          }
+        })
+      }
+    }
+  }
 </script>
 
 <svelte:head>
   <title>{l.dashboard.emlatSettings.emlatSettings} • {env.name} AdminTool</title>
 </svelte:head>
+
+{#if splash}
+  <LoadingSplash transparent={true} />
+{/if}
 
 <h2>{l.dashboard.emlatSettings.emlatSettings}</h2>
 
@@ -183,6 +210,17 @@
   </div>
 </section>
 
+<section class="section">
+  <h3>Danger zone</h3>
+  <!-- ! Translation -->
+
+  <div class="container">
+    <div>
+      <button class="primary danger" on:click={reset}>Reset</button>
+    </div>
+  </div>
+</section>
+
 <EditAdminToolModal bind:show={showEditAdminToolModal} />
 
 <style lang="scss">
@@ -252,9 +290,25 @@
 
     div.perms {
       flex: calc(100% - 400px);
-      min-height: 400px;
-      max-height: 600px;
-      overflow: auto;
+      position: relative;
+    }
+  }
+
+  button.danger {
+    margin-top: 30px;
+    background: var(--red-color);
+    box-shadow: 0 2px 0 rgb(107, 12, 12);
+    color: var(--text-light-color);
+    width: 120px;
+
+    &:hover:not(:disabled) {
+      background: rgb(216, 43, 43);
+      box-shadow: 0 2px 0 rgb(184, 28, 28);
+    }
+
+    &:hover:active:not(:disabled) {
+      box-shadow: 0 0 rgb(184, 28, 28);
+      outline: 6px solid rgba(194, 5, 5, 0.2);
     }
   }
 </style>

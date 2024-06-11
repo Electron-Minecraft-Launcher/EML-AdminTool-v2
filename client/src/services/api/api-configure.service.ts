@@ -20,4 +20,8 @@ export default class ApiConfigureService {
     const req = { password: password, name: name }
     return await http.put<DefaultHttpResponse>('/api/configure/admin', req)
   }
+
+  async deleteReset() {
+    return await http.delete<DefaultHttpResponse>('/api/configure/reset')
+  }
 }
