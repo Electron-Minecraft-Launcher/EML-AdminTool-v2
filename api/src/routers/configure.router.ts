@@ -151,7 +151,7 @@ export default class ConfigureRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.delete(`${this.path}/reset`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+    this.router.delete(`/api/reset`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
         const resp = await new Configure().reset(req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })

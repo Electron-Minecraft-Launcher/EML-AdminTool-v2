@@ -166,7 +166,7 @@ export class AuthService {
       const [name, password] = Buffer.from(auth.split(' ')[1], 'base64').toString('ascii').split(':')
 
       try {
-        user = (await db.query<User[]>('SELECT * FROM users WHERE name = ?', [name]))[0]
+        user = (await db.query<User[]>('SELECT * FROM users WHERE name = ? AND status != -2', [name]))[0]
       } catch (error: any) {
         return { status: false, code: DB_ERROR, message: error.code }
       }
@@ -194,7 +194,7 @@ export class AuthService {
       }
 
       try {
-        user = (await db.query<User[]>('SELECT * FROM users WHERE id = ?', [dec[1].sub]))[0]
+        user = (await db.query<User[]>('SELECT * FROM users WHERE id = ? AND status != -2', [dec[1].sub]))[0]
       } catch (error: any) {
         return { status: false, code: AUTH_ERROR }
       }

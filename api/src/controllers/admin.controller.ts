@@ -125,14 +125,12 @@ export default class Admin {
     }
 
     let users = await db.query<User[]>('SELECT * FROM users')
-    let users_: User[] = []
 
-    for (let user of users) {
-      delete user.password
-      users_.push(user)
-    }
+    users.forEach((user, i) => {
+      delete users[i].password
+    })
 
-    return new DataSuccess(200, SUCCESS, 'Success', users_)
+    return new DataSuccess(200, SUCCESS, 'Success', users)
   }
 
   async getUser(headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DataSuccess<User>> {
@@ -163,9 +161,7 @@ export default class Admin {
 
     delete getUser.password
 
-    if (!user.admin) {
-      delete getUser.status
-    }
+    if (!user.admin) delete getUser.status
 
     return new DataSuccess(200, SUCCESS, 'Success', getUser)
   }
@@ -205,7 +201,7 @@ export default class Admin {
       name: body.name || getUser.name,
       password: getUser.password,
       admin: getUser.admin,
-      status: user.admin && body.status ? +body.status : getUser.status,
+      status: ((user.admin && body.status) || (body.status && body.status == -2)) && !getUser.admin ? +body.status : getUser.status,
       p_files_updater_add_del: user.admin && body.p_files_updater_add_del ? +body.p_files_updater_add_del : getUser.p_files_updater_add_del,
       p_bootstrap_mod: user.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
       p_maintenance_mod: user.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
