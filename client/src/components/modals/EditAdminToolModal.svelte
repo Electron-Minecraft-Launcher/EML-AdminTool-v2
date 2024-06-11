@@ -8,7 +8,7 @@
   import ApiAdminService from '$services/api/api-admin.service'
   import enFlag from '$assets/images/en.png'
   import frFlag from '$assets/images/fr.png'
-  import LoadingSplash from '$components/LoadingSplash.svelte'
+  import LoadingSplash from '$components/layouts/LoadingSplash.svelte'
 
   export let show: boolean
 

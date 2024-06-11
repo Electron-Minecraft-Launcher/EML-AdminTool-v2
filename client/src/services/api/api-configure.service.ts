@@ -22,6 +22,6 @@ export default class ApiConfigureService {
   }
 
   async deleteReset() {
-    return await http.delete<DefaultHttpResponse>('/api/configure/reset')
+    return await http.delete<DefaultHttpResponse>('/api/reset')
   }
 }

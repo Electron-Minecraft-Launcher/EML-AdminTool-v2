@@ -1,11 +1,15 @@
 <script lang="ts">
-  import Skeleton from '$components/Skeleton.svelte'
+  import Skeleton from '$components/layouts/Skeleton.svelte'
   import type en from '$assets/language/en'
   import type fr from '$assets/language/fr'
   import type { Env } from '$models/data/env.model'
   import type { User } from '$models/features/user.model'
   import { env$, user$ } from '$services/store'
   import EditAccountModal from '$components/modals/EditAccountModal.svelte'
+  import ApiAdminService from '$services/api/api-admin.service'
+  import { goto } from '$app/navigation'
+
+  const apiAdmin = new ApiAdminService()
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -24,6 +28,17 @@
 
   async function editAccountModal() {
     showEditAccountModal = true
+  }
+
+  async function del() {
+    if (confirm('Are you sure you want to delete your account?')) {
+      ;(await apiAdmin.putUser('me', { status: -2 })).subscribe({
+        finally: () => {
+          localStorage.removeItem('JWT')
+          goto('/')
+        }
+      })
+    }
   }
 </script>
 
@@ -78,7 +93,7 @@
       {:else if user.p_files_updater_add_del}
         <p>Add and Delete files</p>
       {:else}
-        <p>None</p>
+        <p>-</p>
       {/if}
     </div>
 
@@ -89,7 +104,7 @@
       {:else if user.p_bootstrap_mod}
         <p>Modify bootstrap</p>
       {:else}
-        <p>None</p>
+        <p>-</p>
       {/if}
     </div>
 
@@ -100,7 +115,7 @@
       {:else if user.p_maintenance_mod}
         <p>Modify maintenance status</p>
       {:else}
-        <p>None</p>
+        <p>-</p>
       {/if}
     </div>
 
@@ -119,7 +134,7 @@
           <p>Add, Edit and Delete news tags</p>
         {/if}
       {:else}
-        <p>None</p>
+        <p>-</p>
       {/if}
     </div>
 
@@ -130,7 +145,7 @@
       {:else if user.p_background_mod}
         <p>Change background</p>
       {:else}
-        <p>None</p>
+        <p>-</p>
       {/if}
     </div>
 
@@ -141,11 +156,24 @@
       {:else if user.p_stats_see}
         <p>View{user.p_stats_del ? ' and Delete' : ''} stats</p>
       {:else}
-        <p>None</p>
+        <p>-</p>
       {/if}
     </div>
   </div>
 </section>
+
+{#if !user.admin}
+  <section class="section">
+    <h3>Danger zone</h3>
+    <!-- ! Translation -->
+
+    <div class="container">
+      <div>
+        <button class="primary danger" on:click={del}>Delete account</button>
+      </div>
+    </div>
+  </section>
+{/if}
 
 <EditAccountModal bind:show={showEditAccountModal} />
 

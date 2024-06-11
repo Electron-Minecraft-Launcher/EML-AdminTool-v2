@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import Skeleton from '$components/Skeleton.svelte'
+  import Skeleton from '$components/layouts/Skeleton.svelte'
   import type en from '$assets/language/en'
   import type fr from '$assets/language/fr'
   import type { Env } from '$models/data/env.model'
@@ -8,7 +8,7 @@
   import { env$, user$ } from '$services/store'
   import EditAdminToolModal from '$components/modals/EditAdminToolModal.svelte'
   import UserManagement from '$components/UserManagement.svelte'
-  import LoadingSplash from '$components/LoadingSplash.svelte'
+  import LoadingSplash from '$components/layouts/LoadingSplash.svelte'
   import ApiConfigureService from '$services/api/api-configure.service'
 
   export let data: PageData
@@ -34,7 +34,7 @@
   })
 
   let showEditAdminToolModal = false
-  let selectedUser: User = data.users[0]
+  let account: User = data.users[0]
 
   async function editAdminToolModal() {
     showEditAdminToolModal = true
@@ -121,9 +121,9 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {#if user.status == 1}
           <button
             class="list"
-            class:active={selectedUser.id == user.id}
+            class:active={account.id == user.id}
             on:click={() => {
-              selectedUser = user
+              account = user
             }}
           >
             {user.name}
@@ -136,9 +136,9 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {#if user.status == 0}
           <button
             class="list"
-            class:active={selectedUser == user.id}
+            class:active={account == user.id}
             on:click={() => {
-              selectedUser = user
+              account = user
             }}
           >
             {user.name}
@@ -151,9 +151,9 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {#if user.status == -1}
           <button
             class="list"
-            class:active={selectedUser == user.id}
+            class:active={account == user.id}
             on:click={() => {
-              selectedUser
+              account
             }}
           >
             {user.name}
@@ -166,9 +166,9 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {#if user.status == -2}
           <button
             class="list"
-            class:active={selectedUser == user.id}
+            class:active={account == user.id}
             on:click={() => {
-              selectedUser
+              account
             }}
           >
             {user.name}
@@ -178,7 +178,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div class="perms">
-      <UserManagement user={selectedUser} />
+      <UserManagement account={account} />
     </div>
   </div>
 </section>
@@ -291,24 +291,6 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     div.perms {
       flex: calc(100% - 400px);
       position: relative;
-    }
-  }
-
-  button.danger {
-    margin-top: 30px;
-    background: var(--red-color);
-    box-shadow: 0 2px 0 rgb(107, 12, 12);
-    color: var(--text-light-color);
-    width: 120px;
-
-    &:hover:not(:disabled) {
-      background: rgb(216, 43, 43);
-      box-shadow: 0 2px 0 rgb(184, 28, 28);
-    }
-
-    &:hover:active:not(:disabled) {
-      box-shadow: 0 0 rgb(184, 28, 28);
-      outline: 6px solid rgba(194, 5, 5, 0.2);
     }
   }
 </style>

@@ -19,9 +19,9 @@ export default class NotificationsService {
       case 'permission':
         this.set({ type: 'ERROR', content: 'You are not allowed to join this page.' })
       case 'db':
-        this.set({ type: 'ERROR', content: 'An unknown Database error appended' })
+        this.set({ type: 'ERROR', content: 'An unknown Database error happened' })
       default:
-        this.set({ type: 'ERROR', content: 'An unknown error appended' })
+        this.set({ type: 'ERROR', content: 'An unknown error happened' })
         break
     }
   }

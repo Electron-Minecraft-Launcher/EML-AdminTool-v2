@@ -1,7 +1,7 @@
 <script lang="ts">
   import type en from '$assets/language/en'
   import type fr from '$assets/language/fr'
-  import Skeleton from '$components/Skeleton.svelte'
+  import Skeleton from '$components/layouts/Skeleton.svelte'
   import type { Env } from '$models/data/env.model'
   import type { User } from '$models/features/user.model'
   import { env$, user$ } from '$services/store'

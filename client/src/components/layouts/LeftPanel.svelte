@@ -6,7 +6,7 @@
   import { env$, user$ } from '$services/store'
   import UserService from '$services/user.service'
   import { onMount } from 'svelte'
-  import Skeleton from '../Skeleton.svelte'
+  import Skeleton from './Skeleton.svelte'
   import utils from '$services/utils'
   import { page } from '$app/stores'
   import ApiAuthService from '$services/api/api-auth.service'

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LoadingSplash from '$components/LoadingSplash.svelte'
+  import LoadingSplash from '$components/layouts/LoadingSplash.svelte'
   import { env$, user$ } from '$services/store'
   import ApiAuthService from '$services/api/api-auth.service'
   import CookiesService from '$services/cookies.service'

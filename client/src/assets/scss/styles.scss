@@ -176,6 +176,24 @@ button {
     }
   }
 
+  &.danger {
+    margin-top: 30px;
+    background: var(--red-color);
+    box-shadow: 0 2px 0 rgb(107, 12, 12);
+    color: var(--text-light-color);
+    width: 150px;
+
+    &:hover:not(:disabled) {
+      background: rgb(216, 43, 43);
+      box-shadow: 0 2px 0 rgb(184, 28, 28);
+    }
+
+    &:hover:active:not(:disabled) {
+      box-shadow: 0 0 rgb(184, 28, 28);
+      outline: 6px solid rgba(194, 5, 5, 0.2);
+    }
+  }
+
   &:hover:active:not(:disabled) {
     transform: translateY(2px);
   }
