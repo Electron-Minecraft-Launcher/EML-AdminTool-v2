@@ -55,7 +55,7 @@
         user$.set(res.body.data?.user!)
         closeModal()
         invalidateAll()
-      },
+      }
     })
   }
 </script>
@@ -65,7 +65,7 @@
     <h2>Accept user</h2>
 
     <div class="overflow">
-      <label for="name"  style="margin-top: 0">{l.dashboard.account.nameOrPseudo}</label>
+      <label for="name" style="margin-top: 0">{l.dashboard.account.nameOrPseudo}</label>
       <input type="text" id="name" bind:value={account.name} />
 
       <p class="label">Files Updater</p>
@@ -85,10 +85,24 @@
 
       <p class="label">News</p>
       <label class="p" for="p_news_add">
-        <input type="checkbox" id="p_news_add" bind:value={p_news_add} /> Add news
+        <input
+          type="checkbox"
+          id="p_news_add"
+          bind:value={p_news_add}
+          on:change={() => {
+            if (!p_news_add) p_news_mod_del = false
+          }}
+        /> Add news
       </label>
       <label class="p" for="p_news_mod_del">
-        <input type="checkbox" id="p_news_mod_del" bind:value={p_news_mod_del} /> Edit and Delete every news
+        <input
+          type="checkbox"
+          id="p_news_mod_del"
+          bind:value={p_news_mod_del}
+          on:click={() => {
+            if (p_news_mod_del) p_news_add = true
+          }}
+        /> Edit and Delete every news
       </label>
       <label class="p" for="p_news_category_add_mod_del">
         <input type="checkbox" id="p_news_category_add_mod_del" bind:value={p_news_category_add_mod_del} /> Add, Edit and Delete news categories
@@ -104,10 +118,24 @@
 
       <p class="label">Stats</p>
       <label class="p" for="p_stats_see">
-        <input type="checkbox" id="p_stats_see" bind:value={p_stats_see} /> View stats
+        <input
+          type="checkbox"
+          id="p_stats_see"
+          bind:value={p_stats_see}
+          on:change={() => {
+            if (!p_stats_see) p_stats_del = false
+          }}
+        /> View stats
       </label>
       <label class="p" for="p_stats_del">
-        <input type="checkbox" id="p_stats_del" bind:value={p_stats_del} /> Delete stats
+        <input
+          type="checkbox"
+          id="p_stats_del"
+          bind:value={p_stats_del}
+          on:change={() => {
+            if (p_stats_del) p_stats_see = true
+          }}
+        /> Delete stats
       </label>
     </div>
 
@@ -135,6 +163,6 @@
   div.overflow {
     max-height: 350px;
     overflow-y: auto;
-    overflow-x: visible
+    overflow-x: visible;
   }
 </style>

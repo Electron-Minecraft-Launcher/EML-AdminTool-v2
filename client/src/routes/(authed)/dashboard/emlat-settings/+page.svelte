@@ -153,7 +153,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
             class="list"
             class:active={account == user.id}
             on:click={() => {
-              account
+              account = user
             }}
           >
             {user.name}
@@ -168,7 +168,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
             class="list"
             class:active={account == user.id}
             on:click={() => {
-              account
+              account = user
             }}
           >
             {user.name}
