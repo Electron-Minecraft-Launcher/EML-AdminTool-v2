@@ -1,32 +1,8 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# Svelte
-/client/build
-/client/.svelte-kit
-/client/package
-/client/.env
-/client/.env.*
-/client/!.env.example
-/client/vite.config.js.timestamp-*
-/client/vite.config.ts.timestamp-*
-
-# Express
-/api/.env
-
-# Project
-
-# Node
-node_modules
-npm-debug.log
-
-# Visual Studio Code
+/node_modules
 /.vscode
-/.history
 
-# System files
-.DS_Store
-Thumbs.db
+/server/node_modules
+/server/.env
 
-# Others
-_*.*
-/.client
+/client/node_modules
+/client/.svelte-kit

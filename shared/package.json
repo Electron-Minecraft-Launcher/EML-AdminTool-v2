@@ -1,0 +1,11 @@
+{
+  "name": "shared",
+  "version": "2.0.0-alpha.5",
+  "description": "",
+  "main": "index.js",
+  "author": "GoldFrite",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
