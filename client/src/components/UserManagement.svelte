@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import type { User } from '$models/features/user.model'
-  import { env$ } from '$services/store'
-  import AcceptUserModal from '$components/modals/AcceptUserModal.svelte'
+  import type en from '../assets/language/en'
+  import type fr from '../assets/language/fr'
+  import type { Env } from '../../../shared/models/data/env.model'
+  import type { User } from '../../../shared/models/features/user.model'
+  import { env$ } from '../services/store'
+  import AcceptUserModal from '../components/modals/AcceptUserModal.svelte'
 
   export let account: User
 

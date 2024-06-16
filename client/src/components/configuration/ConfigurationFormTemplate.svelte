@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import { env$ } from '$services/store'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import { env$ } from '../../services/store'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
-  import ApiConfigureService from '$services/api/api-configure.service'
+  import apiConfigureService from '../../services/api/api-configure.service'
   import { createEventDispatcher } from 'svelte'
-  import utils from '$services/utils'
+  import utils from '../../services/utils'
 
   export let step: number
   export let cond: boolean = true
@@ -14,7 +14,6 @@
   export let next: boolean = true
   export let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any }
 
-  const apiConfigure = new ApiConfigureService()
   const dispatch = createEventDispatcher()
 
   let env!: Env
@@ -44,7 +43,7 @@
   async function submit() {
     if (data.data == 'LANGUAGE') {
       splash = true
-      ;(await apiConfigure.putLanguage(data.value)).subscribe({
+      ;(await apiConfigureService.putLanguage(data.value)).subscribe({
         next: async (res) => {
           nextStep()
           await utils.sleep(500)
@@ -54,7 +53,7 @@
     }
     if (data.data == 'DATABASE') {
       splash = true
-      ;(await apiConfigure.putDbPassword(data.value)).subscribe({
+      ;(await apiConfigureService.putDbPassword(data.value)).subscribe({
         next: async (res) => {
           nextStep()
           await utils.sleep(500)
@@ -64,7 +63,7 @@
     }
     if (data.data == 'ADMIN') {
       splash = true
-      ;(await apiConfigure.putAdmin(data.value.name + '', data.value.password + '')).subscribe({
+      ;(await apiConfigureService.putAdmin(data.value.name + '', data.value.password + '')).subscribe({
         next: async (res) => {
           nextStep()
           await utils.sleep(500)

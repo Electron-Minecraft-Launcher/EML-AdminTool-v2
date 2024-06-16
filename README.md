@@ -5,19 +5,8 @@
 **Electron Minecraft Launcher Core (EML Core) est une librairie pour Electron. Elle permet l'authentification, le téléchargement de Java et de Minecraft et le lancement de Minecraft.**
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
-[<img src="https://img.shields.io/badge/platforms-Linux-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
+[<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
 [<img src="https://img.shields.io/badge/version-Alpha.0-orangered?style=for-the-badge&color=orangered">](package.json)</p>
-
----
-
-## <span id="platforms">Platform compatibility • Compatibilité des plateformes</span>
-
-| OS (platform) • Système d'exploitation (plateforme) | Supported? • Supporté ?             | Minimum version supported • Version minimale supportée  |
-|-----------------------------------------------------|-------------------------------------|---------------------------------------------------------|
-| Windows (win32)                                     | Not officially • Pas officiellement | -                                                       |
-| macOS (Darwin)                                      | Not officially • Pas officiellement | -                                                       |
-| Linux (including Chrome OS • incluant Chrome OS)    | Yes • Oui                           | Variable (Debian or Ubuntu recommended)                 |
-| Others • Autres                                     | Not officially • Pas officiellement | -                                                       |
 
 ---
 
@@ -29,9 +18,9 @@ You have to use a compatible **VPS**.
 ### Choose a VPS
 
 Here is the minimal specs needed:
- * 2 GB storage
- * 1 GB RAM
- * 1 Core 2 GHz CPU
+ * 2 GB storage (10 GB recommended)
+ * 1 GB RAM (4 GB recommended)
+ * 1 Core 2 GHz CPU (4 Cores 2 GHz recommended)
 
 You can choose your Linux distribution, but Debian or Ubuntu is highly recommended.
 
@@ -78,6 +67,14 @@ Then, download the code and run the command:
 ```bash
 npm i
 ```
+
+You can now start the development server:
+```bash
+docker-compose up --build
+```
+
+The API is available at `http://localhost:3000` and the client at `http://localhost:5173`. In development, you can also use phpMyAdmin at `http://localhost:8080`.
+
 You can now make pull requests!
 
 

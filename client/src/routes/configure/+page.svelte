@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import ConfigurationAdmin from '$components/configuration/ConfigurationAdmin.svelte'
-  import ConfigurationDatabase from '$components/configuration/ConfigurationDatabase.svelte'
-  import ConfigurationLanguage from '$components/configuration/ConfigurationLanguage.svelte'
-  import type { Env } from '$models/data/env.model'
-  import { env$ } from '$services/store'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import ConfigurationAdmin from '../../components/configuration/ConfigurationAdmin.svelte'
+  import ConfigurationDatabase from '../../components/configuration/ConfigurationDatabase.svelte'
+  import ConfigurationLanguage from '../../components/configuration/ConfigurationLanguage.svelte'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import { env$ } from '../../services/store'
   import { goto } from '$app/navigation'
   import type { PageData } from './$types'
-  import utils from '$services/utils'
+  import utils from '../../services/utils'
   import { fade } from 'svelte/transition'
 
   export let data: PageData

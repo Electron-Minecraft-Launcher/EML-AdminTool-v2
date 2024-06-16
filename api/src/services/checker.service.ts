@@ -1,46 +1,70 @@
-import { AuthService } from './auth.service'
+import { IncomingHttpHeaders } from 'http'
+import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
+import { ResponseType, count } from '../../../shared/models/types'
+import authService from './auth.service'
 import fs from 'fs'
 import path from 'path'
-import db from '$utils/database'
-import pin from '$utils/pin'
-import { IncomingHttpHeaders } from 'http'
-import { AUTH_ERROR, CONFIG_ERROR, count, SUCCESS } from '$models/types'
-import { DefaultServiceResponse } from '$models/responses/services/default-service-response.model'
+import db from '../utils/db'
+import dotenv from 'dotenv'
+import envService from './env.service'
+import pinService from './pin.service'
 
-export class CheckerService {
+class CheckerService {
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
-    if (path.startsWith('/api/swagger') || path.startsWith('/api/env')) {
-      return { status: true, code: SUCCESS }
-    } else if (path.startsWith('/api/configure') && path != '/api/configure' && path != '/api/configure/') {
-      if ((await this.needsConfiguration()) || (await new AuthService().isAdmin(headers['authorization'] + '')).status) {
-        await db.dbGenerate(await db.getTablesToGenerate())
-        await pin.check()
-        return { status: true, code: SUCCESS }
+    dotenv.config()
+
+    const location = path.split('/')
+
+    if (location[0] === '') location.shift()
+
+    if (!location[0] || !location[1] || location[0] !== 'api' || location[1] === 'swagger' || location[1] === 'env') {
+      return { status: true, code: ResponseType.SUCCESS }
+    }
+
+    let needsConfiguration = false
+
+    if (!this.checkDotEnv()) {
+      needsConfiguration = true
+      envService.setEnv('eml')
+    }
+
+    if (!(await this.checkDB())) {
+      needsConfiguration = true
+      await db.generate(await db.getTablesToGenerate())
+    }
+
+    if (!(await this.checkAdminInDB())) {
+      needsConfiguration = true
+    }
+
+    pinService.check()
+
+    // If configuring
+    if (location[1] === 'configure' && location[2] !== 'check') {
+      if (needsConfiguration || (await authService.isAdmin(headers['authorization'] + '')).status) {
+        return { status: true, code: ResponseType.SUCCESS }
       } else {
-        return { status: false, code: AUTH_ERROR }
+        return { status: false, code: ResponseType.AUTH_ERROR }
       }
     } else {
-      if (await this.needsConfiguration()) {
-        await db.dbGenerate(await db.getTablesToGenerate())
-        return { status: true, code: CONFIG_ERROR }
+      if (needsConfiguration) {
+        return { status: false, code: ResponseType.CONFIG_ERROR }
       } else {
-        await pin.check()
-        return { status: true, code: SUCCESS }
+        return { status: true, code: ResponseType.SUCCESS }
       }
     }
   }
 
   private checkDotEnv(): boolean {
-    if (fs.existsSync(path.join(process.cwd(), '/.env')) && process.env['DATABASE_PASSWORD'] && process.env['JWT_SECRET_KEY']) {
-      return true
-    } else {
-      return false
-    }
+    return (
+      fs.existsSync(path.join(process.cwd(), '/.env')) &&
+      process.env['DATABASE_PASSWORD'] !== undefined &&
+      process.env['JWT_SECRET_KEY'] !== undefined
+    )
   }
 
   private async checkDB(): Promise<boolean> {
-    const tables: boolean[] = Object.entries(await db.getTablesToGenerate()).map(([key, value]) => value)
-    for (let table of tables) {
+    for (let table of Object.entries(await db.getTablesToGenerate()).map(([key, value]) => value)) {
       if (table) {
         return false
       }
@@ -63,8 +87,6 @@ export class CheckerService {
       return isAdminInDB.count == 1
     }
   }
-
-  private async needsConfiguration(): Promise<boolean> {
-    return !this.checkDotEnv() || !(await this.checkDB()) || !(await this.checkAdminInDB())
-  }
 }
+
+export default new CheckerService()

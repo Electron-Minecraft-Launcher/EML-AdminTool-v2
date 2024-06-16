@@ -1,12 +1,12 @@
 <script lang="ts">
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
   import LanguageModal from '../modals/LanguageModal.svelte'
-  import en from '$assets/language/en'
-  import fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import enFlag from '$assets/images/en.png'
-  import frFlag from '$assets/images/fr.png'
-  import { env$ } from '$services/store'
+  import en from '../../assets/language/en'
+  import fr from '../../assets/language/fr'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import enFlag from '../../assets/images/en.png'
+  import frFlag from '../../assets/images/fr.png'
+  import { env$ } from '../../services/store'
 
   let env!: Env
   let l: typeof en | typeof fr

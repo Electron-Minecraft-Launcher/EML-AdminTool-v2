@@ -1,19 +1,17 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import Skeleton from '$components/layouts/Skeleton.svelte'
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import type { User } from '$models/features/user.model'
-  import { env$, user$ } from '$services/store'
-  import EditAdminToolModal from '$components/modals/EditAdminToolModal.svelte'
-  import UserManagement from '$components/UserManagement.svelte'
-  import LoadingSplash from '$components/layouts/LoadingSplash.svelte'
-  import ApiConfigureService from '$services/api/api-configure.service'
+  import Skeleton from '../../../../components/layouts/Skeleton.svelte'
+  import type en from '../../../../assets/language/en'
+  import type fr from '../../../../assets/language/fr'
+  import type { Env } from '../../../../../../shared/models/data/env.model'
+  import type { User } from '../../../../../../shared/models/features/user.model'
+  import { env$, user$ } from '../../../../services/store'
+  import EditAdminToolModal from '../../../../components/modals/EditAdminToolModal.svelte'
+  import UserManagement from '../../../../components/UserManagement.svelte'
+  import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
+  import apiConfigureService from '../../../../services/api/api-configure.service'
 
   export let data: PageData
-
-  const apiConfigure = new ApiConfigureService()
 
   data.users = data.users.sort((a, b) => {
     return a.id! - b.id!
@@ -47,7 +45,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     ) {
       if (confirm('Are you really sure?')) {
         splash = true
-        ;(await apiConfigure.deleteReset()).subscribe({
+        ;(await apiConfigureService.deleteReset()).subscribe({
           finally: () => {
             splash = false
             window.location.href = '/'
@@ -184,11 +182,11 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 </section>
 
 <section class="section">
-  <h3>{l.dashboard.emlatSettings.vps}</h3>
+  <h3>{l.dashboard.emlatSettings.vpsAndDocker}</h3>
 
   <div class="container">
     <div>
-      <p class="label">{l.dashboard.emlatSettings.os}</p>
+      <p class="label">{l.dashboard.emlatSettings.dockerInfo}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}

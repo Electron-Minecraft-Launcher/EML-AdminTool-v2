@@ -1,15 +1,13 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import { env$, user$ } from '$services/store'
-  import type { User } from '$models/features/user.model'
-  import ApiAdminService from '$services/api/api-admin.service'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import { env$, user$ } from '../../services/store'
+  import type { User } from '../../../../shared/models/features/user.model'
+  import apiAdminService from '../../services/api/api-admin.service'
 
   export let show: boolean
-
-  const apiAdmin = new ApiAdminService()
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -37,7 +35,7 @@
   }
 
   async function submit() {
-    ;(await apiAdmin.putUser('me', { name, password })).subscribe({
+    ;(await apiAdminService.putUser('me', { name, password })).subscribe({
       next: (res) => {
         user$.set(res.body.data?.user!)
         closeModal()

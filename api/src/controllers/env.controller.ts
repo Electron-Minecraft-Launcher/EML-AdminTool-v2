@@ -1,15 +1,11 @@
-import { Config } from '$models/configurations/config.model'
-import db from '$utils/database'
-import { User } from '$models/features/user.model'
-import { SUCCESS } from '$models/types'
-import { DataSuccess } from '$responses/success/data-success.response'
-import { NextFunction } from 'express'
-import { EnvService } from '$services/env.service'
+import { NextFunction, Request } from 'express'
+import { DataSuccess } from '../responses/success/data-success.response'
+import envService from '../services/env.service'
+import { ResponseType } from '../../../shared/models/types'
 
 class Env {
-  async env(): Promise<DataSuccess<any>> {
-    const env = await new EnvService().getEnv()
-    return new DataSuccess(200, SUCCESS, 'Success', env)
+  async env(req: Request): Promise<DataSuccess<any>> {
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await envService.getEnv())
   }
 }
 

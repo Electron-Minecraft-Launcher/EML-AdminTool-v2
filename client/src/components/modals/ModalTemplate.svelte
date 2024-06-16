@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import { env$ } from '$services/store'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import { env$ } from '../../services/store'
   import { cubicOut } from 'svelte/easing'
   import { scale } from 'svelte/transition'
 

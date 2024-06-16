@@ -1,15 +1,12 @@
 <script lang="ts">
-  import LoadingSplash from '$components/layouts/LoadingSplash.svelte'
-  import { env$, user$ } from '$services/store'
-  import ApiAuthService from '$services/api/api-auth.service'
-  import CookiesService from '$services/cookies.service'
-  import type { Env } from '$models/data/env.model'
-  import type en from '$assets/language/en'
+  import LoadingSplash from '../../../components/layouts/LoadingSplash.svelte'
+  import { env$, user$ } from '../../../services/store'
+  import apiAuthService from '../../../services/api/api-auth.service'
+  import cookiesService from '../../../services/cookies.service'
+  import type { Env } from '../../../../../shared/models/data/env.model'
+  import type en from '../../../assets/language/en'
   import { goto } from '$app/navigation'
-  import type fr from '$assets/language/fr'
-
-  const apiAuth = new ApiAuthService()
-  const cookies = new CookiesService()
+  import type fr from '../../../assets/language/fr'
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -27,9 +24,9 @@
 
   async function submit() {
     splash = true
-    ;(await apiAuth.postRegister(name + '', password + '', pin[0] + '' + pin[1] + '' + pin[2])).subscribe({
+    ;(await apiAuthService.postRegister(name + '', password + '', pin[0] + '' + pin[1] + '' + pin[2])).subscribe({
       next: async (res) => {
-        cookies.add({
+        cookiesService.add({
           name: 'JWT',
           value: res.body?.data?.jwt + '',
           expireDays: 30,

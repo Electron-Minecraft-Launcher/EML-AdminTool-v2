@@ -1,6 +1,6 @@
 <script lang="ts">
-  import '$assets/scss/styles.scss'
-  import Notification from '$components/layouts/Notification.svelte'
+  import '../assets/scss/styles.scss'
+  import Notification from '../components/layouts/Notification.svelte'
 </script>
 
 <div class="app">

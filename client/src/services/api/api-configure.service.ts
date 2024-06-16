@@ -1,9 +1,9 @@
 import http from '../http.module'
-import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
+import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
 
-export default class ApiConfigureService {
+class ApiConfigureService {
   async getConfigure() {
-    return await http.get<DefaultHttpResponse>('/api/configure')
+    return await http.get<DefaultHttpResponse>('/api/configure/check')
   }
 
   async putLanguage(language: string) {
@@ -25,3 +25,10 @@ export default class ApiConfigureService {
     return await http.delete<DefaultHttpResponse>('/api/reset')
   }
 }
+
+export default new ApiConfigureService()
+
+// interface DefaultHttpResponse {
+//   code: any
+//   message: string
+// }

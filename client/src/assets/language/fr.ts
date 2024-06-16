@@ -55,8 +55,8 @@ export default {
       language: `Langue`,
       nbUsers: `Nombre d'utilisateurs`,
       users: `Utilisateurs`,
-      vps: `VPS`,
-      os: `Système d'exploitation`,
+      vpsAndDocker: `VPS & Docker`,
+      dockerInfo: `Informations Docker`,
       storage: `Stockage`,
       emlAdminToolName: `Nom de l'EML AdminTool`
     },

@@ -1,9 +1,8 @@
-import { NextFunction, Router } from 'express'
-import { Route } from '$models/routes/route.model'
-import { Request, Response } from 'express'
-import Configure from '$controllers/configure.controller'
-import { DefaultHttpResponse } from '$models/responses/http/default-http-response.model'
-import { ControllerException } from '$models/types'
+import { NextFunction, Router, Request, Response } from 'express'
+import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { Route } from '../../../shared/models/routes/routes.model'
+import Configure from '../controllers/configure.controller'
+import { ControllerException } from '../responses/types'
 
 export default class ConfigureRouter implements Route {
   path = '/api/configure'
@@ -27,7 +26,7 @@ export default class ConfigureRouter implements Route {
      */
     this.router.get(`${this.path}`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().check()
+        const resp = await new Configure().check(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error) {}
     })
@@ -59,7 +58,7 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/language`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().language(req.body)
+        const resp = await new Configure().language(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -93,7 +92,7 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/database`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().database(req.body)
+        const resp = await new Configure().database(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -129,7 +128,7 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/admin`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().admin(req.body)
+        const resp = await new Configure().admin(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -153,7 +152,7 @@ export default class ConfigureRouter implements Route {
      */
     this.router.delete(`/api/reset`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().reset(req.headers)
+        const resp = await new Configure().reset(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error: unknown) {
         next(error as ControllerException)

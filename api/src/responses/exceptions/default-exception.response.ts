@@ -1,8 +1,8 @@
-import { ErrorCode } from '$models/types'
+import { Code, ErrorCode } from "../../../../shared/models/types"
 
 export class DefaultException {
   httpStatus: number
-  code: ErrorCode
+  code: Code
   message: string
 
   constructor(httpStatus: number, code: ErrorCode, message: string = '') {

@@ -1,13 +1,10 @@
-import type { Observable, HttpResponse } from '$models/responses/api-response.model'
-import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
+import type { Observable, HttpResponse } from '../../../shared/models/responses/services/api-response.model'
+import type { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
 import { redirect } from '@sveltejs/kit'
-import CookiesService from './cookies.service'
-import NotificationsService from './notifications.service'
+import cookiesService from './cookies.service'
+import notificationsService from './notifications.service'
 import router from './router'
 import { goto } from '$app/navigation'
-
-const cookies = new CookiesService()
-const notification = new NotificationsService()
 
 class Http {
   private headers: HeadersInit = {
@@ -99,7 +96,7 @@ class Http {
   }
 
   private urlEncode(object: any): string {
-    var formBody = []
+    var formBody: string[] = []
     for (var property in object) {
       var encodedKey = encodeURIComponent(property)
       var encodedValue = encodeURIComponent(object[property])
@@ -110,7 +107,7 @@ class Http {
 
   private sendInterceptor(url: string): void {
     if (!url.includes('/auth') && !url.includes('/register')) {
-      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
+      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookiesService.get('JWT') } }
     }
   }
 
@@ -120,13 +117,13 @@ class Http {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE'
   ): void {
     if (!url.includes('/env') && !url.includes('/configure') && response.body.code == 'CONFIG_ERROR') {
-      cookies.delete('JWT')
+      cookiesService.delete('JWT')
       goto('/configure')
     }
 
     if (response.body.code == 'AUTH_ERROR') {
       if (url.includes('/auth') || url.includes('/register')) {
-        notification.update({ type: 'ERROR', code: 'auth' })
+        notificationsService.update({ type: 'ERROR', code: 'auth' })
       } else if (
         url.includes('/configure/') ||
         url.includes('/verify') ||
@@ -134,16 +131,16 @@ class Http {
         (url.includes('/users/me') && method == 'GET') ||
         response.body.message == 'Token expired'
       ) {
-        cookies.delete('JWT')
-        notification.update({ type: 'ERROR', code: 'login' })
+        cookiesService.delete('JWT')
+        notificationsService.update({ type: 'ERROR', code: 'login' })
         throw redirect(300, '/login')
       } else if (response.body.message == 'Name used') {
-        notification.update({ type: 'ERROR', code: 'auth' })
+        notificationsService.update({ type: 'ERROR', code: 'auth' })
         // notification.update({ type: 'ERROR', code: 'permission' })
         // throw redirect(300, '/dashboard')
       }
-    } else if (response.body.code == 'DB_ERROR') {
-      notification.update({ type: 'ERROR', code: 'db' })
+    } else if (response.body.code == 'DATABASE_ERROR') {
+      notificationsService.update({ type: 'ERROR', code: 'db' })
     }
   }
 }

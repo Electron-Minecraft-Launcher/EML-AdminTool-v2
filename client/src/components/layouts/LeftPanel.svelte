@@ -1,23 +1,18 @@
 <script lang="ts">
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import type { User } from '$models/features/user.model'
-  import { env$, user$ } from '$services/store'
-  import UserService from '$services/user.service'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import type { User } from '../../../../shared/models/features/user.model'
+  import { env$, user$ } from '../../services/store'
+  import UserService from '../../services/user.service'
   import { onMount } from 'svelte'
   import Skeleton from './Skeleton.svelte'
-  import utils from '$services/utils'
+  import utils from '../../services/utils'
   import { page } from '$app/stores'
-  import ApiAuthService from '$services/api/api-auth.service'
-  import CookiesService from '$services/cookies.service'
-  import router from '$services/router'
+  import apiAuthService from '../../services/api/api-auth.service'
+  import cookiesService from '../../services/cookies.service'
   import { slide } from 'svelte/transition'
-  import { redirect } from '@sveltejs/kit'
   import { goto } from '$app/navigation'
-
-  const apiAuth = new ApiAuthService()
-  const cookies = new CookiesService()
 
   export let leftPanelOpen = true
 
@@ -64,9 +59,9 @@
   }
 
   async function logoutClick() {
-    ;(await apiAuth.deleteLogout()).subscribe({
+    ;(await apiAuthService.deleteLogout()).subscribe({
       finally: () => {
-        cookies.delete('JWT')
+        cookiesService.delete('JWT')
         // throw redirect(300, '/login')
         goto('/login')
       },

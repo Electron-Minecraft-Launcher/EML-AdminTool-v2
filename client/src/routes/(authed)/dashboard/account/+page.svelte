@@ -1,15 +1,13 @@
 <script lang="ts">
-  import Skeleton from '$components/layouts/Skeleton.svelte'
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import type { User } from '$models/features/user.model'
-  import { env$, user$ } from '$services/store'
-  import EditAccountModal from '$components/modals/EditAccountModal.svelte'
-  import ApiAdminService from '$services/api/api-admin.service'
+  import Skeleton from '../../../../components/layouts/Skeleton.svelte'
+  import type en from '../../../../assets/language/en'
+  import type fr from '../../../../assets/language/fr'
+  import type { Env } from '../../../../../../shared/models/data/env.model'
+  import type { User } from '../../../../../../shared/models/features/user.model'
+  import { env$, user$ } from '../../../../services/store'
+  import EditAccountModal from '../../../../components/modals/EditAccountModal.svelte'
+  import apiAdminService from '../../../../services/api/api-admin.service'
   import { goto } from '$app/navigation'
-
-  const apiAdmin = new ApiAdminService()
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -32,7 +30,7 @@
 
   async function del() {
     if (confirm('Are you sure you want to delete your account?')) {
-      ;(await apiAdmin.putUser('me', { status: -2 })).subscribe({
+      ;(await apiAdminService.putUser('me', { status: -2 })).subscribe({
         finally: () => {
           localStorage.removeItem('JWT')
           goto('/')

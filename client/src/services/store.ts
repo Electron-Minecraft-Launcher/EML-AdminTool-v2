@@ -1,6 +1,6 @@
-import type { Env } from '$models/data/env.model'
-import type { Notification } from '$models/data/notification.model'
-import type { User } from '$models/features/user.model'
+import type { Env } from '../../../shared/models/data/env.model'
+import type { Notification } from '../../../shared/models/data/notification.model'
+import type { User } from '../../../shared/models/features/user.model'
 import { writable } from 'svelte/store'
 
 export let notification$ = writable<Notification | null>(null)

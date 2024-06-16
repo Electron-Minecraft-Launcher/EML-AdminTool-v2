@@ -1,32 +1,34 @@
-import { NextFunction } from 'express'
-import bcrypt from 'bcrypt'
-import db from '$utils/database'
+import { Request } from 'express'
 import { IncomingHttpHeaders } from 'http'
-import { AuthService } from '$services/auth.service'
-import { User } from '$models/features/user.model'
-import { CLIENT_ERROR, Code, DB_ERROR, SUCCESS, ServiceException, UNKNOWN_ERROR, count } from '$models/types'
-import { DBException } from '$responses/exceptions/db-exception.response'
-import { DataSuccess } from '$responses/success/data-success.response'
-import { DefaultSuccess } from '$responses/success/default-success.response'
-import { RequestException } from '$responses/exceptions/request-exception.response'
-import { UnauthorizedException } from '$responses/exceptions/unauthorized-exception.response'
-import { DataServiceResponse } from '$models/responses/services/data-service-response.model'
-import nexter from '$utils/nexter'
-import { EnvService } from '$services/env.service'
-import vps from '$utils/vps'
-import { EMLAdminToolInfo } from '$models/features/emlat-info.model'
-import pin_ from '$utils/pin'
-import language_ from '$utils/language'
+import { EMLAdminToolInfo } from '../../../shared/models/features/emlat-info.model'
+import { User } from '../../../shared/models/features/user.model'
+import { DataServiceResponse } from '../../../shared/models/responses/services/data-service-response.model'
+import { ResponseType, count } from '../../../shared/models/types'
+import { DBException } from '../responses/exceptions/db-exception.response'
+import { RequestException } from '../responses/exceptions/request-exception.response'
+import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
+import { DataSuccess } from '../responses/success/data-success.response'
+import { DefaultSuccess } from '../responses/success/default-success.response'
+import { ServiceException } from '../responses/types'
+import db from '../utils/db'
+import authService from '../services/auth.service'
+import nexter from '../utils/nexter'
+import envService from '../services/env.service'
+import vpsService from '../services/vps.service'
+import adminService from '../services/admin.service'
+import pinService from '../services/pin.service'
+import languageService from '../services/language.service'
+import bcrypt from 'bcrypt'
 
 export default class Admin {
-  async getAdminToolInfo(headers: IncomingHttpHeaders): Promise<DataSuccess<EMLAdminToolInfo>> {
+  async getAdminToolInfo(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<EMLAdminToolInfo>> {
     try {
-      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+      nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
 
-    var env = await new EnvService().getEnv()
+    var env_ = await envService.getEnv()
     var pin: string = ''
     var countUsers: count
 
@@ -42,16 +44,16 @@ export default class Admin {
       throw new DBException()
     }
 
-    return new DataSuccess(200, SUCCESS, 'Success', {
-      emlat: { ...env, pin, nbUsers: countUsers.count },
-      vps: { os: vps.getOS(), storage: vps.getStorage() },
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
+      emlat: { ...env_, pin, nbUsers: countUsers.count },
+      vps: { os: vpsService.getOS(), storage: vpsService.getStorage() },
       users: []
     })
   }
 
-  async putAdminToolInfo(headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<EMLAdminToolInfo>> {
+  async putAdminToolInfo(req: Request<any>, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<EMLAdminToolInfo>> {
     try {
-      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+      nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -67,17 +69,17 @@ export default class Admin {
         throw new DBException()
       }
 
-      var isNameAvailable = (await new AuthService().isNameAvailable(body.name)).code
+      var isNameAvailable = (await adminService.isNameAvailable(body.name)).code
 
-      if (isNameAvailable == CLIENT_ERROR) {
+      if (isNameAvailable == ResponseType.CLIENT_ERROR) {
         throw new UnauthorizedException('Name used')
-      } else if (isNameAvailable == DB_ERROR) {
+      } else if (isNameAvailable == ResponseType.DATABASE_ERROR) {
         throw new DBException()
       }
 
       getUser.name = body.name
 
-      let updateUser: DataServiceResponse<{ id: number }> = await new AuthService().updateUser(getUser)
+      let updateUser: DataServiceResponse<{ id: number }> = await adminService.updateUser(getUser)
 
       if (!updateUser.status) {
         throw new DBException()
@@ -92,7 +94,7 @@ export default class Admin {
 
     if (body.pin && body.pin != 'false') {
       try {
-        pin = (await pin_.check(true)) + ''
+        pin = (await pinService.check(true)) + ''
       } catch (error) {
         throw new DBException()
       }
@@ -102,24 +104,24 @@ export default class Admin {
       const language = body.language == 'fr' ? 'fr' : 'en'
 
       try {
-        await language_.set(language)
+        await languageService.check(language)
       } catch (error) {
         throw new DBException()
       }
     }
 
-    var env = await new EnvService().getEnv()
+    var env_ = await envService.getEnv()
 
-    return new DataSuccess(200, SUCCESS, 'Success', {
-      emlat: { ...env, pin, nbUsers: countUsers.count },
-      vps: { os: vps.getOS(), storage: vps.getStorage() },
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
+      emlat: { ...env_, pin, nbUsers: countUsers.count },
+      vps: { os: vpsService.getOS(), storage: vpsService.getStorage() },
       users: []
     })
   }
 
-  async getUsers(headers: IncomingHttpHeaders): Promise<DataSuccess<User[]>> {
+  async getUsers(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<User[]>> {
     try {
-      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+      nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -130,12 +132,12 @@ export default class Admin {
       delete users[i].password
     })
 
-    return new DataSuccess(200, SUCCESS, 'Success', users)
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', users)
   }
 
-  async getUser(headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DataSuccess<User>> {
+  async getUser(req: Request<any>, headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DataSuccess<User>> {
     try {
-      var auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -163,12 +165,12 @@ export default class Admin {
 
     if (!user.admin) delete getUser.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', getUser)
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', getUser)
   }
 
-  async putUser(headers: IncomingHttpHeaders, body: any, userId: number | 'me'): Promise<DataSuccess<{ jwt?: string; user: User }>> {
+  async putUser(req: Request<any>, headers: IncomingHttpHeaders, body: any, userId: number | 'me'): Promise<DataSuccess<{ jwt?: string; user: User }>> {
     try {
-      var user = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -236,14 +238,14 @@ export default class Admin {
 
     if (body.name && body.name !== getUser.name) {
       try {
-        nexter.serviceToException(await new AuthService().isNameAvailable(body.name))
+        nexter.serviceToException(await adminService.isNameAvailable(body.name))
       } catch (error: unknown) {
         throw error as ServiceException
       }
     }
 
     try {
-      nexter.serviceToException(await new AuthService().updateUser(updatedUser))
+      nexter.serviceToException(await adminService.updateUser(updatedUser))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -253,12 +255,12 @@ export default class Admin {
       delete updatedUser.status
     }
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: userId == user.id ? token : undefined, user: updatedUser })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: userId == user.id ? token : undefined, user: updatedUser })
   }
 
-  async deleteUser(headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DefaultSuccess> {
+  async deleteUser(req: Request<any>, headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DefaultSuccess> {
     try {
-      var user = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + ''))
+      var user = nexter.serviceToException(await authService.checkAuth(req.headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -291,6 +293,6 @@ export default class Admin {
       throw new DBException()
     }
 
-    return new DefaultSuccess(200, SUCCESS, 'Success')
+    return new DefaultSuccess(req, 200, ResponseType.SUCCESS, 'Success')
   }
 }

@@ -1,18 +1,17 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import type { Env } from '$models/data/env.model'
-  import { env$, user$ } from '$services/store'
-  import type { User } from '$models/features/user.model'
-  import ApiAdminService from '$services/api/api-admin.service'
-  import enFlag from '$assets/images/en.png'
-  import frFlag from '$assets/images/fr.png'
-  import LoadingSplash from '$components/layouts/LoadingSplash.svelte'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import type { Env } from '../../../../shared/models/data/env.model'
+  import { env$, user$ } from '../../services/store'
+  import type { User } from '../../../../shared/models/features/user.model'
+  import apiAdminService from '../../services/api/api-admin.service'
+  import enFlag from '../../assets/images/en.png'
+  import frFlag from '../../assets/images/fr.png'
+  import LoadingSplash from '../../components/layouts/LoadingSplash.svelte'
 
   export let show: boolean
 
-  const apiAdmin = new ApiAdminService()
 
   let env!: Env
   let l: typeof en | typeof fr
@@ -51,7 +50,7 @@
 
   async function submit() {
     splash = true
-    ;(await apiAdmin.putAdminTool(name, language, pin)).subscribe({
+    ;(await apiAdminService.putAdminTool(name, language, pin)).subscribe({
       next: (res) => {
         window.location.href = '/dashboard/emlat-settings'
       },

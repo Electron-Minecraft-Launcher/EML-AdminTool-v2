@@ -1,22 +1,24 @@
-import db from '$utils/database'
-import { AuthService } from '$services/auth.service'
-import pin_ from '$utils/pin'
+import { Request } from 'express'
 import bcrypt from 'bcrypt'
-import { User } from '$models/features/user.model'
-import { DB_ERROR, SUCCESS, ServiceException } from '$models/types'
-import { DBException } from '$responses/exceptions/db-exception.response'
-import { DataSuccess } from '$responses/success/data-success.response'
 import { IncomingHttpHeaders } from 'http'
-import { DefaultSuccess } from '$responses/success/default-success.response'
-import { RequestException } from '$responses/exceptions/request-exception.response'
-import { DataServiceResponse } from '$models/responses/services/data-service-response.model'
-import jwt from '$utils/jwt'
-import nexter from '$utils/nexter'
+import { User } from '../../../shared/models/features/user.model'
+import { DBException } from '../responses/exceptions/db-exception.response'
+import { RequestException } from '../responses/exceptions/request-exception.response'
+import { DataSuccess } from '../responses/success/data-success.response'
+import { DefaultSuccess } from '../responses/success/default-success.response'
+import { ServiceException } from '../responses/types'
+import db from '../utils/db'
+import nexter from '../utils/nexter'
+import authService from '../services/auth.service'
+import { ResponseType } from '../../../shared/models/types'
+import jwtService from '../services/jwt.service'
+import adminService from '../services/admin.service'
+import pinService from '../services/pin.service'
 
 export default class Auth {
-  async auth(headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
+  async auth(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
     try {
-      var user = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Basic'))
+      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Basic'))
     } catch (error) {
       throw error as ServiceException
     }
@@ -24,12 +26,12 @@ export default class Auth {
     delete user.password
     delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: jwtService.generate(user), user })
   }
 
-  async verify(headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
+  async verify(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
     try {
-      var user = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Bearer'))
+      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
     } catch (error) {
       throw error as ServiceException
     }
@@ -39,10 +41,10 @@ export default class Auth {
     delete user.password
     delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt, user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt, user })
   }
 
-  async register(body: any): Promise<DataSuccess<{ jwt: string; user: User }>> {
+  async register(req: Request<any>, body: any): Promise<DataSuccess<{ jwt: string; user: User }>> {
     if (!body.name || body.name == '' || !body.password || body.password == '' || !body.pin) {
       throw new RequestException('Missing parameters')
     }
@@ -69,17 +71,17 @@ export default class Auth {
     }
 
     try {
-      nexter.serviceToException(await new AuthService().isNameAvailable(name))
+      nexter.serviceToException(await adminService.isNameAvailable(name))
     } catch (error: unknown) {
       throw error as ServiceException
     }
 
-    if (pin != (await pin_.get())) {
+    if (pin != (await pinService.get())) {
       user.status = -1
     }
 
     try {
-      var newUser = nexter.serviceToException(await new AuthService().insertUser(user))
+      var newUser = nexter.serviceToException(await adminService.insertUser(user))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -88,12 +90,12 @@ export default class Auth {
     delete user.password
     delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: jwtService.generate(user), user })
   }
 
-  async logout(headers: IncomingHttpHeaders): Promise<DefaultSuccess> {
+  async logout(req: Request<any>, headers: IncomingHttpHeaders): Promise<DefaultSuccess> {
     try {
-      nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Bearer'))
+      nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -106,6 +108,6 @@ export default class Auth {
       throw new DBException()
     }
 
-    return new DefaultSuccess()
+    return new DefaultSuccess(req)
   }
 }

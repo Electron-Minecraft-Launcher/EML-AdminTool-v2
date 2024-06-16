@@ -1,53 +1,55 @@
-import { DefaultSuccess } from '$responses/success/default-success.response'
-import db from '$utils/database'
-import { EnvService } from '$services/env.service'
-import { Config } from '$models/configurations/config.model'
 import bcrypt from 'bcrypt'
-import { count, AUTH_ERROR, CLIENT_ERROR, DB_ERROR, ServiceException } from '$models/types'
-import { DBException } from '$responses/exceptions/db-exception.response'
-import { ServerException } from '$responses/exceptions/server-exception.response'
-import { NextFunction } from 'express'
-import { AuthService } from '$services/auth.service'
-import { UnauthorizedException } from '$responses/exceptions/unauthorized-exception.response'
-import { User } from '$models/features/user.model'
-import language_ from '$utils/language'
+import { NextFunction, Request } from 'express'
 import { IncomingHttpHeaders } from 'http'
-import nexter from '$utils/nexter'
+import { env } from 'process'
+import { User } from '../../../shared/models/features/user.model'
+import { ResponseType, count } from '../../../shared/models/types'
+import { DBException } from '../responses/exceptions/db-exception.response'
+import { ServerException } from '../responses/exceptions/server-exception.response'
+import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
+import { DefaultSuccess } from '../responses/success/default-success.response'
+import { ServiceException } from '../responses/types'
+import db from '../utils/db'
+import nexter from '../utils/nexter'
+import envService from '../services/env.service'
+import languageService from '../services/language.service'
+import authService from '../services/auth.service'
+import adminService from '../services/admin.service'
 
 export default class Configure {
-  async check(): Promise<DefaultSuccess> {
-    return new DefaultSuccess()
+  async check(req: Request<any>): Promise<DefaultSuccess> {
+    return new DefaultSuccess(req)
   }
 
-  async database(body: any): Promise<DefaultSuccess> {
+  async database(req: Request<any>, body: any): Promise<DefaultSuccess> {
     try {
-      await db.query("ALTER USER 'eml'@'localhost' IDENTIFIED BY ?", [body.password])
+      await db.query("ALTER USER 'eml'@'%' IDENTIFIED BY ?", [body.password])
     } catch (error: any) {
       throw new DBException(error.code)
     }
 
     try {
-      new EnvService().setEnv(body.password)
+      envService.setEnv(body.password)
     } catch (error: any) {
       throw new ServerException(error.message)
     }
 
-    return new DefaultSuccess()
+    return new DefaultSuccess(req)
   }
 
-  async language(body: any): Promise<DefaultSuccess> {
+  async language(req: Request<any>, body: any): Promise<DefaultSuccess> {
     const language = body.language == 'fr' ? 'fr' : 'en'
 
     try {
-      await language_.set(language)
+      await languageService.check(language)
     } catch (error) {
       throw new DBException()
     }
 
-    return new DefaultSuccess()
+    return new DefaultSuccess(req)
   }
 
-  async admin(body: any): Promise<DefaultSuccess> {
+  async admin(req: Request<any>, body: any): Promise<DefaultSuccess> {
     const name = body.name || 'EML'
     const password = {
       clear: body.password || 'Temp_password',
@@ -61,12 +63,12 @@ export default class Configure {
       throw new DBException()
     }
 
-    var isNameAvailable = (await new AuthService().isNameAvailable(name, true)).code
-    if (isNameAvailable == DB_ERROR) {
+    var isNameAvailable = (await adminService.isNameAvailable(name, true)).code
+    if (isNameAvailable == ResponseType.DATABASE_ERROR) {
       throw new DBException()
     }
 
-    if (isNameAvailable == CLIENT_ERROR) {
+    if (isNameAvailable == ResponseType.CLIENT_ERROR) {
       throw new UnauthorizedException('Name used')
     }
 
@@ -93,29 +95,29 @@ export default class Configure {
         p_stats_see: 1,
         p_stats_del: 1
       }
-      let addAdmin = await new AuthService().insertUser(admin)
-      if (addAdmin.code == DB_ERROR) {
+      let addAdmin = await adminService.insertUser(admin)
+      if (addAdmin.code == ResponseType.DATABASE_ERROR) {
         throw new DBException()
       }
     }
 
-    return new DefaultSuccess()
+    return new DefaultSuccess(req)
   }
 
-  async reset(headers: IncomingHttpHeaders): Promise<DefaultSuccess> {
+  async reset(req: Request<any>, headers: IncomingHttpHeaders): Promise<DefaultSuccess> {
     try {
-      nexter.serviceToException(await new AuthService().isAdmin(headers['authorization'] + ''))
+      nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
 
     try {
       await db.query('DROP DATABASE eml_admintool')
-      await db.dbGenerate(await db.getTablesToGenerate())
+      await db.generate(await db.getTablesToGenerate())
     } catch (error: any) {
       throw new DBException(error)
     }
 
-    return new DefaultSuccess()
+    return new DefaultSuccess(req)
   }
 }

@@ -55,8 +55,8 @@ export default {
       newName: `New name`,
       nbUsers: `Number of users`,
       users: `Users`,
-      vps: `VPS`,
-      os: `OS`,
+      vpsAndDocker: `VPS & Docker`,
+      dockerInfo: `Docker information`,
       storage: `Storage`,
       emlAdminToolName: `EML AdminTool name`
     },

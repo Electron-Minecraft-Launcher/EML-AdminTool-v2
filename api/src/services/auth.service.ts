@@ -1,17 +1,16 @@
-import { User } from '$models/features/user.model'
-import db from '$utils/database'
+import { User } from '../../../shared/models/features/user.model'
+import { DataServiceResponse } from '../../../shared/models/responses/services/data-service-response.model'
+import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
+import { ResponseType } from '../../../shared/models/types'
 import bcrypt from 'bcrypt'
-import jwt from '$utils/jwt'
-import { DefaultServiceResponse } from '$models/responses/services/default-service-response.model'
-import { AUTH_ERROR, CLIENT_ERROR, count, DB_ERROR, SUCCESS, UNKNOWN_ERROR } from '$models/types'
-import { DataServiceResponse } from '$models/responses/services/data-service-response.model'
-import { ResultSetHeader } from 'mysql2'
+import jwtService from './jwt.service'
+import db from '../utils/db'
 
-export class AuthService {
+class AuthService {
   /**
    * @param auth Auth string including `Basic` or `Bearer`.
    */
-  async isAdmin(auth: string | undefined): Promise<DefaultServiceResponse> {
+  async isAdmin(auth: string): Promise<DefaultServiceResponse> {
     let auth_ = await this.checkAuth(auth + '')
 
     if (!auth_.status) {
@@ -19,148 +18,22 @@ export class AuthService {
     }
 
     if (!auth_.data?.admin) {
-      return { status: false, code: AUTH_ERROR }
+      return { status: false, code: ResponseType.AUTH_ERROR }
     }
 
-    return { status: true, code: SUCCESS }
-  }
-
-  async isNameAvailable(name: string, excludeAdmin: boolean = false, excludeId: number | false = false): Promise<DefaultServiceResponse> {
-    const query =
-      excludeAdmin && !excludeId
-        ? 'SELECT COUNT(*) AS count FROM users WHERE name = ? AND admin = 0'
-        : !excludeAdmin && excludeId
-        ? 'SELECT COUNT(*) AS count FROM users WHERE name = ? AND id = ?'
-        : excludeAdmin && excludeId
-        ? 'SELECT COUNT(*) AS count FROM users WHERE name = ? AND admin = 1 AND id = ?'
-        : 'SELECT COUNT(*) AS count FROM users WHERE name = ?'
-
-    const params =
-      excludeAdmin && !excludeId
-        ? [name]
-        : !excludeAdmin && excludeId
-        ? [name, excludeId]
-        : excludeAdmin && excludeId
-        ? [name, excludeId]
-        : [name]
-
-    try {
-      if ((await db.query<count[]>(query, params))[0].count > 0) {
-        return { status: false, code: CLIENT_ERROR, message: 'Name already taken' }
-      }
-    } catch (error: any) {
-      return { status: false, code: DB_ERROR, message: error.code }
-    }
-
-    return { status: true, code: SUCCESS }
-  }
-
-  /**
-   * Check if the name is available before with `await new Auth().isNameAvailable()`!
-   *
-   * `user`'s password must be hashed.
-   */
-  async insertUser(user: User): Promise<DataServiceResponse<{ id: number }>> {
-    let insertUser: ResultSetHeader
-
-    try {
-      insertUser = await db.query<ResultSetHeader>(
-        `INSERT INTO users
-        (
-          name,
-          password,
-          status,
-          admin,
-          p_files_updater_add_del,
-          p_bootstrap_mod,
-          p_maintenance_mod,
-          p_news_add,
-          p_news_mod_del,
-          p_news_category_add_mod_del,
-          p_news_tag_add_mod_del,
-          p_background_mod,
-          p_stats_see,
-          p_stats_del
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          user.name + '',
-          user.password + '',
-          user.status || 0,
-          user.admin || 0,
-          user.p_files_updater_add_del || 0,
-          user.p_bootstrap_mod || 0,
-          user.p_maintenance_mod || 0,
-          user.p_news_add || 0,
-          user.p_news_mod_del || 0,
-          user.p_news_category_add_mod_del || 0,
-          user.p_news_tag_add_mod_del || 0,
-          user.p_background_mod || 0,
-          user.p_stats_see || 0,
-          user.p_stats_del || 0
-        ]
-      )
-    } catch (error: any) {
-      return { status: false, code: DB_ERROR, message: error.code }
-    }
-
-    return { status: true, code: SUCCESS, data: { id: insertUser.insertId } }
-  }
-
-  async updateUser(user: User): Promise<DataServiceResponse<{ id: number }>> {
-    let updateUser: ResultSetHeader
-
-    try {
-      updateUser = await db.query<ResultSetHeader>(
-        `UPDATE users SET
-        name = ?,
-        password = ?,
-        status = ?,
-        p_files_updater_add_del = ?,
-        p_bootstrap_mod = ?,
-        p_maintenance_mod = ?,
-        p_news_add = ?,
-        p_news_mod_del = ?,
-        p_news_category_add_mod_del = ?,
-        p_news_tag_add_mod_del = ?,
-        p_background_mod = ?,
-        p_stats_see = ?,
-        p_stats_del = ?
-        WHERE id = ?`,
-        [
-          user.name + '',
-          user.password + '',
-          user.status || 0,
-          user.p_files_updater_add_del || 0,
-          user.p_bootstrap_mod || 0,
-          user.p_maintenance_mod || 0, 
-          user.p_news_add || 0,
-          user.p_news_mod_del || 0,
-          user.p_news_category_add_mod_del || 0,
-          user.p_news_tag_add_mod_del || 0,
-          user.p_background_mod || 0,
-          user.p_stats_see || 0,
-          user.p_stats_del || 0,
-          user.id!
-        ]
-      )
-    } catch (error: any) {
-      return { status: false, code: DB_ERROR, message: error.code }
-    }
-
-    return { status: true, code: SUCCESS, data: { id: updateUser.insertId } }
+    return { status: true, code: ResponseType.SUCCESS }
   }
 
   async checkAuth(auth: string, type: 'Basic' | 'Bearer' | null = null): Promise<DataServiceResponse<User>> {
     if (!auth.startsWith('Basic ') && !auth.startsWith('Bearer ')) {
-      return { status: false, code: AUTH_ERROR }
+      return { status: false, code: ResponseType.AUTH_ERROR }
     }
 
     if (type && auth.split(' ')[0] != type) {
-      return { status: false, code: AUTH_ERROR }
+      return { status: false, code: ResponseType.AUTH_ERROR }
     }
 
-    var user: User | null | undefined
+    let user: User | null | undefined
 
     if (auth.startsWith('Basic')) {
       const [name, password] = Buffer.from(auth.split(' ')[1], 'base64').toString('ascii').split(':')
@@ -168,44 +41,46 @@ export class AuthService {
       try {
         user = (await db.query<User[]>('SELECT * FROM users WHERE name = ? AND status != -2', [name]))[0]
       } catch (error: any) {
-        return { status: false, code: DB_ERROR, message: error.code }
+        return { status: false, code: ResponseType.DATABASE_ERROR, message: error.code }
       }
 
       if (!user || !user.name || !(await bcrypt.compare(password, user.password + ''))) {
-        return { status: false, code: AUTH_ERROR }
+        return { status: false, code: ResponseType.AUTH_ERROR }
       }
 
-      return { status: true, code: SUCCESS, data: user }
+      return { status: true, code: ResponseType.SUCCESS, data: user }
     }
 
     if (auth.startsWith('Bearer ')) {
-      const dec = await jwt.verify(auth.split(' ')[1])
+      const dec = await jwtService.verify(auth.split(' ')[1])
 
       if (!dec[0]) {
         if (dec[1] == 401) {
-          return { status: false, code: AUTH_ERROR, message: dec[2] }
+          return { status: false, code: ResponseType.AUTH_ERROR, message: dec[2] }
         } else if (dec[1] == 500) {
-          return { status: false, code: DB_ERROR }
+          return { status: false, code: ResponseType.DATABASE_ERROR }
         } else {
-          return { status: false, code: UNKNOWN_ERROR }
+          return { status: false, code: ResponseType.UNKNOWN_ERROR }
         }
-      } else if (!jwt.isJwtPayload(dec[1])) {
-        return { status: false, code: AUTH_ERROR }
+      } else if (!jwtService.isJwtPayload(dec[1])) {
+        return { status: false, code: ResponseType.AUTH_ERROR }
       }
 
       try {
         user = (await db.query<User[]>('SELECT * FROM users WHERE id = ? AND status != -2', [dec[1].sub]))[0]
       } catch (error: any) {
-        return { status: false, code: AUTH_ERROR }
+        return { status: false, code: ResponseType.AUTH_ERROR }
       }
 
       if (!user || !user.name) {
-        return { status: false, code: AUTH_ERROR }
+        return { status: false, code: ResponseType.AUTH_ERROR }
       }
 
-      return { status: true, code: SUCCESS, data: user }
+      return { status: true, code: ResponseType.SUCCESS, data: user }
     }
 
-    return { status: false, code: AUTH_ERROR }
+    return { status: false, code: ResponseType.AUTH_ERROR }
   }
 }
+
+export default new AuthService()
