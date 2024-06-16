@@ -2,6 +2,13 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { Route } from '../../shared/models/routes/routes.model'
 import bodyParser from 'body-parser'
+import notFoundMiddleware from './middlewares/notfound.middleware'
+import errorMiddleware from './middlewares/error.middleware'
+import checkerMiddleware from './middlewares/checker.middleware'
+import DefaultRouter from './routers/default.router'
+import ConfigureRouter from './routers/configure.router'
+import AuthRouter from './routers/auth.router'
+import EnvRouter from './routers/env.router'
 
 class App {
   private app: express.Application
@@ -25,16 +32,24 @@ class App {
   }
 
   private init(routes: Route[]) {
+    this.app.use(express.static(this.client))
+    
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
-    // this.app.use(checkerMiddleware)
+    this.app.use(checkerMiddleware)
     // this.app.use(loggerMiddleware)
-
-    this.app.use(express.static(this.client))
+    
     routes.forEach(route => {
       this.app.use('/', route.router)
     })
+
+    this.app.get('/', (req, res) => {
+      res.send('Hello World')
+    })
+    
+    this.app.use(notFoundMiddleware)
+    this.app.use(errorMiddleware)
   }
 }
 
-new App([]).listen()
+new App([new DefaultRouter(), new EnvRouter(), new ConfigureRouter(), new AuthRouter()]).listen()

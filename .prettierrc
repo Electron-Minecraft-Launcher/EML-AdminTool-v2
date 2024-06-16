@@ -6,7 +6,7 @@
   "insertPragma": false,
   "singleAttributePerLine": false,
   "bracketSameLine": false,
-  "printWidth": 140,
+  "printWidth": 150,
   "proseWrap": "preserve",
   "quoteProps": "as-needed",
   "requirePragma": false,

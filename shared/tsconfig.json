@@ -6,7 +6,7 @@
     "declaration": true,
     "outDir": "dist",
     "baseUrl": "./",
-    "rootDir": "src"
+    "rootDir": "."
   },
   "exclude": [
     "node_modules"
