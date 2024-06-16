@@ -9,6 +9,7 @@ import DefaultRouter from './routers/default.router'
 import ConfigureRouter from './routers/configure.router'
 import AuthRouter from './routers/auth.router'
 import EnvRouter from './routers/env.router'
+import AdminRouter from './routers/admin.router'
 
 class App {
   private app: express.Application
@@ -52,4 +53,4 @@ class App {
   }
 }
 
-new App([new DefaultRouter(), new EnvRouter(), new ConfigureRouter(), new AuthRouter()]).listen()
+new App([new DefaultRouter(), new EnvRouter(), new ConfigureRouter(), new AuthRouter(), new AdminRouter()]).listen()

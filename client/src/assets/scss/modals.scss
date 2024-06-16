@@ -1,0 +1,29 @@
+h2 {
+  text-align: left;
+  font-size: 24px;
+  margin: 0 0 30px 0 !important;
+  transition: opacity 0.5s, display 0.5s;
+}
+
+h2+p {
+  margin-bottom: 0;
+  text-align: left;
+}
+
+div.actions {
+  text-align: right;
+}
+
+div.actions button,
+div.actions button.primary {
+  margin-left: 20px;
+  display: inline-block;
+  width: auto;
+  min-width: 100px;
+}
+
+p.label {
+  margin: 30px 0 5px 0;
+  color: #808080;
+  font-size: 14px;
+}

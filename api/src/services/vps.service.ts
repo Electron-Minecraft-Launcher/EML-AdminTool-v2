@@ -1,9 +1,9 @@
-import os, { platform, release } from 'os'
+import os from 'os'
 import { execSync } from 'child_process'
 
 class VPSService {
   getOS() {
-    return os.version()
+    return os.type() + ' ' + os.release()
   }
 
   getStorage() {
@@ -11,15 +11,15 @@ class VPSService {
     let freeSpaceCommand: string
     let unit: 'GB' | 'KB' | 'B'
 
-    if (platform() === 'linux') {
+    if (os.platform() === 'linux') {
       totalSpaceCommand = "df -k --output=size / | sed '1d'"
       freeSpaceCommand = "df -k --output=avail / | sed '1d'"
       unit = 'GB'
-    } else if (platform() === 'win32') {
+    } else if (os.platform() === 'win32') {
       totalSpaceCommand = 'wmic logicaldisk get Size /value | findstr /r /c:"[0-9]"'
       freeSpaceCommand = 'wmic logicaldisk get FreeSpace /value | findstr /r /c:"[0-9]"'
       unit = 'B'
-    } else if (platform() === 'darwin') {
+    } else if (os.platform() === 'darwin') {
       totalSpaceCommand = "df -k / | awk 'NR==2{print $2}'"
       freeSpaceCommand = "df -k / | awk 'NR==2{print $4}'"
       unit = 'KB'

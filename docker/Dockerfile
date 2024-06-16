@@ -2,6 +2,8 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
+ENV CHOKIDAR_USEPOLLING=true
+
 COPY package*.json ./
 
 RUN mkdir api client shared

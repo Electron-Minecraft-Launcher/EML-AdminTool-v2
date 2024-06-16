@@ -1,0 +1,61 @@
+// form {
+  h2 {
+    text-align: center;
+    font-size: 32px;
+    margin: 0;
+    transition: opacity 0.5s, display 0.5s;
+  }
+
+  p {
+    margin-top: 30px;
+    margin-bottom: 0
+  }
+
+  h2+p {
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 0
+  }
+
+  form {
+    width: 500px;
+    margin: 15vh auto 100px auto;
+    transition: opacity 0.5s;
+    display: block;
+    opacity: 1;
+    position: relative;
+
+    background-color: white;
+    padding: 50px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    box-shadow: 0 5px 50px rgba(0, 0, 0, 0.1);
+  }
+
+  // input:nth-of-type(2) {
+  //   margin-top: 15px;
+  // }
+
+  label {
+    display: inline-block;
+
+    &:nth-of-type(1) {
+      margin-top: 0;
+    }
+  }
+
+  input#pin-1,
+  input#pin-2,
+  input#pin-3 {
+    display: inline-block;
+    width: 12px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  input#pin-1,
+  input#pin-2 {
+    margin-right: 10px;
+  }
+// }

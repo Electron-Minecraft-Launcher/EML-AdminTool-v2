@@ -23,7 +23,7 @@ export default class Configure {
 
   async database(req: Request<any>, body: any): Promise<DefaultSuccess> {
     try {
-      await db.query("ALTER USER 'eml'@'localhost' IDENTIFIED BY ?", [body.password])
+      await db.query("ALTER USER 'eml'@'%' IDENTIFIED BY ?", [body.password])
     } catch (error: any) {
       throw new DBException(error.code)
     }

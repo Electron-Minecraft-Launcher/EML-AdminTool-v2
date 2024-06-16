@@ -9,8 +9,8 @@ dotenv.config()
 
 class Database {
   static db: mysql.Pool = mysql.createPool({
+    user: 'eml',
     host: 'mysql',
-    user: 'root',
     password: process.env['DATABASE_PASSWORD'] || 'eml',
     database: 'eml_admintool'
   })
@@ -87,6 +87,12 @@ class Database {
    * @param tables The array with the tables to generate. Use `getTablesToGenerate()`.
    */
   async generate(tables: DBGeneration): Promise<void> {
+    try {
+      await this.query('CREATE DATABASE IF NOT EXISTS eml_admintool')
+    } catch (error) {
+      throw error
+    }
+
     const t = Object.entries(tables)
       .filter(([, value]) => value === true)
       .map(([key]) => key)
