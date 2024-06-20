@@ -59,7 +59,7 @@ Then, you can submit your translation file as an [issue](https://github.com/Elec
 
 ### Development
 
-Install (Node.js)[https://nodejs.org/en/download/package-manager] and (Docker)[https://www.docker.com/get-started/].
+Install [Node.js](https://nodejs.org/en/download/package-manager), [Docker](https://www.docker.com/get-started)[^1].
 
 Then, download the code and run the command:
 ```bash
@@ -68,10 +68,10 @@ npm i
 
 You can now start the development server:
 ```bash
-docker-compose up --build
+docker-compose up
 ```
 
-The API is available at `http://localhost:3000` and the client at `http://localhost:5173`. In development, you can also use phpMyAdmin at `http://localhost:8080`.
+The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access phpMyAdmin at [https://localhost:8080](http://localhost:8080).
 
 You can now make pull requests!
 
@@ -80,3 +80,5 @@ You can now make pull requests!
 
 * This Web software is under the `GNU GPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
 * If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
+
+[^1]: On desktop (Windows, macOS and Linux), you can use Docker Desktop, which includes Docker and Docker Compose. On a server (Linux), you can use the following commands, you should install Docker and Docker Compose separately.
