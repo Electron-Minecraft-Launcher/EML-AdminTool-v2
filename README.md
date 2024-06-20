@@ -39,7 +39,7 @@ You can choose your Linux distribution, but Debian or Ubuntu is highly recommend
 > [!NOTE]
 > The Launcher can make many requests to the EML AdminTool. If your Minecraft serveur doesn't have a lot of players, you can use a VPS with low requirements. However, if you have a lot of players, you should use a VPS with high requirements, to avoid any performance issues or crashes.
 
-## Software requirements
+### Software requirements
 
 You have to install the following software on your VPS:
 - [Node.js](https://nodejs.org/en/download/package-manager)
@@ -70,12 +70,12 @@ server {
   listen 443 ssl;
   listen [::]:443 ssl ipv6only=on;
     
-  keepalive_timeout   70;
+  keepalive_timeout 70;
 
-  ssl_certificate     /path/to/your/certificate.crt;
+  ssl_certificate /path/to/your/certificate.crt;
   ssl_certificate_key /path/to/your/private_key.key;
-  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
-  ssl_ciphers         HIGH:!aNULL:!MD5;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
 
   location / {
     proxy_pass http://localhost:3000;
