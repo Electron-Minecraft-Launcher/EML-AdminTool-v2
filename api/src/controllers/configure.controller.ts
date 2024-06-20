@@ -113,6 +113,7 @@ export default class Configure {
 
     try {
       await db.query('DROP DATABASE eml_admintool')
+      await db.query('CREATE DATABASE eml_admintool')
       await db.generate(await db.getTablesToGenerate())
     } catch (error: any) {
       throw new DBException(error)

@@ -1,9 +1,5 @@
 <script lang="ts">
-  import type en from '../../assets/language/en'
-  import type fr from '../../assets/language/fr'
-  import type { Env } from '../../../../shared/models/data/env.model'
-  import type { User } from '../../../../shared/models/features/user.model'
-  import { env$, user$ } from '../../services/store'
+  import { user } from '../../services/store'
   import UserService from '../../services/user.service'
   import { onMount } from 'svelte'
   import Skeleton from './Skeleton.svelte'
@@ -15,24 +11,6 @@
   import { goto } from '$app/navigation'
 
   export let leftPanelOpen = true
-
-  let env!: Env
-  let l: typeof en | typeof fr
-  let user: User
-
-  env$.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') {
-      env = value
-      l = value.language
-    }
-  })
-
-  user$.subscribe((value) => {
-    if (value) {
-      user = value
-      console.log(user)
-    }
-  })
 
   const randomWidth = { times: 100, min: 50 }
   const height = '21px'
@@ -62,7 +40,6 @@
     ;(await apiAuthService.deleteLogout()).subscribe({
       finally: () => {
         cookiesService.delete('JWT')
-        // throw redirect(300, '/login')
         goto('/login')
       },
     })
@@ -93,7 +70,7 @@
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '30px 15px 40px 15px' }]} />
   {:else}
     <a href="/dashboard" class:active={$page.url.pathname == '/dashboard'}><i class="fa-solid fa-house" />Home</a>
-    {#if user.admin}
+    {#if $user.admin}
       <a href="/dashboard/emlat-settings" class:active={$page.url.pathname == '/dashboard/emlat-settings'}>
         <i class="fa-solid fa-gear" />Settings
       </a>
@@ -112,44 +89,42 @@
     <Skeleton {randomWidth} {height} {customStyle} />
     <Skeleton {randomWidth} {height} {customStyle} />
     <Skeleton {randomWidth} {height} {customStyle} />
-  {:else if user.status !== 0 && user.status !== -1 && user.status !== -2}
-    {#if user.p_files_updater_add_del || user.admin}
+  {:else if $user.status !== 0 && $user.status !== -1 && $user.status !== -2}
+    {#if $user.p_files_updater_add_del || $user.admin}
       <a href="/dashboard/files-updater" class:active={$page.url.pathname == '/dashboard/files-updater'}>
         <i class="fa-solid fa-folder-open" />Files Updater
       </a>
     {/if}
 
-    {#if user.p_bootstrap_mod || user.admin}
+    {#if $user.p_bootstrap_mod || $user.admin}
       <a href="/dashboard/bootstrap" class:active={$page.url.pathname == '/dashboard/bootstrap'}>
         <i class="fa-solid fa-arrows-rotate" />Bootstrap
       </a>
     {/if}
 
-    {#if user.p_maintenance_mod || user.admin}
+    {#if $user.p_maintenance_mod || $user.admin}
       <a href="/dashboard/maintenance" class:active={$page.url.pathname == '/dashboard/maintenance'}>
         <i class="fa-solid fa-screwdriver-wrench" />Maintenance
       </a>
     {/if}
 
-    {#if user.p_news_add || user.p_news_mod_del || user.p_news_category_add_mod_del || user.p_news_tag_add_mod_del || user.admin}
+    {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_category_add_mod_del || $user.p_news_tag_add_mod_del || $user.admin}
       <a href="/dashboard/news" class:active={$page.url.pathname == '/dashboard/news'}>
         <i class="fa-solid fa-newspaper" />News
       </a>
     {/if}
 
-    {#if user.p_background_mod || user.admin}
+    {#if $user.p_background_mod || $user.admin}
       <a href="/dashboard/background" class:active={$page.url.pathname == '/dashboard/background'}>
         <i class="fa-solid fa-image" />Background
       </a>
     {/if}
 
-    {#if user.p_stats_see || user.p_stats_del || user.admin}
+    {#if $user.p_stats_see || $user.p_stats_del || $user.admin}
       <a href="/dashboard/stats" class:active={$page.url.pathname == '/dashboard/stats'}>
         <i class="fa-solid fa-chart-simple" />Stats
       </a>
     {/if}
-    {:else}
-    {user.status}
   {/if}
 
   {#if !ready}
@@ -167,8 +142,9 @@
   {:else}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-missing-attribute -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <a class="account" on:click={accountClick}>
-      <i class="fa-solid fa-circle-user" />{user.name}<i class="fa-solid fa-caret-up" />
+      <i class="fa-solid fa-circle-user" />{$user.name}<i class="fa-solid fa-caret-up" />
     </a>
   {/if}
 
@@ -179,6 +155,7 @@
       </a>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-missing-attribute -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket" />Log out</a>
     </div>
   {/if}
@@ -217,14 +194,9 @@
           display: none;
         }
 
-        &:hover,
-        &.active {
+        &:hover {
           color: var(--primary-color-hover);
           background: #eeeeee;
-        }
-
-        &.active {
-          background: #f5f5f5;
         }
       }
     }

@@ -1,12 +1,6 @@
 <script lang="ts">
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import type en from '../../assets/language/en'
-  import type fr from '../../assets/language/fr'
-  import type { Env } from '../../../../shared/models/data/env.model'
-  import { env$ } from '../../services/store'
-
-  let env!: Env
-  let l: typeof en | typeof fr
+  import { env, l } from '../../services/store'
 
   let relN!: string
   let rel: string = '   '
@@ -16,17 +10,13 @@
     value: undefined,
   }
 
-  env$.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') {
-      env = value
-      l = value.language
-      inputChange()
-    }
+  env.subscribe((value) => {
+    if (value && value.language && typeof value.language !== 'string') inputChange()
   })
 
   function inputChange() {
     if (!data.value) {
-      rel = l.configuration.step2.veryWeak
+      rel = $l.configuration.step2.veryWeak
       return
     }
 
@@ -52,30 +42,30 @@
 
     switch (len + upp + num + spe) {
       case 0:
-        rel = l.configuration.step2.veryWeak
+        rel = $l.configuration.step2.veryWeak
         relN = 0 + ''
         break
       case 1:
         if (data.value.length >= 5) {
-          rel = l.configuration.step2.weak
+          rel = $l.configuration.step2.weak
           relN = 1 + ''
         }
         break
       case 2:
         if (data.value.length >= 8) {
-          rel = l.configuration.step2.ok
+          rel = $l.configuration.step2.ok
           relN = 2 + ''
         }
         break
       case 3:
         if (data.value.length >= 8) {
-          rel = l.configuration.step2.strong
+          rel = $l.configuration.step2.strong
           relN = 3 + ''
         }
         break
       case 4:
         if (data.value.length >= 12) {
-          rel = l.configuration.step2.veryStrong
+          rel = $l.configuration.step2.veryStrong
           relN = 4 + ''
         }
         break
@@ -115,20 +105,20 @@
 </script>
 
 <ConfigurationFormTemplate step={2} cond={+relN >= 3} {data} on:nextStep on:prevStep>
-  <h2>{@html l.configuration.step2.title}</h2>
-  <p><b>{l.configuration.step2.subtitle}</b></p>
+  <h2>{@html $l.configuration.step2.title}</h2>
+  <p><b>{$l.configuration.step2.subtitle}</b></p>
   <div class="actions">
     <div class="flex">
       <input
         type="text"
         name="db-password"
-        placeholder={l.configuration.step2.placeholder}
+        placeholder={$l.configuration.step2.placeholder}
         bind:value={data.value}
         on:keyup={inputChange}
       />
 
       <button class="secondary" on:click={generatePassword} type="button">
-        <i class="fa-solid fa-arrows-rotate" />&nbsp;&nbsp;{l.configuration.step2.generate}
+        <i class="fa-solid fa-arrows-rotate" />&nbsp;&nbsp;{$l.configuration.step2.generate}
       </button>
     </div>
 

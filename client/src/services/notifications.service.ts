@@ -16,6 +16,9 @@ class NotificationsService {
       case 'auth':
         this.set({ type: 'ERROR', content: 'Wrong username or password.' })
         break
+      case 'username':
+        this.set({ type: 'ERROR', content: 'This username is already used.' })
+        break
       case 'permission':
         this.set({ type: 'ERROR', content: 'You are not allowed to join this page.' })
         break

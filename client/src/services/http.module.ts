@@ -122,7 +122,7 @@ class Http {
     }
 
     if (response.body.code == 'AUTH_ERROR') {
-      if (url.includes('/auth') || url.includes('/register')) {
+      if (url.includes('/auth')) {
         notificationsService.update({ type: 'ERROR', code: 'auth' })
       } else if (
         url.includes('/configure/') ||
@@ -136,8 +136,10 @@ class Http {
         throw redirect(300, '/login')
       } else if (response.body.message == 'Name used') {
         notificationsService.update({ type: 'ERROR', code: 'auth' })
-        // notification.update({ type: 'ERROR', code: 'permission' })
-        // throw redirect(300, '/dashboard')
+      }
+    } else if (response.body.code == 'CLIENT_ERROR') {
+      if (response.body.message == 'Name already used') {
+        notificationsService.update({ type: 'ERROR', code: 'username' })
       }
     } else if (response.body.code == 'DATABASE_ERROR') {
       notificationsService.update({ type: 'ERROR', code: 'db' })

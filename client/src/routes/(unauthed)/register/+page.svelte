@@ -1,20 +1,12 @@
 <script lang="ts">
   import LoadingSplash from '../../../components/layouts/LoadingSplash.svelte'
-  import { env$, user$ } from '../../../services/store'
+  import { env, user, l } from '../../../services/store'
   import apiAuthService from '../../../services/api/api-auth.service'
   import cookiesService from '../../../services/cookies.service'
-  import type { Env } from '../../../../../shared/models/data/env.model'
+  import type { Env } from '../../../services/env.model'
   import type en from '../../../assets/language/en'
   import { goto } from '$app/navigation'
   import type fr from '../../../assets/language/fr'
-
-  let env!: Env
-  let l: typeof en | typeof fr
-
-  env$.subscribe((value) => {
-    env = value
-    l = value.language
-  })
 
   let name: string = ''
   let password = ''
@@ -31,7 +23,7 @@
           value: res.body?.data?.jwt + '',
           expireDays: 30,
         })
-        user$.set(res.body?.data?.user!)
+        user.set(res.body?.data?.user!)
         goto('/dashboard')
       },
       error: (err) => {
@@ -68,7 +60,7 @@
 </script>
 
 <svelte:head>
-  <title>{l.auth.register} • {env.name} AdminTool</title>
+  <title>{$l.auth.register} • {$env.name} AdminTool</title>
 </svelte:head>
 
 <form on:submit|preventDefault={submit}>
@@ -76,28 +68,28 @@
     <LoadingSplash transparent={true} />
   {/if}
 
-  <h2>{l.auth.register}</h2>
-  <p>{env.name} AdminTool</p>
+  <h2>{$l.auth.register}</h2>
+  <p>{$env.name} AdminTool</p>
 
-  <label for="name">{l.main.username}</label>
-  <input type="text" id="name" placeholder={l.main.username} bind:value={name} />
+  <label for="name">{$l.main.username}</label>
+  <input type="text" id="name" placeholder={$l.main.username} bind:value={name} />
   
-  <label for="password">{l.main.password}</label>
-  <input type="password" id="password" placeholder={l.main.password} bind:value={password} />
+  <label for="password">{$l.main.password}</label>
+  <input type="password" id="password" placeholder={$l.main.password} bind:value={password} />
   
-  <label for="password-cfr">{l.auth.confirmPassword}</label>
-  <input type="password" id="password-cfr" placeholder={l.auth.confirmPassword} bind:value={passwordCfr} />
+  <label for="password-cfr">{$l.auth.confirmPassword}</label>
+  <input type="password" id="password-cfr" placeholder={$l.auth.confirmPassword} bind:value={passwordCfr} />
 
-  <label for="pin-1">{@html l.main.pin + (l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
+  <label for="pin-1">{@html $l.main.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
   <input type="text" maxlength="1" size="1" id="pin-1" on:keyup={focusNext} bind:value={pin[0]} />
   <input type="text" maxlength="1" size="1" id="pin-2" on:keyup={focusNext} bind:value={pin[1]} />
   <input type="text" maxlength="1" size="1" id="pin-3" on:keyup={focusNext} bind:value={pin[2]} />
 
   <button class="primary" disabled={!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}>
-    {l.auth.register}
+    {$l.auth.register}
   </button>
   <p class="center">
-    <a class="small-link" href="/login">{l.auth.alreadyAnAccount}</a>
+    <a class="small-link" href="/login">{$l.auth.alreadyAnAccount}</a>
   </p>
 </form>
 

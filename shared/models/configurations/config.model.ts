@@ -1,7 +1,5 @@
-import { varchar } from '../types'
-
 export interface Config {
   id?: number
-  data?: 'language' | varchar
+  data?: 'language' | string
   value?: string
 }

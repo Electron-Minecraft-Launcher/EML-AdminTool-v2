@@ -1,7 +1,5 @@
-import { tinyint, varchar } from '../types'
-
-export interface Backgroud {
+export interface Background {
   id?: number
-  title?: varchar
-  status: tinyint
+  title?: string
+  status: number
 }

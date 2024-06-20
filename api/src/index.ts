@@ -1,6 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import { Route } from '../../shared/models/routes/routes.model'
+import { Route } from './services/routes.model'
 import bodyParser from 'body-parser'
 import notFoundMiddleware from './middlewares/notfound.middleware'
 import errorMiddleware from './middlewares/error.middleware'

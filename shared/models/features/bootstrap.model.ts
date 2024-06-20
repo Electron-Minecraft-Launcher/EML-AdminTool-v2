@@ -1,9 +1,7 @@
-import { varchar } from '../types'
-
 export interface Bootstrap {
   id?: number
-  win?: varchar
-  mac?: varchar
-  lin?: varchar
-  version?: varchar
+  win?: string
+  mac?: string
+  lin?: string
+  version?: string
 }

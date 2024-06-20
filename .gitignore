@@ -1,8 +1,8 @@
 /node_modules
 /.vscode
 
-/server/node_modules
-/server/.env
+/api/node_modules
+.env
 
 /client/node_modules
 /client/.svelte-kit

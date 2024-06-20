@@ -1,10 +1,7 @@
 import type { LayoutLoad } from '../$types'
 import apiAuthService from '../../services/api/api-auth.service'
 import cookiesService from '../../services/cookies.service'
-import type { Env } from '../../../../shared/models/data/env.model'
 import { redirect } from '@sveltejs/kit'
-
-let env!: Env
 
 export const load: LayoutLoad = async () => { 
   if (cookiesService.get('JWT')) {

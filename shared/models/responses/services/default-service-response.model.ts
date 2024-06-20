@@ -1,4 +1,4 @@
-import { Code } from '../../../types'
+import { Code } from '../../types'
 
 export interface DefaultServiceResponse {
   status: boolean

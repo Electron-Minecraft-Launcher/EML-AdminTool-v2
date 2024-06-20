@@ -3,7 +3,7 @@ import apiConfigureService from '../../../services/api/api-configure.service'
 import apiAuthService from '../../../services/api/api-auth.service'
 import cookiesService from '../../../services/cookies.service'
 import { redirect } from '@sveltejs/kit'
-import { user$ } from '../../../services/store'
+import { user } from '../../../services/store'
 
 export const load: PageLoad = async () => {
   ;(await apiConfigureService.getConfigure()).subscribe({
@@ -17,7 +17,7 @@ export const load: PageLoad = async () => {
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
       next: (res) => {
-        user$.set(res.body.data!.user)
+        user.set(res.body.data!.user)
         throw redirect(300, '/dashboard')
       },
     })

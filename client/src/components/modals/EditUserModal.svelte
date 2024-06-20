@@ -1,56 +1,49 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import type en from '../../assets/language/en'
-  import type fr from '../../assets/language/fr'
-  import type { Env } from '../../../../shared/models/data/env.model'
-  import { env$, user$ } from '../../services/store'
+  import { user, l } from '../../services/store'
   import type { User } from '../../../../shared/models/features/user.model'
   import apiAdminService from '../../services/api/api-admin.service'
   import { invalidateAll } from '$app/navigation'
 
   export let show: boolean
   export let account: User
+  export let action: 'accept' | 'edit'
 
-  let env!: Env
-  let l: typeof en | typeof fr
-
-  let p_files_updater_add_del: boolean = false
-  let p_bootstrap_mod: boolean = false
-  let p_maintenance_mod: boolean = false
-  let p_news_add: boolean = false
-  let p_news_mod_del: boolean = false
-  let p_news_category_add_mod_del: boolean = false
-  let p_news_tag_add_mod_del: boolean = false
-  let p_background_mod: boolean = false
-  let p_stats_see: boolean = false
-  let p_stats_del: boolean = false
-
-  env$.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') {
-      env = value
-      l = value.language
-    }
-  })
+  let name = account.name
+  let p_files_updater_add_del = account.p_background_mod ? true : false
+  let p_bootstrap_mod = account.p_bootstrap_mod ? true : false
+  let p_maintenance_mod = account.p_maintenance_mod ? true : false
+  let p_news_add = account.p_news_add ? true : false
+  let p_news_mod_del = account.p_news_mod_del ? true : false
+  let p_news_category_add_mod_del = account.p_news_category_add_mod_del ? true : false
+  let p_news_tag_add_mod_del = account.p_news_tag_add_mod_del ? true : false
+  let p_background_mod = account.p_background_mod ? true : false
+  let p_stats_see = account.p_stats_see ? true : false
+  let p_stats_del = account.p_stats_del ? true : false
 
   async function closeModal() {
     show = false
   }
 
   async function submit() {
-    account.status = 1
-    account.p_files_updater_add_del = p_files_updater_add_del ? 1 : 0
-    account.p_bootstrap_mod = p_bootstrap_mod ? 1 : 0
-    account.p_maintenance_mod = p_maintenance_mod ? 1 : 0
-    account.p_news_add = p_news_add ? 1 : 0
-    account.p_news_mod_del = p_news_mod_del ? 1 : 0
-    account.p_news_category_add_mod_del = p_news_category_add_mod_del ? 1 : 0
-    account.p_news_tag_add_mod_del = p_news_tag_add_mod_del ? 1 : 0
-    account.p_background_mod = p_background_mod ? 1 : 0
-    account.p_stats_see = p_stats_see ? 1 : 0
-    account.p_stats_del = p_stats_del ? 1 : 0
-    ;(await apiAdminService.putUser(account.id, account)).subscribe({
+    const tempUser = {
+      name,
+      status: 1,
+      p_files_updater_add_del: p_files_updater_add_del ? 1 : 0,
+      p_bootstrap_mod: p_bootstrap_mod ? 1 : 0,
+      p_maintenance_mod: p_maintenance_mod ? 1 : 0,
+      p_news_add: p_news_add ? 1 : 0,
+      p_news_mod_del: p_news_mod_del ? 1 : 0,
+      p_news_category_add_mod_del: p_news_category_add_mod_del ? 1 : 0,
+      p_news_tag_add_mod_del: p_news_tag_add_mod_del ? 1 : 0,
+      p_background_mod: p_background_mod ? 1 : 0,
+      p_stats_see: p_stats_see ? 1 : 0,
+      p_stats_del: p_stats_del ? 1 : 0
+    }
+    ;(await apiAdminService.putUser(account.id, tempUser)).subscribe({
       next: (res) => {
-        user$.set(res.body.data?.user!)
+        account = tempUser
+        user.set(res.body.data?.user!)
         closeModal()
         invalidateAll()
       }
@@ -60,11 +53,11 @@
 
 <ModalTemplate size={'s'} bind:show>
   <form on:submit|preventDefault={submit}>
-    <h2>Accept user</h2>
+    <h2>{action === 'accept' ? 'Accept' : 'Edit'} user</h2>
 
     <div class="overflow">
-      <label for="name" style="margin-top: 0">{l.dashboard.account.nameOrPseudo}</label>
-      <input type="text" id="name" bind:value={account.name} />
+      <label for="name" style="margin-top: 0">{$l.dashboard.account.nameOrPseudo}</label>
+      <input type="text" id="name" bind:value={name} />
 
       <p class="label">Files Updater</p>
       <label class="p" for="p_files_updater_add_del">
@@ -138,8 +131,8 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" on:click={closeModal} type="button">{l.main.cancel}</button>
-      <button class="primary">{l.main.save}</button>
+      <button class="secondary" on:click={closeModal} type="button">{$l.main.cancel}</button>
+      <button class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>

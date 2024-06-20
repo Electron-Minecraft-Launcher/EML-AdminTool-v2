@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { Route } from '../../../shared/models/routes/routes.model'
+import { Route } from '../services/routes.model'
 import bodyParser from 'body-parser'
 import swaggerUi from 'swagger-ui-express'
 import swagger from '../swagger/swagger'

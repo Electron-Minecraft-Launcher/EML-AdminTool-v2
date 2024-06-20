@@ -1,9 +1,7 @@
-import { varchar } from '../types'
-
 export interface Log {
   id?: number
-  date?: varchar
-  place?: varchar
-  type?: varchar
+  date?: string
+  place?: string
+  type?: string
   data?: string
 }

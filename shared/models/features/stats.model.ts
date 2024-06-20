@@ -1,8 +1,6 @@
-import { varchar } from '../types'
-
 export interface Stats {
   id?: number
-  dates: varchar
+  dates: string
   startup: number
   launching: number
   new_players: number

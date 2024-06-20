@@ -3,7 +3,7 @@ import { EMLAdminToolInfo } from '../../../shared/models/features/emlat-info.mod
 import { User } from '../../../shared/models/features/user.model'
 import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
 import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
-import { Route } from '../../../shared/models/routes/routes.model'
+import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import Admin from '../controllers/admin.controller'
 

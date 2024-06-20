@@ -1,8 +1,6 @@
-# Electron Minecraft Launcher Core (EML Core)
+# EML AdminTool
 
-**Electron Minecraft Launcher Core (EML Core) is an Electron library. It permits to authenticate, download Java and Minecraft and launch Minecraft.**
-
-**Electron Minecraft Launcher Core (EML Core) est une librairie pour Electron. Elle permet l'authentification, le téléchargement de Java et de Minecraft et le lancement de Minecraft.**
+**EML AdminTool is a Web software to manage a Minecraft Launcher built with the [EML Core](https://github.com/Electron-Minecraft-Launcher/EML-Core-v2) library.**
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
@@ -61,7 +59,7 @@ Then, you can submit your translation file as an [issue](https://github.com/Elec
 
 ### Development
 
-Install Node.js.
+Install (Node.js)[https://nodejs.org/en/download/package-manager] and (Docker)[https://www.docker.com/get-started/].
 
 Then, download the code and run the command:
 ```bash

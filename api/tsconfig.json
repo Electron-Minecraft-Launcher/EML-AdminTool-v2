@@ -11,7 +11,7 @@
   "include": [
     "src",
     "../shared"
-  ],
+, "../client/src/services/env.model.ts"  ],
   "exclude": [
     "node_modules"
   ]

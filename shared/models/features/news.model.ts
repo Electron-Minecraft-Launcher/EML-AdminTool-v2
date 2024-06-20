@@ -1,22 +1,20 @@
-import { varchar } from '../types'
-
 export interface News {
   id?: number
-  title?: varchar
+  title?: string
   content?: string
   author?: number
-  date?: varchar
+  date?: string
   category?: number
   tags?: number
 }
 
 export interface NewsCategory {
   id?: number
-  title?: varchar
-  date?: varchar
+  title?: string
+  date?: string
 }
 
 export interface NewsTag {
   id?: number
-  title?: varchar
+  title?: string
 }

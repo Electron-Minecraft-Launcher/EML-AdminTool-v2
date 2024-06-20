@@ -3,20 +3,9 @@
   import LanguageModal from '../modals/LanguageModal.svelte'
   import en from '../../assets/language/en'
   import fr from '../../assets/language/fr'
-  import type { Env } from '../../../../shared/models/data/env.model'
   import enFlag from '../../assets/images/en.png'
   import frFlag from '../../assets/images/fr.png'
-  import { env$ } from '../../services/store'
-
-  let env!: Env
-  let l: typeof en | typeof fr
-
-  env$.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') {
-      env = value
-      l = value.language
-    }
-  })
+  import { env, l } from '../../services/store'
 
   let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = {
     data: 'LANGUAGE',
@@ -31,9 +20,10 @@
         data.value = undefined
       }
       data.value = 'en'
-      let env_ = env
+      let env_ = $env
       env_.language = en
-      env$.set(env_)
+      env.set(env_)
+      l.set(en)
     } else {
       data.value = undefined
     }
@@ -45,14 +35,16 @@
         data.value = undefined
       }
       data.value = 'fr'
-      let env_ = env
+      let env_ = $env
       env_.language = fr
-      env$.set(env_)
+      env.set(env_)
+      l.set(fr)
     } else {
       data.value = undefined
-      let env_ = env
+      let env_ = $env
       env_.language = en
-      env$.set(env_)
+      env.set(env_)
+      l.set(en)
     }
   }
 
@@ -62,8 +54,8 @@
 </script>
 
 <ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data} on:nextStep>
-  <h2>{@html l.configuration.step1.title}</h2>
-  <p><b>{l.configuration.step1.subtitle}</b></p>
+  <h2>{@html $l.configuration.step1.title}</h2>
+  <p><b>{$l.configuration.step1.subtitle}</b></p>
   <div class="actions language">
     <button type="button" class="secondary" class:selected={data.value == 'en'} id="en-button" on:click={toEn}>
       <p>
@@ -80,7 +72,8 @@
     <p class="center">
       <!-- svelte-ignore a11y-missing-attribute -->
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <a class="small-link" on:click={languageModal}>{l.configuration.step1.other}</a>
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <a class="small-link" on:click={languageModal}>{$l.configuration.step1.other}</a>
     </p>
   </div>
 </ConfigurationFormTemplate>

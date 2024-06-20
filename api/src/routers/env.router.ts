@@ -1,5 +1,5 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { Route } from '../../../shared/models/routes/routes.model'
+import { Route } from '../services/routes.model'
 import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
 import Env from '../controllers/env.controller'
 

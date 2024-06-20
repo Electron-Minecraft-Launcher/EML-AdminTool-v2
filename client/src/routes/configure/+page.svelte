@@ -4,8 +4,8 @@
   import ConfigurationAdmin from '../../components/configuration/ConfigurationAdmin.svelte'
   import ConfigurationDatabase from '../../components/configuration/ConfigurationDatabase.svelte'
   import ConfigurationLanguage from '../../components/configuration/ConfigurationLanguage.svelte'
-  import type { Env } from '../../../../shared/models/data/env.model'
-  import { env$ } from '../../services/store'
+  import type { Env } from '../../services/env.model'
+  import { env, l } from '../../services/store'
   import { goto } from '$app/navigation'
   import type { PageData } from './$types'
   import utils from '../../services/utils'
@@ -16,14 +16,6 @@
   if (data.start) {
     start()
   }
-
-  let env!: Env
-  let l: typeof en | typeof fr
-
-  env$.subscribe((value) => {
-    env = value
-    l = value.language
-  })
 
   let h1Visible = false
   let sliderVisible = false
@@ -73,7 +65,7 @@
 </script>
 
 <svelte:head>
-  <title>{l.configuration.configuration} • {env.name} AdminTool</title>
+  <title>{$l.configuration.configuration} • {$env.name} AdminTool</title>
 </svelte:head>
 
 <div class="progress">

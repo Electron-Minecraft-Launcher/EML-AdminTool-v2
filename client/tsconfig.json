@@ -12,6 +12,8 @@
 		"moduleResolution": "bundler"
 	},
 	"include": [
+		"src/**/*",
+		".svelte-kit/**/*",
 		"../shared/**/*"
 	]
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

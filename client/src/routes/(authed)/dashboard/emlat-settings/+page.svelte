@@ -1,15 +1,12 @@
 <script lang="ts">
-  import type { PageData } from './$types'
   import Skeleton from '../../../../components/layouts/Skeleton.svelte'
-  import type en from '../../../../assets/language/en'
-  import type fr from '../../../../assets/language/fr'
-  import type { Env } from '../../../../../../shared/models/data/env.model'
   import type { User } from '../../../../../../shared/models/features/user.model'
-  import { env$, user$ } from '../../../../services/store'
+  import { env, user, l } from '../../../../services/store'
   import EditAdminToolModal from '../../../../components/modals/EditAdminToolModal.svelte'
   import UserManagement from '../../../../components/UserManagement.svelte'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import apiConfigureService from '../../../../services/api/api-configure.service'
+  import type { PageData } from './$types'
 
   export let data: PageData
 
@@ -17,19 +14,7 @@
     return a.id! - b.id!
   })
 
-  let env!: Env
-  let l: typeof en | typeof fr
-  let user: User
   let splash = false
-
-  env$.subscribe((value) => {
-    env = value
-    l = value.language
-  })
-
-  user$.subscribe((value) => {
-    user = value
-  })
 
   let showEditAdminToolModal = false
   let account: User = data.users[0]
@@ -57,22 +42,22 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 </script>
 
 <svelte:head>
-  <title>{l.dashboard.emlatSettings.emlatSettings} • {env.name} AdminTool</title>
+  <title>{$l.dashboard.emlatSettings.emlatSettings} • {$env.name} AdminTool</title>
 </svelte:head>
 
 {#if splash}
   <LoadingSplash transparent={true} />
 {/if}
 
-<h2>{l.dashboard.emlatSettings.emlatSettings}</h2>
+<h2>{$l.dashboard.emlatSettings.emlatSettings}</h2>
 
 <section class="section">
   <button class="secondary right" on:click={editAdminToolModal}><i class="fa-solid fa-pen" /></button>
-  <h3>{l.dashboard.information}</h3>
+  <h3>{$l.dashboard.information}</h3>
 
   <div class="container">
     <div>
-      <p class="label">{l.main.name}</p>
+      <p class="label">{$l.main.name}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}
@@ -81,16 +66,16 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div>
-      <p class="label">{l.dashboard.emlatSettings.language}</p>
+      <p class="label">{$l.dashboard.emlatSettings.language}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}
-        <p>{l.language}</p>
+        <p>{$l.language}</p>
       {/if}
     </div>
 
     <div>
-      <p class="label">{l.main.pin}</p>
+      <p class="label">{$l.main.pin}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}
@@ -99,7 +84,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div>
-      <p class="label">{l.dashboard.emlatSettings.nbUsers}</p>
+      <p class="label">{$l.dashboard.emlatSettings.nbUsers}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}
@@ -110,21 +95,21 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 </section>
 
 <section class="section">
-  <h3>{l.dashboard.emlatSettings.users}</h3>
+  <h3>{$l.dashboard.emlatSettings.users}</h3>
 
   <div class="list-container">
     <div class="list">
       <p class="label">Users</p>
-      {#each data.users as user}
-        {#if user.status == 1}
+      {#each data.users as account}
+        {#if account.status == 1}
           <button
             class="list"
-            class:active={account.id == user.id}
+            class:active={account.id == account.id}
             on:click={() => {
-              account = user
+              account = account
             }}
           >
-            {user.name}
+            {account.name}
           </button>
         {/if}
       {/each}
@@ -176,17 +161,17 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div class="perms">
-      <UserManagement account={account} />
+      <UserManagement {account} />
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h3>{l.dashboard.emlatSettings.vpsAndDocker}</h3>
+  <h3>{$l.dashboard.emlatSettings.vpsAndDocker}</h3>
 
   <div class="container">
     <div>
-      <p class="label">{l.dashboard.emlatSettings.dockerInfo}</p>
+      <p class="label">{$l.dashboard.emlatSettings.dockerInfo}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}
@@ -195,7 +180,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div>
-      <p class="label">{l.dashboard.emlatSettings.storage}</p>
+      <p class="label">{$l.dashboard.emlatSettings.storage}</p>
       {#if !data}
         <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
       {:else}

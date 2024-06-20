@@ -27,7 +27,7 @@ class AdminService {
 
     try {
       if ((await db.query<count[]>(query, params))[0].count > 0) {
-        return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Name already taken' }
+        return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Name already used' }
       }
     } catch (error: any) {
       return { status: false, code: ResponseType.DATABASE_ERROR, message: error.code }

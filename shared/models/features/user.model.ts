@@ -1,5 +1,3 @@
-import { tinyint, varchar } from '../types'
-
 export interface User {
   /**
    * In the JWT as `sub`
@@ -8,11 +6,11 @@ export interface User {
   /**
    * In the JWT
    */
-  name?: varchar
+  name?: string
   /**
    * Not in the JWT
    */
-  password?: varchar
+  password?: string
   /**
    * Not in the JWT
    *
@@ -24,21 +22,21 @@ export interface User {
    *
    * `-2` Deleted
    */
-  status?: tinyint
+  status?: number
   /**
    * **In** the JWT
    *
    * `p_*` are **not** in the JWT
    */
-  admin?: tinyint
-  p_files_updater_add_del?: tinyint
-  p_bootstrap_mod?: tinyint
-  p_maintenance_mod?: tinyint
-  p_news_add?: tinyint
-  p_news_mod_del?: tinyint
-  p_news_category_add_mod_del?: tinyint
-  p_news_tag_add_mod_del?: tinyint
-  p_background_mod?: tinyint
-  p_stats_see?: tinyint
-  p_stats_del?: tinyint
+  admin?: number
+  p_files_updater_add_del?: number
+  p_bootstrap_mod?: number
+  p_maintenance_mod?: number
+  p_news_add?: number
+  p_news_mod_del?: number
+  p_news_category_add_mod_del?: number
+  p_news_tag_add_mod_del?: number
+  p_background_mod?: number
+  p_stats_see?: number
+  p_stats_del?: number
 }

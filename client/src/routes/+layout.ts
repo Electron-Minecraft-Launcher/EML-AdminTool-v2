@@ -1,5 +1,5 @@
 import type { LayoutLoad } from './$types'
-import { env$ } from '../services/store'
+import { env, l } from '../services/store'
 import apiEnvService from '../services/api/api-env.service'
 import en from '../assets/language/en'
 import fr from '../assets/language/fr'
@@ -9,13 +9,13 @@ export const ssr = false
 
 
 export const load: LayoutLoad = async () => {
-  let env!: any
+  let env_!: any
 
   ;(await apiEnvService.getEnv()).subscribe({
     next: (resp) => {
-      env = resp.body.data
-      if (!env.name) {
-        env = {
+      env_ = resp.body.data
+      if (!env_.name) {
+        env_ = {
           language: 'en',
           name: 'EML',
           theme: 'eml',
@@ -23,19 +23,20 @@ export const load: LayoutLoad = async () => {
       }
     },
     error: () => {
-      env = {
+      env_ = {
         language: 'en',
         name: 'EML',
         theme: 'eml',
       }
     },
     finally: () => {
-      if (env.language == 'fr') {
-        env.language = fr
+      if (env_.language == 'fr') {
+        env_.language = fr
       } else {
-        env.language = en
+        env_.language = en
       }
-      env$.set(env)
+      env.set(env_)
+      l.set(env_.language)
     },
   })
 }

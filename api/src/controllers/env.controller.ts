@@ -1,4 +1,4 @@
-import { NextFunction, Request } from 'express'
+import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
 import envService from '../services/env.service'
 import { ResponseType } from '../../../shared/models/types'

@@ -47,7 +47,7 @@ export default class Admin {
     return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
       emlat: { ...env_, pin, nbUsers: countUsers.count },
       vps: { os: vpsService.getOS(), storage: vpsService.getStorage() },
-      users: []
+      users: await this.getUsers(req, headers).then((res) => res.data)
     })
   }
 
@@ -179,7 +179,7 @@ export default class Admin {
       throw new RequestException('Missing parameters')
     }
 
-    var getUser: User
+    let getUser: User
     const token = (headers['authorization'] + '').split(' ')[1]
 
     if (userId == user.id || userId == 'me') {
@@ -204,7 +204,7 @@ export default class Admin {
       password: getUser.password,
       admin: getUser.admin,
       status: ((user.admin && body.status) || (body.status && body.status == -2)) && !getUser.admin ? +body.status : getUser.status,
-      p_files_updater_add_del: user.admin && body.p_files_updater_add_del ? +body.p_files_updater_add_del : getUser.p_files_updater_add_del,
+      p_files_updater_add_del: user.admin && +body.p_files_updater_add_del ? 1 : 0,
       p_bootstrap_mod: user.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
       p_maintenance_mod: user.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
       p_news_add: user.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
@@ -289,6 +289,8 @@ export default class Admin {
 
     try {
       await db.query('DELETE FROM users WHERE id = ?', +userId)
+      await db.query('DELETE FROM logs WHERE user = ?', +userId)
+      await db.query('DELETE FROM news WHERE author = ?', +userId)
     } catch (error) {
       throw new DBException()
     }

@@ -1,35 +1,18 @@
 <script lang="ts">
-  import type en from '../../../assets/language/en'
-  import type fr from '../../../assets/language/fr'
   import Skeleton from '../../../components/layouts/Skeleton.svelte'
-  import type { Env } from '../../../../../shared/models/data/env.model'
-  import type { User } from '../../../../../shared/models/features/user.model'
-  import { env$, user$ } from '../../../services/store'
-
-  let env!: Env
-  let l: typeof en | typeof fr
-  let user: User
-
-  env$.subscribe((value) => {
-    env = value
-    l = value.language
-  })
-
-  user$.subscribe((value) => {
-    user = value
-  })
+  import { env, user, l } from '../../../services/store'
 </script>
 
 <svelte:head>
-  <title>{env.name} AdminTool</title>
+  <title>{$env.name} AdminTool</title>
 </svelte:head>
 
-<h2>{l.main.home}</h2>
+<h2>{$l.main.home}</h2>
 
 {#if !user}
   <Skeleton randomWidth={{ times: 100, min: 200 }} />
 {:else}
-  <h3>{l.dashboard.welcome}, {user.name + (l.l == 'fr' ? ' ' : '')}!</h3>
+  <h3>{$l.dashboard.welcome}, {$user.name + ($l.l == 'fr' ? ' ' : '')}!</h3>
 {/if}
 
 <div class="wip">

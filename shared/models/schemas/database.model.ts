@@ -29,7 +29,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
   logs: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'date', info: 'VARCHAR(255)' },
-    { name: 'place', info: 'VARCHAR(255)' },
+    { name: 'user', info: 'INT(11)' },
     { name: 'type', info: 'VARCHAR(255)' },
     { name: 'data', info: 'TEXT' },
   ],
