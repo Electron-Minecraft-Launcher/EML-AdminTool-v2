@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { User } from '../../../shared/models/features/user.model'
   import { user, l } from '../services/store'
-  import AcceptUserModal from './modals/EditUserModal.svelte'
+  import AcceptEditAccountModal from './modals/AcceptEditAccountModal.svelte'
   import apiAdminService from '../services/api/api-admin.service'
   import { invalidateAll } from '$app/navigation'
 
-  export let account: User
+  export let selectedAccount: User
 
   let showEditUserModal = false
   let action: 'accept' | 'edit'
@@ -15,20 +15,19 @@
       confirm(`Are you sure you want to delete this user?
 The user will not be able to access the EML AdminTool anymore. However, the user's actions and data will not be deleted.`)
     ) {
-      account.status = -2
-      account.p_files_updater_add_del = 0
-      account.p_bootstrap_mod = 0
-      account.p_maintenance_mod = 0
-      account.p_news_add = 0
-      account.p_news_mod_del = 0
-      account.p_news_category_add_mod_del = 0
-      account.p_news_tag_add_mod_del = 0
-      account.p_background_mod = 0
-      account.p_stats_see = 0
-      account.p_stats_del = 0
-      ;(await apiAdminService.putUser(account.id, account)).subscribe({
+      selectedAccount.status = -2
+      selectedAccount.p_files_updater_add_del = 0
+      selectedAccount.p_bootstrap_mod = 0
+      selectedAccount.p_maintenance_mod = 0
+      selectedAccount.p_news_add = 0
+      selectedAccount.p_news_mod_del = 0
+      selectedAccount.p_news_category_add_mod_del = 0
+      selectedAccount.p_news_tag_add_mod_del = 0
+      selectedAccount.p_background_mod = 0
+      selectedAccount.p_stats_see = 0
+      selectedAccount.p_stats_del = 0
+      ;(await apiAdminService.putUser(selectedAccount.id, selectedAccount)).subscribe({
         next: (res) => {
-          user.set(res.body.data?.user!)
           invalidateAll()
         }
       })
@@ -40,7 +39,7 @@ The user will not be able to access the EML AdminTool anymore. However, the user
       confirm(`Are you sure you want to delete this user forever?
 All the user's actions and data will be deleted, including published news. This action is irreversible.`)
     ) {
-      ;(await apiAdminService.deleteUser(account.id)).subscribe({
+      ;(await apiAdminService.deleteUser(selectedAccount.id)).subscribe({
         next: () => {
           invalidateAll()
         }
@@ -49,7 +48,7 @@ All the user's actions and data will be deleted, including published news. This 
   }
 </script>
 
-{#if !account.admin && account.status == 1}
+{#if !selectedAccount.admin && selectedAccount.status == 1}
   <button class="secondary right refuse" on:click={deleteUser}><i class="fa-solid fa-trash" /></button>
   <button
     class="secondary right"
@@ -58,7 +57,7 @@ All the user's actions and data will be deleted, including published news. This 
       action = 'edit'
     }}><i class="fa-solid fa-pen" /></button
   >
-{:else if account.status == 0}
+{:else if selectedAccount.status == 0}
   <button class="secondary right refuse" on:click={deleteUser}><i class="fa-solid fa-times" /></button>
   <button
     class="secondary right accept"
@@ -67,61 +66,61 @@ All the user's actions and data will be deleted, including published news. This 
       action = 'accept'
     }}><i class="fa-solid fa-check" /></button
   >
-{:else if account.status && account.status < 0}
+{:else if selectedAccount.status && selectedAccount.status < 0}
   <button class="secondary right refuse" on:click={deleteUserForever}><i class="fa-solid fa-trash" /></button>
 {/if}
 
 <div class="perms">
-  <h4>Permissions of {account.name}</h4>
+  <h4>Permissions of {selectedAccount.name}</h4>
 
   <p class="label">{$l.main.username}</p>
-  <p>{account.name}</p>
+  <p>{selectedAccount.name}</p>
 
-  {#if account.status && account.status > 0}
+  {#if selectedAccount.status && selectedAccount.status > 0}
     <p class="label">{$l.dashboard.permissions}</p>
-    {#if account.admin}
+    {#if selectedAccount.admin}
       <p>Admin (all permissions)</p>
     {:else}
-      {#if account.p_files_updater_add_del}
+      {#if selectedAccount.p_files_updater_add_del}
         <p>Add and Delete files</p>
       {/if}
 
-      {#if account.p_bootstrap_mod}
+      {#if selectedAccount.p_bootstrap_mod}
         <p>Modify bootstrap</p>
       {/if}
 
-      {#if account.p_maintenance_mod}
+      {#if selectedAccount.p_maintenance_mod}
         <p>Modify maintenance status</p>
       {/if}
 
-      {#if account.p_news_add || account.p_news_mod_del || account.p_news_category_add_mod_del || account.p_news_tag_add_mod_del}
-        {#if account.p_news_add}
-          <p>Add{account.p_news_mod_del ? ', Edit and Delete' : ''} news</p>
+      {#if selectedAccount.p_news_add || selectedAccount.p_news_mod_del || selectedAccount.p_news_category_add_mod_del || selectedAccount.p_news_tag_add_mod_del}
+        {#if selectedAccount.p_news_add}
+          <p>Add{selectedAccount.p_news_mod_del ? ', Edit and Delete' : ''} news</p>
         {/if}
-        {#if account.p_news_category_add_mod_del}
+        {#if selectedAccount.p_news_category_add_mod_del}
           <p>Add, Edit and Delete news categories</p>
         {/if}
-        {#if account.p_news_tag_add_mod_del}
+        {#if selectedAccount.p_news_tag_add_mod_del}
           <p>Add, Edit and Delete news tags</p>
         {/if}
       {/if}
 
-      {#if account.p_background_mod}
+      {#if selectedAccount.p_background_mod}
         <p>Change background</p>
       {/if}
 
-      {#if account.p_stats_see}
-        <p>View{account.p_stats_del ? ' and Delete' : ''} stats</p>
+      {#if selectedAccount.p_stats_see}
+        <p>View{selectedAccount.p_stats_del ? ' and Delete' : ''} stats</p>
       {/if}
 
-      {#if !account.p_files_updater_add_del && !account.p_bootstrap_mod && !account.p_maintenance_mod && !account.p_news_add && !account.p_news_mod_del && !account.p_news_category_add_mod_del && !account.p_news_tag_add_mod_del && !account.p_background_mod && !account.p_stats_see}
+      {#if !selectedAccount.p_files_updater_add_del && !selectedAccount.p_bootstrap_mod && !selectedAccount.p_maintenance_mod && !selectedAccount.p_news_add && !selectedAccount.p_news_mod_del && !selectedAccount.p_news_category_add_mod_del && !selectedAccount.p_news_tag_add_mod_del && !selectedAccount.p_background_mod && !selectedAccount.p_stats_see}
         <p>No permissions</p>
       {/if}
     {/if}
   {/if}
 </div>
 
-<AcceptUserModal bind:show={showEditUserModal} bind:account bind:action />
+<AcceptEditAccountModal bind:show={showEditUserModal} bind:selectedAccount bind:action />
 
 <style lang="scss">
   div.perms {

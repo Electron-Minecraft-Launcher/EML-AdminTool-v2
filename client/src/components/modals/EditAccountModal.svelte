@@ -9,16 +9,12 @@
   let password: string = ''
   let passwordCfr: string = ''
 
-  async function closeModal() {
-    show = false
-  }
-
   async function submit() {
     ;(await apiAdminService.putUser('me', { name, password })).subscribe({
       next: (res) => {
         user.set(res.body.data?.user!)
-        closeModal()
-      },
+        show = false
+      }
     })
   }
 </script>
@@ -31,15 +27,15 @@
 
     <label for="name">{$l.dashboard.account.newNameOrPseudo}</label>
     <input type="text" id="name" placeholder={$l.dashboard.account.newNameOrPseudo} bind:value={name} />
-    
+
     <label for="password">{$l.dashboard.account.newPassword}</label>
     <input type="password" id="password" placeholder={$l.dashboard.account.newPassword} bind:value={password} />
-    
+
     <label for="password-cfr">{$l.auth.confirmPassword}</label>
     <input type="password" id="password-cfr" placeholder={$l.auth.confirmPassword} bind:value={passwordCfr} />
 
     <div class="actions">
-      <button class="secondary" on:click={closeModal} type="button">{$l.main.cancel}</button>
+      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={password != passwordCfr}>{$l.main.save}</button>
     </div>
   </form>

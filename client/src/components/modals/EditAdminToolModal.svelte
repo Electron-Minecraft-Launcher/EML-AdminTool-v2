@@ -17,18 +17,6 @@
     if (value && value.language && typeof value.language !== 'string') language = $l.l
   })
 
-  async function closeModal() {
-    show = false
-  }
-
-  async function toEn() {
-    language = 'en'
-  }
-
-  async function toFr() {
-    language = 'fr'
-  }
-
   async function submit() {
     splash = true
     ;(await apiAdminService.putAdminTool(name, language, pin)).subscribe({
@@ -57,13 +45,13 @@
     <p class="warn">Changing the EML AdminTool name will change your username/pseudo too!</p>
 
     <p class="label">{$l.dashboard.emlatSettings.language}</p>
-    <button type="button" class="secondary language" class:selected={language == 'en'} id="en-button" on:click={toEn}>
+    <button type="button" class="secondary language" class:selected={language == 'en'} id="en-button" on:click={() => language = 'en'}>
       <p>
         <img src={enFlag} alt="English flag" />
         English
       </p>
     </button>
-    <button type="button" class="secondary language" class:selected={language == 'fr'} id="fr-button" on:click={toFr}>
+    <button type="button" class="secondary language" class:selected={language == 'fr'} id="fr-button" on:click={() => language = 'fr'}>
       <p>
         <img src={frFlag} alt="French flag" />
         Français
@@ -74,7 +62,7 @@
     <label class="p" for="regenerate-pin"><input type="checkbox" bind:checked={pin} id="regenerate-pin" /> Regenerate PIN</label>
 
     <div class="actions">
-      <button class="secondary" on:click={closeModal} type="button">{$l.main.cancel}</button>
+      <button class="secondary" on:click={() => show = false} type="button">{$l.main.cancel}</button>
       <button class="primary">{$l.main.save}</button>
     </div>
   </form>

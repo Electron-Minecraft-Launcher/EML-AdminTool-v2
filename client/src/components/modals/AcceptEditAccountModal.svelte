@@ -6,23 +6,35 @@
   import { invalidateAll } from '$app/navigation'
 
   export let show: boolean
-  export let account: User
+  export let selectedAccount: User
   export let action: 'accept' | 'edit'
 
-  let name = account.name
-  let p_files_updater_add_del = account.p_background_mod ? true : false
-  let p_bootstrap_mod = account.p_bootstrap_mod ? true : false
-  let p_maintenance_mod = account.p_maintenance_mod ? true : false
-  let p_news_add = account.p_news_add ? true : false
-  let p_news_mod_del = account.p_news_mod_del ? true : false
-  let p_news_category_add_mod_del = account.p_news_category_add_mod_del ? true : false
-  let p_news_tag_add_mod_del = account.p_news_tag_add_mod_del ? true : false
-  let p_background_mod = account.p_background_mod ? true : false
-  let p_stats_see = account.p_stats_see ? true : false
-  let p_stats_del = account.p_stats_del ? true : false
+  $: name = '' as string
+  $: p_files_updater_add_del = false as boolean
+  $: p_bootstrap_mod = false as boolean
+  $: p_maintenance_mod = false as boolean
+  $: p_news_add = false as boolean
+  $: p_news_mod_del = false as boolean
+  $: p_news_category_add_mod_del = false as boolean
+  $: p_news_tag_add_mod_del = false as boolean
+  $: p_background_mod = false as boolean
+  $: p_stats_see = false as boolean
+  $: p_stats_del = false as boolean
 
-  async function closeModal() {
-    show = false
+  $: if (show) update()
+
+  function update() {
+    name = selectedAccount.name + ''
+    p_files_updater_add_del = selectedAccount.p_files_updater_add_del == 1
+    p_bootstrap_mod = selectedAccount.p_bootstrap_mod == 1
+    p_maintenance_mod = selectedAccount.p_maintenance_mod == 1
+    p_news_add = selectedAccount.p_news_add == 1
+    p_news_mod_del = selectedAccount.p_news_mod_del == 1
+    p_news_category_add_mod_del = selectedAccount.p_news_category_add_mod_del == 1
+    p_news_tag_add_mod_del = selectedAccount.p_news_tag_add_mod_del == 1
+    p_background_mod = selectedAccount.p_background_mod == 1
+    p_stats_see = selectedAccount.p_stats_see == 1
+    p_stats_del = selectedAccount.p_stats_del == 1
   }
 
   async function submit() {
@@ -40,11 +52,10 @@
       p_stats_see: p_stats_see ? 1 : 0,
       p_stats_del: p_stats_del ? 1 : 0
     }
-    ;(await apiAdminService.putUser(account.id, tempUser)).subscribe({
+    ;(await apiAdminService.putUser(selectedAccount.id, tempUser)).subscribe({
       next: (res) => {
-        account = tempUser
-        user.set(res.body.data?.user!)
-        closeModal()
+        show = false
+        selectedAccount = res.body.data?.user!
         invalidateAll()
       }
     })
@@ -61,17 +72,17 @@
 
       <p class="label">Files Updater</p>
       <label class="p" for="p_files_updater_add_del">
-        <input type="checkbox" id="p_files_updater_add_del" bind:value={p_files_updater_add_del} /> Add and delete files
+        <input type="checkbox" id="p_files_updater_add_del" bind:checked={p_files_updater_add_del} /> Add and delete files
       </label>
 
       <p class="label">Bootstrap</p>
       <label class="p" for="p_bootstrap_mod">
-        <input type="checkbox" id="p_bootstrap_mod" bind:value={p_bootstrap_mod} /> Modify bootstrap
+        <input type="checkbox" id="p_bootstrap_mod" bind:checked={p_bootstrap_mod} /> Modify bootstrap
       </label>
 
       <p class="label">Maintenance</p>
       <label class="p" for="p_maintenance_mod">
-        <input type="checkbox" id="p_maintenance_mod" bind:value={p_maintenance_mod} /> Modify maintenance
+        <input type="checkbox" id="p_maintenance_mod" bind:checked={p_maintenance_mod} /> Modify maintenance
       </label>
 
       <p class="label">News</p>
@@ -79,9 +90,13 @@
         <input
           type="checkbox"
           id="p_news_add"
-          bind:value={p_news_add}
+          bind:checked={p_news_add}
           on:change={() => {
-            if (!p_news_add) p_news_mod_del = false
+            if (!p_news_add) {
+              p_news_mod_del = false
+              p_news_category_add_mod_del = false
+              p_news_tag_add_mod_del = false
+            }
           }}
         /> Add news
       </label>
@@ -89,22 +104,36 @@
         <input
           type="checkbox"
           id="p_news_mod_del"
-          bind:value={p_news_mod_del}
-          on:click={() => {
+          bind:checked={p_news_mod_del}
+          on:change={() => {
             if (p_news_mod_del) p_news_add = true
           }}
         /> Edit and Delete every news
       </label>
       <label class="p" for="p_news_category_add_mod_del">
-        <input type="checkbox" id="p_news_category_add_mod_del" bind:value={p_news_category_add_mod_del} /> Add, Edit and Delete news categories
+        <input
+          type="checkbox"
+          id="p_news_category_add_mod_del"
+          bind:checked={p_news_category_add_mod_del}
+          on:change={() => {
+            if (p_news_category_add_mod_del) p_news_add = true
+          }}
+        /> Add, Edit and Delete news categories
       </label>
       <label class="p" for="p_news_tag_add_mod_del">
-        <input type="checkbox" id="p_news_tag_add_mod_del" bind:value={p_news_tag_add_mod_del} /> Add, Edit and Delete news tags
+        <input
+          type="checkbox"
+          id="p_news_tag_add_mod_del"
+          bind:checked={p_news_tag_add_mod_del}
+          on:change={() => {
+            if (p_news_tag_add_mod_del) p_news_add = true
+          }}
+        /> Add, Edit and Delete news tags
       </label>
 
       <p class="label">Background</p>
       <label class="p" for="p_background_mod">
-        <input type="checkbox" id="p_background_mod" bind:value={p_background_mod} /> Change background
+        <input type="checkbox" id="p_background_mod" bind:checked={p_background_mod} /> Change background
       </label>
 
       <p class="label">Stats</p>
@@ -112,7 +141,7 @@
         <input
           type="checkbox"
           id="p_stats_see"
-          bind:value={p_stats_see}
+          bind:checked={p_stats_see}
           on:change={() => {
             if (!p_stats_see) p_stats_del = false
           }}
@@ -122,7 +151,7 @@
         <input
           type="checkbox"
           id="p_stats_del"
-          bind:value={p_stats_del}
+          bind:checked={p_stats_del}
           on:change={() => {
             if (p_stats_del) p_stats_see = true
           }}
@@ -131,7 +160,7 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" on:click={closeModal} type="button">{$l.main.cancel}</button>
+      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary">{$l.main.save}</button>
     </div>
   </form>

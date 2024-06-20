@@ -115,7 +115,7 @@ Apache configuration file (this is an example, you have to adapt it to your conf
 
 You can now start the EML AdminTool with the following command:
 ```bash
-cd EML-AdminTool-v2
+cd EML-AdminTool-v2/docker
 docker-compose up
 ```
 

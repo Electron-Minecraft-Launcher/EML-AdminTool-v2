@@ -17,7 +17,7 @@
   let splash = false
 
   let showEditAdminToolModal = false
-  let account: User = data.users[0]
+  let selectedAccount: User = data.users[0]
 
   async function editAdminToolModal() {
     showEditAdminToolModal = true
@@ -104,9 +104,9 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {#if account.status == 1}
           <button
             class="list"
-            class:active={account.id == account.id}
+            class:active={selectedAccount == account}
             on:click={() => {
-              account = account
+              selectedAccount = account
             }}
           >
             {account.name}
@@ -115,53 +115,53 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       {/each}
 
       <p class="label">Waiting users</p>
-      {#each data.users as user}
-        {#if user.status == 0}
+      {#each data.users as account}
+        {#if account.status == 0}
           <button
             class="list"
-            class:active={account == user.id}
+            class:active={selectedAccount == account}
             on:click={() => {
-              account = user
+              selectedAccount = account
             }}
           >
-            {user.name}
+            {account.name}
           </button>
         {/if}
       {/each}
 
       <p class="label">Wrong PIN users</p>
-      {#each data.users as user}
-        {#if user.status == -1}
+      {#each data.users as account}
+        {#if account.status == -1}
           <button
             class="list"
-            class:active={account == user.id}
+            class:active={selectedAccount == account}
             on:click={() => {
-              account = user
+              selectedAccount = account
             }}
           >
-            {user.name}
+            {account.name}
           </button>
         {/if}
       {/each}
 
       <p class="label">Deleted users</p>
-      {#each data.users as user}
-        {#if user.status == -2}
+      {#each data.users as account}
+        {#if account.status == -2}
           <button
             class="list"
-            class:active={account == user.id}
+            class:active={selectedAccount == account}
             on:click={() => {
-              account = user
+              selectedAccount = account
             }}
           >
-            {user.name}
+            {account.name}
           </button>
         {/if}
       {/each}
     </div>
 
     <div class="perms">
-      <UserManagement {account} />
+      <UserManagement bind:selectedAccount />
     </div>
   </div>
 </section>

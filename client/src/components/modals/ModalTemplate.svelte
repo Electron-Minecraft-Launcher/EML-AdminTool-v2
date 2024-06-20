@@ -4,7 +4,6 @@
   export let size: 's' | 'm' | 'l' = 'm'
   export let show: boolean
 
-
   async function closeModal() {
     show = false
   }
@@ -14,7 +13,7 @@
   <div class="modal-background" transition:scale={{ start: 1.5 }}>
     <div class={'modal size-' + size}>
       <section class="close">
-        <button class="close" on:click={closeModal}>Close&nbsp;&nbsp;<i class="fa-solid fa-times" /></button>
+        <button class="close" on:click={() => (show = false)}>Close&nbsp;&nbsp;<i class="fa-solid fa-times" /></button>
       </section>
       <slot />
     </div>
@@ -33,14 +32,18 @@
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.4);
-    transition: opacity 0.3s, transform 0.3s;
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
     overflow: hidden;
     z-index: 1000;
   }
 
   div.modal {
     vertical-align: middle;
-    transition: opacity 0.3s, transform 0.3s;
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
 
     background-color: white;
     padding: 50px;

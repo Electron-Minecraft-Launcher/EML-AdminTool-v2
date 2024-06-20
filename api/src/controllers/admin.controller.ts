@@ -198,6 +198,10 @@ export default class Admin {
       throw new RequestException('User does not exist')
     }
 
+    if ((+body.p_news_mod_del == 1 || +body.p_news_category_add_mod_del == 1 || +body.p_news_tag_add_mod_del == 1) && user.admin && +user.admin == 1) {
+      body.p_news_add = 1
+    }
+    
     let updatedUser: User = {
       id: userId,
       name: body.name || getUser.name,
