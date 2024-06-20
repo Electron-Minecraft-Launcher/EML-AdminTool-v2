@@ -1,11 +1,12 @@
-import { SUCCESS, SuccessCode } from '$models/types'
+import { Request } from 'express'
+import { ResponseType, SuccessCode } from '../../../../shared/models/types'
 import { DefaultSuccess } from './default-success.response'
 
 export class DataSuccess<T> extends DefaultSuccess {
   data: T
 
-  constructor(httpStatus: number = 200, code: SuccessCode = SUCCESS, message: string = 'Success', data: T) {
-    super(httpStatus, code, message)
+  constructor(req: Request, httpStatus: number = 200, code: SuccessCode = ResponseType.SUCCESS, message: string = 'Success', data: T) {
+    super(req, httpStatus, code, message)
     this.data = data
   }
 }

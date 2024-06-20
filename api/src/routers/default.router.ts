@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { Route } from '$models/routes/route.model'
+import { Route } from '../services/routes.model'
 import bodyParser from 'body-parser'
 import swaggerUi from 'swagger-ui-express'
-import swagger from '../../swagger/swagger'
+import swagger from '../swagger/swagger'
 
 export default class DefaultRouter implements Route {
   path = '/api'

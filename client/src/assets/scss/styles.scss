@@ -52,6 +52,25 @@ p {
   }
 }
 
+label,
+p.label {
+  margin: 20px 0 5px 0;
+  color: #808080;
+  font-size: 14px;
+  display: block;
+
+  &:nth-of-type(1) {
+    margin-top: 30px;
+  }
+}
+
+label.p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: black;
+}
+
 a:not(.not-a) {
   color: var(--primary-color);
   text-decoration: none;
@@ -89,7 +108,7 @@ a.not-a {
 input:not([type=checkbox]) {
   display: block;
   width: calc(100% - 32px);
-  margin-top: 15px;
+  margin-top: 5px;
   padding: 12px 15px;
   border: 1px solid var(--border-color2);
   border-radius: 5px;
@@ -110,7 +129,7 @@ input:not([type=checkbox]) {
 }
 
 input[type=checkbox] {
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 button {
@@ -157,6 +176,24 @@ button {
     }
   }
 
+  &.danger {
+    margin-top: 30px;
+    background: var(--red-color);
+    box-shadow: 0 2px 0 rgb(107, 12, 12);
+    color: var(--text-light-color);
+    width: 150px;
+
+    &:hover:not(:disabled) {
+      background: rgb(216, 43, 43);
+      box-shadow: 0 2px 0 rgb(184, 28, 28);
+    }
+
+    &:hover:active:not(:disabled) {
+      box-shadow: 0 0 rgb(184, 28, 28);
+      outline: 6px solid rgba(194, 5, 5, 0.2);
+    }
+  }
+
   &:hover:active:not(:disabled) {
     transform: translateY(2px);
   }
@@ -198,18 +235,26 @@ section.section {
     }
   }
 
-
   h3 {
     margin: 0
   }
 
-  p.label {
-    margin: 30px 0 5px 0;
-    color: #808080;
-    font-size: 14px;
+  h4 {
+    margin-top: 30px
   }
 
   p {
     margin: 0
+  }
+
+  label,
+  p.label {
+    margin: 20px 0 5px 0;
+    color: #808080;
+    font-size: 14px;
+
+    &:nth-of-type(1) {
+      margin-top: 30px;
+    }
   }
 }

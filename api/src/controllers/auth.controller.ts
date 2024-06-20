@@ -1,65 +1,59 @@
-import db from '$utils/database'
-import { AuthService } from '$services/auth.service'
-import pin_ from '$utils/pin'
+import { Request } from 'express'
 import bcrypt from 'bcrypt'
-import { User } from '$models/features/user.model'
-import { CLIENT_ERROR, DB_ERROR, SUCCESS } from '$models/types'
-import { DBException } from '$responses/exceptions/db-exception.response'
-import { DataSuccess } from '$responses/success/data-success.response'
-import { NextFunction } from 'express'
 import { IncomingHttpHeaders } from 'http'
-import { DefaultSuccess } from '$responses/success/default-success.response'
-import { RequestException } from '$responses/exceptions/request-exception.response'
-import { UnauthorizedException } from '$responses/exceptions/unauthorized-exception.response'
-import { DataServiceResponse } from '$models/responses/services/data-service-response.model'
-import jwt from '$utils/jwt'
-import nexter from '$utils/nexter'
+import { User } from '../../../shared/models/features/user.model'
+import { DBException } from '../responses/exceptions/db-exception.response'
+import { RequestException } from '../responses/exceptions/request-exception.response'
+import { DataSuccess } from '../responses/success/data-success.response'
+import { DefaultSuccess } from '../responses/success/default-success.response'
+import { ServiceException } from '../responses/types'
+import db from '../utils/db'
+import nexter from '../utils/nexter'
+import authService from '../services/auth.service'
+import { ResponseType } from '../../../shared/models/types'
+import jwtService from '../services/jwt.service'
+import adminService from '../services/admin.service'
+import pinService from '../services/pin.service'
 
-class Auth {
-  async auth(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string; user: User }>> {
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Basic'))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+export default class Auth {
+  async auth(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
+    try {
+      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Basic'))
+    } catch (error) {
+      throw error as ServiceException
     }
-
-    var user: User = auth.data!
 
     delete user.password
     delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user: user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: jwtService.generate(user), user })
   }
 
-  async verify(headers: IncomingHttpHeaders, next: NextFunction): Promise<DataSuccess<{ jwt: string; user: User }>> {
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Bearer'))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+  async verify(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
+    try {
+      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
+    } catch (error) {
+      throw error as ServiceException
     }
 
-    var user: User = auth.data!
-    const token = (headers['authorization'] + '').split(' ')[1]
+    const jwt = (headers['authorization'] + '').split(' ')[1]
 
     delete user.password
     delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: token, user: user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt, user })
   }
 
-  async register(body: any, next: NextFunction): Promise<DataSuccess<{ jwt: string; user: User }>> {
+  async register(req: Request<any>, body: any): Promise<DataSuccess<{ jwt: string; user: User }>> {
     if (!body.name || body.name == '' || !body.password || body.password == '' || !body.pin) {
-      next(new RequestException('Missing parameters'))
-      throw null
+      throw new RequestException('Missing parameters')
     }
 
     const name = body.name
     const password = { clear: body.password, hash: await bcrypt.hash(body.password, 10) }
     const pin = body.pin
 
-    const user: User = {
+    let user: User = {
       name: name,
       password: password.hash,
       status: 0,
@@ -73,49 +67,37 @@ class Auth {
       p_news_tag_add_mod_del: 0,
       p_background_mod: 0,
       p_stats_see: 0,
-      p_stats_del: 0,
+      p_stats_del: 0
     }
 
-    var isNameAvailable = (await new AuthService().isNameAvailable(name)).code
-
-    if (isNameAvailable == CLIENT_ERROR) {
-      next(new UnauthorizedException('Name used'))
-      throw null
-    } else if (isNameAvailable == DB_ERROR) {
-      next(new DBException())
-      throw null
+    try {
+      nexter.serviceToException(await adminService.isNameAvailable(name))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
-    let insertUser: DataServiceResponse<{ id: number }>
-
-    if (pin != (await pin_.get())) {
+    if (pin != (await pinService.get())) {
       user.status = -1
-      insertUser = await new AuthService().insertUser(user)
-      if (insertUser.code == DB_ERROR) {
-        next(new DBException())
-        throw null
-      }
-    } else {
-      insertUser = await new AuthService().insertUser(user)
-      if (insertUser.code == DB_ERROR) {
-        next(new DBException())
-        throw null
-      }
     }
 
-    user.id = insertUser.data?.id
+    try {
+      var newUser = nexter.serviceToException(await adminService.insertUser(user))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    user.id = newUser.id
     delete user.password
     delete user.status
 
-    return new DataSuccess(200, SUCCESS, 'Success', { jwt: jwt.generate(user), user: user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: jwtService.generate(user), user })
   }
 
-  async logout(headers: IncomingHttpHeaders, next: NextFunction): Promise<DefaultSuccess> {
-    const auth = nexter.serviceToException(await new AuthService().checkAuth(headers['authorization'] + '', 'Bearer'))
-
-    if (!auth.status) {
-      next(auth.exception)
-      throw null
+  async logout(req: Request<any>, headers: IncomingHttpHeaders): Promise<DefaultSuccess> {
+    try {
+      nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
+    } catch (error: unknown) {
+      throw error as ServiceException
     }
 
     const token = (headers['authorization'] + '').split(' ')[1]
@@ -123,12 +105,9 @@ class Auth {
     try {
       await db.query<User[]>('INSERT INTO exp_jwt (jwt) VALUES (?)', [token])
     } catch (error: any) {
-      next(new DBException())
-      throw null
+      throw new DBException()
     }
 
-    return new DefaultSuccess()
+    return new DefaultSuccess(req)
   }
 }
-
-export default Auth

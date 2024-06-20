@@ -1,0 +1,48 @@
+# Devloppement configuration
+
+name: eml_admintool
+
+services:
+  web:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ../api:/usr/src/app/api
+
+      - ../client:/usr/src/app/client
+      - ../client/.svelte-kit:/usr/src/app/.svelte-kit
+      - ../client/src:/usr/src/app/src
+      - ../client/vite.config.js:/usr/src/app/vite.config.js
+      - ../client/tsconfig.json:/usr/src/app/tsconfig.json
+      - ../client/svelte.config.js:/usr/src/app/svelte.config.js
+
+      - ../shared:/usr/src/app/shared
+    ports:
+      - '3000:3000'
+      - '5173:5173'
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: 'eml_admintool'
+      MYSQL_USER: 'eml'
+      MYSQL_PASSWORD: 'eml'
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - '8080:80'
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:

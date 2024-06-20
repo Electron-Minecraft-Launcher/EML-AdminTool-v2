@@ -1,8 +1,8 @@
-import { NextFunction, Router } from 'express'
-import { Route } from '$models/routes/route.model'
-import { Request, Response } from 'express'
-import Configure from '$controllers/configure.controller'
-import { DefaultHttpResponse } from '$models/responses/http/default-http-response.model'
+import { NextFunction, Router, Request, Response } from 'express'
+import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { Route } from '../services/routes.model'
+import Configure from '../controllers/configure.controller'
+import { ControllerException } from '../responses/types'
 
 export default class ConfigureRouter implements Route {
   path = '/api/configure'
@@ -15,7 +15,7 @@ export default class ConfigureRouter implements Route {
   private init() {
     /**
      * @openapi
-     * /configure:
+     * /configure/check:
      *   get:
      *     tags:
      *       - Configuration
@@ -24,9 +24,9 @@ export default class ConfigureRouter implements Route {
      *       200:
      *         description: Needs to configure
      */
-    this.router.get(`${this.path}`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+    this.router.get(`${this.path}/check`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().check(req.body, next)
+        const resp = await new Configure().check(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error) {}
     })
@@ -58,9 +58,11 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/language`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().language(req.body, next)
+        const resp = await new Configure().language(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
 
     /**
@@ -90,9 +92,11 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/database`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().database(req.body, next)
+        const resp = await new Configure().database(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
 
     /**
@@ -124,9 +128,35 @@ export default class ConfigureRouter implements Route {
      */
     this.router.put(`${this.path}/admin`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
       try {
-        const resp = await new Configure().admin(req.body, next)
+        const resp = await new Configure().admin(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /configure/reset:
+     *   delete:
+     *     tags:
+     *      - Configuration
+     *     security:
+     *       - bearer: []
+     *     summary: Reset the EML AdminTool
+     *     responses:
+     *       200:
+     *         description: Reset
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.delete(`/api/reset`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+      try {
+        const resp = await new Configure().reset(req, req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
     })
   }
 }

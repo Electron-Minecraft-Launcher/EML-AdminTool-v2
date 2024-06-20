@@ -19,7 +19,7 @@
 
   form {
     width: 500px;
-    margin: 15vh auto 0 auto;
+    margin: 15vh auto 100px auto;
     transition: opacity 0.5s;
     display: block;
     opacity: 1;
@@ -33,13 +33,16 @@
     box-shadow: 0 5px 50px rgba(0, 0, 0, 0.1);
   }
 
-  input:nth-of-type(2) {
-    margin-top: 15px;
-  }
+  // input:nth-of-type(2) {
+  //   margin-top: 15px;
+  // }
 
   label {
     display: inline-block;
-    margin-top: 15px;
+
+    &:nth-of-type(1) {
+      margin-top: 0;
+    }
   }
 
   input#pin-1,
@@ -48,6 +51,7 @@
     display: inline-block;
     width: 12px;
     text-align: center;
+    margin-top: 20px;
   }
 
   input#pin-1,

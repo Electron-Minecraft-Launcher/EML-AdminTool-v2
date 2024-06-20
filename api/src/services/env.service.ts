@@ -1,20 +1,21 @@
 import fs from 'fs'
 import path from 'path'
 import dotenv from 'dotenv'
-import db from '$utils/database'
-import { DefaultServiceResponse } from '$models/responses/services/default-service-response.model'
-import { SERVER_ERROR, SUCCESS } from '$models/types'
-import { Config } from '$models/configurations/config.model'
-import { User } from '$models/features/user.model'
-import { DataSuccess } from '$responses/success/data-success.response'
+import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
+import { ResponseType } from '../../../shared/models/types'
+import { Config } from '../../../shared/models/configurations/config.model'
+import { User } from '../../../shared/models/features/user.model'
+import db from '../utils/db'
 
-export class EnvService {
-  setEnv(dbPassword: string): DefaultServiceResponse {
+class EnvService {
+  setEnv(dbPassword?: string): DefaultServiceResponse {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%^&*()_+-=[]{};:<>,.?/'
     let jwtSecretKey = ''
     for (let i = 0; i < 128; i++) {
       jwtSecretKey += characters[Math.floor(Math.random() * characters.length)]
     }
+
+    if (!dbPassword) dbPassword = 'eml'
 
     try {
       fs.writeFileSync(
@@ -37,16 +38,16 @@ export class EnvService {
 # safely.                                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-DATABASE_PASSWORD="${dbPassword + ''}"
+DATABASE_PASSWORD="${dbPassword}"
 JWT_SECRET_KEY="${jwtSecretKey + ''}"
 `
       )
       process.env['DATABASE_PASSWORD'] = dbPassword
       process.env['JWT_SECRET_KEY'] = jwtSecretKey
       dotenv.config()
-      return { status: true, code: SUCCESS }
+      return { status: true, code: ResponseType.SUCCESS }
     } catch (error: any) {
-      return { status: false, code: SERVER_ERROR, message: error.code }
+      return { status: false, code: ResponseType.SERVER_ERROR, message: error.code }
     }
   }
 
@@ -81,3 +82,5 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
     return env
   }
 }
+
+export default new EnvService()

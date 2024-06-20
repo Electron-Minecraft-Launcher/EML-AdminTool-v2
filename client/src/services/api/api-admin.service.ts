@@ -1,10 +1,10 @@
 import http from '../http.module'
-import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
-import type { DataHttpResponse } from '$models/responses/data-http-response.model'
-import type { User } from '$models/features/user.model'
-import type { EMLAdminToolInfo } from '$models/features/emlat-info.model'
+import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
+import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
+import type { EMLAdminToolInfo } from '../../../../shared/models/features/emlat-info.model'
+import type { User } from '../../../../shared/models/features/user.model'
 
-export default class ApiAdminService {
+class ApiAdminService {
   async getAdminTool() {
     return await http.get<DataHttpResponse<EMLAdminToolInfo>>('/api/admintool')
   }
@@ -30,3 +30,5 @@ export default class ApiAdminService {
     return await http.delete<DefaultHttpResponse>('/api/users/' + id)
   }
 }
+
+export default new ApiAdminService()

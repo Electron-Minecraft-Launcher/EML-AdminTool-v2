@@ -1,6 +1,6 @@
-import type { Cookie } from '$models/data/cookie.model'
+import type { Cookie } from '../../../shared/models/data/cookie.model'
 
-export default class CookiesService {
+class CookiesService {
   get(name: string): string {
     let ca: Array<string> = document.cookie.split(';')
     let caLen: number = ca.length
@@ -36,3 +36,5 @@ export default class CookiesService {
       (location.protocol === 'https:' && params.secure && params.secure == true ? 'secure' : '')
   }
 }
+
+export default new CookiesService()

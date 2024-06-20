@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type en from '$assets/language/en'
-  import type fr from '$assets/language/fr'
-  import ConfigurationAdmin from '$components/configuration/ConfigurationAdmin.svelte'
-  import ConfigurationDatabase from '$components/configuration/ConfigurationDatabase.svelte'
-  import ConfigurationLanguage from '$components/configuration/ConfigurationLanguage.svelte'
-  import type { Env } from '$models/data/env.model'
-  import { env$ } from '$services/store'
+  import type en from '../../assets/language/en'
+  import type fr from '../../assets/language/fr'
+  import ConfigurationAdmin from '../../components/configuration/ConfigurationAdmin.svelte'
+  import ConfigurationDatabase from '../../components/configuration/ConfigurationDatabase.svelte'
+  import ConfigurationLanguage from '../../components/configuration/ConfigurationLanguage.svelte'
+  import type { Env } from '../../services/env.model'
+  import { env, l } from '../../services/store'
   import { goto } from '$app/navigation'
   import type { PageData } from './$types'
-  import utils from '$services/utils'
+  import utils from '../../services/utils'
   import { fade } from 'svelte/transition'
 
   export let data: PageData
@@ -16,16 +16,6 @@
   if (data.start) {
     start()
   }
-
-  let env!: Env
-  let l: typeof en | typeof fr
-
-  env$.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') {
-      env = value
-      l = value.language
-    }
-  })
 
   let h1Visible = false
   let sliderVisible = false
@@ -75,11 +65,17 @@
 </script>
 
 <svelte:head>
-  <title>{l.configuration.configuration} • {env.name} AdminTool</title>
+  <title>{$l.configuration.configuration} • {$env.name} AdminTool</title>
 </svelte:head>
 
 <div class="progress">
-  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4} />
+  <span
+    class:step-0={step == 0}
+    class:step-1={step == 1}
+    class:step-2={step == 2}
+    class:step-3={step == 3}
+    class:step-4={step == 4}
+  />
 </div>
 
 {#if h1Visible}
@@ -87,7 +83,16 @@
 {/if}
 
 {#if sliderVisible}
-  <div class="config-slider" class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4} id="config-slider" transition:fade>
+  <div
+    class="config-slider"
+    class:step-0={step == 0}
+    class:step-1={step == 1}
+    class:step-2={step == 2}
+    class:step-3={step == 3}
+    class:step-4={step == 4}
+    id="config-slider"
+    transition:fade
+  >
     <div class="config-1">
       <ConfigurationLanguage on:nextStep={nextStep} />
     </div>
@@ -133,7 +138,7 @@
 
     div.config-1,
     div.config-2,
-    div.config-3{
+    div.config-3 {
       width: 100vw;
       display: inline-block;
       vertical-align: top;

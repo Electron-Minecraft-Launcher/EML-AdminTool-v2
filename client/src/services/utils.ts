@@ -7,7 +7,7 @@ class Utils {
   toFirstLetterUppercase(string: string): string {
 
     let strs: string[] = string.toLocaleLowerCase().split(' ')
-    let strs_ = []
+    let strs_: string[] = []
 
     for (let value of strs) {
       let f = value.charAt(0).toUpperCase()
