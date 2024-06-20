@@ -39,7 +39,6 @@ You can choose your Linux distribution, but Debian or Ubuntu is highly recommend
 > [!NOTE]
 > The Launcher can make many requests to the EML AdminTool. If your Minecraft serveur doesn't have a lot of players, you can use a VPS with low requirements. However, if you have a lot of players, you should use a VPS with high requirements, to avoid any performance issues or crashes.
 
-
 ## Software requirements
 
 You have to install the following software on your VPS:
@@ -63,7 +62,7 @@ You have to configure your web server to use the EML AdminTool.
 For more information, you can read the [NGINX documentation](https://nginx.org/en/docs) or the [Apache documentation](https://httpd.apache.org/docs/2.4).
 
 <details>
-<summary>**NGINX configuration example**</summary>
+<summary>NGINX configuration example</summary>
 NGINX configuration file (this is an example, you have to adapt it to your configuration):
 
 ```nginx
@@ -92,7 +91,7 @@ server {
 </details>
 
 <details>
-<summary>**Apache configuration example**</summary>
+<summary>Apache configuration example</summary>
 Apache configuration file (this is an example, you have to adapt it to your configuration):
 
 ```apache
@@ -164,6 +163,7 @@ You can now make pull requests!
 * This Web software is under the `GNU GPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
 * If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
 
+<br>
 
 [^1]: The Docker Engine installation tutorial from the official Docker documentation includes the installation of Docker Compose.
 
