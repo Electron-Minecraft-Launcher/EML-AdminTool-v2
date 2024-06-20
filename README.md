@@ -59,7 +59,7 @@ Then, you can submit your translation file as an [issue](https://github.com/Elec
 
 ### Development
 
-Install [Node.js](https://nodejs.org/en/download/package-manager), [Docker](https://www.docker.com/get-started)[^1].
+Install [Node.js](https://nodejs.org/en/download/package-manager) and [Docker](https://www.docker.com/get-started)[^1].
 
 Then, download the code and run the command:
 ```bash
@@ -81,4 +81,4 @@ You can now make pull requests!
 * This Web software is under the `GNU GPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
 * If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
 
-[^1]: On desktop (Windows, macOS and Linux), you can use Docker Desktop, which includes Docker and Docker Compose. On a server (Linux), you can use the following commands, you should install Docker and Docker Compose separately.
+[^1]: On desktop (Windows, macOS and Linux), you can use Docker Desktop, which includes Docker and Docker Compose. On a server (Linux), you should install Docker and Docker Compose separately.
