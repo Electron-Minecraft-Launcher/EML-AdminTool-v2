@@ -66,16 +66,17 @@ class FilesService {
 
     const files = fs.readdirSync(`../files/${dir}/${subdir}`)
 
-    
+    const fulldir = subdir === '' ? dir : `${dir}/${subdir}`
+
     files.forEach((name) => {
-      if (fs.statSync(`../files/${dir}/${subdir}/${name}`).isDirectory()) {
-        this.browse(dir, `${subdir}/${name}`, domain)
+      if (fs.statSync(`../files/${fulldir}/${name}`).isDirectory()) {
+        this.browse(dir, `${subdir}/${name}`.replace(/^\/+/, ''), domain)
       } else {
-        console.log(`${subdir}/${name}`)
-        let path = `${subdir}/${name}`.split('\\').join('/').replace(/^\/+/, '')
-        let size = fs.statSync(`../files/${dir}/${subdir}/${name}`).size
-        let sha1 = crypto.createHash('sha1').update(`../files/${dir}/${subdir}/${name}`).digest('hex')
-        let url = `${domain}/files/${path}/${subdir}/${name}`
+        let path = `${subdir}/`.split('\\').join('/').replace(/^\/+/, '')
+        let size = fs.statSync(`../files/${fulldir}/${name}`).size
+        let sha1 = crypto.createHash('sha1').update(`../files/${fulldir}/${name}`).digest('hex')
+        console.log(subdir)
+        let url = `${domain}/files/${fulldir}/${name}`.split('\\').join('/').replace(/^\/+/, '')
         let type: 'ASSETS' | 'LIBRARIES' | 'MODS' | 'CONFIG' | 'JAVA' | 'NATIVES' | 'OTHER' = path.includes('assets')
           ? 'ASSETS'
           : path.includes('lib')
