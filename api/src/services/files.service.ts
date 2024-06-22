@@ -62,11 +62,11 @@ class FilesService {
   }
 
   private browse(dir: 'files-updater' | 'bootstrap', subdir: string, domain: string): void {
-    if (!fs.existsSync(`../files/${dir}/${subdir}`)) return
-
-    const files = fs.readdirSync(`../files/${dir}/${subdir}`)
-
     const fulldir = subdir === '' ? dir : `${dir}/${subdir}`
+    if (!fs.existsSync(`../files/${fulldir}`)) return
+
+    const files = fs.readdirSync(`../files/${fulldir}`)
+
 
     files.forEach((name) => {
       if (fs.statSync(`../files/${fulldir}/${name}`).isDirectory()) {
