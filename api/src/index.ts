@@ -10,6 +10,8 @@ import ConfigureRouter from './routers/configure.router'
 import AuthRouter from './routers/auth.router'
 import EnvRouter from './routers/env.router'
 import AdminRouter from './routers/admin.router'
+import path from 'path'
+import FilesUpdaterRouter from './routers/filesupdater.router'
 
 class App {
   private app: express.Application
@@ -44,13 +46,11 @@ class App {
       this.app.use('/', route.router)
     })
 
-    this.app.get('/', (req, res) => {
-      res.send('Hello World')
-    })
+    this.app.use('/files', express.static('../files/'))
     
     this.app.use(notFoundMiddleware)
     this.app.use(errorMiddleware)
   }
 }
 
-new App([new DefaultRouter(), new EnvRouter(), new ConfigureRouter(), new AuthRouter(), new AdminRouter()]).listen()
+new App([new DefaultRouter(), new EnvRouter(), new ConfigureRouter(), new AuthRouter(), new AdminRouter(), new FilesUpdaterRouter()]).listen()

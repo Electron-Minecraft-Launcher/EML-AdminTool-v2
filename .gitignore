@@ -6,3 +6,6 @@
 
 /client/node_modules
 /client/.svelte-kit
+
+/files/files-updater/*
+/files/bootstrap/*

@@ -9,15 +9,9 @@ services:
       dockerfile: ./docker/Dockerfile
     volumes:
       - ../api:/usr/src/app/api
-
       - ../client:/usr/src/app/client
-      - ../client/.svelte-kit:/usr/src/app/.svelte-kit
-      - ../client/src:/usr/src/app/src
-      - ../client/vite.config.js:/usr/src/app/vite.config.js
-      - ../client/tsconfig.json:/usr/src/app/tsconfig.json
-      - ../client/svelte.config.js:/usr/src/app/svelte.config.js
-
       - ../shared:/usr/src/app/shared
+      - files:/usr/src/app/files
     ports:
       - '3000:3000'
       - '5173:5173'
@@ -46,3 +40,4 @@ services:
 
 volumes:
   mysql-data:
+  files:

@@ -10,8 +10,9 @@
   },
   "include": [
     "src",
-    "../shared"
-, "../client/src/services/env.model.ts"  ],
+    "../shared", 
+    "../files"  
+],
   "exclude": [
     "node_modules"
   ]
