@@ -5,7 +5,7 @@ const options: swaggerJSDoc.OAS3Options = {
     openapi: '3.0.0',
     info: {
       title: 'EML AdminTool API',
-      version: '1.0.0',
+      version: '2.0.0-alpha.5',
       description: 'This API is used for the EML AdminTool',
       license: {
         name: 'GPL-3.0-or-later',

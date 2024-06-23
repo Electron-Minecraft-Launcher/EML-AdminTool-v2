@@ -59,6 +59,12 @@ class FilesService {
     files.forEach((name) => {
       if (fs.statSync(`../files/${fulldir}/${name}`).isDirectory()) {
         this.browse(dir, `${subdir}/${name}`.replace(/^\/+/, ''), domain)
+        this.filesArray.push({
+          name,
+          path: `${subdir}/`.split('\\').join('/').replace(/^\/+/, ''),
+          url: `${domain}/files/${fulldir}/${name}`.split('\\').join('/').replace(/^\/+/, ''),
+          type: 'FOLDER'
+        })
       } else {
         let path = `${subdir}/`.split('\\').join('/').replace(/^\/+/, '')
         let size = fs.statSync(`../files/${fulldir}/${name}`).size

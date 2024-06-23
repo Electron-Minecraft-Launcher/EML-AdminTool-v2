@@ -66,7 +66,7 @@ export default class FilesUpdaterRouter implements Route {
      */
     this.router.post(`${this.path}`, uploadFilesMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
-        const resp = await new FilesUpdater().uploadFilesUpdater(req)
+        const resp = await new FilesUpdater().uploadFiles(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -101,7 +101,7 @@ export default class FilesUpdaterRouter implements Route {
      */
     this.router.put(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
-        const resp = await new FilesUpdater().putRenameFilesUpdater(req, req.headers, req.body)
+        const resp = await new FilesUpdater().putRenameFile(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -134,7 +134,7 @@ export default class FilesUpdaterRouter implements Route {
      */
     this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
-        const resp = await new FilesUpdater().deleteFilesUpdater(req, req.headers, req.body)
+        const resp = await new FilesUpdater().deleteFiles(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
       } catch (error: unknown) {
         next(error as ControllerException)

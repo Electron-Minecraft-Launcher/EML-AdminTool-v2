@@ -10,11 +10,11 @@ export interface File {
   /**
    * The size of the file in bytes
    */
-  size: number
+  size?: number
   /**
    * The SHA1 hash of the file
    */
-  sha1: string
+  sha1?: string
   /**
    * The URL to download the file
    */
@@ -36,5 +36,5 @@ export interface File {
    * 
    * `'OTHER'`: Other files
    */
-  type: 'JAVA' | 'ASSETS' | 'LIBRARIES' | 'NATIVES' | 'MODS' | 'CONFIG' | 'OTHER'
+  type: 'JAVA' | 'ASSETS' | 'LIBRARIES' | 'NATIVES' | 'MODS' | 'CONFIG' | 'FOLDER' | 'OTHER'
 }

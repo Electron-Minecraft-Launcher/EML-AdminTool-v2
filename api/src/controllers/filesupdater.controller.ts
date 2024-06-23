@@ -10,17 +10,22 @@ import authService from '../services/auth.service'
 import { ServiceException } from '../responses/types'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import { RequestException } from '../responses/exceptions/request-exception.response'
+import fs from 'fs'
 
 class FilesUpdater {
   async getFilesUpdater(req: Request): Promise<DataSuccess<File[]>> {
     return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.get(req, 'files-updater'))
   }
 
-  async uploadFilesUpdater(req: Request): Promise<DataSuccess<File[]>> {
+  async uploadFiles(req: Request): Promise<DataSuccess<File[]>> {
+    const basePath = req.body && req.body.path ? `../files/files-updater/${req.body.path}/` : `../files/files-updater/`
+
+    if (!fs.existsSync(basePath)) fs.mkdirSync(basePath, { recursive: true })
+
     return await this.getFilesUpdater(req)
   }
 
-  async putRenameFilesUpdater(req: Request, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<File[]>> {
+  async putRenameFile(req: Request, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<File[]>> {
     try {
       var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
@@ -30,7 +35,7 @@ class FilesUpdater {
     if (+auth.p_files_updater_add_del! != 1) {
       throw new UnauthorizedException()
     }
-  
+
     if (!body.old_path || body.old_path == '' || !body.new_path || body.new_path == '') {
       throw new RequestException('Missing parameters')
     }
@@ -43,7 +48,7 @@ class FilesUpdater {
     }
   }
 
-  async deleteFilesUpdater(req: Request, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<File[]>> {
+  async deleteFiles(req: Request, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<File[]>> {
     try {
       var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
