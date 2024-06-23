@@ -7,7 +7,7 @@ import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
 import FilesUpdater from '../controllers/filesupdater.controller'
 import { File } from '../../../shared/models/features/filesupdater.model'
-import filesService from '../services/files.service'
+import uploadFilesMiddleware from '../middlewares/uploadfiles.middleware'
 
 export default class FilesUpdaterRouter implements Route {
   path = '/api/files-updater'
@@ -64,7 +64,7 @@ export default class FilesUpdaterRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.post(`${this.path}`, filesService.upload, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+    this.router.post(`${this.path}`, uploadFilesMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
         const resp = await new FilesUpdater().uploadFilesUpdater(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
@@ -73,26 +73,72 @@ export default class FilesUpdaterRouter implements Route {
       }
     })
 
-    // /**
-    //  * @openapi
-    //  * /logout:
-    //  *   delete:
-    //  *     tags:
-    //  *      - Auth
-    //  *     security:
-    //  *       - bearer: []
-    //  *     summary: Logout the user
-    //  *     responses:
-    //  *       200:
-    //  *         description: Logged out
-    //  */
-    // this.router.delete(`${this.path}/logout`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-    //   try {
-    //     const resp = await new Auth().logout(req, req.headers)
-    //     res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-    //   } catch (error: unknown) {
-    //     next(error as ControllerException)
-    //   }
-    // })
+    /**
+     * @openapi
+     * /files-updater:
+     *   put:
+     *     tags:
+     *      - Files Updater
+     *     security:
+     *      - bearer: []
+     *     summary: Rename file
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               old_path:
+     *                 type: string
+     *               new_path:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: File renamed
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.put(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+      try {
+        const resp = await new FilesUpdater().putRenameFilesUpdater(req, req.headers, req.body)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /files-updater:
+     *   delete:
+     *     tags:
+     *      - Files Updater
+     *     security:
+     *      - bearer: []
+     *     summary: Delete file
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               path:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: File deleted
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+      try {
+        const resp = await new FilesUpdater().deleteFilesUpdater(req, req.headers, req.body)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
   }
 }

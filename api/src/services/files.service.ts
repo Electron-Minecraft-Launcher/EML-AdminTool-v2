@@ -10,7 +10,6 @@ import { ResponseType } from '../../../shared/models/types'
 import { File } from '../../../shared/models/features/filesupdater.model'
 import crypto from 'crypto'
 import { RequestException } from '../responses/exceptions/request-exception.response'
-import multiparty from 'multiparty'
 
 class FilesService {
   private filesArray: File[] = []
@@ -22,63 +21,31 @@ class FilesService {
     return this.filesArray
   }
 
-  async upload(req: Request, res: Response, next: NextFunction) {
-    try {
-      var user = nexter.serviceToException(await authService.checkAuth(req.headers['authorization'] + '', 'Bearer'))
-    } catch (error) {
-      next(new UnauthorizedException('Unauthorized'))
-      return
-    }
+  rename(dir: 'files-updater' | 'bootstrap' | 'background', oldPath: string, newPath: string): DefaultServiceResponse {
+    if (!fs.existsSync(`../files/${dir}/${oldPath}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+    if (
+      oldPath.includes('../') ||
+      oldPath.includes('..\\') ||
+      oldPath === '..' ||
+      newPath.includes('../') ||
+      newPath.includes('..\\') ||
+      newPath === '..'
+    )
+      return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
 
-    const action = req.path.split('/')[2]
-
-    if (action === 'files-updater') {
-      if (+user.p_files_updater_add_del! != 1) {
-        next(new UnauthorizedException('Unauthorized'))
-        return
-      }
-    } else if (action === 'bootstrap') {
-      if (+user.p_bootstrap_mod! != 1) {
-        next(new UnauthorizedException('Unauthorized'))
-        return
-      }
-    } else if (action === 'background') {
-      if (+user.p_background_mod! != 1) {
-        next(new UnauthorizedException('Unauthorized'))
-        return
-      }
-    } else {
-      next(new RequestException('Invalid request'))
-      return
-    }
-
-    const storage = multer.diskStorage({
-      destination: (req, file, cb) => {
-        const filepath = file.originalname.split('/').slice(0, -1).join('/')
-        const path = req.body && req.body.path ? `../files/${action}/${req.body.path}/${filepath}/` : `../files/${action}/${filepath}/`
-        if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
-        cb(null, path)
-      },
-      filename: (req, file, cb) => {
-        cb(null, file.originalname.split('/').slice(-1)[0])
-      }
-    })
-
-    multer({ storage, preservePath: true }).array('files[]')(req, res, (err) => {
-      if (err) {
-        console.log(err)
-        next(new ServerException('Error uploading files'))
-        return
-      }
-      next()
-    })
+    fs.renameSync(`../files/${dir}/${oldPath}`, `../files/${dir}/${newPath}`)
+    return { status: true, code: ResponseType.SUCCESS }
   }
 
-  delete(dir: 'files-updater' | 'bootstrap' | 'background', path: Request): DefaultServiceResponse {
-    if (!fs.existsSync(`../files/${dir}/${path}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+  delete(dir: 'files-updater' | 'bootstrap' | 'background', paths: string[]): DefaultServiceResponse {
+    paths.forEach((path) => {
+      if (!fs.existsSync(`../files/${dir}/${path}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+      if (path.includes('../') || path.includes('..\\') || path === '..')
+        return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
 
-    if (fs.lstatSync(`../files/${dir}/${path}`).isFile()) fs.unlinkSync(`../files/${dir}/${path}`)
-    else fs.rmdirSync(`../files/${dir}/${path}`, { recursive: true })
+      if (fs.lstatSync(`../files/${dir}/${path}`).isFile()) fs.unlinkSync(`../files/${dir}/${path}`)
+      else fs.rmdirSync(`../files/${dir}/${path}`, { recursive: true })
+    })
 
     return { status: true, code: ResponseType.SUCCESS }
   }
@@ -110,14 +77,6 @@ class FilesService {
       }
     })
   }
-}
-
-interface MultipartFile {
-  fieldname: string
-  originalFilename: string
-  path: string
-  headers: any
-  size: number
 }
 
 export default new FilesService()
