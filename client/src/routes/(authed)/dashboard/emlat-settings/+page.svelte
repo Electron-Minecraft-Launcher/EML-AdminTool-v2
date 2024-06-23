@@ -58,38 +58,22 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   <div class="container">
     <div>
       <p class="label">{$l.main.name}</p>
-      {#if !data}
-        <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
-      {:else}
-        <p>{data.emlat.name}</p>
-      {/if}
+      <p>{data.emlat.name}</p>
     </div>
 
     <div>
       <p class="label">{$l.dashboard.emlatSettings.language}</p>
-      {#if !data}
-        <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
-      {:else}
-        <p>{$l.language}</p>
-      {/if}
+      <p>{$l.language}</p>
     </div>
 
     <div>
       <p class="label">{$l.main.pin}</p>
-      {#if !data}
-        <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
-      {:else}
-        <p><span class="pin">{data.emlat.pin}</span></p>
-      {/if}
+      <p><span class="pin">{data.emlat.pin}</span></p>
     </div>
 
     <div>
       <p class="label">{$l.dashboard.emlatSettings.nbUsers}</p>
-      {#if !data}
-        <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
-      {:else}
-        <p>{data.emlat.nbUsers}</p>
-      {/if}
+      <p>{data.emlat.nbUsers}</p>
     </div>
   </div>
 </section>
@@ -172,30 +156,21 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   <div class="container">
     <div>
       <p class="label">{$l.dashboard.emlatSettings.dockerInfo}</p>
-      {#if !data}
-        <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
-      {:else}
         <p>{data.vps.os}</p>
-      {/if}
     </div>
 
     <div>
       <p class="label">{$l.dashboard.emlatSettings.storage}</p>
-      {#if !data}
-        <Skeleton randomWidth={{ times: 100, min: 100 }} height={'18px'} />
-      {:else}
         <span class="storage">
           <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'} />
         </span>
         {Math.round((data.vps.storage[0] / data.vps.storage[1]) * 100)} %
-      {/if}
     </div>
   </div>
 </section>
 
 <section class="section">
   <h3>Danger zone</h3>
-  <!-- ! Translation -->
 
   <div class="container">
     <div>
