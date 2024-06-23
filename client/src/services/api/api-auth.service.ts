@@ -15,8 +15,7 @@ class ApiAuthService {
   }
 
   async postRegister(name: string, password: string, pin: string) {
-    const body = { name, password, pin }
-    return await http.post<DataHttpResponse<{ jwt: string; user: User }>>('/api/register', body)
+    return await http.post<DataHttpResponse<{ jwt: string; user: User }>>('/api/register', { name, password, pin })
   }
 
   async getVerify() {
