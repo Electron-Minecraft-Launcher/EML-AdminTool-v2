@@ -7,7 +7,11 @@ import filesService from '../services/files.service'
 
 class FilesUpdater {
   async getFilesUpdater(req: Request): Promise<DataSuccess<File[]>> {
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.getFilesUpdater(req))
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.get(req, 'files-updater'))
+  }
+
+  async uploadFilesUpdater(req: Request): Promise<DataSuccess<File[]>> {
+    return await this.getFilesUpdater(req)
   }
 }
 

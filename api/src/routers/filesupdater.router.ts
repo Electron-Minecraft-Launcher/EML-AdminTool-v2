@@ -7,6 +7,7 @@ import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
 import FilesUpdater from '../controllers/filesupdater.controller'
 import { File } from '../../../shared/models/features/filesupdater.model'
+import filesService from '../services/files.service'
 
 export default class FilesUpdaterRouter implements Route {
   path = '/api/files-updater'
@@ -28,82 +29,49 @@ export default class FilesUpdaterRouter implements Route {
      *       200:
      *         description: Files
      */
-    this.router.get(
-      `${this.path}`,
-      async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
-        try {
-          const resp = await new FilesUpdater().getFilesUpdater(req)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.get(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+      try {
+        const resp = await new FilesUpdater().getFilesUpdater(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
       }
-    )
+    })
 
-    // /**
-    //  * @openapi
-    //  * /verify:
-    //  *   get:
-    //  *     tags:
-    //  *       - Auth
-    //  *     security:
-    //  *       - bearer: []
-    //  *     summary: Verify JWT
-    //  *     responses:
-    //  *       200:
-    //  *         description: Password set
-    //  *       401:
-    //  *         description: Unauthorized
-    //  */
-    // this.router.get(
-    //   `${this.path}/verify`,
-    //   async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
-    //     try {
-    //       const resp = await new Auth().verify(req, req.headers)
-    //       res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-    //     } catch (error: unknown) {
-    //       next(error as ControllerException)
-    //     }
-    //   }
-    // )
-
-    // /**
-    //  * @openapi
-    //  * /register:
-    //  *   post:
-    //  *     tags:
-    //  *      - Auth
-    //  *     summary: Register to the EML AdminTool
-    //  *     requestBody:
-    //  *       required: true
-    //  *       content:
-    //  *         application/x-www-form-urlencoded:
-    //  *           schema:
-    //  *             type: object
-    //  *             properties:
-    //  *               name:
-    //  *                 type: string
-    //  *               password:
-    //  *                 type: string
-    //  *               pin:
-    //  *                 type: string
-    //  *     responses:
-    //  *       200:
-    //  *         description: User registered
-    //  *       401:
-    //  *         description: Unauthorized
-    //  */
-    // this.router.post(
-    //   `${this.path}/register`,
-    //   async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
-    //     try {
-    //       const resp = await new Auth().register(req, req.body)
-    //       res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-    //     } catch (error: unknown) {
-    //       next(error as ControllerException)
-    //     }
-    //   }
-    // )
+    /**
+     * @openapi
+     * /files-updater:
+     *   post:
+     *     tags:
+     *      - Files Updater
+     *     security:
+     *      - bearer: []
+     *     summary: Upload files
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               path:
+     *                 type: string
+     *               files:
+     *                 type: file
+     *     responses:
+     *       200:
+     *         description: Files uploaded
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.post(`${this.path}`, filesService.upload, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+      try {
+        const resp = await new FilesUpdater().uploadFilesUpdater(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
 
     // /**
     //  * @openapi
