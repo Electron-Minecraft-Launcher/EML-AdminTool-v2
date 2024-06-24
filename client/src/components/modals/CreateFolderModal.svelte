@@ -3,6 +3,7 @@
   import type { PageData } from '../../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../../services/api/api-filesupdater.service'
   import { l } from '../../services/store'
+  import utils from '../../services/utils'
   import ModalTemplate from './ModalTemplate.svelte'
 
   export let data: PageData
@@ -18,6 +19,7 @@
   }
 
   async function submit() {
+    name = utils.removeUnwantedFilenameChars(name)
     ;(await apiFilesUpdaterService.uploadFiles(`${currentPath}${name}/`, [])).subscribe({
       next: (res) => {
         data.files = res.body.data!
@@ -32,11 +34,11 @@
     <h2>New folder</h2>
 
     <label for="name">Files Updater/{currentPath}</label>
-    <input type="text" id="name" placeholder="New folder" bind:value={name} />
+    <input type="text" id="name" placeholder="New folder" bind:value={name} on:keyup={() => name = utils.removeUnwantedFilenameChars(name)} />
 
     <div class="actions">
       <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={name.replaceAll(' ', '') === ''}>{$l.main.save}</button>
+      <button class="primary" disabled={name.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>

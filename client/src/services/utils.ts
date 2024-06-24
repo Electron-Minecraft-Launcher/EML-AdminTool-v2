@@ -1,11 +1,9 @@
 class Utils {
-
   sleep(duration: number) {
-    return new Promise(resolve => setTimeout(resolve, duration));
+    return new Promise((resolve) => setTimeout(resolve, duration))
   }
-  
-  toFirstLetterUppercase(string: string): string {
 
+  toFirstLetterUppercase(string: string): string {
     let strs: string[] = string.toLocaleLowerCase().split(' ')
     let strs_: string[] = []
 
@@ -27,9 +25,21 @@ class Utils {
     }
 
     return strs_.join('-')
-
   }
 
+  removeUnwantedFilenameChars(string: string): string {
+    console.log('removeUnwantedFilenameChars')
+    return string
+      .replaceAll('/', '')
+      .replaceAll('\\', '')
+      .replaceAll(':', '')
+      .replaceAll('*', '')
+      .replaceAll('?', '')
+      .replaceAll('"', '')
+      .replaceAll('<', '')
+      .replaceAll('>', '')
+      .replaceAll('|', '')
+  }
 }
 
 export default new Utils()

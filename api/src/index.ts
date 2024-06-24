@@ -10,8 +10,8 @@ import ConfigureRouter from './routers/configure.router'
 import AuthRouter from './routers/auth.router'
 import EnvRouter from './routers/env.router'
 import AdminRouter from './routers/admin.router'
-import path from 'path'
 import FilesUpdaterRouter from './routers/filesupdater.router'
+import cors from 'cors'
 
 class App {
   private app: express.Application
@@ -40,13 +40,12 @@ class App {
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
     this.app.use(checkerMiddleware)
-    // this.app.use(loggerMiddleware)
     
     routes.forEach(route => {
       this.app.use('/', route.router)
     })
 
-    this.app.use('/files', express.static('../files/'))
+    this.app.use('/files', cors(), express.static('../files/'))
     
     this.app.use(notFoundMiddleware)
     this.app.use(errorMiddleware)

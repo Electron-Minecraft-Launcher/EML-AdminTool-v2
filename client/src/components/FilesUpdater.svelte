@@ -99,17 +99,37 @@
   }
 
   async function open(file: File_) {
+    const readable = ['txt', 'md', 'json', 'yaml', 'yml', 'xml', 'html', 'css', 'js', 'ts', 'sql', 'sh', 'py', 'config', 'ini', 'properties']
+
     if (file.type === 'FOLDER') {
       currentPath = `${file.path}${file.name}/`
+    } else if (file.name.split('.').length > 1 && readable.includes(file.name.split('.').slice(-1)[0])) {
+      addEditFileAction = { action: 'edit', file }
+      showAddEditFileModal = true
     } else {
-      // TODO: Embedded file editor
+      download()
+    }
+  }
+
+  async function download() {
+    if (selectedItems.length !== 1) return
+    try {
+      const file = selectedItems[0]
+      const response = await fetch(file.url)
+      if (!response.ok) throw new Error('Réponse réseau non ok.')
+
+      const blob = await response.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = file.url
+      a.href = downloadUrl
       a.download = file.name
-      a.target = '_blank'
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
+      window.URL.revokeObjectURL(downloadUrl)
+      selectedItems = [file]
+    } catch (error) {
+      console.error('Erreur lors du téléchargement du fichier:', error)
     }
   }
 
@@ -256,10 +276,14 @@
   {/if}
 
   <button class="primary small add" style="margin-right: 30px" on:click={() => (addElementDropdownOpen = !addElementDropdownOpen)}>
-    <i class="fa-solid fa-plus" />&nbsp;&nbsp;Upload elements
+    <i class="fa-solid fa-plus" />&nbsp;&nbsp;New elements
   </button>
 
-  <button class="secondary small" disabled={selectedItems.length !== 1 || (selectedItems[0] && selectedItems[0].type === 'FOLDER')}>
+  <button
+    class="secondary small"
+    disabled={selectedItems.length !== 1 || (selectedItems[0] && selectedItems[0].type === 'FOLDER')}
+    on:click={download}
+  >
     <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download
   </button>
   <button class="secondary small" disabled={selectedItems.length !== 1} on:click={() => (showRenameModal = true)}>
@@ -387,7 +411,7 @@
   }
 
   div.explorer {
-    min-height: 180px;
+    min-height: 270px;
     position: relative;
     margin-top: 0;
 

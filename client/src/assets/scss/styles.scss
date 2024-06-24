@@ -258,3 +258,7 @@ section.section {
     }
   }
 }
+
+div.monaco-editor, div.monaco-editor>div {
+  border-radius: 5px;
+}
