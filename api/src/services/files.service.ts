@@ -43,8 +43,7 @@ class FilesService {
       if (path.includes('../') || path.includes('..\\') || path === '..')
         return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
 
-      if (fs.lstatSync(`../files/${dir}/${path}`).isFile()) fs.unlinkSync(`../files/${dir}/${path}`)
-      else fs.rmdirSync(`../files/${dir}/${path}`, { recursive: true })
+      else fs.rmSync(`../files/${dir}/${path}`, { recursive: true })
     })
 
     return { status: true, code: ResponseType.SUCCESS }

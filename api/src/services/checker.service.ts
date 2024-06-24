@@ -37,7 +37,11 @@ class CheckerService {
       needsConfiguration = true
     }
 
-    pinService.check()
+    try {
+      pinService.check()
+    } catch (error) {
+      return { status: false, code: ResponseType.CONFIG_ERROR }
+    }
 
     // If configuring
     if (location[1] === 'configure' && location[2] !== 'check') {

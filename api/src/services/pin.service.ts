@@ -22,7 +22,7 @@ class PINService {
     try {
       isPinInDB = (await db.query<count[]>("SELECT COUNT(*) AS count FROM config WHERE data = 'pin'"))[0]
     } catch (error: any) {
-      throw new Error(error)
+      throw error
     }
 
     if (isPinInDB.count > 1 || isPinInDB.count == 0 || regenerate) {
@@ -31,13 +31,13 @@ class PINService {
       try {
         await db.query("DELETE FROM config WHERE data = 'pin'")
       } catch (error: any) {
-        throw new Error(error)
+        throw error
       }
 
       try {
         await db.query("INSERT INTO config (data, value) VALUES ('pin', ?)", pin)
       } catch (error: any) {
-        throw new Error(error)
+        throw error
       }
 
       return pin
