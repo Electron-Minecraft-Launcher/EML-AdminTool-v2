@@ -3,7 +3,7 @@ import apiAdminService from './api/api-admin.service'
 import cookiesService from './cookies.service'
 import { user } from './store'
 
-export default class UserService {
+class UserService {
   async reload() {
     if (cookiesService.get('JWT')) {
       ;(await apiAdminService.getUser()).subscribe({
@@ -15,3 +15,5 @@ export default class UserService {
     return true
   }
 }
+
+export default new UserService()

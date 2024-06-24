@@ -1,0 +1,1 @@
+This folder will contain all the files and folders that will be downloaded by the Launcher.

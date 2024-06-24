@@ -7,8 +7,8 @@ import router from './router'
 import { goto } from '$app/navigation'
 
 class Http {
-  private headers: HeadersInit = {
-    'Content-Type': 'application/x-www-form-urlencoded',
+  private headers: Record<string, string> = {
+    'Content-Type': 'application/x-www-form-urlencoded'
   }
 
   async get<T extends DefaultHttpResponse>(url: string, req?: RequestInit) {
@@ -35,7 +35,10 @@ class Http {
   ): Promise<Observable<T>> {
     return fetch(url, this.setRequest(url, method, req, body))
       .then(async (response: Response) => {
-        return { response: response, body: (await response.json()) as unknown }
+        const contentType = response.headers.get('Content-Type')
+        const isJson = contentType?.includes('application/json')
+        const body = isJson ? await response.json() : await response.text()
+        return { response, body }
       })
       .then((response) => {
         return { response: response.response, body: response.body as T }
@@ -49,14 +52,24 @@ class Http {
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
     this.sendInterceptor(url)
 
+    let body_: any
+
+    if (body instanceof FormData) {
+      body_ = body
+      delete this.headers['Content-Type']
+    } else {
+      body_ = this.urlEncode(body)
+      this.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    }
+
     let req_: RequestInit = {
       ...req,
       method: method,
       headers: {
         ...this.headers,
-        ...req?.headers,
+        ...req?.headers
       },
-      body: this.urlEncode(body) + '',
+      body: body_
     }
 
     if (method == 'GET') {
@@ -75,7 +88,7 @@ class Http {
       statusText: response.response.statusText,
       type: response.response.type,
       url: response.response.url,
-      body: response.body,
+      body: response.body
     }
     return {
       subscribe(observe: {
@@ -91,7 +104,7 @@ class Http {
         if (observe.finally) {
           observe.finally(resp)
         }
-      },
+      }
     }
   }
 

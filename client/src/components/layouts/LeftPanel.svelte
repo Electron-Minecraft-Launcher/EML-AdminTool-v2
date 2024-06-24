@@ -1,6 +1,6 @@
 <script lang="ts">
   import { user } from '../../services/store'
-  import UserService from '../../services/user.service'
+  import userService from '../../services/user.service'
   import { onMount } from 'svelte'
   import Skeleton from './Skeleton.svelte'
   import utils from '../../services/utils'
@@ -20,7 +20,7 @@
   let accountDropdownOpen = false
 
   onMount(async () => {
-    ready = await new UserService().reload()
+    ready = await userService.reload()
   })
 
   document.addEventListener('click', async () => {

@@ -10,8 +10,7 @@ class ApiAdminService {
   }
 
   async putAdminTool(name: string = 'EML', language: string = 'en', pin: boolean = false) {
-    const body = { name, language, pin }
-    return await http.put<DataHttpResponse<EMLAdminToolInfo>>('/api/admintool', body)
+    return await http.put<DataHttpResponse<EMLAdminToolInfo>>('/api/admintool', { name, language, pin })
   }
 
   async getUsers() {

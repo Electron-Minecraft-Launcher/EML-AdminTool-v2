@@ -5,7 +5,7 @@ const options: swaggerJSDoc.OAS3Options = {
     openapi: '3.0.0',
     info: {
       title: 'EML AdminTool API',
-      version: '1.0.0',
+      version: '2.0.0-alpha.5',
       description: 'This API is used for the EML AdminTool',
       license: {
         name: 'GPL-3.0-or-later',
@@ -32,7 +32,7 @@ const options: swaggerJSDoc.OAS3Options = {
     tags: [
       {
         name: 'Configuration',
-        description: 'Configuration routes of the EML AdminTool'
+        description: 'Configuration of the EML AdminTool'
       },
       {
         name: 'Auth',
@@ -45,6 +45,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Environnement',
         description: 'Environnement of the EML AdminTool'
+      },
+      {
+        name: 'Files Updater',
+        description: 'Files that have to be downloaded by the Launcher'
       }
     ]
   },

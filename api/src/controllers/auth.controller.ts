@@ -18,30 +18,30 @@ import pinService from '../services/pin.service'
 export default class Auth {
   async auth(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
     try {
-      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Basic'))
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Basic'))
     } catch (error) {
       throw error as ServiceException
     }
 
-    delete user.password
-    delete user.status
+    delete auth.password
+    delete auth.status
 
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: jwtService.generate(user), user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: jwtService.generate(auth), user: auth })
   }
 
   async verify(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<{ jwt: string; user: User }>> {
     try {
-      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
     } catch (error) {
       throw error as ServiceException
     }
 
     const jwt = (headers['authorization'] + '').split(' ')[1]
 
-    delete user.password
-    delete user.status
+    delete auth.password
+    delete auth.status
 
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt, user })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt, user: auth })
   }
 
   async register(req: Request<any>, body: any): Promise<DataSuccess<{ jwt: string; user: User }>> {

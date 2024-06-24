@@ -25,6 +25,8 @@
   },
   "type": "module",
   "dependencies": {
-    "buffer": "^6.0.3"
+    "@sveltejs/adapter-static": "^3.0.2",
+    "buffer": "^6.0.3",
+    "monaco-editor": "^0.50.0"
   }
 }

@@ -66,6 +66,10 @@ export default {
       accountType: `Type de compte`,
       newNameOrPseudo: `Nouveau nom ou pseudo`,
       newPassword: `Nouveau mot de passe`
+    },
+    filesUpdater: {
+      size: 'Taille',
+      b: 'o'
     }
   },
   modals: {

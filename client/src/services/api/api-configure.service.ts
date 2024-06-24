@@ -7,18 +7,15 @@ class ApiConfigureService {
   }
 
   async putLanguage(language: string) {
-    const req = { language: language }
-    return await http.put<DefaultHttpResponse>('/api/configure/language', req)
+    return await http.put<DefaultHttpResponse>('/api/configure/language', { language })
   }
 
   async putDbPassword(password: string) {
-    const req = { password: password }
-    return await http.put<DefaultHttpResponse>('/api/configure/database', req)
+    return await http.put<DefaultHttpResponse>('/api/configure/database', { password })
   }
 
   async putAdmin(name: string, password: string) {
-    const req = { password: password, name: name }
-    return await http.put<DefaultHttpResponse>('/api/configure/admin', req)
+    return await http.put<DefaultHttpResponse>('/api/configure/admin', { password, name })
   }
 
   async deleteReset() {

@@ -170,7 +170,7 @@ export default class Admin {
 
   async putUser(req: Request<any>, headers: IncomingHttpHeaders, body: any, userId: number | 'me'): Promise<DataSuccess<{ jwt?: string; user: User }>> {
     try {
-      var user = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -182,9 +182,9 @@ export default class Admin {
     let getUser: User
     const token = (headers['authorization'] + '').split(' ')[1]
 
-    if (userId == user.id || userId == 'me') {
-      userId = user.id!
-    } else if (!user.admin) {
+    if (userId == auth.id || userId == 'me') {
+      userId = auth.id!
+    } else if (!auth.admin) {
       throw new UnauthorizedException()
     }
 
@@ -198,7 +198,7 @@ export default class Admin {
       throw new RequestException('User does not exist')
     }
 
-    if ((+body.p_news_mod_del == 1 || +body.p_news_category_add_mod_del == 1 || +body.p_news_tag_add_mod_del == 1) && user.admin && +user.admin == 1) {
+    if ((+body.p_news_mod_del == 1 || +body.p_news_category_add_mod_del == 1 || +body.p_news_tag_add_mod_del == 1) && auth.admin && +auth.admin == 1) {
       body.p_news_add = 1
     }
     
@@ -207,18 +207,18 @@ export default class Admin {
       name: body.name || getUser.name,
       password: getUser.password,
       admin: getUser.admin,
-      status: ((user.admin && body.status) || (body.status && body.status == -2)) && !getUser.admin ? +body.status : getUser.status,
-      p_files_updater_add_del: user.admin && +body.p_files_updater_add_del ? 1 : 0,
-      p_bootstrap_mod: user.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
-      p_maintenance_mod: user.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
-      p_news_add: user.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
-      p_news_mod_del: user.admin && body.p_news_mod_del ? +body.p_news_mod_del : getUser.p_news_mod_del,
+      status: ((auth.admin && body.status) || (body.status && body.status == -2)) && !getUser.admin ? +body.status : getUser.status,
+      p_files_updater_add_del: auth.admin && +body.p_files_updater_add_del ? 1 : 0,
+      p_bootstrap_mod: auth.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
+      p_maintenance_mod: auth.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
+      p_news_add: auth.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
+      p_news_mod_del: auth.admin && body.p_news_mod_del ? +body.p_news_mod_del : getUser.p_news_mod_del,
       p_news_category_add_mod_del:
-        user.admin && body.p_news_category_add_mod_del ? +body.p_news_category_add_mod_del : getUser.p_news_category_add_mod_del,
-      p_news_tag_add_mod_del: user.admin && body.p_news_tag_add_mod_del ? +body.p_news_tag_add_mod_del : getUser.p_news_tag_add_mod_del,
-      p_background_mod: user.admin && body.p_background_mod ? +body.p_background_mod : getUser.p_background_mod,
-      p_stats_see: user.admin && body.p_stats_see ? +body.p_stats_see : getUser.p_stats_see,
-      p_stats_del: user.admin && body.p_stats_del ? +body.p_stats_del : getUser.p_stats_del
+        auth.admin && body.p_news_category_add_mod_del ? +body.p_news_category_add_mod_del : getUser.p_news_category_add_mod_del,
+      p_news_tag_add_mod_del: auth.admin && body.p_news_tag_add_mod_del ? +body.p_news_tag_add_mod_del : getUser.p_news_tag_add_mod_del,
+      p_background_mod: auth.admin && body.p_background_mod ? +body.p_background_mod : getUser.p_background_mod,
+      p_stats_see: auth.admin && body.p_stats_see ? +body.p_stats_see : getUser.p_stats_see,
+      p_stats_del: auth.admin && body.p_stats_del ? +body.p_stats_del : getUser.p_stats_del
     }
 
     if (getUser.admin) {
@@ -236,7 +236,7 @@ export default class Admin {
       updatedUser.p_stats_del = 1
     }
 
-    if (userId == user.id && body.password != null && body.password != '') {
+    if (userId == auth.id && body.password != null && body.password != '') {
       updatedUser.password = await bcrypt.hash(body.password, 10)
     }
 
@@ -255,25 +255,25 @@ export default class Admin {
     }
 
     delete updatedUser.password
-    if (!user.admin) {
+    if (!auth.admin) {
       delete updatedUser.status
     }
 
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: userId == user.id ? token : undefined, user: updatedUser })
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { jwt: userId == auth.id ? token : undefined, user: updatedUser })
   }
 
   async deleteUser(req: Request<any>, headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DefaultSuccess> {
     try {
-      var user = nexter.serviceToException(await authService.checkAuth(req.headers['authorization'] + ''))
+      var auth = nexter.serviceToException(await authService.checkAuth(req.headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
 
     var getUser: User
 
-    if (userId == user.id || userId == 'me') {
-      userId = user.id!
-    } else if (!user.admin) {
+    if (userId == auth.id || userId == 'me') {
+      userId = auth.id!
+    } else if (!auth.admin) {
       throw new UnauthorizedException()
     }
 
