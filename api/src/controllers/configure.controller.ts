@@ -15,6 +15,7 @@ import envService from '../services/env.service'
 import languageService from '../services/language.service'
 import authService from '../services/auth.service'
 import adminService from '../services/admin.service'
+import filesService from '../services/files.service'
 
 export default class Configure {
   async check(req: Request<any>): Promise<DefaultSuccess> {
@@ -112,7 +113,9 @@ export default class Configure {
     }
 
     try {
-      await db.query('DROP DATABASE eml_admintool')
+      filesService.delete('files-updater', [''])
+      filesService.delete('bootstrap', [''])
+      filesService.delete('background', [''])
       await db.query('CREATE DATABASE eml_admintool')
       await db.generate(await db.getTablesToGenerate())
     } catch (error: any) {

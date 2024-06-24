@@ -42,7 +42,7 @@ class FilesUpdater {
 
     const r = filesService.rename('files-updater', body.old_path, body.new_path)
     if (r.status) {
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.get(req, 'files-updater'))
+      return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.get(req, 'files-updater'))
     } else {
       throw new RequestException(r.message || 'Error renaming file')
     }
@@ -72,6 +72,12 @@ class FilesUpdater {
     if (body.paths.length == 0) {
       throw new RequestException('Missing parameters')
     }
+
+    body.paths.forEach((path: string) => {
+      if (path + '' === '') {
+        throw new RequestException('Invalid parameters')
+      }
+    })
 
     const r = filesService.delete('files-updater', body.paths)
     if (r.status) {
