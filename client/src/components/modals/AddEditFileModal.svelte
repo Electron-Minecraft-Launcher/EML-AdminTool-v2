@@ -102,6 +102,24 @@
     }
   }
 
+  async function download() {
+    try {
+      newName = utils.removeUnwantedFilenameChars(newName)
+      content = editor.getValue()
+      const blob = new Blob([content], { type: 'text/plain' })
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = downloadUrl
+      a.download = newName
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(downloadUrl)
+    } catch (error) {
+      console.error('Erreur lors du téléchargement du fichier:', error)
+    }
+  }
+
   async function submit(e: SubmitEvent | null, close: boolean = true) {
     if (action.action === 'edit') {
       newName = utils.removeUnwantedFilenameChars(newName)
@@ -133,12 +151,19 @@
   <form on:submit|preventDefault={submit}>
     <h2>{action.action === 'add' ? 'Create a new file' : 'Edit the file'}</h2>
 
-    <button class="secondary small right" type="button">
+    <button class="secondary small right" type="button"  on:click={download}>
       <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download file
     </button>
 
     <label for="name" class="name">Files Updater/{path}</label>
-    <input type="text" id="name" class="name" placeholder="File name" bind:value={newName} on:keyup={() => newName = utils.removeUnwantedFilenameChars(newName)} />
+    <input
+      type="text"
+      id="name"
+      class="name"
+      placeholder="File name"
+      bind:value={newName}
+      on:keyup={() => (newName = utils.removeUnwantedFilenameChars(newName))}
+    />
 
     <div bind:this={container} class="container-editor"></div>
 
