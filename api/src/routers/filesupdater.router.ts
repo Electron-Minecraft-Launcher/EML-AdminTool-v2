@@ -135,7 +135,7 @@ export default class FilesUpdaterRouter implements Route {
     this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
         const resp = await new FilesUpdater().deleteFiles(req, req.headers, req.body)
-        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)
       }

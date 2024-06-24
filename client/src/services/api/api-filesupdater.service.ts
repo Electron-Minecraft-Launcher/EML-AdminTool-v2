@@ -24,8 +24,9 @@ class ApiFilesUpdaterService {
     return await http.put<DataHttpResponse<File_[]>>('/api/files-updater', { old_path, new_path })
   }
 
-  async deleteFiles(id: number | 'me' = 'me') {
-    return await http.get<DataHttpResponse<User>>('/api/users/' + id)
+  async deleteFiles(paths: string[]) {
+    
+    return await http.delete<DataHttpResponse<File_[]>>('/api/files-updater', { paths: JSON.stringify(paths) })
   }
 }
 

@@ -6,6 +6,18 @@
   import FilesUpdater from '../../../../components/FilesUpdater.svelte'
 
   export let data: PageData
+  let ready = false
+
+  getData()
+  async function getData() {
+    ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
+      next: (res) => {
+        console.log('ok')
+        data.files = res.body.data!
+        ready = true
+      }
+    })
+  }
 
   let filesUpload: HTMLInputElement
   let directoryUpload: HTMLInputElement
@@ -68,8 +80,6 @@
 <h2>Files Updater</h2>
 
 <section class="section" style="position: relative;">
-  <button class="primary right"><i class="fa-solid fa-plus" /></button>
-
   <h3 bind:this={path} class:scrolled-left={sL} class:scrolled-right={sR}>
     <button on:click={() => (currentPath = '')}>Files Updater</button>
     {#each currentPathSplit as dir, i}
@@ -80,7 +90,7 @@
     {/each}
   </h3>
 
-  <FilesUpdater bind:data bind:currentPath />
+  <FilesUpdater bind:data bind:currentPath bind:ready />
 </section>
 
 <input type="file" name="files[]" multiple bind:this={filesUpload} style="display: none" />
@@ -93,17 +103,8 @@
     margin: 0 2px;
   }
 
-  button.right {
-    width: 43.34px;
-    opacity: 1 !important;
-  }
-
-  section.section {
-    min-height: 200px;
-  }
-
   h3 {
-    max-width: 720px;
+    max-width: 750px;
     overflow-x: auto;
     overflow-y: hidden;
     height: 53px;
@@ -113,9 +114,9 @@
       display: inline;
       border-bottom: none;
       color: black;
+      font-size: 18.72px;
       border-radius: 5px;
       padding: 10px 15px;
-      font-size: 1.17em;
       font-weight: bold;
       position: relative;
       overflow: hidden;
@@ -149,7 +150,7 @@
       content: '';
       position: absolute;
       top: 50px;
-      left: 710px;
+      left: 740px;
       width: 60px;
       height: 53px;
       background: linear-gradient(to right, transparent, white);

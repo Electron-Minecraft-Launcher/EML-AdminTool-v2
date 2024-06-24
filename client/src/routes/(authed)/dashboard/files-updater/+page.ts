@@ -22,11 +22,5 @@ export const load: PageLoad = async () => {
     throw redirect(300, '/login')
   }
 
-  ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
-    next: (res) => {
-      files = res.body.data!
-    }
-  })
-
   return { files }
 }
