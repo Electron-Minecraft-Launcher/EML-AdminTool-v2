@@ -116,7 +116,7 @@ export default class FilesUpdaterRouter implements Route {
      *      - Files Updater
      *     security:
      *      - bearer: []
-     *     summary: Delete file
+     *     summary: Delete files
      *     requestBody:
      *       required: true
      *       content:
