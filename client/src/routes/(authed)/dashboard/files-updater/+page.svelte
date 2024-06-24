@@ -19,8 +19,6 @@
     })
   }
 
-  let filesUpload: HTMLInputElement
-  let directoryUpload: HTMLInputElement
   let path: HTMLHeadingElement
   let oldPath: string
 
@@ -39,10 +37,6 @@
   })
 
   onMount(() => {
-    directoryUpload.setAttribute('directory', '')
-    directoryUpload.setAttribute('webkitdirectory', '')
-    directoryUpload.setAttribute('mozdirectory', '')
-
     oldPath = path.innerHTML
 
     path.addEventListener('scroll', () => {
@@ -50,27 +44,6 @@
       sR = path.scrollLeft < path.scrollWidth - path.clientWidth
     })
   })
-
-  async function submit() {
-    if (!filesUpload.files && !directoryUpload.files) return
-    let files: File[] = []
-
-    if (filesUpload.files) {
-      for (let i = 0; i < filesUpload.files.length; i++) {
-        files.push(filesUpload.files.item(i)!)
-      }
-    }
-    if (directoryUpload.files) {
-      for (let i = 0; i < directoryUpload.files.length; i++) {
-        files.push(directoryUpload.files.item(i)!)
-      }
-    }
-    ;(await apiFilesUpdaterService.uploadFiles('test456', files)).subscribe({
-      next: (res) => {
-        data.files = res.body.data!
-      }
-    })
-  }
 </script>
 
 <svelte:head>
@@ -92,9 +65,6 @@
 
   <FilesUpdater bind:data bind:currentPath bind:ready />
 </section>
-
-<input type="file" name="files[]" multiple bind:this={filesUpload} style="display: none" />
-<input type="file" name="files[]" multiple bind:this={directoryUpload} style="display: none" />
 
 <style lang="scss">
   @import '../../../../assets/scss/dashboard.scss';

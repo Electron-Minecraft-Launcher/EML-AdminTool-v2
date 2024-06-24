@@ -1,24 +1,38 @@
 <script lang="ts">
-  import { afterUpdate } from 'svelte'
-  import type { File } from '../../../shared/models/features/filesupdater.model'
+  import { afterUpdate, onMount } from 'svelte'
+  import type { File as File_ } from '../../../shared/models/features/filesupdater.model'
   import type { PageData } from '../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../services/api/api-filesupdater.service'
   import { l } from '../services/store'
   import LoadingSplash from './layouts/LoadingSplash.svelte'
+  import RenameFileModal from './modals/RenameFileModal.svelte'
+  import { slide } from 'svelte/transition'
 
   export let currentPath: string
   export let data: PageData
   export let ready: boolean
 
-  let currentFilesAndFolders: File[] = []
-  let selectedItems: File[] = []
+  let showRenameModal = false
+
+  let addElementDropdownOpen = false
+
+  let filesUpload: HTMLInputElement
+  let folderUpload: HTMLInputElement
+  let currentFilesAndFolders: File_[] = []
+  let selectedItems: File_[] = []
 
   afterUpdate(() => {
     currentFiles = currentFilesAndFolders.filter((file) => file.type !== 'FOLDER')
     currentFolders = currentFilesAndFolders.filter((file) => file.type === 'FOLDER')
     currentFilesAndFoldersSorted = [...currentFolders, ...currentFiles]
   })
-  
+
+  onMount(() => {
+    folderUpload.setAttribute('directory', '')
+    folderUpload.setAttribute('webkitdirectory', '')
+    folderUpload.setAttribute('mozdirectory', '')
+  })
+
   $: if (data.files || currentPath) {
     currentFilesAndFolders = data.files.filter((file) => file.path === currentPath)
   }
@@ -27,14 +41,83 @@
   $: currentFolders = currentFilesAndFolders.filter((file) => file.type === 'FOLDER')
   $: currentFilesAndFoldersSorted = [...currentFolders, ...currentFiles]
 
+  async function uploadFolder() {
+    folderUpload.click()
+
+    await new Promise((resolve) => {
+      folderUpload.addEventListener('change', resolve, { once: true })
+    })
+
+    if (!folderUpload.files) return
+    let files: File[] = []
+
+    ready = false
+
+    for (let i = 0; i < folderUpload.files.length; i++) {
+      files.push(folderUpload.files.item(i)!)
+    }
+
+    ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
+      next: (res) => {
+        data.files = res.body.data!
+        ready = true
+      }
+    })
+
+    folderUpload.value = ''
+  }
+
+  async function uploadFiles() {
+    filesUpload.click()
+
+    await new Promise((resolve) => {
+      filesUpload.addEventListener('change', resolve, { once: true })
+    })
+
+    if (!filesUpload.files) return
+    let files: File[] = []
+
+    ready = false
+
+    for (let i = 0; i < filesUpload.files.length; i++) {
+      files.push(filesUpload.files.item(i)!)
+    }
+
+    ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
+      next: (res) => {
+        data.files = res.body.data!
+        ready = true
+      }
+    })
+
+    filesUpload.value = ''
+  }
+
+  async function open(file: File_) {
+    if (file.type === 'FOLDER') {
+      currentPath = `${file.path}${file.name}/`
+    } else {
+      // TODO: Embedded file editor
+      const a = document.createElement('a')
+      a.href = file.url
+      a.download = file.name
+      a.target = '_blank'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+  }
+
   async function deleteItems() {
     if (confirm('Are you sure you want to delete these files/folders? Folders may contains subfolders.') === false) return
+    ready = false
     const paths = selectedItems.map((file) => `${file.path}${file.name}`)
     ;(await apiFilesUpdaterService.deleteFiles(paths)).subscribe({
       next: (res) => {
         data.files = res.body.data!
         selectedItems = []
         currentFilesAndFolders = data.files.filter((file) => file.path === currentPath)
+        ready = true
       }
     })
   }
@@ -60,34 +143,19 @@
     }
   }
 
-  async function open(file: File) {
-    if (file.type === 'FOLDER') {
-      currentPath = `${file.path}${file.name}/`
-    } else {
-      // TODO: Embedded file editor
-      const a = document.createElement('a')
-      a.href = file.url
-      a.download = file.name
-      a.target = '_blank'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-    }
-  }
-
-  function icon(file: File) {
+  function icon(file: File_) {
     if (file.type === 'FOLDER') return 'fa-solid fa-folder'
     switch (file.name.split('.').slice(-1)[0]) {
       case 'pdf':
-        return 'fa-regular fa-file-pdf'
+        return 'fa-solid fa-file-pdf'
       case 'txt':
-        return 'fa-regular fa-file-line'
+        return 'fa-solid fa-file-lines'
       case 'jpg':
       case 'jpeg':
       case 'png':
       case 'gif':
       case 'svg':
-        return 'fa-regular fa-image'
+        return 'fa-solid fa-image'
       case 'mp3':
       case 'wav':
       case 'flac':
@@ -106,7 +174,7 @@
       case '7z':
       case 'tar':
       case 'gz':
-        return 'fa-regular fa-file-zipper'
+        return 'fa-solid fa-file-zipper'
       case 'html':
       case 'xml':
       case 'json':
@@ -125,16 +193,16 @@
       case 'docx':
       case 'odt':
       case 'rtf':
-        return 'fa-regular fa-file-word'
+        return 'fa-solid fa-file-word'
       case 'xls':
       case 'xlsx':
       case 'ods':
       case 'csv':
-        return 'fa-regular fa-file-excel'
+        return 'fa-solid fa-file-excel'
       case 'ppt':
       case 'pptx':
       case 'odp':
-        return 'fa-regular fa-file-powerpoint'
+        return 'fa-solid fa-file-powerpoint'
       case 'exe':
       case 'msi':
       case 'ssh':
@@ -142,13 +210,13 @@
       case 'bat':
       case 'cmd':
       case 'ps1':
-        return 'fa-regular fa-file-terminal'
+        return 'fa-solid fa-terminal'
       default:
-        return 'fa-regular fa-file'
+        return 'fa-solid fa-file'
     }
   }
 
-  function size(file: File) {
+  function size(file: File_) {
     if (file.type === 'FOLDER') return ''
     const b = $l.dashboard.filesUpdater.b
     file.size = file.size || 0
@@ -167,54 +235,155 @@
 <svelte:body
   on:click={(e) => {
     // @ts-ignore
-    if (selectedItems && e.target && !e.target.closest('.explorer tbody tr')) {
+    if (selectedItems && e.target && !e.target.closest('.explorer tbody tr') && !e.target.closest('button.small')) {
       selectedItems = []
+    }
+    // @ts-ignore
+    if (addElementDropdownOpen && e.target && !e.target.closest('button.add')) {
+      addElementDropdownOpen = false
     }
   }}
 />
 
-<button class="primary small" style="margin-right: 30px"><i class="fa-solid fa-plus" />&nbsp;&nbsp;Upload elements</button>
-
-<button class="secondary small" disabled={selectedItems.length !== 1}><i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download</button>
-<button class="secondary small" disabled={selectedItems.length !== 1}><i class="fa-solid fa-i-cursor"></i>&nbsp;&nbsp;Rename</button>
-<button class="secondary small" disabled={selectedItems.length === 0} on:click={deleteItems}
-  ><i class="fa-solid fa-trash"></i>&nbsp;&nbsp;Delete</button
->
-
 <div class="explorer">
   {#if !ready}
-    <LoadingSplash></LoadingSplash>
-  {:else}
-    <table>
-      <thead>
-        <tr>
-          <th class="icon"></th>
-          <th class="name">{$l.main.name}</th>
-          <th class="size">{$l.dashboard.filesUpdater.size}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each currentFilesAndFoldersSorted as file, i}
-          <tr class:focused={selectedItems.includes(file)} on:click={(e) => select(e, i)} on:dblclick={() => open(file)}>
-            <td class="icon"><i class={icon(file)}></i></td>
-            <td class="name">{file.name}</td>
-            <td class="size">{size(file)}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+    <LoadingSplash transparent></LoadingSplash>
+  {/if}
 
-    {#if currentFilesAndFolders.length === 0}
-      <p>No files or folders</p>
-    {/if}
+  <button class="primary small add" style="margin-right: 30px" on:click={() => (addElementDropdownOpen = !addElementDropdownOpen)}>
+    <i class="fa-solid fa-plus" />&nbsp;&nbsp;Upload elements
+  </button>
+
+  <button class="secondary small" disabled={selectedItems.length !== 1 || (selectedItems[0] && selectedItems[0].type === 'FOLDER')}>
+    <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download
+  </button>
+  <button class="secondary small" disabled={selectedItems.length !== 1} on:click={() => (showRenameModal = true)}>
+    <i class="fa-solid fa-i-cursor"></i>&nbsp;&nbsp;Rename
+  </button>
+  <button class="secondary small" disabled={selectedItems.length === 0} on:click={deleteItems}>
+    <i class="fa-solid fa-trash"></i>&nbsp;&nbsp;Delete
+  </button>
+
+  {#if addElementDropdownOpen}
+    <div class="add-element-dropdown" transition:slide={{ duration: 200 }}>
+      <button on:click={uploadFolder}><i class="fap-fix fa-solid fap-folder-arrow-up"></i>&nbsp;&nbsp;Upload folder</button>
+      <button on:click={uploadFiles}><i class="fap-fix fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload files</button>
+      <hr />
+      <button><i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder</button>
+      <button><i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file</button>
+    </div>
+  {/if}
+
+  <table>
+    <thead>
+      <tr>
+        <th class="icon"></th>
+        <th class="name">{$l.main.name}</th>
+        <th class="size">{$l.dashboard.filesUpdater.size}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each currentFilesAndFoldersSorted as file, i}
+        <tr class:focused={selectedItems.includes(file)} on:click={(e) => select(e, i)} on:dblclick={() => open(file)}>
+          <td class="icon"><i class={icon(file)}></i></td>
+          <td class="name">{file.name}</td>
+          <td class="size">{size(file)}</td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+
+  {#if currentFilesAndFolders.length === 0}
+    <p class="nothing">No files or folders</p>
   {/if}
 </div>
 
+<input type="file" name="files[]" multiple bind:this={filesUpload} style="display: none" />
+<input type="file" name="files[]" multiple bind:this={folderUpload} style="display: none" />
+
+<RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal}></RenameFileModal>
+
 <style lang="scss">
+  .fap-fix {
+    width: 14px;
+    text-align: center;
+  }
+
+  .fap-folder-arrow-up {
+    width: 16px;
+
+    &::before {
+      content: url('../assets/images/fa-solid fa-folder-arrow-up.svg');
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 13.34px;
+      height: 14px;
+    }
+  }
+
+  .fap-file-plus {
+    width: 16px;
+
+    &::before {
+      content: url('../assets/images/fa-solid fa-file-plus.svg');
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      width: 10px;
+      height: 13.2;
+    }
+  }
+
+  div.add-element-dropdown {
+    overflow-y: hidden;
+    border-radius: 5px;
+    transition:
+      opacity 0.2s,
+      height 0.2s ease,
+      display 0s;
+    background: white;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    z-index: 100;
+    position: absolute;
+    width: 178px;
+    top: 60px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+    hr {
+      margin: 10px 0;
+      border: 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    button {
+      width: 100%;
+      position: relative;
+      text-align: left;
+      font-family: 'Poppins';
+      background: none;
+
+      &:nth-of-type(1) {
+        margin-top: 0;
+      }
+
+      &:hover {
+        background: #eeeeee;
+      }
+    }
+  }
+
   div.explorer {
-    min-height: 130px;
+    min-height: 180px;
     position: relative;
-    margin-top: 30px;
+    margin-top: 0;
+
+    p.nothing {
+      text-align: center;
+      margin-top: 20px;
+      color: #606060;
+    }
   }
 
   button.small {
@@ -228,6 +397,7 @@
     width: 100%;
     border-collapse: collapse;
     user-select: none;
+    margin-top: 30px;
 
     th {
       text-align: left;

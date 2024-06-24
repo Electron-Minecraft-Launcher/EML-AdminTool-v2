@@ -4,7 +4,6 @@ import cookiesService from '../../../../services/cookies.service'
 import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
 import type { File } from '../../../../../../shared/models/features/filesupdater.model'
-import apiFilesUpdaterService from '../../../../services/api/api-filesupdater.service'
 
 export const load: PageLoad = async () => {
   let files: File[] = []
