@@ -7,24 +7,18 @@
 
   export let data: PageData
   export let show: boolean
-  export let selectedItems: File[]
+  export let currentPath: string
 
-  $: path = '' as string
   $: name = '' as string
-  $: type = '' as string
-  $: newName = '' as string
 
   $: if (show) update()
 
   function update() {
-    path = selectedItems[0].path
-    name = selectedItems[0].name
-    type = selectedItems[0].type
-    newName = selectedItems[0].name
+    name = ''
   }
 
   async function submit() {
-    (await apiFilesUpdaterService.renameFile(`${path}${name}`, `${path}${newName}`)).subscribe({
+    ;(await apiFilesUpdaterService.uploadFiles(`${currentPath}${name}/`, [])).subscribe({
       next: (res) => {
         data.files = res.body.data!
         show = false
@@ -35,14 +29,14 @@
 
 <ModalTemplate size={'s'} bind:show>
   <form on:submit|preventDefault={submit}>
-    <h2>Rename {type === 'FOLDER' ? 'folder' : 'file'}</h2>
+    <h2>New folder</h2>
 
-    <label for="name">Files Updater/{path}</label>
-    <input type="text" id="name" placeholder={name} bind:value={newName} />
+    <label for="name">Files Updater/{currentPath}</label>
+    <input type="text" id="name" placeholder="New folder" bind:value={name} />
 
     <div class="actions">
       <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={newName.replaceAll(' ', '') === ''}>{$l.main.save}</button>
+      <button class="primary" disabled={name.replaceAll(' ', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>

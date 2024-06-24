@@ -12,7 +12,6 @@
   async function getData() {
     ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
       next: (res) => {
-        console.log('ok')
         data.files = res.body.data!
         ready = true
       }

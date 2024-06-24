@@ -7,12 +7,17 @@
   import LoadingSplash from './layouts/LoadingSplash.svelte'
   import RenameFileModal from './modals/RenameFileModal.svelte'
   import { slide } from 'svelte/transition'
+  import CreateFolderModal from './modals/CreateFolderModal.svelte'
+  import AddEditFileModal from './modals/AddEditFileModal.svelte'
 
   export let currentPath: string
   export let data: PageData
   export let ready: boolean
 
   let showRenameModal = false
+  let showCreateFolderModal = false
+  let showAddEditFileModal = false
+  let addEditFileAction: { action: 'add' } | { action: 'edit'; file: File_ } = { action: 'add' }
 
   let addElementDropdownOpen = false
 
@@ -269,8 +274,13 @@
       <button on:click={uploadFolder}><i class="fap-fix fa-solid fap-folder-arrow-up"></i>&nbsp;&nbsp;Upload folder</button>
       <button on:click={uploadFiles}><i class="fap-fix fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload files</button>
       <hr />
-      <button><i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder</button>
-      <button><i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file</button>
+      <button on:click={() => (showCreateFolderModal = true)}><i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder</button>
+      <button
+        on:click={() => {
+          addEditFileAction = { action: 'add' }
+          showAddEditFileModal = true
+        }}><i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file</button
+      >
     </div>
   {/if}
 
@@ -302,6 +312,8 @@
 <input type="file" name="files[]" multiple bind:this={folderUpload} style="display: none" />
 
 <RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal}></RenameFileModal>
+<CreateFolderModal bind:data bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
+<AddEditFileModal bind:data bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal>
 
 <style lang="scss">
   .fap-fix {

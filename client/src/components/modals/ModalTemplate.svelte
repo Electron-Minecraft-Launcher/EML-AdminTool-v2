@@ -64,8 +64,8 @@
 
     &.size-l {
       width: calc(100% - 60px);
-      height: calc(100% - 60px);
-      margin: 30px;
+      height: calc(100% - 177px);
+      margin: 45px 30px 30px 30px;
     }
   }
 
