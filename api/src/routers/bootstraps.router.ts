@@ -1,13 +1,18 @@
 import { NextFunction, Router, Request, Response } from 'express'
+import { User } from '../../../shared/models/features/user.model'
 import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
 import { Route } from '../services/routes.model'
+import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
 import FilesUpdater from '../controllers/filesupdater.controller'
 import { File } from '../../../shared/models/features/file.model'
-import filesUpdaterMiddleware from '../middlewares/filesupdater.middleware'
+import uploadFilesMiddleware from '../middlewares/filesupdater.middleware'
+import Bootstraps from '../controllers/bootstraps.controller'
+import bootstrapsMiddleware from '../middlewares/bootstraps.middleware'
 
-export default class FilesUpdaterRouter implements Route {
-  path = '/api/files-updater'
+export default class BootstrapsRouter implements Route {
+  path = '/api/bootstraps'
   router = Router()
 
   constructor() {
@@ -17,18 +22,18 @@ export default class FilesUpdaterRouter implements Route {
   private init() {
     /**
      * @openapi
-     * /files-updater:
+     * /bootstraps:
      *   get:
      *     tags:
-     *       - Files Updater
-     *     summary: Get modpack
+     *       - Bootstraps
+     *     summary: Get bootstraps
      *     responses:
      *       200:
      *         description: Files
      */
     this.router.get(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
-        const resp = await new FilesUpdater().getFilesUpdater(req)
+        const resp = await new Bootstraps().getBootstraps(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -37,13 +42,13 @@ export default class FilesUpdaterRouter implements Route {
 
     /**
      * @openapi
-     * /files-updater:
+     * /bootstraps:
      *   post:
      *     tags:
-     *      - Files Updater
+     *      - Bootstraps
      *     security:
      *      - bearer: []
-     *     summary: Upload files
+     *     summary: Upload file and replace existing file
      *     requestBody:
      *       required: true
      *       content:
@@ -51,19 +56,21 @@ export default class FilesUpdaterRouter implements Route {
      *           schema:
      *             type: object
      *             properties:
-     *               path:
+     *               platform:
      *                 type: string
-     *               files:
+     *               version:
+     *                 type: string
+     *               file:
      *                 type: file
      *     responses:
      *       200:
-     *         description: Files uploaded
+     *         description: File uploaded
      *       401:
      *         description: Unauthorized
      */
-    this.router.post(`${this.path}`, filesUpdaterMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+    this.router.post(`${this.path}`, bootstrapsMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
-        const resp = await new FilesUpdater().uploadFiles(req)
+        const resp = await new Bootstraps().uploadBootstrap(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)
@@ -72,48 +79,13 @@ export default class FilesUpdaterRouter implements Route {
 
     /**
      * @openapi
-     * /files-updater:
-     *   put:
-     *     tags:
-     *      - Files Updater
-     *     security:
-     *      - bearer: []
-     *     summary: Rename file
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/x-www-form-urlencoded:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               old_path:
-     *                 type: string
-     *               new_path:
-     *                 type: string
-     *     responses:
-     *       200:
-     *         description: File renamed
-     *       401:
-     *         description: Unauthorized
-     */
-    this.router.put(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
-      try {
-        const resp = await new FilesUpdater().putRenameFile(req, req.headers, req.body)
-        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
-      }
-    })
-
-    /**
-     * @openapi
-     * /files-updater:
+     * /bootstraps:
      *   delete:
      *     tags:
-     *      - Files Updater
+     *      - Bootstraps
      *     security:
      *      - bearer: []
-     *     summary: Delete files
+     *     summary: Delete file
      *     requestBody:
      *       required: true
      *       content:
@@ -121,7 +93,7 @@ export default class FilesUpdaterRouter implements Route {
      *           schema:
      *             type: object
      *             properties:
-     *               path:
+     *               platform:
      *                 type: string
      *     responses:
      *       200:
@@ -131,7 +103,7 @@ export default class FilesUpdaterRouter implements Route {
      */
     this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
-        const resp = await new FilesUpdater().deleteFiles(req, req.headers, req.body)
+        const resp = await new Bootstraps().deleteBootstrap(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)

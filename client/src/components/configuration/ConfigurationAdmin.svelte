@@ -107,7 +107,7 @@
   <h2>{@html $l.configuration.step3.title}</h2>
   <p><b>{@html $l.configuration.step3.subtitle}</b></p>
   <div class="actions">
-    <input type="text" name="name" placeholder={$l.main.username} bind:value={data.value.name} />
+    <input type="text" name="name" placeholder={$l.main.serverName} bind:value={data.value.name} />
     <input type="password" name="password" placeholder={$l.main.password} bind:value={data.value.password} on:keyup={inputChange} />
 
     <div class="rel-progress">

@@ -15,37 +15,15 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     return
   }
 
-  const action = req.path.split('/')[2]
-
-  if (action === 'files-updater') {
-    if (+auth.p_files_updater_add_del! != 1) {
-      next(new UnauthorizedException('Unauthorized'))
-      return
-    }
-  } else if (action === 'bootstrap') {
-    if (+auth.p_bootstrap_mod! != 1) {
-      next(new UnauthorizedException('Unauthorized'))
-      return
-    }
-  } else if (action === 'background') {
-    if (+auth.p_background_mod! != 1) {
-      next(new UnauthorizedException('Unauthorized'))
-      return
-    }
-  } else {
-    next(new RequestException('Invalid request'))
-    return
-  }
-
-  if (req.body && req.body.path && (req.body.path.includes('../') || req.body.path.includes('..\\') || req.body.path === '..')) {
-    next(new RequestException('Invalid path'))
+  if (+auth.p_files_updater_add_del! != 1) {
+    next(new UnauthorizedException('Unauthorized'))
     return
   }
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       const filepath = file.originalname.split('/').slice(0, -1).join('/')
-      const path = req.body && req.body.path ? `../files/${action}/${req.body.path}/${filepath}/` : `../files/${action}/${filepath}/`
+      const path = req.body && req.body.path ? `../files/files-updater/${req.body.path}/${filepath}/` : `../files/files-updater/${filepath}/`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },

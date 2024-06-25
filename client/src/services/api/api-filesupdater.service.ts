@@ -3,7 +3,7 @@ import type { DataHttpResponse } from '../../../../shared/models/responses/http/
 import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
 import type { EMLAdminToolInfo } from '../../../../shared/models/features/emlat-info.model'
 import type { User } from '../../../../shared/models/features/user.model'
-import type { File as File_ } from '../../../../shared/models/features/filesupdater.model'
+import type { File as File_ } from '../../../../shared/models/features/file.model'
 
 class ApiFilesUpdaterService {
   async getFilesUpdater() {

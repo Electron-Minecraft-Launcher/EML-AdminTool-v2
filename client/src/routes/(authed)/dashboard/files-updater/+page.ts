@@ -3,7 +3,7 @@ import apiAuthService from '../../../../services/api/api-auth.service'
 import cookiesService from '../../../../services/cookies.service'
 import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
-import type { File } from '../../../../../../shared/models/features/filesupdater.model'
+import type { File } from '../../../../../../shared/models/features/file.model'
 
 export const load: PageLoad = async () => {
   let files: File[] = []

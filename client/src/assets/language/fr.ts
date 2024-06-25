@@ -10,6 +10,7 @@ export default {
     cancel: `Annuler`,
     more: `Plus`,
     name: `Nom`,
+    serverName: `Nom du serveur`,
     username: `Nom d'utilisateur`,
     password: `Mot de passe`,
     pin: `Code de sécurité`,
@@ -35,7 +36,7 @@ export default {
     },
     step3: {
       title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
-      subtitle: `Ce nom d'utilisateur et mot de passe seront les identifiants de votre compte administrateur.`
+      subtitle: `Ce nom de serveur et mot de passe seront les identifiants de votre compte administrateur.`
     }
   },
   auth: {

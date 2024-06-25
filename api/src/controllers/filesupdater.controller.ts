@@ -2,7 +2,7 @@ import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
 import envService from '../services/env.service'
 import { ResponseType } from '../../../shared/models/types'
-import { File } from '../../../shared/models/features/filesupdater.model'
+import { File } from '../../../shared/models/features/file.model'
 import filesService from '../services/files.service'
 import { IncomingHttpHeaders } from 'http'
 import nexter from '../utils/nexter'
@@ -42,7 +42,7 @@ class FilesUpdater {
 
     const r = filesService.rename('files-updater', body.old_path, body.new_path)
     if (r.status) {
-      return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.get(req, 'files-updater'))
+      return await this.getFilesUpdater(req)
     } else {
       throw new RequestException(r.message || 'Error renaming file')
     }
