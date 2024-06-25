@@ -284,7 +284,7 @@
     disabled={selectedItems.length !== 1 || (selectedItems[0] && selectedItems[0].type === 'FOLDER')}
     on:click={download}
   >
-    <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download
+    <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download
   </button>
   <button class="secondary small" disabled={selectedItems.length !== 1} on:click={() => (showRenameModal = true)}>
     <i class="fa-solid fa-i-cursor"></i>&nbsp;&nbsp;Rename

@@ -12,7 +12,7 @@
 ## Features
 
  * **Files Updater**: Update your Minecraft files.
- * **Bootstrap**: Auto-update your Minecraft Launcher.
+ * **Bootstraps**: Auto-update your Minecraft Launcher.
  * **Maintenance**: Manage your Minecraft Launcher.
  * **News**: Manage your Minecraft Launcher news.
  * **Background**: Manage your Minecraft Launcher background.

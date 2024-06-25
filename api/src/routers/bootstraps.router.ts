@@ -1,15 +1,10 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { User } from '../../../shared/models/features/user.model'
 import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
 import { Route } from '../services/routes.model'
-import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
-import FilesUpdater from '../controllers/filesupdater.controller'
-import { File } from '../../../shared/models/features/file.model'
-import uploadFilesMiddleware from '../middlewares/filesupdater.middleware'
 import Bootstraps from '../controllers/bootstraps.controller'
 import bootstrapsMiddleware from '../middlewares/bootstraps.middleware'
+import { BootstrapsRes } from '../../../shared/models/features/bootstraps.model'
 
 export default class BootstrapsRouter implements Route {
   path = '/api/bootstraps'
@@ -31,7 +26,7 @@ export default class BootstrapsRouter implements Route {
      *       200:
      *         description: Files
      */
-    this.router.get(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+    this.router.get(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<BootstrapsRes>>, next: NextFunction) => {
       try {
         const resp = await new Bootstraps().getBootstraps(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
@@ -68,14 +63,18 @@ export default class BootstrapsRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.post(`${this.path}`, bootstrapsMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
-      try {
-        const resp = await new Bootstraps().uploadBootstrap(req, req.body)
-        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+    this.router.post(
+      `${this.path}`,
+      bootstrapsMiddleware,
+      async (req: Request, res: Response<DataHttpResponse<BootstrapsRes>>, next: NextFunction) => {
+        try {
+          const resp = await new Bootstraps().uploadBootstrap(req, req.body)
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
       }
-    })
+    )
 
     /**
      * @openapi
@@ -101,7 +100,7 @@ export default class BootstrapsRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+    this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<BootstrapsRes>>, next: NextFunction) => {
       try {
         const resp = await new Bootstraps().deleteBootstrap(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })

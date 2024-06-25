@@ -46,15 +46,15 @@ class Bootstraps {
   }
 
   async uploadBootstrap(req: Request, body: any): Promise<DataSuccess<BootstrapsRes>> {
-    let countBootstrap: count
+    let countBootstraps: count
 
     try {
-      countBootstrap = (await db.query<count[]>('SELECT COUNT(*) AS count FROM bootstraps'))[0]
+      countBootstraps = (await db.query<count[]>('SELECT COUNT(*) AS count FROM bootstraps'))[0]
     } catch (error: unknown) {
       throw error as ServiceException
     }
 
-    if (countBootstrap.count > 0) {
+    if (countBootstraps.count > 0) {
       try {
         await db.query(`UPDATE bootstraps SET version = ?, ${req.body.platform} = ? WHERE id = 1`, [req.body.version, req.file!.filename])
       } catch (error: any) {
@@ -97,8 +97,6 @@ class Bootstraps {
     } catch (error: any) {
       throw new DBException()
     }
-
-    console.log(bootstraps[body.platform as 'win' | 'mac' | 'lin'])
 
     const r = filesService.delete('bootstraps', [`${body.platform}/`])
     if (r.status) {

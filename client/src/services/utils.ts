@@ -28,7 +28,6 @@ class Utils {
   }
 
   removeUnwantedFilenameChars(string: string): string {
-    console.log('removeUnwantedFilenameChars')
     return string
       .replaceAll('/', '')
       .replaceAll('\\', '')

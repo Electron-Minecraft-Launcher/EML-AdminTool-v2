@@ -22,7 +22,6 @@ export default class DefaultRouter implements Route {
 <p><b>Welcome to the EML AdminTool API</b></p>
 <p><a href="api/swagger">Swagger</a>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;<a href="https://github.com/Electron-Minecraft-Launcher" target="_blank">GitHub</a>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;<a href="https://discord.gg/6rjpyYskBV" target="_blank">Discord</a></p>`
       )
-      console.log(req.protocol)
     })
 
     this.router.get(`${this.path}/api/swagger.json`, (req, res) => {

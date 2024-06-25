@@ -152,7 +152,7 @@
     <h2>{action.action === 'add' ? 'Create a new file' : 'Edit the file'}</h2>
 
     <button class="secondary small right" type="button"  on:click={download}>
-      <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download file
+      <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download file
     </button>
 
     <label for="name" class="name">Files Updater/{path}</label>

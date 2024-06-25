@@ -41,7 +41,7 @@
       finally: () => {
         cookiesService.delete('JWT')
         goto('/login')
-      },
+      }
     })
   }
 
@@ -55,9 +55,9 @@
     {@html leftPanelOpen ? '<i class="fa-solid fa-chevron-left" />' : '<i class="fa-solid fa-chevron-right" />'}
   </button>
 
-  <div class="toggle-left-panel" />
+  <div class="toggle-left-panel"></div>
 
-  <div class="hoverable" />
+  <div class="hoverable"></div>
 
   {#if leftPanelOpen}
     <h1>EML AdminTool</h1>
@@ -69,10 +69,10 @@
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '50px 15px 20px 15px' }]} />
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '30px 15px 40px 15px' }]} />
   {:else}
-    <a href="/dashboard" class:active={$page.url.pathname == '/dashboard'}><i class="fa-solid fa-house" />Home</a>
+    <a href="/dashboard" class:active={$page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>Home</a>
     {#if $user.admin}
       <a href="/dashboard/emlat-settings" class:active={$page.url.pathname == '/dashboard/emlat-settings'}>
-        <i class="fa-solid fa-gear" />Settings
+        <i class="fa-solid fa-gear"></i>Settings
       </a>
     {/if}
   {/if}
@@ -92,37 +92,37 @@
   {:else if $user.status !== 0 && $user.status !== -1 && $user.status !== -2}
     {#if $user.p_files_updater_add_del || $user.admin}
       <a href="/dashboard/files-updater" class:active={$page.url.pathname == '/dashboard/files-updater'}>
-        <i class="fa-solid fa-folder-open" />Files Updater
+        <i class="fa-solid fa-folder-open"></i>Files Updater
       </a>
     {/if}
 
-    {#if $user.p_bootstrap_mod || $user.admin}
-      <a href="/dashboard/bootstrap" class:active={$page.url.pathname == '/dashboard/bootstrap'}>
-        <i class="fa-solid fa-arrows-rotate" />Bootstrap
+    {#if $user.p_bootstraps_mod || $user.admin}
+      <a href="/dashboard/bootstraps" class:active={$page.url.pathname == '/dashboard/bootstraps'}>
+        <i class="fa-solid fa-arrows-rotate"></i>Bootstraps
       </a>
     {/if}
 
     {#if $user.p_maintenance_mod || $user.admin}
       <a href="/dashboard/maintenance" class:active={$page.url.pathname == '/dashboard/maintenance'}>
-        <i class="fa-solid fa-screwdriver-wrench" />Maintenance
+        <i class="fa-solid fa-screwdriver-wrench"></i>Maintenance
       </a>
     {/if}
 
     {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_category_add_mod_del || $user.p_news_tag_add_mod_del || $user.admin}
       <a href="/dashboard/news" class:active={$page.url.pathname == '/dashboard/news'}>
-        <i class="fa-solid fa-newspaper" />News
+        <i class="fa-solid fa-newspaper"></i>News
       </a>
     {/if}
 
     {#if $user.p_background_mod || $user.admin}
       <a href="/dashboard/background" class:active={$page.url.pathname == '/dashboard/background'}>
-        <i class="fa-solid fa-image" />Background
+        <i class="fa-solid fa-image"></i>Background
       </a>
     {/if}
 
     {#if $user.p_stats_see || $user.p_stats_del || $user.admin}
       <a href="/dashboard/stats" class:active={$page.url.pathname == '/dashboard/stats'}>
-        <i class="fa-solid fa-chart-simple" />Stats
+        <i class="fa-solid fa-chart-simple"></i>Stats
       </a>
     {/if}
   {/if}
@@ -131,32 +131,26 @@
     <Skeleton
       {randomWidth}
       {height}
-      customStyle={[
-        { display: 'block' },
-        { margin: '30px 15px 20px 15px' },
-        { position: 'absolute' },
-        { bottom: '90px' },
-        { width: '170px' },
-      ]}
+      customStyle={[{ display: 'block' }, { margin: '30px 15px 20px 15px' }, { position: 'absolute' }, { bottom: '90px' }, { width: '170px' }]}
     />
   {:else}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-missing-attribute -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <a class="account" on:click={accountClick}>
-      <i class="fa-solid fa-circle-user" />{$user.name}<i class="fa-solid fa-caret-up" />
+      <i class="fa-solid fa-circle-user"></i>{$user.name}<i class="fa-solid fa-caret-up"></i>
     </a>
   {/if}
 
   {#if accountDropdownOpen}
     <div class="account-dropdown" id="account-dropdown" transition:slide={{ duration: 200 }}>
       <a href="/dashboard/account" class="account-settings" class:active={$page.url.pathname == '/dashboard/account'}>
-        <i class="fa-solid fa-gear" />Settings
+        <i class="fa-solid fa-gear"></i>Settings
       </a>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-missing-attribute -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket" />Log out</a>
+      <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
     </div>
   {/if}
 </nav>
@@ -282,7 +276,10 @@
   div.account-dropdown {
     overflow-y: hidden;
     border-radius: 5px;
-    transition: opacity 0.2s, height 0.2s ease, display 0s;
+    transition:
+      opacity 0.2s,
+      height 0.2s ease,
+      display 0s;
     background: white;
     padding: 10px;
     border: 1px solid var(--border-color);
@@ -326,10 +323,6 @@
       z-index: -1;
     }
 
-    // &.closed div.toggle-left-panel {
-    //   width: 30px;
-    // }
-
     button.toggle-left-panel {
       width: 39px;
       border: 1px solid var(--border-color);
@@ -337,16 +330,16 @@
       border-radius: 0 10px 10px 0;
       background: white;
       position: absolute;
-      transition: right 0.3s, opacity 0.3s;
+      transition:
+        right 0.3s,
+        opacity 0.3s;
       right: 0;
-      // opacity: 0.5;
     }
 
     &:hover button.toggle-left-panel,
     div.hoverable:hover button.toggle-left-panel,
     button.toggle-left-panel:hover {
       right: -39px;
-      // opacity: 1;
     }
   }
 </style>

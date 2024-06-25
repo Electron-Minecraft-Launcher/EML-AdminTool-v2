@@ -16,7 +16,6 @@ class ApiFilesUpdaterService {
     for (let i = 0; i < files.length; i++) {
       body.append('files[]', files[i])
     }
-    console.log(body)
     return await http.post<DataHttpResponse<File_[]>>('/api/files-updater', body)
   }
 

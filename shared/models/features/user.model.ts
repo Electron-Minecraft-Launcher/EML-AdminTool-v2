@@ -30,7 +30,7 @@ export interface User {
    */
   admin?: number
   p_files_updater_add_del?: number
-  p_bootstrap_mod?: number
+  p_bootstraps_mod?: number
   p_maintenance_mod?: number
   p_news_add?: number
   p_news_mod_del?: number

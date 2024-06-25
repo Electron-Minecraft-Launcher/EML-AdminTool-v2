@@ -11,12 +11,4 @@ class Router {
   }
 }
 
-/**
- * @debug
- */
-// export function redirect(code: 300, path: string, from = 'unknown') {
-//   console.log(path, from);
-//   goto(path)
-// }
-
 export default new Router()

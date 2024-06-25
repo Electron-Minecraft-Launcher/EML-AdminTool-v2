@@ -15,7 +15,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'status', info: 'TINYINT' },
     { name: 'admin', info: 'TINYINT' },
     { name: 'p_files_updater_add_del', info: 'TINYINT' },
-    { name: 'p_bootstrap_mod', info: 'TINYINT' },
+    { name: 'p_bootstraps_mod', info: 'TINYINT' },
     { name: 'p_maintenance_mod', info: 'TINYINT' },
     { name: 'p_news_add', info: 'TINYINT' },
     { name: 'p_news_mod_del', info: 'TINYINT' },

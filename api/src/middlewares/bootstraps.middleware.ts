@@ -16,7 +16,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     return
   }
 
-  if (+auth.p_bootstrap_mod! != 1) {
+  if (+auth.p_bootstraps_mod! != 1) {
     next(new UnauthorizedException('Unauthorized'))
     return
   }

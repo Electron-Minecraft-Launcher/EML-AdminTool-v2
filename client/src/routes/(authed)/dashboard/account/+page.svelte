@@ -65,9 +65,9 @@
     </div>
 
     <div>
-      <p class="label">Bootstrap</p>
-      {#if $user.p_bootstrap_mod}
-        <p>Modify bootstrap</p>
+      <p class="label">Bootstraps</p>
+      {#if $user.p_bootstraps_mod}
+        <p>Modify bootstraps</p>
       {:else}
         <p>-</p>
       {/if}
