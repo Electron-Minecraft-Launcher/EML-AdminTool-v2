@@ -168,7 +168,7 @@ export default class AdminRouter implements Route {
      *                 type: integer
      *               p_files_updater_add_del:
      *                 type: integer
-     *               p_bootstrap_mod:
+     *               p_bootstraps_mod:
      *                 type: integer
      *               p_maintenance_mod:
      *                 type: integer

@@ -86,7 +86,7 @@ export default class Configure {
         status: 1,
         admin: 1,
         p_files_updater_add_del: 1,
-        p_bootstrap_mod: 1,
+        p_bootstraps_mod: 1,
         p_maintenance_mod: 1,
         p_news_add: 1,
         p_news_mod_del: 1,
@@ -114,8 +114,9 @@ export default class Configure {
 
     try {
       filesService.delete('files-updater', [''])
-      filesService.delete('bootstrap', [''])
-      filesService.delete('background', [''])
+      filesService.delete('bootstraps', [''])
+      filesService.delete('backgrounds', [''])
+      await db.query('DROP DATABASE eml_admintool')
       await db.query('CREATE DATABASE eml_admintool')
       await db.generate(await db.getTablesToGenerate())
     } catch (error: any) {

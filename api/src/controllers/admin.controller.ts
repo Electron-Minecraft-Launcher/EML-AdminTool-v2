@@ -209,7 +209,7 @@ export default class Admin {
       admin: getUser.admin,
       status: ((auth.admin && body.status) || (body.status && body.status == -2)) && !getUser.admin ? +body.status : getUser.status,
       p_files_updater_add_del: auth.admin && +body.p_files_updater_add_del ? 1 : 0,
-      p_bootstrap_mod: auth.admin && body.p_bootstrap_mod ? +body.p_bootstrap_mod : getUser.p_bootstrap_mod,
+      p_bootstraps_mod: auth.admin && body.p_bootstraps_mod ? +body.p_bootstraps_mod : getUser.p_bootstraps_mod,
       p_maintenance_mod: auth.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
       p_news_add: auth.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
       p_news_mod_del: auth.admin && body.p_news_mod_del ? +body.p_news_mod_del : getUser.p_news_mod_del,
@@ -225,7 +225,7 @@ export default class Admin {
       updatedUser.admin = 1
       updatedUser.status = 1
       updatedUser.p_files_updater_add_del = 1
-      updatedUser.p_bootstrap_mod = 1
+      updatedUser.p_bootstraps_mod = 1
       updatedUser.p_maintenance_mod = 1
       updatedUser.p_news_add = 1
       updatedUser.p_news_mod_del = 1

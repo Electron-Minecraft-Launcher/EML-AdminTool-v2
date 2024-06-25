@@ -49,6 +49,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Files Updater',
         description: 'Files that have to be downloaded by the Launcher'
+      },
+      {
+        name: 'Bootstraps',
+        description: 'Files to download and update the Launcher'
       }
     ]
   },

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte'
-  import type { File as File_ } from '../../../shared/models/features/filesupdater.model'
+  import type { File as File_ } from '../../../shared/models/features/file.model'
   import type { PageData } from '../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../services/api/api-filesupdater.service'
   import { l } from '../services/store'
@@ -284,7 +284,7 @@
     disabled={selectedItems.length !== 1 || (selectedItems[0] && selectedItems[0].type === 'FOLDER')}
     on:click={download}
   >
-    <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download
+    <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download
   </button>
   <button class="secondary small" disabled={selectedItems.length !== 1} on:click={() => (showRenameModal = true)}>
     <i class="fa-solid fa-i-cursor"></i>&nbsp;&nbsp;Rename
@@ -351,7 +351,7 @@
     &::before {
       content: url('../assets/images/fa-solid fa-folder-arrow-up.svg');
       position: absolute;
-      top: 15px;
+      top: 12.5px;
       left: 15px;
       width: 13.34px;
       height: 14px;
@@ -364,7 +364,7 @@
     &::before {
       content: url('../assets/images/fa-solid fa-file-plus.svg');
       position: absolute;
-      top: 14px;
+      top: 12px;
       left: 16px;
       width: 10px;
       height: 13.2;
@@ -399,6 +399,7 @@
       text-align: left;
       font-family: 'Poppins';
       background: none;
+      line-height: 15px;
 
       &:nth-of-type(1) {
         margin-top: 0;

@@ -65,9 +65,9 @@
     </div>
 
     <div>
-      <p class="label">Bootstrap</p>
-      {#if $user.p_bootstrap_mod}
-        <p>Modify bootstrap</p>
+      <p class="label">Bootstraps</p>
+      {#if $user.p_bootstraps_mod}
+        <p>Change bootstrap files</p>
       {:else}
         <p>-</p>
       {/if}
@@ -76,7 +76,7 @@
     <div>
       <p class="label">Maintenance</p>
       {#if $user.p_maintenance_mod}
-        <p>Modify maintenance status</p>
+        <p>Change maintenance status</p>
       {:else}
         <p>-</p>
       {/if}

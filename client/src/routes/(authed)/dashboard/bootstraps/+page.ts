@@ -3,10 +3,16 @@ import apiAuthService from '../../../../services/api/api-auth.service'
 import cookiesService from '../../../../services/cookies.service'
 import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
-import type { File } from '../../../../../../shared/models/features/file.model'
+import type { BootstrapsRes } from '../../../../../../shared/models/features/bootstraps.model'
+import apiBootstrapsService from '../../../../services/api/api-bootstraps.service'
 
 export const load: PageLoad = async () => {
-  let files: File[] = []
+  let bootstraps: BootstrapsRes = {
+    version: '',
+    win: null,
+    mac: null,
+    lin: null
+  }
 
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
@@ -21,5 +27,11 @@ export const load: PageLoad = async () => {
     throw redirect(300, '/login')
   }
 
-  return { files }
+  ;(await apiBootstrapsService.getBootstraps()).subscribe({
+    next: (res) => {
+      bootstraps = res.body.data!
+    }
+  })
+
+  return { bootstraps }
 }

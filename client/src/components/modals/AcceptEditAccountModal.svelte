@@ -11,7 +11,7 @@
 
   $: name = '' as string
   $: p_files_updater_add_del = false as boolean
-  $: p_bootstrap_mod = false as boolean
+  $: p_bootstraps_mod = false as boolean
   $: p_maintenance_mod = false as boolean
   $: p_news_add = false as boolean
   $: p_news_mod_del = false as boolean
@@ -26,7 +26,7 @@
   function update() {
     name = selectedAccount.name + ''
     p_files_updater_add_del = selectedAccount.p_files_updater_add_del == 1
-    p_bootstrap_mod = selectedAccount.p_bootstrap_mod == 1
+    p_bootstraps_mod = selectedAccount.p_bootstraps_mod == 1
     p_maintenance_mod = selectedAccount.p_maintenance_mod == 1
     p_news_add = selectedAccount.p_news_add == 1
     p_news_mod_del = selectedAccount.p_news_mod_del == 1
@@ -42,7 +42,7 @@
       name,
       status: 1,
       p_files_updater_add_del: p_files_updater_add_del ? 1 : 0,
-      p_bootstrap_mod: p_bootstrap_mod ? 1 : 0,
+      p_bootstraps_mod: p_bootstraps_mod ? 1 : 0,
       p_maintenance_mod: p_maintenance_mod ? 1 : 0,
       p_news_add: p_news_add ? 1 : 0,
       p_news_mod_del: p_news_mod_del ? 1 : 0,
@@ -70,19 +70,19 @@
       <label for="name" style="margin-top: 0">{$l.dashboard.account.nameOrPseudo}</label>
       <input type="text" id="name" bind:value={name} />
 
-      <p class="label">Files Updater</p>
+      <p class="label" style="margin-top: 20px">Files Updater</p>
       <label class="p" for="p_files_updater_add_del">
         <input type="checkbox" id="p_files_updater_add_del" bind:checked={p_files_updater_add_del} /> Add and delete files
       </label>
 
-      <p class="label">Bootstrap</p>
-      <label class="p" for="p_bootstrap_mod">
-        <input type="checkbox" id="p_bootstrap_mod" bind:checked={p_bootstrap_mod} /> Modify bootstrap
+      <p class="label">Bootstraps</p>
+      <label class="p" for="p_bootstraps_mod">
+        <input type="checkbox" id="p_bootstraps_mod" bind:checked={p_bootstraps_mod} /> Change bootstrap files
       </label>
 
       <p class="label">Maintenance</p>
       <label class="p" for="p_maintenance_mod">
-        <input type="checkbox" id="p_maintenance_mod" bind:checked={p_maintenance_mod} /> Modify maintenance
+        <input type="checkbox" id="p_maintenance_mod" bind:checked={p_maintenance_mod} /> Change maintenance status
       </label>
 
       <p class="label">News</p>

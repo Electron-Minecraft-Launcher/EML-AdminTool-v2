@@ -15,7 +15,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'status', info: 'TINYINT' },
     { name: 'admin', info: 'TINYINT' },
     { name: 'p_files_updater_add_del', info: 'TINYINT' },
-    { name: 'p_bootstrap_mod', info: 'TINYINT' },
+    { name: 'p_bootstraps_mod', info: 'TINYINT' },
     { name: 'p_maintenance_mod', info: 'TINYINT' },
     { name: 'p_news_add', info: 'TINYINT' },
     { name: 'p_news_mod_del', info: 'TINYINT' },
@@ -34,7 +34,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'data', info: 'TEXT' },
   ],
 
-  bootstrap: [
+  bootstraps: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'win', info: 'VARCHAR(255)' },
     { name: 'mac', info: 'VARCHAR(255)' },

@@ -1,13 +1,10 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { User } from '../../../shared/models/features/user.model'
 import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
 import { Route } from '../services/routes.model'
-import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
 import FilesUpdater from '../controllers/filesupdater.controller'
-import { File } from '../../../shared/models/features/filesupdater.model'
-import uploadFilesMiddleware from '../middlewares/uploadfiles.middleware'
+import { File } from '../../../shared/models/features/file.model'
+import filesUpdaterMiddleware from '../middlewares/filesupdater.middleware'
 
 export default class FilesUpdaterRouter implements Route {
   path = '/api/files-updater'
@@ -64,7 +61,7 @@ export default class FilesUpdaterRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.post(`${this.path}`, uploadFilesMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+    this.router.post(`${this.path}`, filesUpdaterMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
         const resp = await new FilesUpdater().uploadFiles(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })

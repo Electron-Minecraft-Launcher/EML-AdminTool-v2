@@ -4,7 +4,7 @@ export interface DBGeneration {
   config: boolean | TableColumn[]
   users: boolean | TableColumn[]
   logs: boolean | TableColumn[]
-  bootstrap: boolean | TableColumn[]
+  bootstraps: boolean | TableColumn[]
   maintenance: boolean | TableColumn[]
   news: boolean | TableColumn[]
   news_categories: boolean | TableColumn[]

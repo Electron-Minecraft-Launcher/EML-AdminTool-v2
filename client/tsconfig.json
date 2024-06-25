@@ -13,9 +13,8 @@
 	},
 	"include": [
 		"src/**/*",
-		".svelte-kit/**/*",
-		"../shared/**/*"
-, "src/services/.....http.module.ts"	]
+		"../shared/**/*",
+	]
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	// except $lib which is handled by https://kit.svelte.dev/docs/configuration#files
 	//

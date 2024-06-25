@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import type { File } from '../../../../shared/models/features/filesupdater.model'
+  import type { File } from '../../../../shared/models/features/file.model'
   import type { PageData } from '../../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../../services/api/api-filesupdater.service'
   import { l } from '../../services/store'
@@ -152,7 +152,7 @@
     <h2>{action.action === 'add' ? 'Create a new file' : 'Edit the file'}</h2>
 
     <button class="secondary small right" type="button"  on:click={download}>
-      <i class="fa-solid fa-download"></i>&nbsp;&nbsp;Download file
+      <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download file
     </button>
 
     <label for="name" class="name">Files Updater/{path}</label>
@@ -194,8 +194,8 @@
   }
 
   div.container-editor {
-    height: calc(100vh - 177px - 106px - 30px - 69px);
-    margin-top: 30px;
+    height: calc(100vh - 177px - 106px - 30px - 63px);
+    margin-top: 20px;
     border: 1px solid var(--border-color2);
     border-radius: 5px;
   }

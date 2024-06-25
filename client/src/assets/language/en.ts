@@ -10,6 +10,7 @@ export default {
     cancel: `Cancel`,
     more: `More`,
     name: `Name`,
+    serverName: `Server name`,
     username: `Username`,
     password: `Password`,
     pin: `PIN`,
@@ -35,7 +36,7 @@ export default {
     },
     step3: {
       title: `Then, choose your server name and a password:`,
-      subtitle: `This username and password will be your admin account login.`
+      subtitle: `This server name and password will be your admin account login.`
     }
   },
   auth: {

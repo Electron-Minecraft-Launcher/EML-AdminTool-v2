@@ -12,6 +12,7 @@ import EnvRouter from './routers/env.router'
 import AdminRouter from './routers/admin.router'
 import FilesUpdaterRouter from './routers/filesupdater.router'
 import cors from 'cors'
+import BootstrapsRouter from './routers/bootstraps.router'
 
 class App {
   private app: express.Application
@@ -36,20 +37,28 @@ class App {
 
   private init(routes: Route[]) {
     this.app.use(express.static(this.client))
-    
+
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
     this.app.use(checkerMiddleware)
-    
-    routes.forEach(route => {
+
+    routes.forEach((route) => {
       this.app.use('/', route.router)
     })
 
     this.app.use('/files', cors(), express.static('../files/'))
-    
+
     this.app.use(notFoundMiddleware)
     this.app.use(errorMiddleware)
   }
 }
 
-new App([new DefaultRouter(), new EnvRouter(), new ConfigureRouter(), new AuthRouter(), new AdminRouter(), new FilesUpdaterRouter()]).listen()
+new App([
+  new DefaultRouter(),
+  new EnvRouter(),
+  new ConfigureRouter(),
+  new AuthRouter(),
+  new AdminRouter(),
+  new FilesUpdaterRouter(),
+  new BootstrapsRouter()
+]).listen()
