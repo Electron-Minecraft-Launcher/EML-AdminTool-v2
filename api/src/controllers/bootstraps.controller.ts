@@ -10,13 +10,42 @@ import { ServiceException } from '../responses/types'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import { RequestException } from '../responses/exceptions/request-exception.response'
 import db from '../utils/db'
+import { DBException } from '../responses/exceptions/db-exception.response'
+import { BootstrapsRes, Bootstraps as Bootstraps_ } from '../../../shared/models/features/bootstraps.model'
 
 class Bootstraps {
-  async getBootstraps(req: Request): Promise<DataSuccess<File[]>> {
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', await filesService.get(req, 'bootstraps'))
+  async getBootstraps(req: Request): Promise<DataSuccess<BootstrapsRes>> {
+    let bootstrapsRes: BootstrapsRes = {
+      win: null,
+      mac: null,
+      lin: null,
+      version: ''
+    }
+
+    const bootstrapsFiles = await filesService.get(req, 'bootstraps')
+
+    let bootstraps: Bootstraps_
+
+    try {
+      bootstraps = (await db.query<Bootstraps_[]>('SELECT * FROM bootstraps'))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    
+    if (bootstraps && bootstraps.id) {
+      bootstrapsRes = {
+        win: bootstrapsFiles.find((file) => file.path === 'win/') || null,
+        mac: bootstrapsFiles.find((file) => file.path === 'mac/') || null,
+        lin: bootstrapsFiles.find((file) => file.path === 'lin/') || null,
+        version: bootstraps.version + ''
+      }
+    }
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', bootstrapsRes)
   }
 
-  async uploadBootstrap(req: Request, body: any): Promise<DataSuccess<File[]>> {
+  async uploadBootstrap(req: Request, body: any): Promise<DataSuccess<BootstrapsRes>> {
     let countBootstrap: count
 
     try {
@@ -25,14 +54,24 @@ class Bootstraps {
       throw error as ServiceException
     }
 
-    if (!/(\d\.\d\.\d)(-[a-z]*(\.\d)?)?/gi.test(req.body.version)) {
-      throw new RequestException('Invalid parameters')
+    if (countBootstrap.count > 0) {
+      try {
+        await db.query(`UPDATE bootstraps SET version = ?, ${req.body.platform} = ? WHERE id = 1`, [req.body.version, req.file!.filename])
+      } catch (error: any) {
+        throw new DBException()
+      }
+    } else {
+      try {
+        await db.query(`INSERT INTO bootstraps (version, ${req.body.platform}) VALUES (?, ?)`, [req.body.version, req.file!.filename])
+      } catch (error: any) {
+        throw new DBException()
+      }
     }
 
     return await this.getBootstraps(req)
   }
 
-  async deleteBootstrap(req: Request, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<File[]>> {
+  async deleteBootstrap(req: Request, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<BootstrapsRes>> {
     try {
       var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
@@ -51,8 +90,17 @@ class Bootstraps {
       throw new RequestException('Invalid parameters')
     }
 
-    // TODO get the file name from the database
-    const r = filesService.delete('bootstraps', [body.platform])
+    let bootstraps: Bootstraps_
+
+    try {
+      bootstraps = (await db.query<Bootstraps_[]>('SELECT * FROM bootstraps'))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    console.log(bootstraps[body.platform as 'win' | 'mac' | 'lin'])
+
+    const r = filesService.delete('bootstraps', [`${body.platform}/`])
     if (r.status) {
       return await this.getBootstraps(req)
     } else {

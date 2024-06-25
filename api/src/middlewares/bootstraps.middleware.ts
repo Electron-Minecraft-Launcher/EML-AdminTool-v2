@@ -6,6 +6,7 @@ import multer from 'multer'
 import { RequestException } from '../responses/exceptions/request-exception.response'
 import fs from 'fs'
 import { ServerException } from '../responses/exceptions/server-exception.response'
+import envService from '../services/env.service'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,6 +20,8 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     next(new UnauthorizedException('Unauthorized'))
     return
   }
+
+  const env = await envService.getEnv()
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -34,12 +37,17 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
         return
       }
 
-      const path = `../files/bootstraps/`
+       if (!/(\d\.\d\.\d)(-[a-z]*(\.\d)?)?/gi.test(req.body.version)) {
+         next(new RequestException('Invalid parameters'))
+         return
+       }
+
+      const path = `../files/bootstraps/${req.body.platform}`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },
     filename: (req, file, cb) => {
-      const filename = `${req.body.platform}`
+      const filename = `${env.name.toLowerCase()}_bootstrap_${req.body.platform}_${req.body.version}`
       const fileExt = file.originalname.split('.').slice(-1)[0]
       cb(null, `${filename}.${fileExt}`)
     }

@@ -34,7 +34,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'data', info: 'TEXT' },
   ],
 
-  bootstrap: [
+  bootstraps: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'win', info: 'VARCHAR(255)' },
     { name: 'mac', info: 'VARCHAR(255)' },

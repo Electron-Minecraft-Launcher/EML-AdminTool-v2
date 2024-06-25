@@ -42,7 +42,8 @@ class FilesService {
       if (!fs.existsSync(`../files/${dir}/${path}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
       if (path.includes('../') || path.includes('..\\') || path === '..')
         return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
-      else fs.rmSync(`../files/${dir}/${path}`, { recursive: true })
+
+      fs.rmSync(`../files/${dir}/${path}`, { recursive: true })
     })
 
     return { status: true, code: ResponseType.SUCCESS }
