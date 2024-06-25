@@ -16,7 +16,7 @@ class ApiFilesUpdaterService {
     return await http.post<DataHttpResponse<BootstrapsRes>>('/api/bootstraps', body)
   }
 
-  async deleteFiles(platform: string) {
+  async deleteBootstrap(platform: string) {
     return await http.delete<DataHttpResponse<BootstrapsRes>>('/api/bootstraps', { platform })
   }
 }

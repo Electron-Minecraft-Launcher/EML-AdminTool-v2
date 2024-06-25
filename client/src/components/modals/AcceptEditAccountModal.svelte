@@ -70,19 +70,19 @@
       <label for="name" style="margin-top: 0">{$l.dashboard.account.nameOrPseudo}</label>
       <input type="text" id="name" bind:value={name} />
 
-      <p class="label">Files Updater</p>
+      <p class="label" style="margin-top: 20px">Files Updater</p>
       <label class="p" for="p_files_updater_add_del">
         <input type="checkbox" id="p_files_updater_add_del" bind:checked={p_files_updater_add_del} /> Add and delete files
       </label>
 
       <p class="label">Bootstraps</p>
       <label class="p" for="p_bootstraps_mod">
-        <input type="checkbox" id="p_bootstraps_mod" bind:checked={p_bootstraps_mod} /> Modify bootstraps
+        <input type="checkbox" id="p_bootstraps_mod" bind:checked={p_bootstraps_mod} /> Change bootstrap files
       </label>
 
       <p class="label">Maintenance</p>
       <label class="p" for="p_maintenance_mod">
-        <input type="checkbox" id="p_maintenance_mod" bind:checked={p_maintenance_mod} /> Modify maintenance
+        <input type="checkbox" id="p_maintenance_mod" bind:checked={p_maintenance_mod} /> Change maintenance status
       </label>
 
       <p class="label">News</p>

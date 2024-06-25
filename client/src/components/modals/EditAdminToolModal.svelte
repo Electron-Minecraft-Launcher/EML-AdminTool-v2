@@ -81,7 +81,7 @@
     display: inline-block !important;
     padding: 0;
     margin-top: 0px;
-    margin-bottom: 15px;
+    margin-bottom: 0;
 
     &:hover img {
       filter: brightness(115%);

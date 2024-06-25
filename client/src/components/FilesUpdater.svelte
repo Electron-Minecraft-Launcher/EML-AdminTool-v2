@@ -351,7 +351,7 @@
     &::before {
       content: url('../assets/images/fa-solid fa-folder-arrow-up.svg');
       position: absolute;
-      top: 15px;
+      top: 12.5px;
       left: 15px;
       width: 13.34px;
       height: 14px;
@@ -364,7 +364,7 @@
     &::before {
       content: url('../assets/images/fa-solid fa-file-plus.svg');
       position: absolute;
-      top: 14px;
+      top: 12px;
       left: 16px;
       width: 10px;
       height: 13.2;
@@ -399,6 +399,7 @@
       text-align: left;
       font-family: 'Poppins';
       background: none;
+      line-height: 15px;
 
       &:nth-of-type(1) {
         margin-top: 0;

@@ -47,7 +47,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
       cb(null, path)
     },
     filename: (req, file, cb) => {
-      const filename = `${env.name.toLowerCase()}_bootstrap_${req.body.platform}_${req.body.version}`
+      const filename = `${env.name.toLowerCase()}_${req.body.version}_${req.body.platform}`
       const fileExt = file.originalname.split('.').slice(-1)[0]
       cb(null, `${filename}.${fileExt}`)
     }

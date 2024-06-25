@@ -194,8 +194,8 @@
   }
 
   div.container-editor {
-    height: calc(100vh - 177px - 106px - 30px - 69px);
-    margin-top: 30px;
+    height: calc(100vh - 177px - 106px - 30px - 63px);
+    margin-top: 20px;
     border: 1px solid var(--border-color2);
     border-radius: 5px;
   }

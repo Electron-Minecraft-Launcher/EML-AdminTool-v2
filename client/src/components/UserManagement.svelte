@@ -86,11 +86,11 @@ All the user's actions and data will be deleted, including published news. This 
       {/if}
 
       {#if selectedAccount.p_bootstraps_mod}
-        <p>Modify bootstraps</p>
+        <p>Change bootstrap files</p>
       {/if}
 
       {#if selectedAccount.p_maintenance_mod}
-        <p>Modify maintenance status</p>
+        <p>Change maintenance status</p>
       {/if}
 
       {#if selectedAccount.p_news_add || selectedAccount.p_news_mod_del || selectedAccount.p_news_category_add_mod_del || selectedAccount.p_news_tag_add_mod_del}

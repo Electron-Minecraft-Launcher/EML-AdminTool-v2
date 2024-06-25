@@ -2,9 +2,12 @@
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
   import { afterUpdate, onMount } from 'svelte'
-  import apiBootstraps from '../../../../services/api/api-bootstraps.service'
+  import apiBootstrapsService from '../../../../services/api/api-bootstraps.service'
+  import ChangeBootstrapFilesModal from '../../../../components/modals/ChangeBootstrapFilesModal.svelte'
 
   export let data: PageData
+
+  let showChangeBootstrapFileModal = false
 
   async function download(platform: 'win' | 'mac' | 'lin') {
     if (!data.bootstraps[platform]) return
@@ -26,6 +29,15 @@
       console.error('Erreur lors du téléchargement du fichier:', error)
     }
   }
+
+  async function deleteFile(platform: 'win' | 'mac' | 'lin') {
+    if (!data.bootstraps[platform]) return
+    ;(await apiBootstrapsService.deleteBootstrap(platform)).subscribe({
+      next: (res) => {
+        data.bootstraps = res.body.data!
+      }
+    })
+  }
 </script>
 
 <svelte:head>
@@ -35,20 +47,21 @@
 <h2>Bootstraps</h2>
 
 <section class="section" style="position: relative;">
-  <button class="secondary right"><i class="fa-solid fa-file-arrow-up"></i></button>
+  <button class="secondary right" on:click={() => (showChangeBootstrapFileModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
 
   <h3>Bootstraps and Launcher version</h3>
 
   <div class="container">
     <div>
       <p class="label">Version</p>
-      <p>{data.bootstraps.version}</p>
+      <p class="no-link">{data.bootstraps.version || '-'}</p>
     </div>
 
     <div>
       <p class="label"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
       {#if data.bootstraps.win}
-        <a on:click={() => download('win')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.win.name}</a>
+        <button on:click={() => download('win')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.win.name}</button>
+        <button class="remove" on:click={() => deleteFile('win')}><i class="fa-solid fa-trash"></i></button>
       {:else}
         <p class="no-link">Not uploaded</p>
       {/if}
@@ -57,7 +70,8 @@
     <div>
       <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
       {#if data.bootstraps.mac}
-        <a on:click={() => download('mac')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.mac.name}</a>
+        <button on:click={() => download('mac')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.mac.name}</button>
+        <button class="remove" on:click={() => deleteFile('mac')}><i class="fa-solid fa-trash"></i></button>
       {:else}
         <p class="no-link">Not uploaded</p>
       {/if}
@@ -65,8 +79,9 @@
 
     <div>
       <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
-      {#if data.bootstraps.linux}
-        <a on:click={() => download('lin')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.linux.name}</a>
+      {#if data.bootstraps.lin}
+        <button on:click={() => download('lin')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.lin.name}</button>
+        <button class="remove" on:click={() => deleteFile('lin')}><i class="fa-solid fa-trash"></i></button>
       {:else}
         <p class="no-link">Not uploaded</p>
       {/if}
@@ -74,28 +89,46 @@
   </div>
 </section>
 
+<ChangeBootstrapFilesModal bind:data bind:show={showChangeBootstrapFileModal} />
+
 <style lang="scss">
   @import '../../../../assets/scss/dashboard.scss';
 
-  div.container a {
+  div.container button {
     display: inline-block;
-    margin-top: 5px;
+    margin-top: 0;
     border-bottom: none;
     color: #1e1e1e;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 14px;
     position: relative;
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    vertical-align: bottom;
+    font-family: 'Poppins';
+    background: none;
+    line-height: 15px;
 
     &:hover {
-      color: var(--primary-color-hover);
       background: #eeeeee;
+    }
+
+    &.remove {
+      display: inline-block;
+      border-bottom: none;
+      margin-left: 5px;
+      position: relative;
+      background: none;
+      color: var(--red-color);
+      vertical-align: middle;
+
+      &:hover {
+        background: #faeeee;
+      }
     }
   }
 
   p.no-link {
-    padding: 10px 0;
+    padding: 8px 0 7px 0;
   }
 </style>

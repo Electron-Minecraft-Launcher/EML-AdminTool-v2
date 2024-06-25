@@ -38,7 +38,7 @@ class Bootstraps {
         win: bootstrapsFiles.find((file) => file.path === 'win/') || null,
         mac: bootstrapsFiles.find((file) => file.path === 'mac/') || null,
         lin: bootstrapsFiles.find((file) => file.path === 'lin/') || null,
-        version: bootstraps.version + ''
+        version: bootstraps.version || ''
       }
     }
 
@@ -52,6 +52,10 @@ class Bootstraps {
       countBootstraps = (await db.query<count[]>('SELECT COUNT(*) AS count FROM bootstraps'))[0]
     } catch (error: unknown) {
       throw error as ServiceException
+    }
+
+    if (!req.file || !req.file.originalname) {
+      throw new RequestException('Missing file')
     }
 
     if (countBootstraps.count > 0) {
