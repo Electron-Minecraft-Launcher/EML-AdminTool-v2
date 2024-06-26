@@ -2,6 +2,7 @@
   import type { File } from '../../../../shared/models/features/file.model'
   import type { PageData } from '../../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../../services/api/api-filesupdater.service'
+  import notificationsService from '../../services/notifications.service'
   import { l } from '../../services/store'
   import utils from '../../services/utils'
   import ModalTemplate from './ModalTemplate.svelte'
@@ -9,6 +10,7 @@
   export let data: PageData
   export let show: boolean
   export let selectedItems: File[]
+  export let getData: () => void
 
   $: path = '' as string
   $: name = '' as string
@@ -30,6 +32,11 @@
       next: (res) => {
         data.files = res.body.data!
         show = false
+      },
+      error: (err) => {
+        show = false
+        notificationsService.update({ type: 'ERROR', code: 'rename'})
+        getData()
       }
     })
   }

@@ -9,10 +9,12 @@
   import { slide } from 'svelte/transition'
   import CreateFolderModal from './modals/CreateFolderModal.svelte'
   import AddEditFileModal from './modals/AddEditFileModal.svelte'
+  import notificationsService from '../services/notifications.service'
 
   export let currentPath: string
   export let data: PageData
   export let ready: boolean
+  export let getData: () => void
 
   let showRenameModal = false
   let showCreateFolderModal = false
@@ -62,14 +64,7 @@
       files.push(folderUpload.files.item(i)!)
     }
 
-    ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
-      next: (res) => {
-        data.files = res.body.data!
-        ready = true
-      }
-    })
-
-    folderUpload.value = ''
+    upload(files)
   }
 
   async function uploadFiles() {
@@ -88,21 +83,52 @@
       files.push(filesUpload.files.item(i)!)
     }
 
+    upload(files)
+  }
+
+  async function upload(files: File[]) {
     ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
       next: (res) => {
         data.files = res.body.data!
         ready = true
+      },
+      error: () => {
+        notificationsService.update({ type: 'ERROR', code: 'upload' })
+        getData()
       }
     })
 
+    folderUpload.value = ''
+    folderUpload.files = null
     filesUpload.value = ''
+    filesUpload.files = null
   }
 
   async function open(file: File_) {
-    const readable = ['txt', 'md', 'json', 'yaml', 'yml', 'xml', 'html', 'css', 'js', 'ts', 'sql', 'sh', 'py', 'config', 'ini', 'properties']
+    const readable = [
+      'txt',
+      'md',
+      'json',
+      'yaml',
+      'yml',
+      'xml',
+      'html',
+      'css',
+      'js',
+      'ts',
+      'sql',
+      'sh',
+      'py',
+      'config',
+      'ini',
+      'conf',
+      'options',
+      'properties'
+    ]
 
     if (file.type === 'FOLDER') {
       currentPath = `${file.path}${file.name}/`
+      selectedItems = []
     } else if (file.name.split('.').length > 1 && readable.includes(file.name.split('.').slice(-1)[0])) {
       addEditFileAction = { action: 'edit', file }
       showAddEditFileModal = true
@@ -129,11 +155,13 @@
       window.URL.revokeObjectURL(downloadUrl)
       selectedItems = [file]
     } catch (error) {
-      console.error('Erreur lors du téléchargement du fichier:', error)
+      notificationsService.update({ type: 'ERROR', code: 'download' })
+      getData()
     }
   }
 
   async function deleteItems() {
+    if (selectedItems.length === 0) return
     if (confirm('Are you sure you want to delete these files/folders? Folders may contains subfolders.') === false) return
     ready = false
     const paths = selectedItems.map((file) => `${file.path}${file.name}`)
@@ -268,6 +296,17 @@
       addElementDropdownOpen = false
     }
   }}
+  on:keydown={(e) => {
+    if (e.key === 'Escape') {
+      selectedItems = []
+    }
+    if (e.key === 'Delete') {
+      deleteItems()
+    }
+    if (e.key === 'Enter') {
+      open(selectedItems[0])
+    }
+  }}
 />
 
 <div class="explorer">
@@ -330,12 +369,28 @@
   {#if currentFilesAndFolders.length === 0}
     <p class="nothing">No files or folders</p>
   {/if}
+
+  <div class="info">
+    <p>
+      {currentFilesAndFolders.length}
+      {currentFilesAndFolders.length > 1 ? 'items' : 'item'}
+      ({currentFilesAndFolders.filter((item) => item.type === 'FOLDER').length}
+      {currentFilesAndFolders.filter((item) => item.type === 'FOLDER').length > 1 ? 'folders' : 'folder'},
+      {currentFilesAndFolders.filter((item) => item.type !== 'FOLDER').length}
+      {currentFilesAndFolders.filter((item) => item.type !== 'FOLDER').length > 1 ? 'files' : 'file'})
+    </p>
+    {#if selectedItems.length === 1}
+      <p>1 item selected</p>
+    {:else if selectedItems.length > 1}
+      <p>{selectedItems.length} items selected</p>
+    {/if}
+  </div>
 </div>
 
 <input type="file" name="files[]" multiple bind:this={filesUpload} style="display: none" />
 <input type="file" name="files[]" multiple bind:this={folderUpload} style="display: none" />
 
-<RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal}></RenameFileModal>
+<RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal} {getData}></RenameFileModal>
 <CreateFolderModal bind:data bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
 <AddEditFileModal bind:data bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal>
 
@@ -415,11 +470,24 @@
     min-height: 270px;
     position: relative;
     margin-top: 0;
+    padding-bottom: 40px;
 
     p.nothing {
       text-align: center;
       margin-top: 20px;
       color: #606060;
+    }
+
+    div.info {
+      position: absolute;
+      bottom: 0;
+
+      p {
+        margin: 0 30px 0 0;
+        font-size: 14px;
+        color: var(--text-dark-color);
+        display: inline-block;
+      }
     }
   }
 
@@ -489,6 +557,10 @@
         padding-left: 10px;
         padding-left: 10px;
         width: calc(87% - 25px);
+        max-width: 600px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
       &.size {

@@ -13,6 +13,7 @@ class ApiFilesUpdaterService {
   async uploadFiles(path: string, files: File[]) {
     let body = new FormData()
     body.set('path', path)
+    console.log(files.length, files)
     for (let i = 0; i < files.length; i++) {
       body.append('files[]', files[i])
     }
