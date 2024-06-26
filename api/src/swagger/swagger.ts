@@ -53,6 +53,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Bootstraps',
         description: 'Files to download and update the Launcher'
+      },
+      {
+        name: 'Maintenance',
+        description: 'Maintenance status of the the Launcher and/or Minecraft server'
       }
     ]
   },

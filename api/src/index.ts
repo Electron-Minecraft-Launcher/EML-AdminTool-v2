@@ -13,6 +13,7 @@ import AdminRouter from './routers/admin.router'
 import FilesUpdaterRouter from './routers/filesupdater.router'
 import cors from 'cors'
 import BootstrapsRouter from './routers/bootstraps.router'
+import MaintenanceRouter from './routers/maintenance.router'
 
 class App {
   private app: express.Application
@@ -60,5 +61,6 @@ new App([
   new AuthRouter(),
   new AdminRouter(),
   new FilesUpdaterRouter(),
-  new BootstrapsRouter()
+  new BootstrapsRouter(),
+  new MaintenanceRouter()
 ]).listen()

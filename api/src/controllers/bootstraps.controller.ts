@@ -60,13 +60,13 @@ class Bootstraps {
 
     if (countBootstraps.count > 0) {
       try {
-        await db.query(`UPDATE bootstraps SET version = ?, ${req.body.platform} = ? WHERE id = 1`, [req.body.version, req.file!.filename])
+        await db.query(`UPDATE bootstraps SET version = ?, ${body.platform} = ? WHERE id = 1`, [body.version, req.file!.filename])
       } catch (error: any) {
         throw new DBException()
       }
     } else {
       try {
-        await db.query(`INSERT INTO bootstraps (version, ${req.body.platform}) VALUES (?, ?)`, [req.body.version, req.file!.filename])
+        await db.query(`INSERT INTO bootstraps (version, ${body.platform}) VALUES (?, ?)`, [body.version, req.file!.filename])
       } catch (error: any) {
         throw new DBException()
       }

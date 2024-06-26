@@ -44,7 +44,7 @@ You can choose your Linux distribution, but Debian or Ubuntu is highly recommend
 You have to install the following software on your VPS:
 - [Node.js](https://nodejs.org/en/download/package-manager)
 - [Docker](https://docs.docker.com/engine/install) and [Docker Compose](https://docs.docker.com/compose/install) [^1]
-- [NGINX](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/) or [Apache](https://httpd.apache.org/docs/2.4/install.html) [^2] (optional, but NGINX is recommended)
+- [NGINX](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/) or [Apache](https://httpd.apache.org/docs/2.4/install.html) (optional, but NGINX is recommended) [^2]
 
 ### EML AdminTool installation
 
@@ -58,8 +58,6 @@ Then, in a terminal, execute the following command:
 We assume that you have a domain name and a subdomain already configured from your registrar for the EML AdminTool, and an SSL certificate. For exemple, [emlat.my-minecraft-server.com](https://emlat.my-minecraft-server.com).
 
 You have to configure your web server to use the EML AdminTool.
-
-For more information, you can read the [NGINX documentation](https://nginx.org/en/docs) or the [Apache documentation](https://httpd.apache.org/docs/2.4).
 
 <details>
 <summary>NGINX configuration example</summary>
@@ -110,6 +108,8 @@ Apache configuration file (this is an example, you have to adapt it to your conf
 ```
 
 </details>
+
+For more information, you can read the [NGINX documentation](https://nginx.org/en/docs) or the [Apache documentation](https://httpd.apache.org/docs/2.4).
 
 ### EML AdminTool start
 
