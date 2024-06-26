@@ -73,6 +73,7 @@
   }
 
   function reset(platform: 'win' | 'mac' | 'lin') {
+    console.log('hrer')
     if (platform === 'win' && winUpload) {
       win = ''
       winUpload.value = ''
@@ -94,7 +95,12 @@
 
   async function submit() {
     if (version === '') return
-    if (version === data.bootstraps.version && !confirm('You did not change the version. Are you sure you want to continue? The Launchers will be updated.')) return
+    if (
+      version === data.bootstraps.version &&
+      !confirm('You did not change the version. Are you sure you want to continue? The Launchers will not be updated.')
+    )
+      return
+
     if (win && win !== '' && files.find((file) => file.name === win)) {
       ;(await apiBootstrapsService.uploadBootstrap(version, 'win', files.find((file) => file.name === win)!)).subscribe({
         next: (res) => {
@@ -136,7 +142,7 @@
       </button>
     {:else}
       <p class="no-link">{win}</p>
-      <button class="remove" on:click={() => reset('win')}><i class="fa-solid fa-circle-xmark"></i></button>
+      <button class="remove" on:click={() => reset('win')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
     {/if}
 
     <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
@@ -146,7 +152,7 @@
       </button>
     {:else}
       <p class="no-link">{mac}</p>
-      <button class="remove" on:click={() => reset('mac')}><i class="fa-solid fa-circle-xmark"></i></button>
+      <button class="remove" on:click={() => reset('mac')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
     {/if}
 
     <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
@@ -156,7 +162,7 @@
       </button>
     {:else}
       <p class="no-link">{lin}</p>
-      <button class="remove" on:click={() => reset('lin')}><i class="fa-solid fa-circle-xmark"></i></button>
+      <button class="remove" on:click={() => reset('lin')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
     {/if}
 
     <div class="actions">

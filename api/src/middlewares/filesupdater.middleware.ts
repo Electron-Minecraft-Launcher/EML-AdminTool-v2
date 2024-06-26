@@ -22,13 +22,15 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      const filepath = file.originalname.split('/').slice(0, -1).join('/')
+      const filepath = Buffer.from(file.originalname, 'latin1').toString('utf8').split('/').slice(0, -1).join('/')
       const path = req.body && req.body.path ? `../files/files-updater/${req.body.path}/${filepath}/` : `../files/files-updater/${filepath}/`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },
     filename: (req, file, cb) => {
-      cb(null, file.originalname.split('/').slice(-1)[0])
+      // const filename = Buffer.from(file.originalname.split('/').slice(-1)[0], 'latin1').toString('utf8')
+      const filename = Buffer.from(file.originalname, 'latin1').toString('utf8').split('/').slice(-1)
+      cb(null, filename.slice(-1)[0])
     }
   })
 

@@ -25,6 +25,15 @@ class NotificationsService {
       case 'db':
         this.set({ type: 'ERROR', content: 'An unknown Database error happened' })
         break
+      case 'download':
+        this.set({ type: 'ERROR', content: 'Unable to download the file. It may have been deleted.' })
+        break
+      case 'upload':
+        this.set({ type: 'ERROR', content: 'Unable to upload the files.' })
+        break
+      case 'rename':
+        this.set({ type: 'ERROR', content: 'Unable to rename the file. It may have been deleted.' })
+        break
       default:
         this.set({ type: 'ERROR', content: 'An unknown error happened' })
         break

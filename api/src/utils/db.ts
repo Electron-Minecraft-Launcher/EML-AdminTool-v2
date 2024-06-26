@@ -10,7 +10,7 @@ dotenv.config()
 class Database {
   static db: mysql.Pool = mysql.createPool({
     user: 'eml',
-    host: 'mysql',
+    host: 'localhost',
     password: process.env['DATABASE_PASSWORD'] || 'eml',
     database: 'eml_admintool'
   })
