@@ -127,8 +127,4 @@
       }
     }
   }
-
-  p.no-link {
-    padding: 8px 0 7px 0;
-  }
 </style>
