@@ -185,7 +185,6 @@
 
   p.no-link {
     margin: 0px;
-    padding: 8px 0 7px 0;
     display: inline-block;
     max-width: 300px;
     overflow: hidden;

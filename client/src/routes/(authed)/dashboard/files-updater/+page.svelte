@@ -38,6 +38,7 @@
   })
 
   const getData = async () => {
+    ready = false
     ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
       next: (res) => {
         data.files = res.body.data!

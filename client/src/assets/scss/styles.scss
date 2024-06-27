@@ -126,6 +126,12 @@ input:not([type=checkbox]) {
     box-shadow: none;
     outline: 6px solid var(--primary-tr-color-hover);
   }
+
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 }
 
 input[type=checkbox] {

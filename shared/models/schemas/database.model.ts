@@ -44,8 +44,8 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
 
   maintenance: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
-    { name: 'start_date', info: 'VARCHAR(255)' },
-    { name: 'end_date', info: 'VARCHAR(255)' },
+    { name: 'start_date', info: 'DATETIME' },
+    { name: 'end_date', info: 'DATETIME' },
     { name: 'reason', info: 'VARCHAR(255)' },
   ],
 
