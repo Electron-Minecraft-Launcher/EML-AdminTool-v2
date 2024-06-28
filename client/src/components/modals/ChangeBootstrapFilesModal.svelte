@@ -191,6 +191,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: bottom;
+    padding: 8px 0 7px 0;
   }
 
   button.remove {

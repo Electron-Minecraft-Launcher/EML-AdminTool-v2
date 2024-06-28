@@ -1,9 +1,9 @@
 export interface News {
   id?: number
-  title?: string
-  content?: string
-  author?: number
-  date?: string
+  title: string
+  content: string
+  author: number
+  date: string
   category?: number
   tags?: number
 }
