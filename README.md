@@ -160,6 +160,7 @@ You can now make pull requests!
 
 ## Important information
 
+* This repository contains a `.env` file. All the information in this file is fake (random strings), and will be replaced by the real information when you install the EML AdminTool.
 * This Web software is under the `GNU GPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
 * If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
 
