@@ -23,9 +23,7 @@
     reason = data.maintenance.reason || ''
   }
 
-  $: if (status) {
-    startDate = ''
-  } else {
+  $: if (!status) {
     startDate = ''
     endDate = ''
     reason = ''
@@ -83,7 +81,7 @@ You will need to disable maintenance manually."
     <input type="datetime-local" name="end-date" id="end-date" bind:value={endDate} disabled={!status} />
 
     <label for="reason">Reason</label>
-    <input type="text" name="reason" id="reason" bind:value={reason} disabled={!status} />
+    <input type="text" name="reason" id="reason" placeholder="Maintenance..." bind:value={reason} disabled={!status} />
 
     <div class="actions">
       <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
