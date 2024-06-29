@@ -17,6 +17,15 @@ class EnvService {
 
     if (!dbPassword) dbPassword = 'eml'
 
+    const devMessage =
+      process.env.NODE_ENV === 'development'
+        ? `
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#       FAKE ENVIRONMENT VARIABLES FOR TESTING        #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+`
+        : ''
+
     try {
       fs.writeFileSync(
         path.join(process.cwd(), '/.env'),
@@ -37,7 +46,7 @@ class EnvService {
 # more information on how to configure these values   #
 # safely.                                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+${devMessage}
 DATABASE_PASSWORD="${dbPassword}"
 JWT_SECRET_KEY="${jwtSecretKey + ''}"
 `
@@ -61,7 +70,7 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
     } = {
       language: 'en',
       name: 'EML',
-      theme: 'eml',
+      theme: 'eml'
     }
 
     try {

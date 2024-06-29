@@ -40,6 +40,15 @@ class Database {
   }
 
   /**
+   * Escape a string to prevent HTML injection.
+   * @param value The string to escape
+   * @returns The escaped string
+   */
+  escapeHtml(value: string): string {
+    return value.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('&', '&amp;')
+  }
+
+  /**
    * Get the table to (re)generate. **Use this function in a try/catch and with async/await!**
    * @returns The tables to (re)generate
    */
@@ -93,6 +102,15 @@ class Database {
       throw error
     }
 
+    Database.db.end()
+
+    Database.db = mysql.createPool({
+      user: 'eml',
+      host: 'mysql',
+      password: process.env['DATABASE_PASSWORD'] || 'eml',
+      database: 'eml_admintool'
+    })
+
     const t = Object.entries(tables)
       .filter(([, value]) => value === true)
       .map(([key]) => key)
@@ -111,10 +129,9 @@ class Database {
 
     try {
       isTable = (
-        await this.query<count[]>(
-          "SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = 'eml_admintool' AND table_name = ?",
-          [table]
-        )
+        await this.query<count[]>("SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = 'eml_admintool' AND table_name = ?", [
+          table
+        ])
       )[0]
     } catch (error: any) {
       throw error
