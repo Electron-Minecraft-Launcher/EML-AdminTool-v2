@@ -31,17 +31,14 @@ export default class AdminRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(
-      `${this.path}/admintool`,
-      async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
-        try {
-          const resp = await new Admin().getAdminToolInfo(req, req.headers)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.get(`${this.path}/admintool`, async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
+      try {
+        const resp = await new Admin().getAdminToolInfo(req, req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
       }
-    )
+    })
 
     /**
      * @openapi
@@ -71,17 +68,14 @@ export default class AdminRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.put(
-      `${this.path}/admintool`,
-      async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
-        try {
-          const resp = await new Admin().putAdminToolInfo(req, req.headers, req.body)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.put(`${this.path}/admintool`, async (req: Request, res: Response<DataHttpResponse<EMLAdminToolInfo>>, next: NextFunction) => {
+      try {
+        const resp = await new Admin().putAdminToolInfo(req, req.headers, req.body)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
       }
-    )
+    })
 
     /**
      * @openapi
@@ -128,7 +122,7 @@ export default class AdminRouter implements Route {
      */
     this.router.get(
       `${this.path}/users/:user_id`,
-      async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
+      async (req: Request<{ user_id: number | 'me' }, any, any, any>, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
         try {
           const resp = await new Admin().getUser(req, req.headers, req.params['user_id'])
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
@@ -195,7 +189,7 @@ export default class AdminRouter implements Route {
     this.router.put(
       `${this.path}/users/:user_id`,
       async (
-        req: Request<{ user_id: number | 'me' }, {}, {}, {}>,
+        req: Request<{ user_id: number | 'me' }, any, any, any>,
         res: Response<DataHttpResponse<{ jwt?: string; user: User }>>,
         next: NextFunction
       ) => {
@@ -231,7 +225,7 @@ export default class AdminRouter implements Route {
      */
     this.router.delete(
       `${this.path}/users/:user_id`,
-      async (req: Request<{ user_id: number | 'me' }, {}, {}, {}>, res: Response<DefaultHttpResponse>, next: NextFunction) => {
+      async (req: Request<{ user_id: number | 'me' }, any, any, any>, res: Response<DefaultHttpResponse>, next: NextFunction) => {
         try {
           const resp = await new Admin().deleteUser(req, req.headers, req.params['user_id'])
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })

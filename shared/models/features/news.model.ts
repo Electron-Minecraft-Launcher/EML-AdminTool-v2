@@ -3,9 +3,10 @@ export interface News {
   title: string
   content: string
   author: number
-  date: string
-  category?: number
-  tags?: number
+  date: Date
+  edition_date?: Date | null
+  categories?: number[] | string
+  tags?: number[] | string
 }
 
 export interface NewsCategory {

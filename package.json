@@ -2,6 +2,8 @@
   "name": "eml-admintool",
   "version": "2.0.0-alpha.5",
   "description": "Manage your Minecraft Launcher (working with EML Core) from the Web.",
+  "author": "GoldFrite",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "workspaces": [
     "client",
@@ -13,16 +15,14 @@
     "dev:api": "npm run dev --workspace=api",
     "dev": "concurrently \"npm run dev --workspace=client\" \"npm run dev --workspace=api\""
   },
+  "homepage": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2.git"
   },
-  "author": "GoldFrite",
-  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues"
   },
-  "homepage": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2#readme",
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
