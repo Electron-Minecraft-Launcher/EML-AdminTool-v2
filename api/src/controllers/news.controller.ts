@@ -10,8 +10,9 @@ import { ServiceException } from '../responses/types'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import db from '../utils/db'
 import { DBException } from '../responses/exceptions/db-exception.response'
-import { News as News_ } from '../../../shared/models/features/news.model'
+import { NewsCategory, NewsCategoryRes, News as News_ } from '../../../shared/models/features/news.model'
 import { RequestException } from '../responses/exceptions/request-exception.response'
+import { NotFoundException } from '../responses/exceptions/notfound-exception.response'
 
 class News {
   async getNews(req: Request): Promise<DataSuccess<News_[]>> {
@@ -51,7 +52,7 @@ class News {
     }
 
     if (!news || !news.id) {
-      throw new RequestException('News not found')
+      throw new NotFoundException('News not found')
     }
 
     return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', news)
@@ -147,7 +148,7 @@ class News {
     }
 
     if (!news || !news.id) {
-      throw new RequestException('News not found')
+      throw new NotFoundException('News not found')
     }
 
     if (news.author != auth.id && +auth.p_news_mod_del! != 1) {
@@ -246,6 +247,140 @@ class News {
     }
 
     return await this.getNews(req)
+  }
+
+  //! Categories ================================
+
+  async getCategories(req: Request<any>): Promise<DataSuccess<NewsCategory[]>> {
+    let categories: NewsCategory[]
+
+    try {
+      categories = await db.query('SELECT * FROM news_categories')
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', categories)
+  }
+
+  async getCategory(req: Request<any>, categoryId: number): Promise<DataSuccess<NewsCategoryRes>> {
+    let category: NewsCategory
+
+    try {
+      category = (await db.query<NewsCategory[]>('SELECT * FROM news_categories WHERE id = ?', [+categoryId]))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    if (!category || !category.id) {
+      throw new NotFoundException('Category not found')
+    }
+
+    let news: News_[] = (await this.getNews(req)).data
+
+    let news_: News_[] = news.filter((news1) => (news1.categories! as number[]).includes(category.id!))
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { ...category, news: news_ })
+  }
+
+  async postCategory(req: Request<any>, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<NewsCategory[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_category_add_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!body.title || body.title == '') {
+      throw new RequestException('Missing parameters')
+    }
+
+    if (!isNaN(+body.title)) {
+      throw new RequestException('Invalid parameters')
+    }
+
+    try {
+      await db.query('INSERT INTO news_categories (title, date) VALUES (?, ?)', [body.title, new Date()])
+    } catch (error) {
+      throw new DBException()
+    }
+
+    return await this.getCategories(req)
+  }
+
+  async putCategory(req: Request<any>, headers: IncomingHttpHeaders, body: any, categoryId: number): Promise<DataSuccess<NewsCategory[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_category_add_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!categoryId) {
+      throw new RequestException('Missing parameters')
+    }
+
+    let category: NewsCategory
+
+    try {
+      category = (await db.query<NewsCategory[]>('SELECT * FROM news_categories WHERE id = ?', [+categoryId]))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    if (!category || !category.id) {
+      throw new NotFoundException('Category not found')
+    }
+
+    try {
+      await db.query('UPDATE news_categories SET title = ? WHERE id = ?', [body.title && body.title != '' ? body.title : category.title, categoryId])
+    } catch (error) {
+      throw new DBException()
+    }
+
+    return await this.getCategories(req)
+  }
+
+  async deleteCategory(req: Request<any>, headers: IncomingHttpHeaders, categoryId: number): Promise<DataSuccess<NewsCategory[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_category_add_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!categoryId) {
+      throw new RequestException('Missing parameters')
+    }
+
+    let category: NewsCategory
+
+    try {
+      category = (await db.query<NewsCategory[]>('SELECT * FROM news_categories WHERE id = ?', [+categoryId]))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    if (!category || !category.id) {
+      throw new NotFoundException('Category not found')
+    }
+
+    try {
+      await db.query('DELETE FROM news_categories WHERE id = ?', [category.id])
+    } catch (error) {
+      throw new DBException()
+    }
+
+    return await this.getCategories(req)
   }
 }
 

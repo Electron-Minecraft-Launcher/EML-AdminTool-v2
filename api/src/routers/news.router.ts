@@ -5,7 +5,7 @@ import { ControllerException } from '../responses/types'
 import Bootstraps from '../controllers/bootstraps.controller'
 import { Maintenance as Maintenance_ } from '../../../shared/models/features/maintenance.model'
 import Maintenance from '../controllers/maintenance.controller'
-import { News as News_ } from '../../../shared/models/features/news.model'
+import { NewsCategory, NewsCategoryRes, News as News_ } from '../../../shared/models/features/news.model'
 import News from '../controllers/news.controller'
 
 export default class NewsRouter implements Route {
@@ -17,6 +17,165 @@ export default class NewsRouter implements Route {
   }
 
   private init() {
+    /**
+     * @openapi
+     * /news/categories:
+     *   get:
+     *     tags:
+     *      - News
+     *     summary: Get categories list
+     *     responses:
+     *       200:
+     *         description: Categories list
+     */
+    this.router.get(`${this.path}/categories`, async (req: Request, res: Response<DataHttpResponse<NewsCategory[]>>, next: NextFunction) => {
+      try {
+        const resp = await new News().getCategories(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /news/categories/{category_id}:
+     *   get:
+     *     tags:
+     *      - News
+     *     parameters:
+     *       - in: path
+     *         name: category_id
+     *         required: true
+     *         schema:
+     *           type: number
+     *     summary: Get category
+     *     responses:
+     *       200:
+     *         description: Category
+     */
+    this.router.get(
+      `${this.path}/categories/:category_id`,
+      async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsCategoryRes>>, next: NextFunction) => {
+        try {
+          const resp = await new News().getCategory(req, req.params['category_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    /**
+     * @openapi
+     * /news/categories:
+     *   post:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Add a category
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               title:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Category added
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.post(`${this.path}/categories`, async (req: Request, res: Response<DataHttpResponse<NewsCategory[]>>, next: NextFunction) => {
+      try {
+        const resp = await new News().postCategory(req, req.headers, req.body)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /news/categories/{category_id}:
+     *   put:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Edit a category
+     *     parameters:
+     *       - in: path
+     *         name: category_id
+     *         required: true
+     *         schema:
+     *           type: string
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               title:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Category updated
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.put(
+      `${this.path}/categories/:category_id`,
+      async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsCategory[]>>, next: NextFunction) => {
+        try {
+          const resp = await new News().putCategory(req, req.headers, req.body, req.params['category_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    /**
+     * @openapi
+     * /news/categories/{category_id}:
+     *   delete:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Delete a category
+     *     parameters:
+     *       - in: path
+     *         name: category_id
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: Category deleted
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.delete(
+      `${this.path}/categories/:category_id`,
+      async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsCategory[]>>, next: NextFunction) => {
+        try {
+          const resp = await new News().deleteCategory(req, req.headers, req.params['category_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    //! News ====================================
+
     /**
      * @openapi
      * /news:
@@ -49,7 +208,7 @@ export default class NewsRouter implements Route {
      *         name: news_id
      *         required: true
      *         schema:
-     *           type: string
+     *           type: number
      *     responses:
      *       200:
      *         description: News
@@ -185,36 +344,5 @@ export default class NewsRouter implements Route {
         }
       }
     )
-
-    // /**
-    //  * @openapi
-    //  * /news/categories/{category_id}:
-    //  *   get:
-    //  *     tags:
-    //  *      - News
-    //  *     security:
-    //  *      - bearer: []
-    //  *     summary: Get news list by category
-    //  *     parameters:
-    //  *       - in: path
-    //  *         name: category
-    //  *         required: true
-    //  *         schema:
-    //  *           type: string
-    //  *     responses:
-    //  *       200:
-    //  *         description: News list
-    //  */
-    // this.router.put(
-    //   `${this.path}/:category_id`,
-    //   async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<News_[]>>, next: NextFunction) => {
-    //     try {
-    //       const resp = await new Maintenance().updateMaintenanceStatus(req, req.headers, req.body)
-    //       res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-    //     } catch (error: unknown) {
-    //       next(error as ControllerException)
-    //     }
-    //   }
-    // )
   }
 }

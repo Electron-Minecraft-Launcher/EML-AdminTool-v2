@@ -11,11 +11,16 @@ export interface News {
 
 export interface NewsCategory {
   id?: number
-  title?: string
-  date?: string
+  title: string
+  date: string
+}
+
+export interface NewsCategoryRes extends NewsCategory {
+  news: News[]
 }
 
 export interface NewsTag {
   id?: number
-  title?: string
+  title: string
+  color: string
 }
