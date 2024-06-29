@@ -5,7 +5,7 @@ import { ControllerException } from '../responses/types'
 import Bootstraps from '../controllers/bootstraps.controller'
 import { Maintenance as Maintenance_ } from '../../../shared/models/features/maintenance.model'
 import Maintenance from '../controllers/maintenance.controller'
-import { NewsCategory, NewsCategoryRes, News as News_ } from '../../../shared/models/features/news.model'
+import { NewsCategory, NewsCategoryRes, NewsTag, News as News_ } from '../../../shared/models/features/news.model'
 import News from '../controllers/news.controller'
 
 export default class NewsRouter implements Route {
@@ -174,7 +174,170 @@ export default class NewsRouter implements Route {
       }
     )
 
-    //! News ====================================
+    //* Tags ====================================
+
+    /**
+     * @openapi
+     * /news/tags:
+     *   get:
+     *     tags:
+     *      - News
+     *     summary: Get tags list
+     *     responses:
+     *       200:
+     *         description: Tags list
+     */
+    this.router.get(`${this.path}/tags`, async (req: Request, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
+      try {
+        const resp = await new News().getTags(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /news/tags/{tag_id}:
+     *   get:
+     *     tags:
+     *      - News
+     *     parameters:
+     *       - in: path
+     *         name: tag_id
+     *         required: true
+     *         schema:
+     *           type: number
+     *     summary: Get tag
+     *     responses:
+     *       200:
+     *         description: Tag
+     */
+    this.router.get(
+      `${this.path}/tags/:tag_id`,
+      async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag>>, next: NextFunction) => {
+        try {
+          const resp = await new News().getTag(req, req.params['tag_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    /**
+     * @openapi
+     * /news/tags:
+     *   post:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Add a tag
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               title:
+     *                 type: string
+     *               color:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Tag added
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.post(`${this.path}/tags`, async (req: Request, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
+      try {
+        const resp = await new News().postTag(req, req.headers, req.body)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /news/tags/{tag_id}:
+     *   put:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Edit a tag
+     *     parameters:
+     *       - in: path
+     *         name: tag_id
+     *         required: true
+     *         schema:
+     *           type: string
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               title:
+     *                 type: string
+     *               color:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Tag updated
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.put(
+      `${this.path}/tags/:tag_id`,
+      async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
+        try {
+          const resp = await new News().putTag(req, req.headers, req.body, req.params['tag_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    /**
+     * @openapi
+     * /news/tags/{tag_id}:
+     *   delete:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Delete a tag
+     *     parameters:
+     *       - in: path
+     *         name: tag_id
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: Tag deleted
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.delete(
+      `${this.path}/tags/:tag_id`,
+      async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
+        try {
+          const resp = await new News().deleteTag(req, req.headers, req.params['tag_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    //* News ====================================
 
     /**
      * @openapi

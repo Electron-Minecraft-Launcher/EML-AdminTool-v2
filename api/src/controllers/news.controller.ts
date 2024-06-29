@@ -10,7 +10,7 @@ import { ServiceException } from '../responses/types'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import db from '../utils/db'
 import { DBException } from '../responses/exceptions/db-exception.response'
-import { NewsCategory, NewsCategoryRes, News as News_ } from '../../../shared/models/features/news.model'
+import { NewsCategory, NewsCategoryRes, NewsTag, News as News_ } from '../../../shared/models/features/news.model'
 import { RequestException } from '../responses/exceptions/request-exception.response'
 import { NotFoundException } from '../responses/exceptions/notfound-exception.response'
 
@@ -249,7 +249,7 @@ class News {
     return await this.getNews(req)
   }
 
-  //! Categories ================================
+  //* Categories ================================
 
   async getCategories(req: Request<any>): Promise<DataSuccess<NewsCategory[]>> {
     let categories: NewsCategory[]
@@ -381,6 +381,141 @@ class News {
     }
 
     return await this.getCategories(req)
+  }
+
+  //* Tags ======================================
+
+  async getTags(req: Request<any>): Promise<DataSuccess<NewsTag[]>> {
+    let tags: NewsTag[]
+
+    try {
+      tags = await db.query('SELECT * FROM news_tags')
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', tags)
+  }
+
+  async getTag(req: Request<any>, tagId: number): Promise<DataSuccess<NewsTag>> {
+    let tag: NewsTag
+
+    try {
+      tag = (await db.query<NewsTag[]>('SELECT * FROM news_tags WHERE id = ?', [+tagId]))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    if (!tag || !tag.id) {
+      throw new NotFoundException('Tag not found')
+    }
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', tag)
+  }
+
+  async postTag(req: Request<any>, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<NewsTag[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_tag_add_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!body.title || body.title == '' || !body.color || body.color == '') {
+      throw new RequestException('Missing parameters')
+    }
+
+    if (!isNaN(+body.title)) {
+      throw new RequestException('Invalid parameters')
+    }
+
+    try {
+      await db.query('INSERT INTO news_tags (title, color) VALUES (?, ?)', [body.title, body.color])
+    } catch (error) {
+      throw new DBException()
+    }
+
+    return await this.getTags(req)
+  }
+
+  async putTag(req: Request<any>, headers: IncomingHttpHeaders, body: any, tagId: number): Promise<DataSuccess<NewsTag[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_tag_add_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!tagId) {
+      throw new RequestException('Missing parameters')
+    }
+
+    let tag: NewsTag
+
+    try {
+      tag = (await db.query<NewsTag[]>('SELECT * FROM news_tags WHERE id = ?', [+tagId]))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    if (!tag || !tag.id) {
+      throw new NotFoundException('Tag not found')
+    }
+
+    const updatedTag: NewsTag = {
+      title: body.title && body.title != '' ? body.title : tag.title,
+      color: body.color && body.color != '' ? body.color : tag.color
+    }
+
+    try {
+      await db.query('UPDATE news_tags SET title = ?, color = ? WHERE id = ?', [updatedTag.title, updatedTag.color, tagId])
+    } catch (error) {
+      throw new DBException()
+    }
+
+    return await this.getTags(req)
+  }
+
+  async deleteTag(req: Request<any>, headers: IncomingHttpHeaders, tagId: number): Promise<DataSuccess<NewsTag[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_tag_add_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!tagId) {
+      throw new RequestException('Missing parameters')
+    }
+
+    let tag: NewsTag
+
+    try {
+      tag = (await db.query<NewsTag[]>('SELECT * FROM news_tags WHERE id = ?', [+tagId]))[0]
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    if (!tag || !tag.id) {
+      throw new NotFoundException('Tag not found')
+    }
+
+    try {
+      await db.query('DELETE FROM news_tags WHERE id = ?', [tag.id])
+    } catch (error) {
+      throw new DBException()
+    }
+
+    return await this.getTags(req)
   }
 }
 
