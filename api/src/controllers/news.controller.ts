@@ -15,11 +15,13 @@ import { RequestException } from '../responses/exceptions/request-exception.resp
 import { NotFoundException } from '../responses/exceptions/notfound-exception.response'
 
 class News {
+  //* News ======================================
+
   async getNews(req: Request): Promise<DataSuccess<News_[]>> {
     let news: News_[]
 
     try {
-      news = await db.query('SELECT * FROM news')
+      news = await db.query('SELECT * FROM news ORDER BY date DESC')
     } catch (error: any) {
       throw new DBException()
     }
@@ -255,7 +257,7 @@ class News {
     let categories: NewsCategory[]
 
     try {
-      categories = await db.query('SELECT * FROM news_categories')
+      categories = await db.query('SELECT * FROM news_categories ORDER BY date DESC')
     } catch (error: any) {
       throw new DBException()
     }
@@ -389,7 +391,7 @@ class News {
     let tags: NewsTag[]
 
     try {
-      tags = await db.query('SELECT * FROM news_tags')
+      tags = await db.query('SELECT * FROM news_tags ORDER BY title ASC')
     } catch (error: any) {
       throw new DBException()
     }
@@ -516,6 +518,58 @@ class News {
     }
 
     return await this.getTags(req)
+  }
+
+  //* Images ====================================
+
+  async getImages(req: Request<any>): Promise<DataSuccess<File[]>> {
+    let images: File[]
+
+    try {
+      images = await filesService.get(req, 'images')
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', images)
+  }
+
+  async uploadImage(req: Request<any>): Promise<DataSuccess<File[]>> {
+    return await this.getImages(req)
+  }
+
+  async deleteImage(req: Request<any>, headers: IncomingHttpHeaders, body: any): Promise<DataSuccess<File[]>> {
+    try {
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
+    } catch (error: unknown) {
+      throw error as ServiceException
+    }
+
+    if (+auth.p_news_mod_del! != 1) {
+      throw new UnauthorizedException()
+    }
+
+    if (!body.paths) {
+      throw new RequestException('Missing parameters')
+    }
+
+    try {
+      body.paths = JSON.parse(body.paths)
+    } catch (error) {
+      throw new RequestException('Invalid parameters')
+    }
+
+    if (body.paths.length == 0) {
+      throw new RequestException('Missing parameters')
+    }
+
+    try {
+      filesService.delete('images', body.paths)
+    } catch (error: any) {
+      throw new DBException()
+    }
+
+    return await this.getImages(req)
   }
 }
 

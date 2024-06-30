@@ -122,7 +122,7 @@ export default class Admin {
 
   async getUsers(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<User[]>> {
     try {
-      nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
+      nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
     } catch (error: unknown) {
       throw error as ServiceException
     }

@@ -116,6 +116,7 @@ export default class Configure {
       filesService.delete('files-updater', [''])
       filesService.delete('bootstraps', [''])
       filesService.delete('backgrounds', [''])
+      filesService.delete('images', [''])
       await db.query('DROP DATABASE eml_admintool')
       await db.query('CREATE DATABASE eml_admintool')
       await db.generate(await db.getTablesToGenerate())

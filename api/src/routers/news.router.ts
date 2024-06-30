@@ -7,6 +7,8 @@ import { Maintenance as Maintenance_ } from '../../../shared/models/features/mai
 import Maintenance from '../controllers/maintenance.controller'
 import { NewsCategory, NewsCategoryRes, NewsTag, News as News_ } from '../../../shared/models/features/news.model'
 import News from '../controllers/news.controller'
+import { File } from '../../../shared/models/features/file.model'
+import imagesMiddleware from '../middlewares/images.middleware'
 
 export default class NewsRouter implements Route {
   path = '/api/news'
@@ -330,6 +332,97 @@ export default class NewsRouter implements Route {
       async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
         try {
           const resp = await new News().deleteTag(req, req.headers, req.params['tag_id'])
+          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        } catch (error: unknown) {
+          next(error as ControllerException)
+        }
+      }
+    )
+
+    //* Images ==================================
+
+    /**
+     * @openapi
+     * /news/images:
+     *   get:
+     *     tags:
+     *      - News
+     *     summary: Get images list
+     *     responses:
+     *       200:
+     *         description: Images list
+     */
+    this.router.get(`${this.path}/images`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+      try {
+        const resp = await new News().getImages(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /news/images:
+     *   post:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Add an image
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               file:
+     *                 type: file
+     *     responses:
+     *       200:
+     *         description: Image added
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.post(`${this.path}/images`, imagesMiddleware, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+      try {
+        const resp = await new News().uploadImage(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /news/images:
+     *   delete:
+     *     tags:
+     *       - News
+     *     security:
+     *       - bearer: []
+     *     summary: Delete an image
+     *     requestBody:
+     *       required: false
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               paths:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Image deleted
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.delete(
+      `${this.path}/images/`,
+      async (req: Request<{ images_paths: number }, any, any, any>, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
+        try {
+          const resp = await new News().deleteImage(req, req.headers, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)

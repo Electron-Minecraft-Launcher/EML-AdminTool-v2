@@ -14,14 +14,14 @@ import { RequestException } from '../responses/exceptions/request-exception.resp
 class FilesService {
   private filesArray: File[] = []
 
-  async get(req: Request, dir: 'files-updater' | 'bootstraps' | 'backgrounds'): Promise<File[]> {
+  async get(req: Request, dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images'): Promise<File[]> {
     this.filesArray = []
     const domain = `${req.protocol}://${req.get('host')}`
     this.browse(dir, '', domain)
     return this.filesArray
   }
 
-  rename(dir: 'files-updater' | 'bootstraps' | 'backgrounds', oldPath: string, newPath: string): DefaultServiceResponse {
+  rename(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', oldPath: string, newPath: string): DefaultServiceResponse {
     if (!fs.existsSync(`../files/${dir}/${oldPath}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
     if (
       oldPath.includes('../') ||
@@ -37,7 +37,7 @@ class FilesService {
     return { status: true, code: ResponseType.SUCCESS }
   }
 
-  delete(dir: 'files-updater' | 'bootstraps' | 'backgrounds', paths: string[]): DefaultServiceResponse {
+  delete(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', paths: string[]): DefaultServiceResponse {
     paths.forEach((path) => {
       if (!fs.existsSync(`../files/${dir}/${path}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
       if (path.includes('../') || path.includes('..\\') || path === '..')
@@ -49,7 +49,7 @@ class FilesService {
     return { status: true, code: ResponseType.SUCCESS }
   }
 
-  private browse(dir: 'files-updater' | 'bootstraps' | 'backgrounds', subdir: string, domain: string): void {
+  private browse(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', subdir: string, domain: string): void {
     const fulldir = subdir === '' ? dir : `${dir}/${subdir}`
     if (!fs.existsSync(`../files/${fulldir}`)) return
 
@@ -69,7 +69,7 @@ class FilesService {
         let size = fs.statSync(`../files/${fulldir}/${name}`).size
         let sha1 = crypto.createHash('sha1').update(`../files/${fulldir}/${name}`).digest('hex')
         let url = `${domain}/files/${fulldir}/${name}`.split('\\').join('/').replace(/^\/+/, '')
-        let type: 'ASSETS' | 'LIBRARIES' | 'MODS' | 'CONFIG' | 'JAVA' | 'NATIVES' | 'BOOTSTRAP' | 'BACKGROUND' | 'OTHER' = path.includes('assets')
+        let type: 'ASSETS' | 'LIBRARIES' | 'MODS' | 'CONFIG' | 'JAVA' | 'NATIVES' | 'BOOTSTRAP' | 'BACKGROUND' | 'IMAGE' | 'OTHER' = path.includes('assets')
           ? 'ASSETS'
           : path.includes('lib')
             ? 'LIBRARIES'
@@ -81,7 +81,9 @@ class FilesService {
                   ? 'BOOTSTRAP'
                   : dir === 'backgrounds'
                     ? 'BACKGROUND'
-                    : 'OTHER'
+                    : dir === 'images'
+                      ? 'IMAGE'
+                      : 'OTHER'
         this.filesArray.push({ name, path, size, sha1, url, type })
       }
     })

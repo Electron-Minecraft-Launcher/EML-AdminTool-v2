@@ -6,7 +6,7 @@ import multer from 'multer'
 import { RequestException } from '../responses/exceptions/request-exception.response'
 import fs from 'fs'
 import { ServerException } from '../responses/exceptions/server-exception.response'
-import envService from '../services/env.service'
+import crypto from 'crypto'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,38 +16,20 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     return
   }
 
-  if (+auth.p_bootstraps_mod! != 1) {
+  if (+auth.p_news_add! != 1) {
     next(new UnauthorizedException('Unauthorized'))
     return
   }
 
-  const env = await envService.getEnv()
-
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      if (!req.body || !req.body.platform || !req.body.version) {
-        next(new RequestException('Missing parameters'))
-        return
-      }
-
-      if (req.body.platform === 'win' || req.body.platform === 'mac' || req.body.platform === 'lin') {
-        if (fs.existsSync(`../files/bootstraps/${req.body.platform}`)) fs.rmSync(`../files/bootstraps/${req.body.platform}`, { recursive: true })
-      } else {
-        next(new RequestException('Invalid parameters'))
-        return
-      }
-
-       if (!/(\d\.\d\.\d)(-[a-z]*(\.\d)?)?/gi.test(req.body.version)) {
-         next(new RequestException('Invalid parameters'))
-         return
-       }
-
-      const path = `../files/bootstraps/${req.body.platform}`
+      const path = `../files/images`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },
     filename: (req, file, cb) => {
-      const filename = `${env.name.toLowerCase()}_${req.body.version}_${req.body.platform}`
+      // generate random 10 characters string
+      const filename = crypto.randomBytes(5).toString('hex')
       const fileExt = file.originalname.split('.').slice(-1)[0]
       cb(null, `${filename}.${fileExt}`)
     }
