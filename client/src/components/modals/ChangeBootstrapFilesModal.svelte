@@ -73,7 +73,6 @@
   }
 
   function reset(platform: 'win' | 'mac' | 'lin') {
-    console.log('hrer')
     if (platform === 'win' && winUpload) {
       win = ''
       winUpload.value = ''

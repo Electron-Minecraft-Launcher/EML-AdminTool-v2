@@ -377,7 +377,7 @@ export default class NewsRouter implements Route {
      *           schema:
      *             type: object
      *             properties:
-     *               file:
+     *               files[]:
      *                 type: file
      *     responses:
      *       200:

@@ -28,15 +28,15 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
       cb(null, path)
     },
     filename: (req, file, cb) => {
-      // generate random 10 characters string
       const filename = crypto.randomBytes(5).toString('hex')
       const fileExt = file.originalname.split('.').slice(-1)[0]
       cb(null, `${filename}.${fileExt}`)
     }
   })
 
-  multer({ storage }).single('file')(req, res, (err) => {
+  multer({ storage }).array('files[]')(req, res, (err) => {
     if (err) {
+      console.log(err)
       next(new ServerException('Error uploading file'))
       return
     }
