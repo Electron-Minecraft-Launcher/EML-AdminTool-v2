@@ -1,14 +1,18 @@
 <script lang="ts">
-  import type { NewsCategory } from '../../../../../../shared/models/features/news.model'
+  import type { NewsCategory, NewsTag } from '../../../../../../shared/models/features/news.model'
   import News from '../../../../components/News.svelte'
   import NewsCategories from '../../../../components/NewsCategories.svelte'
+  import NewsTags from '../../../../components/NewsTags.svelte'
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
 
   export let data: PageData
 
   let showAddEditCategoryModal = false
-  let addEditCategoryAction: { action: 'add' } | { action: 'edit'; news: NewsCategory } = { action: 'add' }
+  let addEditCategoryAction: { action: 'add' } | { action: 'edit'; category: NewsCategory } = { action: 'add' }
+
+  let showAddEditTagModal = false
+  let addEditTagAction: { action: 'add' } | { action: 'edit'; tag: NewsTag } = { action: 'add' }
 </script>
 
 <svelte:head>
@@ -36,7 +40,23 @@
 
   <h3>Categories list</h3>
 
-  <NewsCategories bind:data></NewsCategories>
+  <NewsCategories bind:data bind:showAddEditCategoryModal bind:addEditCategoryAction></NewsCategories>
+</section>
+
+<section class="section">
+  <button
+    class="secondary right"
+    on:click={() => {
+      addEditTagAction = { action: 'add' }
+      showAddEditTagModal = true
+    }}
+  >
+    <i class="fa-solid fa-plus" />
+  </button>
+
+  <h3>Tags list</h3>
+
+  <NewsTags bind:data bind:showAddEditTagModal={showAddEditTagModal} bind:addEditTagAction={addEditTagAction}></NewsTags>
 </section>
 
 <style lang="scss">

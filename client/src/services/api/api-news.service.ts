@@ -40,11 +40,11 @@ class ApiNewsService {
     return await http.get<DataHttpResponse<NewsCategoryRes>>('/api/news/categories/' + id)
   }
 
-  async postCategory(category: NewsCategory) {
+  async postCategory(category: Partial<NewsCategory>) {
     return await http.post<DataHttpResponse<NewsCategory[]>>('/api/news/categories', category)
   }
 
-  async putCategory(id: number, category: NewsCategory) {
+  async putCategory(id: number, category: Partial<NewsCategory>) {
     return await http.put<DataHttpResponse<NewsCategory[]>>('/api/news/categories/' + id, category)
   }
 
@@ -62,12 +62,16 @@ class ApiNewsService {
     return await http.get<DataHttpResponse<NewsTag>>('/api/news/tags/' + id)
   }
 
-  async postTag(tag: NewsTag) {
+  async postTag(tag: Partial<NewsTag>) {
     return await http.post<DataHttpResponse<NewsTag[]>>('/api/news/tags', tag)
   }
 
-  async putTag(id: number, tag: NewsTag) {
+  async putTag(id: number, tag: Partial<NewsTag>) {
     return await http.put<DataHttpResponse<NewsTag[]>>('/api/news/tags/' + id, tag)
+  }
+
+  async deleteTag(id: number) {
+    return await http.delete<DataHttpResponse<NewsTag[]>>('/api/news/tags/' + id)
   }
 
   //* Images ====================================

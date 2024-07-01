@@ -93,6 +93,8 @@
       content = action.news.content
       categories = action.news.categories as number[]
       tags = action.news.tags as number[]
+      categories = categories.filter((cat) => data.categories.find((c) => c.id === cat))
+      tags = tags.filter((tag) => data.tags.find((t) => t.id === tag))
     } else {
       title = ''
       content = ''

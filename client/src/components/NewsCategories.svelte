@@ -5,16 +5,19 @@
   import type { News, NewsCategory } from '../../../shared/models/features/news.model'
   import type { PageData } from '../routes/(authed)/dashboard/news/$types'
   import apiNewsService from '../services/api/api-news.service'
+  import AddEditNewsCategoryModal from './modals/AddEditNewsCategoryModal.svelte'
+  import { invalidateAll } from '$app/navigation'
 
   export let data: PageData
+  export let addEditCategoryAction: { action: 'add' } | { action: 'edit'; category: NewsCategory } = { action: 'add' }
+  export let showAddEditCategoryModal = false
+
 
   function formatDate(date: Date) {
     const dateFormatter = new Intl.DateTimeFormat(undefined, {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     })
     return dateFormatter.format(date)
   }
@@ -24,128 +27,82 @@
     if (!confirm('Are you sure you want to delete the selected category?')) return
     ;(await apiNewsService.deleteCategory(cat.id || 0)).subscribe({
       next: (res) => {
-        data.news = res.body.data!
+        data.categories = res.body.data!
       }
     })
   }
 </script>
 
-<table>
-  <tbody>
-    {#each data.categories as category, i}
-      <p>{category.title}</p>
-    {/each}
-  </tbody>
-</table>
+<div class="categories">
+  {#each data.categories as category}
+    <div class="category">
+      <button
+        class="no-link"
+        on:click={() => {
+          addEditCategoryAction = { action: 'edit', category: category }
+          showAddEditCategoryModal = true
+        }}
+      >
+        <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.title} <span class="date">(created on {formatDate(new Date(category.date))})</span>
+      </button>
+      <button class="remove" on:click={() => deleteCategory(category)}><i class="fa-solid fa-trash"></i></button>
+    </div>
+  {/each}
+</div>
 
 {#if data.news.length === 0}
-  <p class="nothing">No cat</p>
+  <p class="nothing">No category</p>
 {/if}
 
+<AddEditNewsCategoryModal bind:data bind:show={showAddEditCategoryModal} bind:action={addEditCategoryAction} />
+
 <style lang="scss">
+  div.categories {
+    margin-top: 30px;
+    display: flex;
+    gap: 30px;
+  }
+
+  div.category {
+  }
+
   p.nothing {
     text-align: center;
     margin-top: 20px;
     color: #606060;
   }
 
-  div.info {
-    bottom: 0;
-    padding-top: 15px;
-
-    p {
-      margin: 0 30px 0 0;
-      font-size: 14px;
-      color: var(--text-dark-color);
-      display: inline-block;
-    }
-  }
-
-  button.small {
-    width: auto;
-    margin-top: 10px;
+  button {
     display: inline-block;
-    margin-right: 20px;
-  }
+    margin-top: 0;
+    border-bottom: none;
+    color: #1e1e1e;
+    position: relative;
+    vertical-align: bottom;
+    font-family: 'Poppins';
+    background: none;
+    line-height: 15px;
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    user-select: none;
-    margin-top: 30px;
+    &:hover {
+      background: #eeeeee;
+    }
 
-    tbody tr {
-      transition: all 0.3s;
-      cursor: pointer;
+    &.remove {
+      display: inline-block;
+      border-bottom: none;
+      margin-left: 5px;
+      position: relative;
+      background: none;
+      color: var(--red-color);
+      vertical-align: middle;
 
       &:hover {
-        background-color: #eeeeee;
-
-        &:active {
-          transform: translateY(2px);
-        }
-      }
-
-      &.focused {
-        background-color: #f5f5f5;
-
-        &:hover {
-          background-color: #eeeeee;
-        }
+        background: #faeeee;
       }
     }
+  }
 
-    td {
-      padding: 15px 20px;
-
-      &.checkbox {
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-        text-align: center;
-        width: 25px;
-
-        input {
-          width: 16px;
-          height: 16px;
-        }
-      }
-
-      &.content {
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-        padding-left: 10px;
-        padding-left: 10px;
-
-        h4 {
-          margin: 0 0 5px 0;
-          font-weight: 400;
-          font-size: 16px;
-        }
-
-        p.label {
-          margin-top: 0;
-        }
-
-        p.content {
-          margin: 0;
-          font-size: 13px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        span.tag {
-          display: inline-block;
-          margin-top: 5px;
-          margin-right: 5px;
-          padding: 5px 10px;
-          border-radius: 5px;
-          font-size: 12px;
-
-          i {
-            margin-right: 5px;
-          }
-        }
-      }
-    }
+  span.date {
+    color: #909090;
   }
 </style>
