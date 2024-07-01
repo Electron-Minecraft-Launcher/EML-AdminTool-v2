@@ -221,7 +221,7 @@
       case 'mov':
       case 'wmv':
       case 'flv':
-        return 'fa-regular fa-film'
+        return 'fa-solid fa-film'
       case 'zip':
       case 'rar':
       case '7z':
@@ -342,8 +342,10 @@
         on:click={() => {
           addEditFileAction = { action: 'add' }
           showAddEditFileModal = true
-        }}><i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file</button
+        }}
       >
+        <i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file
+      </button>
     </div>
   {/if}
 

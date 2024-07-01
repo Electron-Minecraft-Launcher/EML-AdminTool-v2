@@ -36,5 +36,5 @@ export interface File {
    * 
    * `'OTHER'`: Other files
    */
-  type: 'JAVA' | 'ASSETS' | 'LIBRARIES' | 'NATIVES' | 'MODS' | 'CONFIG' | 'BOOTSTRAP' | 'BACKGROUND' | 'FOLDER' | 'OTHER'
+  type: 'JAVA' | 'ASSETS' | 'LIBRARIES' | 'NATIVES' | 'MODS' | 'CONFIG' | 'BOOTSTRAP' | 'BACKGROUND' | 'FOLDER' | 'IMAGE' | 'OTHER'
 }

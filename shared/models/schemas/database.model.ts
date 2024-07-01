@@ -5,7 +5,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
   config: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'data', info: 'VARCHAR(255)' },
-    { name: 'value', info: 'TEXT' },
+    { name: 'value', info: 'TEXT' }
   ],
 
   users: [
@@ -23,7 +23,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'p_news_tag_add_mod_del', info: 'TINYINT' },
     { name: 'p_background_mod', info: 'TINYINT' },
     { name: 'p_stats_see', info: 'TINYINT' },
-    { name: 'p_stats_del', info: 'TINYINT' },
+    { name: 'p_stats_del', info: 'TINYINT' }
   ],
 
   logs: [
@@ -31,7 +31,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'date', info: 'VARCHAR(255)' },
     { name: 'user', info: 'INT(11)' },
     { name: 'type', info: 'VARCHAR(255)' },
-    { name: 'data', info: 'TEXT' },
+    { name: 'data', info: 'TEXT' }
   ],
 
   bootstraps: [
@@ -39,14 +39,14 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'win', info: 'VARCHAR(255)' },
     { name: 'mac', info: 'VARCHAR(255)' },
     { name: 'lin', info: 'VARCHAR(255)' },
-    { name: 'version', info: 'VARCHAR(255)' },
+    { name: 'version', info: 'VARCHAR(255)' }
   ],
 
   maintenance: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'start_date', info: 'DATETIME' },
     { name: 'end_date', info: 'DATETIME' },
-    { name: 'reason', info: 'VARCHAR(255)' },
+    { name: 'reason', info: 'VARCHAR(255)' }
   ],
 
   news: [
@@ -54,26 +54,28 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'title', info: 'VARCHAR(255)' },
     { name: 'content', info: 'TEXT' },
     { name: 'author', info: 'INT(11)' },
-    { name: 'date', info: 'VARCHAR(255)' },
-    { name: 'category', info: 'INT(11)' },
-    { name: 'tags', info: 'INT(11)' },
+    { name: 'date', info: 'DATETIME' },
+    { name: 'edition_date', info: 'DATETIME' },
+    { name: 'categories', info: 'VARCHAR(255)' },
+    { name: 'tags', info: 'VARCHAR(255)' }
   ],
 
   news_categories: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'title', info: 'VARCHAR(255)' },
-    { name: 'date', info: 'VARCHAR(255)' },
+    { name: 'date', info: 'VARCHAR(255)' }
   ],
 
   news_tags: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'title', info: 'VARCHAR(255)' },
+    { name: 'color', info: 'VARCHAR(255)' },
   ],
 
   backgrounds: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'title', info: 'VARCHAR(255)' },
-    { name: 'status', info: 'TINYINT' },
+    { name: 'status', info: 'TINYINT' }
   ],
 
   stats: [
@@ -81,13 +83,13 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'dates', info: 'VARCHAR(255)' },
     { name: 'startups', info: 'INT(11)' },
     { name: 'launching', info: 'INT(11)' },
-    { name: 'new_players', info: 'INT(11)' },
+    { name: 'new_players', info: 'INT(11)' }
   ],
 
   exp_jwt: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
-    { name: 'jwt', info: 'TEXT' },
-  ],
+    { name: 'jwt', info: 'TEXT' }
+  ]
 }
 
 export default schema

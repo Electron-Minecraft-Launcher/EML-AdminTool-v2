@@ -19,6 +19,7 @@ import adminService from '../services/admin.service'
 import pinService from '../services/pin.service'
 import languageService from '../services/language.service'
 import bcrypt from 'bcrypt'
+import { NotFoundException } from '../responses/exceptions/notfound-exception.response'
 
 export default class Admin {
   async getAdminToolInfo(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<EMLAdminToolInfo>> {
@@ -121,7 +122,7 @@ export default class Admin {
 
   async getUsers(req: Request<any>, headers: IncomingHttpHeaders): Promise<DataSuccess<User[]>> {
     try {
-      nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
+      nexter.serviceToException(await authService.checkAuth(headers['authorization'] + '', 'Bearer'))
     } catch (error: unknown) {
       throw error as ServiceException
     }
@@ -158,7 +159,7 @@ export default class Admin {
     }
 
     if (!getUser) {
-      throw new RequestException('User does not exist')
+      throw new NotFoundException('User does not exist')
     }
 
     delete getUser.password
@@ -195,7 +196,7 @@ export default class Admin {
     }
 
     if (!getUser) {
-      throw new RequestException('User does not exist')
+      throw new NotFoundException('User does not exist')
     }
 
     if ((+body.p_news_mod_del == 1 || +body.p_news_category_add_mod_del == 1 || +body.p_news_tag_add_mod_del == 1) && auth.admin && +auth.admin == 1) {
@@ -284,7 +285,7 @@ export default class Admin {
     }
 
     if (!getUser) {
-      throw new RequestException('User does not exist')
+      throw new NotFoundException('User does not exist')
     }
 
     if (getUser.admin) {

@@ -57,6 +57,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Maintenance',
         description: 'Maintenance status of the the Launcher and/or Minecraft server'
+      },
+      {
+        name: 'News',
+        description: 'News to display in the Launcher'
       }
     ]
   },
