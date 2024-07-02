@@ -1,7 +1,13 @@
+export interface StatsRes {
+  startups: { date: Date }[]
+  launches: { date: Date; os: 'windows' | 'mac' | 'linux' }[]
+  connections: { date: Date }[]
+  devtools: { date: Date }[]
+}
+
 export interface Stats {
   id?: number
-  dates: string
-  startup: number
-  launching: number
-  new_players: number
+  action: 'startups' | 'launches' | 'connections' | 'devtools'
+  date: Date
+  info?: string
 }

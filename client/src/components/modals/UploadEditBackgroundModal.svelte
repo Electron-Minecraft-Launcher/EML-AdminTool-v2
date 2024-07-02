@@ -106,7 +106,7 @@
 
     <div class="actions">
       <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={!title || title == '' || !file}>{$l.main.save}</button>
+      <button class="primary" disabled={!title || title == '' || (!file && action.action === 'upload')}>{$l.main.save}</button>
     </div>
 
     <input type="file" bind:this={backgroundUpload} accept="image/*" style="display: none" />

@@ -59,7 +59,7 @@
             on:click={() => {
               uploadEditBackgroundAction = { action: 'edit', background: background }
               showUploadEditBackgroundModal = true
-            }}><i class="fa-solid fa-ellipsis"></i></button
+            }}><i class="fa-solid fa-pen"></i></button
           >
           <button
             disabled={background.status == 1}

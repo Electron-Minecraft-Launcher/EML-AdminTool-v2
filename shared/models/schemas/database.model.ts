@@ -69,7 +69,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
   news_tags: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'title', info: 'VARCHAR(255)' },
-    { name: 'color', info: 'VARCHAR(255)' },
+    { name: 'color', info: 'VARCHAR(255)' }
   ],
 
   backgrounds: [
@@ -81,10 +81,9 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
 
   stats: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
-    { name: 'dates', info: 'VARCHAR(255)' },
-    { name: 'startups', info: 'INT(11)' },
-    { name: 'launching', info: 'INT(11)' },
-    { name: 'new_players', info: 'INT(11)' }
+    { name: 'action', info: 'VARCHAR(255)' },
+    { name: 'date', info: 'DATETIME' },
+    { name: 'info', info: 'VARCHAR(255)' }
   ],
 
   exp_jwt: [

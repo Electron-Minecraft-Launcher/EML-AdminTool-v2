@@ -65,6 +65,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Backgrounds',
         description: 'The backgrounds of the Launcher'
+      },
+      {
+        name: 'Stats',
+        description: 'Stats of the Launcher'
       }
     ]
   },
