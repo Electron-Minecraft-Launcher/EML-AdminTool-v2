@@ -48,7 +48,7 @@
   {/each}
 </div>
 
-{#if data.news.length === 0}
+{#if data.tags.length === 0}
   <p class="nothing">No tags</p>
 {/if}
 
@@ -63,7 +63,7 @@
 
   p.nothing {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 15px;
     color: #606060;
   }
 

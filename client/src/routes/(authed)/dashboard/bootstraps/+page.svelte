@@ -32,6 +32,7 @@
 
   async function deleteFile(platform: 'win' | 'mac' | 'lin') {
     if (!data.bootstraps[platform]) return
+    if (!confirm('Are you sure you want to delete the bootstrap? It may cause issues with the Launcher.')) return
     ;(await apiBootstrapsService.deleteBootstrap(platform)).subscribe({
       next: (res) => {
         data.bootstraps = res.body.data!
@@ -63,7 +64,7 @@
         <button on:click={() => download('win')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.win.name}</button>
         <button class="remove" on:click={() => deleteFile('win')}><i class="fa-solid fa-trash"></i></button>
       {:else}
-        <p class="no-link">Not uploaded</p>
+        <p class="no-link">-</p>
       {/if}
     </div>
 
@@ -73,7 +74,7 @@
         <button on:click={() => download('mac')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.mac.name}</button>
         <button class="remove" on:click={() => deleteFile('mac')}><i class="fa-solid fa-trash"></i></button>
       {:else}
-        <p class="no-link">Not uploaded</p>
+        <p class="no-link">-</p>
       {/if}
     </div>
 
@@ -83,7 +84,7 @@
         <button on:click={() => download('lin')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.lin.name}</button>
         <button class="remove" on:click={() => deleteFile('lin')}><i class="fa-solid fa-trash"></i></button>
       {:else}
-        <p class="no-link">Not uploaded</p>
+        <p class="no-link">-</p>
       {/if}
     </div>
   </div>

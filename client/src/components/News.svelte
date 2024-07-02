@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte'
-  import { l } from '../services/store'
+  import { l, user } from '../services/store'
   import notificationsService from '../services/notifications.service'
   import type { News } from '../../../shared/models/features/news.model'
   import type { PageData } from '../routes/(authed)/dashboard/news/$types'
@@ -79,10 +79,14 @@
     {#each data.news as news, i}
       {#if i >= iStart && i < iStart + iLength}
         <tr
+          class:disabled={$user.p_news_mod_del != 1 && news.author != $user.id}
+          title={$user.p_news_mod_del != 1 && news.author != $user.id ? 'You do not have permission to edit this news.' : ''}
           class:focused={selectedNews.includes(news)}
           on:click={() => {
-            addEditNewsAction = { action: 'edit', news: news }
-            showAddEditNewsModal = true
+            if ($user.p_news_mod_del == 1 || news.author == $user.id) {
+              addEditNewsAction = { action: 'edit', news: news }
+              showAddEditNewsModal = true
+            }
           }}
         >
           <td class="checkbox">
@@ -147,7 +151,7 @@
       class="page"
       disabled={iStart === 0}
       on:click={() => {
-        iStart -= iLength;
+        iStart -= iLength
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }}
     >
@@ -157,7 +161,7 @@
       class="page"
       disabled={iStart + iLength >= data.news.length}
       on:click={() => {
-        iStart += iLength;
+        iStart += iLength
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }}
     >
@@ -209,7 +213,7 @@
       transition: all 0.3s;
       cursor: pointer;
 
-      &:hover {
+      &:hover:not(.disabled) {
         background-color: #eeeeee;
 
         &:active {
@@ -217,12 +221,9 @@
         }
       }
 
-      &.focused {
-        background-color: #f5f5f5;
-
-        &:hover {
-          background-color: #eeeeee;
-        }
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
     }
 

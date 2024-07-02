@@ -19,8 +19,8 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'p_maintenance_mod', info: 'TINYINT' },
     { name: 'p_news_add', info: 'TINYINT' },
     { name: 'p_news_mod_del', info: 'TINYINT' },
-    { name: 'p_news_category_add_mod_del', info: 'TINYINT' },
-    { name: 'p_news_tag_add_mod_del', info: 'TINYINT' },
+    { name: 'p_news_categories_add_mod_del', info: 'TINYINT' },
+    { name: 'p_news_tags_add_mod_del', info: 'TINYINT' },
     { name: 'p_background_mod', info: 'TINYINT' },
     { name: 'p_stats_see', info: 'TINYINT' },
     { name: 'p_stats_del', info: 'TINYINT' }

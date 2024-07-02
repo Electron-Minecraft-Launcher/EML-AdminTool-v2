@@ -17,7 +17,7 @@ export const load: PageLoad = async () => {
     ;(await apiAuthService.getVerify()).subscribe({
       next: (res) => {
         user.set(res.body!.data!.user)
-        if (res.body!.data!.user.p_maintenance_mod != 1) {
+        if (res.body!.data!.user.p_background_mod != 1) {
           throw redirect(300, '/dashboard')
         }
       }

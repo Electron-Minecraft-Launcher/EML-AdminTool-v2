@@ -170,9 +170,9 @@ export default class AdminRouter implements Route {
      *                 type: integer
      *               p_news_mod_del:
      *                 type: integer
-     *               p_news_category_add_mod_del:
+     *               p_news_categories_add_mod_del:
      *                 type: integer
-     *               p_news_tag_add_mod_del:
+     *               p_news_tags_add_mod_del:
      *                 type: integer
      *               p_background_mod:
      *                 type: integer

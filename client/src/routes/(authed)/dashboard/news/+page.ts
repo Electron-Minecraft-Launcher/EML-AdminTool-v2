@@ -20,7 +20,7 @@ export const load: PageLoad = async () => {
     ;(await apiAuthService.getVerify()).subscribe({
       next: (res) => {
         user.set(res.body!.data!.user)
-        if (res.body!.data!.user.p_files_updater_add_del != 1) {
+        if (res.body!.data!.user.p_news_add != 1) {
           throw redirect(300, '/dashboard')
         }
       }

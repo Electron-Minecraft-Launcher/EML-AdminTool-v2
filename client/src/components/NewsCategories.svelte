@@ -50,7 +50,7 @@
   {/each}
 </div>
 
-{#if data.news.length === 0}
+{#if data.categories.length === 0}
   <p class="nothing">No category</p>
 {/if}
 
@@ -63,12 +63,9 @@
     gap: 30px;
   }
 
-  div.category {
-  }
-
   p.nothing {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 15px;
     color: #606060;
   }
 

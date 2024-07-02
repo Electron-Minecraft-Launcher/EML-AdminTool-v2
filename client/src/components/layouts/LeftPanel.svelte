@@ -108,15 +108,15 @@
       </a>
     {/if}
 
-    {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_category_add_mod_del || $user.p_news_tag_add_mod_del || $user.admin}
+    {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_categories_add_mod_del || $user.p_news_tags_add_mod_del || $user.admin}
       <a href="/dashboard/news" class:active={$page.url.pathname == '/dashboard/news'}>
         <i class="fa-solid fa-newspaper"></i>News
       </a>
     {/if}
 
     {#if $user.p_background_mod || $user.admin}
-      <a href="/dashboard/background" class:active={$page.url.pathname == '/dashboard/background'}>
-        <i class="fa-solid fa-image"></i>Background
+      <a href="/dashboard/backgrounds" class:active={$page.url.pathname == '/dashboard/backgrounds'}>
+        <i class="fa-solid fa-image"></i>Backgrounds
       </a>
     {/if}
 

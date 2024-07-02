@@ -63,8 +63,8 @@ export default class Auth {
       p_maintenance_mod: 0,
       p_news_add: 0,
       p_news_mod_del: 0,
-      p_news_category_add_mod_del: 0,
-      p_news_tag_add_mod_del: 0,
+      p_news_categories_add_mod_del: 0,
+      p_news_tags_add_mod_del: 0,
       p_background_mod: 0,
       p_stats_see: 0,
       p_stats_del: 0
