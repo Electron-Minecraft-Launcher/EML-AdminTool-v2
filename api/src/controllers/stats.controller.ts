@@ -34,14 +34,14 @@ class Stats {
 
     let statsRes: StatsRes = {
       startups: [],
-      launchings: [],
+      launches: [],
       connections: [],
       devtools: []
     }
 
     stats.forEach((stat) => {
-      if (stat.action === 'startup') statsRes.startups.push({ date: stat.date })
-      if (stat.action === 'launching') statsRes.launchings.push({ date: stat.date, os: stat.info as 'windows' | 'mac' | 'linux' })
+      if (stat.action === 'startups') statsRes.startups.push({ date: stat.date })
+      if (stat.action === 'launches') statsRes.launches.push({ date: stat.date, os: stat.info as 'windows' | 'mac' | 'linux' })
       if (stat.action === 'connections') statsRes.connections.push({ date: stat.date })
       if (stat.action === 'devtools') statsRes.devtools.push({ date: stat.date })
     })
@@ -54,7 +54,7 @@ class Stats {
       throw new RequestException('Missing parameters')
     }
 
-    if (!['startup', 'launching', 'connections', 'devtools'].includes(body.action)) {
+    if (!['startups', 'launch', 'connections', 'devtools'].includes(body.action)) {
       throw new RequestException('Invalid parameters')
     }
 

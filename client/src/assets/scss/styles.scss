@@ -138,6 +138,35 @@ input[type=checkbox] {
   margin-top: 5px;
 }
 
+select {
+  display: block;
+  margin-top: 5px;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color2);
+  border-radius: 5px;
+  outline: none;
+  background-color: var(--background-light-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  outline: 0px solid var(--primary-tr-color-hover);
+  transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
+
+  &:hover:not(:disabled) {
+    box-shadow: none;
+  }
+
+  &:hover:focus:not(:disabled) {
+    box-shadow: none;
+    outline: 6px solid var(--primary-tr-color-hover);
+  }
+
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+}
+
 button {
   display: block;
   border: 0;
@@ -227,6 +256,11 @@ section.section {
     margin-top: 0;
     float: right;
     opacity: 0;
+  }
+
+  select.right {
+    float: right;
+    margin-top: 0;
   }
 
   div.container {
