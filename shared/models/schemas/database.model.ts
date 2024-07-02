@@ -75,7 +75,8 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
   backgrounds: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'title', info: 'VARCHAR(255)' },
-    { name: 'status', info: 'TINYINT' }
+    { name: 'status', info: 'TINYINT' },
+    { name: 'path', info: 'VARCHAR(255)' }
   ],
 
   stats: [

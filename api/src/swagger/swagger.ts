@@ -1,4 +1,4 @@
-import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerJSDoc from 'swagger-jsdoc'
 
 const options: swaggerJSDoc.OAS3Options = {
   definition: {
@@ -8,22 +8,22 @@ const options: swaggerJSDoc.OAS3Options = {
       version: '2.0.0-alpha.5',
       description: 'This API is used for the EML AdminTool',
       license: {
-        name: 'GPL-3.0-or-later',
+        name: 'GPL-3.0-or-later'
       }
     },
     servers: [
       {
         url: '/api',
-        description: 'API root',
+        description: 'API root'
       }
     ],
     components: {
       securitySchemes: {
-        "basic": {
+        basic: {
           type: 'http',
           scheme: 'basic'
         },
-        "bearer": {
+        bearer: {
           type: 'http',
           scheme: 'bearer'
         }
@@ -61,10 +61,14 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'News',
         description: 'News to display in the Launcher'
+      },
+      {
+        name: 'Backgrounds',
+        description: 'The backgrounds of the Launcher'
       }
     ]
   },
-  apis: ['./src/routers/**/*.ts'],
-};
+  apis: ['./src/routers/**/*.ts']
+}
 
-export default swaggerJSDoc(options);
+export default swaggerJSDoc(options)
