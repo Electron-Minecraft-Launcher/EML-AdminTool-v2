@@ -3,7 +3,7 @@
   import News from '../../../../components/News.svelte'
   import NewsCategories from '../../../../components/NewsCategories.svelte'
   import NewsTags from '../../../../components/NewsTags.svelte'
-  import { env } from '../../../../services/store'
+  import { env, user } from '../../../../services/store'
   import type { PageData } from './$types'
 
   export let data: PageData
@@ -27,37 +27,41 @@
   <News bind:data></News>
 </section>
 
-<section class="section">
-  <button
-    class="secondary right"
-    on:click={() => {
-      addEditCategoryAction = { action: 'add' }
-      showAddEditCategoryModal = true
-    }}
-  >
-    <i class="fa-solid fa-plus" />
-  </button>
+{#if $user.p_news_categories_add_mod_del == 1}
+  <section class="section">
+    <button
+      class="secondary right"
+      on:click={() => {
+        addEditCategoryAction = { action: 'add' }
+        showAddEditCategoryModal = true
+      }}
+    >
+      <i class="fa-solid fa-plus" />
+    </button>
 
-  <h3>Categories list</h3>
+    <h3>Categories list</h3>
 
-  <NewsCategories bind:data bind:showAddEditCategoryModal bind:addEditCategoryAction></NewsCategories>
-</section>
+    <NewsCategories bind:data bind:showAddEditCategoryModal bind:addEditCategoryAction></NewsCategories>
+  </section>
+{/if}
 
-<section class="section">
-  <button
-    class="secondary right"
-    on:click={() => {
-      addEditTagAction = { action: 'add' }
-      showAddEditTagModal = true
-    }}
-  >
-    <i class="fa-solid fa-plus" />
-  </button>
+{#if $user.p_news_tags_add_mod_del == 1}
+  <section class="section">
+    <button
+      class="secondary right"
+      on:click={() => {
+        addEditTagAction = { action: 'add' }
+        showAddEditTagModal = true
+      }}
+    >
+      <i class="fa-solid fa-plus" />
+    </button>
 
-  <h3>Tags list</h3>
+    <h3>Tags list</h3>
 
-  <NewsTags bind:data bind:showAddEditTagModal={showAddEditTagModal} bind:addEditTagAction={addEditTagAction}></NewsTags>
-</section>
+    <NewsTags bind:data bind:showAddEditTagModal bind:addEditTagAction></NewsTags>
+  </section>
+{/if}
 
 <style lang="scss">
   @import '../../../../assets/scss/dashboard.scss';

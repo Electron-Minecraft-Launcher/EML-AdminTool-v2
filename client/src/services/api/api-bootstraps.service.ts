@@ -3,7 +3,7 @@ import type { DataHttpResponse } from '../../../../shared/models/responses/http/
 import type { File as File_ } from '../../../../shared/models/features/file.model'
 import type { BootstrapsRes } from '../../../../shared/models/features/bootstraps.model'
 
-class ApiFilesUpdaterService {
+class ApiBootstrapsService {
   async getBootstraps() {
     return await http.get<DataHttpResponse<BootstrapsRes>>('/api/bootstraps')
   }
@@ -21,4 +21,4 @@ class ApiFilesUpdaterService {
   }
 }
 
-export default new ApiFilesUpdaterService()
+export default new ApiBootstrapsService()

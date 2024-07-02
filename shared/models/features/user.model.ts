@@ -34,8 +34,8 @@ export interface User {
   p_maintenance_mod?: number
   p_news_add?: number
   p_news_mod_del?: number
-  p_news_category_add_mod_del?: number
-  p_news_tag_add_mod_del?: number
+  p_news_categories_add_mod_del?: number
+  p_news_tags_add_mod_del?: number
   p_background_mod?: number
   p_stats_see?: number
   p_stats_del?: number

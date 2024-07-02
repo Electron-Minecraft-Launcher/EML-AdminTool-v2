@@ -16,14 +16,19 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     return
   }
 
-  if (+auth.p_news_add! != 1) {
+  if (+auth.p_background_mod! != 1) {
     next(new UnauthorizedException('Unauthorized'))
     return
   }
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      const path = `../files/images`
+      if (!req.body || !req.body.title) {
+        next(new RequestException('Missing parameters'))
+        return
+      }
+
+      const path = `../files/backgrounds`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },
@@ -34,10 +39,10 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     }
   })
 
-  multer({ storage }).array('files[]')(req, res, (err) => {
+  multer({ storage }).single('file')(req, res, (err) => {
     if (err) {
       console.log(err)
-      next(new ServerException('Error uploading files'))
+      next(new ServerException('Error uploading file'))
       return
     }
     next()

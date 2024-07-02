@@ -15,8 +15,8 @@
   $: p_maintenance_mod = false as boolean
   $: p_news_add = false as boolean
   $: p_news_mod_del = false as boolean
-  $: p_news_category_add_mod_del = false as boolean
-  $: p_news_tag_add_mod_del = false as boolean
+  $: p_news_categories_add_mod_del = false as boolean
+  $: p_news_tags_add_mod_del = false as boolean
   $: p_background_mod = false as boolean
   $: p_stats_see = false as boolean
   $: p_stats_del = false as boolean
@@ -30,8 +30,8 @@
     p_maintenance_mod = selectedAccount.p_maintenance_mod == 1
     p_news_add = selectedAccount.p_news_add == 1
     p_news_mod_del = selectedAccount.p_news_mod_del == 1
-    p_news_category_add_mod_del = selectedAccount.p_news_category_add_mod_del == 1
-    p_news_tag_add_mod_del = selectedAccount.p_news_tag_add_mod_del == 1
+    p_news_categories_add_mod_del = selectedAccount.p_news_categories_add_mod_del == 1
+    p_news_tags_add_mod_del = selectedAccount.p_news_tags_add_mod_del == 1
     p_background_mod = selectedAccount.p_background_mod == 1
     p_stats_see = selectedAccount.p_stats_see == 1
     p_stats_del = selectedAccount.p_stats_del == 1
@@ -46,8 +46,8 @@
       p_maintenance_mod: p_maintenance_mod ? 1 : 0,
       p_news_add: p_news_add ? 1 : 0,
       p_news_mod_del: p_news_mod_del ? 1 : 0,
-      p_news_category_add_mod_del: p_news_category_add_mod_del ? 1 : 0,
-      p_news_tag_add_mod_del: p_news_tag_add_mod_del ? 1 : 0,
+      p_news_categories_add_mod_del: p_news_categories_add_mod_del ? 1 : 0,
+      p_news_tags_add_mod_del: p_news_tags_add_mod_del ? 1 : 0,
       p_background_mod: p_background_mod ? 1 : 0,
       p_stats_see: p_stats_see ? 1 : 0,
       p_stats_del: p_stats_del ? 1 : 0
@@ -94,8 +94,8 @@
           on:change={() => {
             if (!p_news_add) {
               p_news_mod_del = false
-              p_news_category_add_mod_del = false
-              p_news_tag_add_mod_del = false
+              p_news_categories_add_mod_del = false
+              p_news_tags_add_mod_del = false
             }
           }}
         /> Add news
@@ -110,23 +110,23 @@
           }}
         /> Edit and Delete every news
       </label>
-      <label class="p" for="p_news_category_add_mod_del">
+      <label class="p" for="p_news_categories_add_mod_del">
         <input
           type="checkbox"
-          id="p_news_category_add_mod_del"
-          bind:checked={p_news_category_add_mod_del}
+          id="p_news_categories_add_mod_del"
+          bind:checked={p_news_categories_add_mod_del}
           on:change={() => {
-            if (p_news_category_add_mod_del) p_news_add = true
+            if (p_news_categories_add_mod_del) p_news_add = true
           }}
         /> Add, Edit and Delete news categories
       </label>
-      <label class="p" for="p_news_tag_add_mod_del">
+      <label class="p" for="p_news_tags_add_mod_del">
         <input
           type="checkbox"
-          id="p_news_tag_add_mod_del"
-          bind:checked={p_news_tag_add_mod_del}
+          id="p_news_tags_add_mod_del"
+          bind:checked={p_news_tags_add_mod_del}
           on:change={() => {
-            if (p_news_tag_add_mod_del) p_news_add = true
+            if (p_news_tags_add_mod_del) p_news_add = true
           }}
         /> Add, Edit and Delete news tags
       </label>

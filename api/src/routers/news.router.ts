@@ -60,7 +60,7 @@ export default class NewsRouter implements Route {
       `${this.path}/categories/:category_id`,
       async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsCategoryRes>>, next: NextFunction) => {
         try {
-          const resp = await new News().getCategory(req, req.params['category_id'])
+          const resp = await new News().getCategory(req, req.params.category_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -135,7 +135,7 @@ export default class NewsRouter implements Route {
       `${this.path}/categories/:category_id`,
       async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsCategory[]>>, next: NextFunction) => {
         try {
-          const resp = await new News().putCategory(req, req.headers, req.body, req.params['category_id'])
+          const resp = await new News().putCategory(req, req.headers, req.body, req.params.category_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -168,7 +168,7 @@ export default class NewsRouter implements Route {
       `${this.path}/categories/:category_id`,
       async (req: Request<{ category_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsCategory[]>>, next: NextFunction) => {
         try {
-          const resp = await new News().deleteCategory(req, req.headers, req.params['category_id'])
+          const resp = await new News().deleteCategory(req, req.headers, req.params.category_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -219,7 +219,7 @@ export default class NewsRouter implements Route {
       `${this.path}/tags/:tag_id`,
       async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag>>, next: NextFunction) => {
         try {
-          const resp = await new News().getTag(req, req.params['tag_id'])
+          const resp = await new News().getTag(req, req.params.tag_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -298,7 +298,7 @@ export default class NewsRouter implements Route {
       `${this.path}/tags/:tag_id`,
       async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
         try {
-          const resp = await new News().putTag(req, req.headers, req.body, req.params['tag_id'])
+          const resp = await new News().putTag(req, req.headers, req.body, req.params.tag_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -331,7 +331,7 @@ export default class NewsRouter implements Route {
       `${this.path}/tags/:tag_id`,
       async (req: Request<{ tag_id: number }, any, any, any>, res: Response<DataHttpResponse<NewsTag[]>>, next: NextFunction) => {
         try {
-          const resp = await new News().deleteTag(req, req.headers, req.params['tag_id'])
+          const resp = await new News().deleteTag(req, req.headers, req.params.tag_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -473,7 +473,7 @@ export default class NewsRouter implements Route {
       `${this.path}/:news_id`,
       async (req: Request<{ news_id: number }, any, any, any>, res: Response<DataHttpResponse<News_>>, next: NextFunction) => {
         try {
-          const resp = await new News().getNews1(req, req.params['news_id'])
+          const resp = await new News().getNews1(req, req.params.news_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -560,7 +560,7 @@ export default class NewsRouter implements Route {
       `${this.path}/:news_id`,
       async (req: Request<{ news_id: number }, any, any, any>, res: Response<DataHttpResponse<News_[]>>, next: NextFunction) => {
         try {
-          const resp = await new News().putNews(req, req.headers, req.body, req.params['news_id'])
+          const resp = await new News().putNews(req, req.headers, req.body, req.params.news_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -593,7 +593,7 @@ export default class NewsRouter implements Route {
       `${this.path}/:news_id`,
       async (req: Request<{ news_id: number }, any, any, any>, res: Response<DataHttpResponse<News_[]>>, next: NextFunction) => {
         try {
-          const resp = await new News().deleteNews(req, req.headers, req.params['news_id'])
+          const resp = await new News().deleteNews(req, req.headers, req.params.news_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)

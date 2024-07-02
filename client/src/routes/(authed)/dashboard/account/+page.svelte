@@ -84,14 +84,14 @@
 
     <div>
       <p class="label">News</p>
-      {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_category_add_mod_del || $user.p_news_tag_add_mod_del}
+      {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_categories_add_mod_del || $user.p_news_tags_add_mod_del}
         {#if $user.p_news_add}
           <p>Add{$user.p_news_mod_del ? ', Edit and Delete' : ''} news</p>
         {/if}
-        {#if $user.p_news_category_add_mod_del}
+        {#if $user.p_news_categories_add_mod_del}
           <p>Add, Edit and Delete news categories</p>
         {/if}
-        {#if $user.p_news_tag_add_mod_del}
+        {#if $user.p_news_tags_add_mod_del}
           <p>Add, Edit and Delete news tags</p>
         {/if}
       {:else}

@@ -90,8 +90,8 @@ export default class Configure {
         p_maintenance_mod: 1,
         p_news_add: 1,
         p_news_mod_del: 1,
-        p_news_category_add_mod_del: 1,
-        p_news_tag_add_mod_del: 1,
+        p_news_categories_add_mod_del: 1,
+        p_news_tags_add_mod_del: 1,
         p_background_mod: 1,
         p_stats_see: 1,
         p_stats_del: 1

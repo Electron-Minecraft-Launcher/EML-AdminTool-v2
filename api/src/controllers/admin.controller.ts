@@ -199,7 +199,7 @@ export default class Admin {
       throw new NotFoundException('User does not exist')
     }
 
-    if ((+body.p_news_mod_del == 1 || +body.p_news_category_add_mod_del == 1 || +body.p_news_tag_add_mod_del == 1) && auth.admin && +auth.admin == 1) {
+    if ((+body.p_news_mod_del == 1 || +body.p_news_categories_add_mod_del == 1 || +body.p_news_tags_add_mod_del == 1) && auth.admin && +auth.admin == 1) {
       body.p_news_add = 1
     }
     
@@ -214,9 +214,9 @@ export default class Admin {
       p_maintenance_mod: auth.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
       p_news_add: auth.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
       p_news_mod_del: auth.admin && body.p_news_mod_del ? +body.p_news_mod_del : getUser.p_news_mod_del,
-      p_news_category_add_mod_del:
-        auth.admin && body.p_news_category_add_mod_del ? +body.p_news_category_add_mod_del : getUser.p_news_category_add_mod_del,
-      p_news_tag_add_mod_del: auth.admin && body.p_news_tag_add_mod_del ? +body.p_news_tag_add_mod_del : getUser.p_news_tag_add_mod_del,
+      p_news_categories_add_mod_del:
+        auth.admin && body.p_news_categories_add_mod_del ? +body.p_news_categories_add_mod_del : getUser.p_news_categories_add_mod_del,
+      p_news_tags_add_mod_del: auth.admin && body.p_news_tags_add_mod_del ? +body.p_news_tags_add_mod_del : getUser.p_news_tags_add_mod_del,
       p_background_mod: auth.admin && body.p_background_mod ? +body.p_background_mod : getUser.p_background_mod,
       p_stats_see: auth.admin && body.p_stats_see ? +body.p_stats_see : getUser.p_stats_see,
       p_stats_del: auth.admin && body.p_stats_del ? +body.p_stats_del : getUser.p_stats_del
@@ -230,8 +230,8 @@ export default class Admin {
       updatedUser.p_maintenance_mod = 1
       updatedUser.p_news_add = 1
       updatedUser.p_news_mod_del = 1
-      updatedUser.p_news_category_add_mod_del = 1
-      updatedUser.p_news_tag_add_mod_del = 1
+      updatedUser.p_news_categories_add_mod_del = 1
+      updatedUser.p_news_tags_add_mod_del = 1
       updatedUser.p_background_mod = 1
       updatedUser.p_stats_see = 1
       updatedUser.p_stats_del = 1

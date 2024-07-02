@@ -292,7 +292,7 @@ class News {
       throw error as ServiceException
     }
 
-    if (+auth.p_news_category_add_mod_del! != 1) {
+    if (+auth.p_news_categories_add_mod_del! != 1) {
       throw new UnauthorizedException()
     }
 
@@ -320,7 +320,7 @@ class News {
       throw error as ServiceException
     }
 
-    if (+auth.p_news_category_add_mod_del! != 1) {
+    if (+auth.p_news_categories_add_mod_del! != 1) {
       throw new UnauthorizedException()
     }
 
@@ -356,7 +356,7 @@ class News {
       throw error as ServiceException
     }
 
-    if (+auth.p_news_category_add_mod_del! != 1) {
+    if (+auth.p_news_categories_add_mod_del! != 1) {
       throw new UnauthorizedException()
     }
 
@@ -422,7 +422,7 @@ class News {
       throw error as ServiceException
     }
 
-    if (+auth.p_news_tag_add_mod_del! != 1) {
+    if (+auth.p_news_tags_add_mod_del! != 1) {
       throw new UnauthorizedException()
     }
 
@@ -450,7 +450,7 @@ class News {
       throw error as ServiceException
     }
 
-    if (+auth.p_news_tag_add_mod_del! != 1) {
+    if (+auth.p_news_tags_add_mod_del! != 1) {
       throw new UnauthorizedException()
     }
 
@@ -491,7 +491,7 @@ class News {
       throw error as ServiceException
     }
 
-    if (+auth.p_news_tag_add_mod_del! != 1) {
+    if (+auth.p_news_tags_add_mod_del! != 1) {
       throw new UnauthorizedException()
     }
 

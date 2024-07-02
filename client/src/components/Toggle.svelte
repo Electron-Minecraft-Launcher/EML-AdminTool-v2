@@ -1,11 +1,12 @@
 <script lang="ts">
   export let status: boolean
+  export let disabled: boolean = false
   export let text: string[] = ['Enabled', 'Disabled']
 </script>
 
-<label class="switch p">
+<label class="switch p" class:disabled>
   <div style="display: inline">
-    <input type="checkbox" bind:checked={status} />
+    <input type="checkbox" bind:checked={status} disabled={disabled} />
     <span class="slider round"></span>
   <span style="padding-left: 35px">{status ? text[0] : text[1]}</span>
 </label>
@@ -21,22 +22,31 @@
     transition: all 0.2s ease;
     cursor: pointer;
 
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+
+      span.slider {
+        cursor: not-allowed;
+      }
+    }
+
     input {
       opacity: 0;
       width: 0;
       height: 0;
     }
 
-    &:hover span.slider {
+    &:not(.disabled):hover span.slider {
       background: var(--secondary-color-hover);
 
     }
 
-    &:hover input:checked + span.slider {
+    &:not(.disabled):hover input:checked + span.slider {
       background: var(--primary-color-hover);
     }
 
-    &:active {
+    &:not(.disabled):active {
       transform: translateY(1px);
     }
   }

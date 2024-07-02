@@ -124,7 +124,7 @@ export default class AdminRouter implements Route {
       `${this.path}/users/:user_id`,
       async (req: Request<{ user_id: number | 'me' }, any, any, any>, res: Response<DataHttpResponse<User>>, next: NextFunction) => {
         try {
-          const resp = await new Admin().getUser(req, req.headers, req.params['user_id'])
+          const resp = await new Admin().getUser(req, req.headers, req.params.user_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -170,9 +170,9 @@ export default class AdminRouter implements Route {
      *                 type: integer
      *               p_news_mod_del:
      *                 type: integer
-     *               p_news_category_add_mod_del:
+     *               p_news_categories_add_mod_del:
      *                 type: integer
-     *               p_news_tag_add_mod_del:
+     *               p_news_tags_add_mod_del:
      *                 type: integer
      *               p_background_mod:
      *                 type: integer
@@ -194,7 +194,7 @@ export default class AdminRouter implements Route {
         next: NextFunction
       ) => {
         try {
-          const resp = await new Admin().putUser(req, req.headers, req.body, req.params['user_id'])
+          const resp = await new Admin().putUser(req, req.headers, req.body, req.params.user_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
         } catch (error: unknown) {
           next(error as ControllerException)
@@ -227,7 +227,7 @@ export default class AdminRouter implements Route {
       `${this.path}/users/:user_id`,
       async (req: Request<{ user_id: number | 'me' }, any, any, any>, res: Response<DefaultHttpResponse>, next: NextFunction) => {
         try {
-          const resp = await new Admin().deleteUser(req, req.headers, req.params['user_id'])
+          const resp = await new Admin().deleteUser(req, req.headers, req.params.user_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
         } catch (error: unknown) {
           next(error as ControllerException)
