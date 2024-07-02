@@ -16,6 +16,7 @@ import BootstrapsRouter from './routers/bootstraps.router'
 import MaintenanceRouter from './routers/maintenance.router'
 import NewsRouter from './routers/news.router'
 import BackgroundsRouter from './routers/backgrounds.router'
+import StatsRouter from './routers/stats.router'
 
 class App {
   private app: express.Application
@@ -66,5 +67,6 @@ new App([
   new BootstrapsRouter(),
   new MaintenanceRouter(),
   new NewsRouter(),
-  new BackgroundsRouter()
+  new BackgroundsRouter(),
+  new StatsRouter()
 ]).listen()
