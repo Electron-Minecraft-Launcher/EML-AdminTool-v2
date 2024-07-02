@@ -5,13 +5,11 @@ import cookiesService from '../../../../services/cookies.service'
 import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
 import apiMaintenanceService from '../../../../services/api/api-maintenance.service'
+import apiBackgroundsService from '../../../../services/api/api-backgrounds.service'
+import type { BackgroundsRes } from '../../../../../../shared/models/features/background.model'
 
 export const load: PageLoad = async () => {
-  let maintenance: Maintenance = {
-    start_date: null,
-    end_date: null,
-    reason: ''
-  }
+  let backgrounds: BackgroundsRes[] = []
 
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
@@ -26,11 +24,11 @@ export const load: PageLoad = async () => {
     throw redirect(300, '/login')
   }
 
-  ;(await apiMaintenanceService.getMaintenanceStatus()).subscribe({
+  ;(await apiBackgroundsService.getBackgrounds()).subscribe({
     next: (res) => {
-      maintenance = res.body.data!
+      backgrounds = res.body.data!
     }
   })
 
-  return { maintenance }
+  return { backgrounds }
 }

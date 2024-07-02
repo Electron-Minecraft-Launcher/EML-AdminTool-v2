@@ -9,10 +9,10 @@ class ApiBackgroundsService {
   }
 
   async getBackground(id: number) {
-    return await http.get<DataHttpResponse<BackgroundsRes>>('/api/backgrounds' + id)
+    return await http.get<DataHttpResponse<BackgroundsRes>>('/api/backgrounds/' + id)
   }
 
-  async uploadBootstrap(title: string, status: 0 | 1, file: File) {
+  async uploadBackground(title: string, status: 0 | 1, file: File) {
     let body = new FormData()
     body.set('title', title)
     body.set('status', status as any)
@@ -20,16 +20,16 @@ class ApiBackgroundsService {
     return await http.post<DataHttpResponse<BackgroundsRes[]>>('/api/backgrounds', body)
   }
 
-  async putActiveBackground(id: number) {
-    return await http.put<DataHttpResponse<BackgroundsRes[]>>('/api/backgrounds', { id })
+  async putActiveBackground(background_id: number) {
+    return await http.put<DataHttpResponse<BackgroundsRes[]>>('/api/backgrounds', { background_id })
   }
 
   async putBackgroundTitle(id: number, title: string) {
-    return await http.put<DataHttpResponse<BackgroundsRes[]>>('/api/backgrounds' + id, { title })
+    return await http.put<DataHttpResponse<BackgroundsRes[]>>('/api/backgrounds/' + id, { title })
   }
 
   async deleteBackground(id: number) {
-    return await http.delete<DataHttpResponse<BackgroundsRes[]>>('/api/bootstraps' + id)
+    return await http.delete<DataHttpResponse<BackgroundsRes[]>>('/api/backgrounds/' + id)
   }
 }
 

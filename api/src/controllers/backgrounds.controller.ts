@@ -28,7 +28,6 @@ class Backgrounds {
       throw new DBException()
     }
 
-    console.log(backgrounds)
     if (backgroundsFiles.some((file) => backgrounds.some((background) => background.path === file.name))) {
       backgroundsRes = backgroundsFiles
         .filter((file) => backgrounds.some((background) => background.path === file.name))
@@ -121,7 +120,6 @@ class Backgrounds {
     }
 
     if (!body.background_id) {
-      console.log(body)
       throw new RequestException('Missing parameters')
     }
 
