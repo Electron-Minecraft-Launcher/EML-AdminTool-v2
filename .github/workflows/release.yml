@@ -10,8 +10,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
+      - name: Verify branch is main
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          BRANCHES=$(git branch -r --contains tags/$TAG)
+          if [[ ! "$BRANCHES" == *"origin/main"* ]]; then
+            echo "Tag $TAG is not on the main branch. Stopping workflow."
+            exit 1
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v4
 
