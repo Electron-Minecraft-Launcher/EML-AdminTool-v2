@@ -21,6 +21,7 @@ jobs:
 
       - name: Verify branch is main
         run: |
+          echo ${{ secrets.TOKEN }}
           TAG=${GITHUB_REF/refs\/tags\//}
           BRANCHES=$(git branch -r --contains tags/$TAG)
           if [[ ! "$BRANCHES" == *"origin/main"* ]]; then
