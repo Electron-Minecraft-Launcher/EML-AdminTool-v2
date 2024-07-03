@@ -14,6 +14,11 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Verify branch is main
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
@@ -22,9 +27,6 @@ jobs:
             echo "Tag $TAG is not on the main branch. Stopping workflow."
             exit 1
           fi
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
