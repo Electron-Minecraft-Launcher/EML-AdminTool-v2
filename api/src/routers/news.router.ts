@@ -11,7 +11,7 @@ import { File } from '../../../shared/models/features/file.model'
 import imagesMiddleware from '../middlewares/images.middleware'
 
 export default class NewsRouter implements Route {
-  path = '/api/news'
+  path = '/news'
   router = Router()
 
   constructor() {

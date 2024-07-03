@@ -7,7 +7,7 @@ import { File } from '../../../shared/models/features/file.model'
 import filesUpdaterMiddleware from '../middlewares/filesupdater.middleware'
 
 export default class FilesUpdaterRouter implements Route {
-  path = '/api/files-updater'
+  path = '/files-updater'
   router = Router()
 
   constructor() {

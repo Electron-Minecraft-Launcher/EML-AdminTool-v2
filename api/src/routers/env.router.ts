@@ -4,7 +4,7 @@ import { DataHttpResponse } from '../../../shared/models/responses/http/data-htt
 import Env from '../controllers/env.controller'
 
 export default class EnvRouter implements Route {
-  path = '/api/env'
+  path = '/env'
   router = Router()
 
   constructor() {
@@ -23,7 +23,7 @@ export default class EnvRouter implements Route {
      *       200:
      *         description: Environnement
      */
-    this.router.get('/api/env', async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
+    this.router.get(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<any>>, next: NextFunction) => {
       try {
         const resp = await new Env().env(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })

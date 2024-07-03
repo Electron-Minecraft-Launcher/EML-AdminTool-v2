@@ -8,7 +8,7 @@ import { BootstrapsRes } from '../../../shared/models/features/bootstraps.model'
 import { BackgroundsRes } from '../../../shared/models/features/background.model'
 
 export default class BackgroundsRouter implements Route {
-  path = '/api/backgrounds'
+  path = '/backgrounds'
   router = Router()
 
   constructor() {

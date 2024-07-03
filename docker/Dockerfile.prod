@@ -1,0 +1,39 @@
+# BUILD STAGE
+
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm i
+
+WORKDIR /app/api
+RUN npm run build
+
+WORKDIR /app/client
+RUN npm run build
+
+# PRODUCTION STAGE
+
+FROM node:20
+
+WORKDIR /app
+
+COPY --from=build /app/dist/api ./api
+COPY --from=build /app/dist/client ./client
+COPY --from=build /app/dist/shared ./shared
+
+COPY --from=build /app/api/package.json ./api/package.json
+COPY --from=build /app/client/package.json ./client/package.json
+COPY --from=build /app/shared/package.json ./shared/package.json
+
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/package-lock.json ./package-lock.json
+COPY --from=build /app/LICENSE ./LICENSE
+
+RUN npm i
+
+EXPOSE 3000
+
+CMD ["npm", "run", "serve"]

@@ -9,3 +9,5 @@
 
 /files/files-updater/*
 /files/bootstraps/*
+
+/dist

@@ -17,16 +17,24 @@ import MaintenanceRouter from './routers/maintenance.router'
 import NewsRouter from './routers/news.router'
 import BackgroundsRouter from './routers/backgrounds.router'
 import StatsRouter from './routers/stats.router'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 
 class App {
   private app: express.Application
-  private port: number
-  private client: string
+  private apiPort: number
+  private clientPort: number
 
-  constructor(routes: Route[], port?: number, client?: string) {
+  /**
+   * Initialize the Express application.
+   * @param routes The routes to use.
+   * @param apiPort The port of the API (default: `3000`).
+   * @param clientPort The port of the client (default: `5173` in development, `process.env.PORT` in production). 
+   * However, you should not use the API proxy in development (use the client proxy instead).
+   */
+  constructor(routes: Route[], apiPort?: number, clientPort?: number) {
     this.app = express()
-    this.port = port || 3000
-    this.client = client || __dirname + '/dist/client'
+    this.apiPort = apiPort || 3000
+    this.clientPort = clientPort || (process.env.PORT ? +process.env.PORT : 5173)
 
     dotenv.config()
 
@@ -34,26 +42,24 @@ class App {
   }
 
   listen() {
-    this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`)
+    this.app.listen(this.apiPort, () => {
+      console.log(`App listening on the port ${this.apiPort}`)
     })
   }
 
   private init(routes: Route[]) {
-    this.app.use(express.static(this.client))
-
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
     this.app.use(checkerMiddleware)
 
-    routes.forEach((route) => {
-      this.app.use('/', route.router)
-    })
+    routes.forEach((route) => this.app.use('/api', route.router))
 
     this.app.use('/files', cors(), express.static('../files/'))
 
     this.app.use(notFoundMiddleware)
     this.app.use(errorMiddleware)
+
+    this.app.use('/', createProxyMiddleware({ target: `http://localhost:${this.clientPort}`, changeOrigin: true }))
   }
 }
 

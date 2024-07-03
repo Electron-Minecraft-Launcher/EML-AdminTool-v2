@@ -1,0 +1,33 @@
+# Production configuration
+
+name: eml_admintool
+
+services:
+  web:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile.prod
+    environment:
+      NODE_ENV: 'production'
+      PORT: 4000
+    volumes:
+      - files:/app/files
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: 'eml_admintool'
+      MYSQL_USER: 'eml'
+      MYSQL_PASSWORD: 'eml'
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db-data:
+  files:
