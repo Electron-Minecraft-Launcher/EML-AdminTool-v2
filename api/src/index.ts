@@ -21,11 +21,20 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 
 class App {
   private app: express.Application
-  private port: number
+  private apiPort: number
+  private clientPort: number
 
-  constructor(routes: Route[], port?: number) {
+  /**
+   * Initialize the Express application.
+   * @param routes The routes to use.
+   * @param apiPort The port of the API (default: `3000`).
+   * @param clientPort The port of the client (default: `5173` in development, `process.env.PORT` in production). 
+   * However, you should not use the API proxy in development (use the client proxy instead).
+   */
+  constructor(routes: Route[], apiPort?: number, clientPort?: number) {
     this.app = express()
-    this.port = port || 3000
+    this.apiPort = apiPort || 3000
+    this.clientPort = clientPort || (process.env.PORT ? +process.env.PORT : 5173)
 
     dotenv.config()
 
@@ -33,8 +42,8 @@ class App {
   }
 
   listen() {
-    this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`)
+    this.app.listen(this.apiPort, () => {
+      console.log(`App listening on the port ${this.apiPort}`)
     })
   }
 
@@ -46,11 +55,11 @@ class App {
     routes.forEach((route) => this.app.use('/api', route.router))
 
     this.app.use('/files', cors(), express.static('../files/'))
-    
+
     this.app.use(notFoundMiddleware)
     this.app.use(errorMiddleware)
-    
-    this.app.use('/', createProxyMiddleware({ target: 'http://localhost:5173', changeOrigin: true }))
+
+    this.app.use('/', createProxyMiddleware({ target: `http://localhost:${this.clientPort}`, changeOrigin: true }))
   }
 }
 

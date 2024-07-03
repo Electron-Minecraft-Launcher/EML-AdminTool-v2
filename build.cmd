@@ -25,6 +25,10 @@ xcopy %API_DIR%\package.json dist\api /Y
 xcopy package.json dist\ /Y
 xcopy package-lock.json dist\ /Y
 xcopy LICENSE dist\ /Y
+mkdir dist\docker
+xcopy docker\docker-compose.prod.yml dist\docker /Y
+xcopy docker\Dockerfile.prod dist\docker /Y
+xcopy docker\init.sql dist\docker /Y
 
 cd dist
 

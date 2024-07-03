@@ -1,12 +1,12 @@
 # Devloppement configuration
 
-name: eml_admintool
+name: eml_admintool_dev
 
 services:
   web:
     build:
       context: ../
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/Dockerfile.dev
     environment:
       NODE_ENV: 'development'
     volumes:
@@ -18,9 +18,9 @@ services:
       - '3000:3000'
       - '5173:5173'
     depends_on:
-      - mysql
+      - db
 
-  mysql:
+  db:
     image: mysql:8.0
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
@@ -28,18 +28,18 @@ services:
       MYSQL_USER: 'eml'
       MYSQL_PASSWORD: 'eml'
     volumes:
-      - mysql-data:/var/lib/mysql
+      - db-data:/var/lib/db
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   
-  phpmyadmin:
+  pma:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: mysql
     ports:
       - '8080:80'
     depends_on:
-      - mysql
+      - db
 
 volumes:
-  mysql-data:
+  db-data:
   files:
