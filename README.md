@@ -42,9 +42,10 @@ You can choose your Linux distribution, but Debian or Ubuntu is highly recommend
 ### Software requirements
 
 You have to install the following software on your VPS:
-- [Node.js](https://nodejs.org/en/download/package-manager)
 - [Docker](https://docs.docker.com/engine/install) and [Docker Compose](https://docs.docker.com/compose/install) [^1]
 - [NGINX](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/) or [Apache](https://httpd.apache.org/docs/2.4/install.html) (optional, but NGINX is recommended) [^2]
+
+Node.js is not required, because it is already included in the Docker image of the EML AdminTool.
 
 ### EML AdminTool installation
 
