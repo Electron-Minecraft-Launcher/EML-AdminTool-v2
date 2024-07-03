@@ -45,7 +45,7 @@ jobs:
       - name: Build Docker image
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
-          docker build -t eml-admintool:$TAG -f Dockerfile.prod .
+          docker build -t eml-admintool:$TAG -f docker/Dockerfile.prod .
       
       - name: Save Docker image as tarball
         run: |
@@ -67,8 +67,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: docker-compose.yml
-          asset_name: docker-compose.yml
+          asset_path: docker/docker-compose.yml
+          asset_name: docker/docker-compose.yml
           asset_content_type: text/yaml
       
       - name: Upload Docker image as tarball
