@@ -21,7 +21,6 @@ jobs:
 
       - name: Verify branch is main
         run: |
-          echo ${{ secrets.TOKEN }}
           TAG=${GITHUB_REF/refs\/tags\//}
           BRANCHES=$(git branch -r --contains tags/$TAG)
           if [[ ! "$BRANCHES" == *"origin/main"* ]]; then
@@ -29,32 +28,32 @@ jobs:
             exit 1
           fi
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+      # - name: Install dependencies
+      #   run: npm install
 
-      - name: Build API
-        run: |
-          cd api
-          npm run build
+      # - name: Build API
+      #   run: |
+      #     cd api
+      #     npm run build
       
-      - name: Build Client
-        run: |
-          cd client
-          npm run build
+      # - name: Build Client
+      #   run: |
+      #     cd client
+      #     npm run build
         
-      - name: Prepare dist folder
-        run: |
-          cp -r api/package.json dist/api
-          cp -r client/package.json dist/client
-          cp -r shared/package.json dist/shared
-          cp package.json package-lock.json dist
-          cd dist
-          npm ci --omit=dev
+      # - name: Prepare dist folder
+      #   run: |
+      #     cp -r api/package.json dist/api
+      #     cp -r client/package.json dist/client
+      #     cp -r shared/package.json dist/shared
+      #     cp package.json package-lock.json dist
+      #     cd dist
+      #     npm ci --omit=dev
 
       - name: Build Docker image
         run: |
@@ -80,6 +79,8 @@ jobs:
       
       - name: Upload Docker Compose file
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: docker/docker-compose.prod.yml
@@ -88,6 +89,8 @@ jobs:
       
       - name: Upload Docker image as tarball
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: eml-admintool-${{ github.ref }}.tar.gz
