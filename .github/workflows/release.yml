@@ -55,7 +55,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd /
+          ls
           TAG=${GITHUB_REF/refs\/tags\//}
           docker build -t eml-admintool:$TAG -f docker/Dockerfile.prod .
       
