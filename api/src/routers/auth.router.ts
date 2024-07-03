@@ -7,7 +7,7 @@ import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
 
 export default class AuthRouter implements Route {
-  path = '/api'
+  path = ''
   router = Router()
 
   constructor() {

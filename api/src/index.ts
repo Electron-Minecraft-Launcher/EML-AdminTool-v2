@@ -17,16 +17,15 @@ import MaintenanceRouter from './routers/maintenance.router'
 import NewsRouter from './routers/news.router'
 import BackgroundsRouter from './routers/backgrounds.router'
 import StatsRouter from './routers/stats.router'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 
 class App {
   private app: express.Application
   private port: number
-  private client: string
 
-  constructor(routes: Route[], port?: number, client?: string) {
+  constructor(routes: Route[], port?: number) {
     this.app = express()
     this.port = port || 3000
-    this.client = client || __dirname + '/dist/client'
 
     dotenv.config()
 
@@ -40,20 +39,18 @@ class App {
   }
 
   private init(routes: Route[]) {
-    this.app.use(express.static(this.client))
-
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
     this.app.use(checkerMiddleware)
 
-    routes.forEach((route) => {
-      this.app.use('/', route.router)
-    })
+    routes.forEach((route) => this.app.use('/api', route.router))
 
     this.app.use('/files', cors(), express.static('../files/'))
-
+    
     this.app.use(notFoundMiddleware)
     this.app.use(errorMiddleware)
+    
+    this.app.use('/', createProxyMiddleware({ target: 'http://localhost:5173', changeOrigin: true }))
   }
 }
 

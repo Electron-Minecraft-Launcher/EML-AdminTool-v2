@@ -5,7 +5,7 @@ import Configure from '../controllers/configure.controller'
 import { ControllerException } from '../responses/types'
 
 export default class ConfigureRouter implements Route {
-  path = '/api/configure'
+  path = '/configure'
   router = Router()
 
   constructor() {

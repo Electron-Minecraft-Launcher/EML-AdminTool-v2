@@ -8,7 +8,7 @@ import { ControllerException } from '../responses/types'
 import Admin from '../controllers/admin.controller'
 
 export default class AdminRouter implements Route {
-  path = '/api'
+  path = ''
   router = Router()
 
   constructor() {

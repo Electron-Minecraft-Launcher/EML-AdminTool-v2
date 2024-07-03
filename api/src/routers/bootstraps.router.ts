@@ -7,7 +7,7 @@ import bootstrapsMiddleware from '../middlewares/bootstraps.middleware'
 import { BootstrapsRes } from '../../../shared/models/features/bootstraps.model'
 
 export default class BootstrapsRouter implements Route {
-  path = '/api/bootstraps'
+  path = '/bootstraps'
   router = Router()
 
   constructor() {

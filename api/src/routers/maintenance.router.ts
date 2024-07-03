@@ -7,7 +7,7 @@ import { Maintenance as Maintenance_ } from '../../../shared/models/features/mai
 import Maintenance from '../controllers/maintenance.controller'
 
 export default class MaintenanceRouter implements Route {
-  path = '/api/maintenance'
+  path = '/maintenance'
   router = Router()
 
   constructor() {

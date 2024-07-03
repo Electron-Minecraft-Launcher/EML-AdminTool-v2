@@ -5,7 +5,7 @@ import swaggerUi from 'swagger-ui-express'
 import swagger from '../swagger/swagger'
 
 export default class DefaultRouter implements Route {
-  path = '/api'
+  path = ''
   router = Router()
 
   private bodyParser = bodyParser
@@ -20,11 +20,11 @@ export default class DefaultRouter implements Route {
       res.send(
         `<h1>EML AdminTool API</h1>
 <p><b>Welcome to the EML AdminTool API</b></p>
-<p><a href="api/swagger">Swagger</a>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;<a href="https://github.com/Electron-Minecraft-Launcher" target="_blank">GitHub</a>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;<a href="https://discord.gg/6rjpyYskBV" target="_blank">Discord</a></p>`
+<p><a href="/api/swagger">Swagger</a>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;<a href="https://github.com/Electron-Minecraft-Launcher" target="_blank">GitHub</a>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;<a href="https://discord.gg/6rjpyYskBV" target="_blank">Discord</a></p>`
       )
     })
 
-    this.router.get(`${this.path}/api/swagger.json`, (req, res) => {
+    this.router.get(`${this.path}/swagger.json`, (req, res) => {
       res.send(swagger)
     })
 

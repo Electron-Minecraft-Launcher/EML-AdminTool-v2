@@ -8,7 +8,7 @@ import { ControllerException } from '../responses/types'
 import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
 
 export default class StatsRouter implements Route {
-  path = '/api/stats'
+  path = '/stats'
   router = Router()
 
   constructor() {

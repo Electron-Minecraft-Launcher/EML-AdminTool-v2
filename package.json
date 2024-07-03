@@ -13,7 +13,9 @@
   "scripts": {
     "dev:client": "npm run dev --workspace=client",
     "dev:api": "npm run dev --workspace=api",
-    "dev": "concurrently \"npm run dev --workspace=client\" \"npm run dev --workspace=api\""
+    "dev": "concurrently \"npm run dev --workspace=client\" \"npm run dev --workspace=api\"",
+    "build:windows": "\"build.cmd\"",
+    "serve": "concurrently \"node --env-file=./client/.env ./client\" \"node ./api/src\""
   },
   "homepage": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2#readme",
   "repository": {
@@ -23,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues"
   },
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^8.2.2"
   }
 }
