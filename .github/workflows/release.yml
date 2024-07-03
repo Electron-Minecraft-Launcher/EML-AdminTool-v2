@@ -64,7 +64,9 @@ jobs:
       - name: Save Docker image as tarball
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
-          docker save eml-admintool:$TAG | gzip > eml-admintool-$TAG.tar.gz
+          TAR_FILE=eml-admintool-$TAG.tar.gz
+          docker save eml-admintool:$TAG | gzip > $TAR_FILE
+          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
       
       - name: Create Release
         id: create_release
@@ -93,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: eml-admintool-${{ github.ref }}.tar.gz
-          asset_name: eml-admintool-${{ github.ref }}.tar.gz
+          asset_path: ${{ env.TAR_FILE }}
+          asset_name: ${{ env.TAR_FILE }}
           asset_content_type: application/gzip
         
