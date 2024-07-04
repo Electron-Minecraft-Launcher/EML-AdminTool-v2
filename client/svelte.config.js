@@ -8,9 +8,6 @@ const config = {
       includePaths: ['src/assets/scss/']
     }
   }),
-  compilerOptions: {
-    css: false
-  },
   kit: {
     adapter: adapter({ out: '../dist/client' })
   },
