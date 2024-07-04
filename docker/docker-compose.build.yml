@@ -1,11 +1,13 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#              PRODUCTION CONFIGURATION               #
+#                BUIDLD CONFIGURATION                 #
 #                                                     #
-# This file is used to run the application in a       #
-# production environment.                             #
-# Please use it with an existing Docker image. You    #
-# can download an image from GitHub or build your     #
-# own image using the docker-compose.build.yml file.  #
+# This file is used to build the application.         #
+# You wan use it to build your application locally or #
+# to create your own Docker image.                    #
+#                                                     #
+# If you want to run a production environment, you    #
+# should use the docker-compose.prod.yml file with    #
+# an existing Docker image.                           #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 name: eml_admintool

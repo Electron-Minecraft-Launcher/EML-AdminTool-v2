@@ -8,11 +8,21 @@ const config = {
       includePaths: ['src/assets/scss/']
     }
   }),
-
+  compilerOptions: {
+    css: false
+  },
   kit: {
-    adapter: adapter({ out: '../dist/client'})
+    adapter: adapter({ out: '../dist/client' })
+  },
+  onwarn: (warning, handler) => {
+    const { code, frame, filename } = warning
+    if (code === 'css-unused-selector' || code === 'css-unused-global') {
+      return
+    }
+    handler(warning)
   }
 }
 
 export default config
+
 
