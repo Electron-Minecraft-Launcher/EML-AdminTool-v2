@@ -28,68 +28,39 @@ jobs:
             exit 1
           fi
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '20'
-
-      # - name: Install dependencies
-      #   run: npm install
-
-      # - name: Build API
-      #   run: |
-      #     cd api
-      #     npm run build
-      
-      # - name: Build Client
-      #   run: |
-      #     cd client
-      #     npm run build
-        
-      # - name: Prepare dist folder
-      #   run: |
-      #     cp -r api/package.json dist/api
-      #     cp -r client/package.json dist/client
-      #     cp -r shared/package.json dist/shared
-      #     cp package.json package-lock.json dist
-      #     cd dist
-      #     npm ci --omit=dev
-
       - name: Build Docker image
         run: |
-          ls
           TAG=${GITHUB_REF/refs\/tags\//}
-          docker build -t eml-admintool:$TAG -f docker/Dockerfile.prod .
+          IMAGE_TAG=${TAG#v}
+          docker build -t eml-admintool:$IMAGE_TAG -f docker/Dockerfile.build .
       
-      - name: Save Docker image as tarball
+      - name: Save Docker image
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
-          TAR_FILE=eml-admintool-$TAG.tar.gz
-          docker save eml-admintool:$TAG | gzip > $TAR_FILE
+          IMAGE_TAG=${TAG#v}
+          docker save eml-admintool:$IMAGE_TAG > eml-admintool-$IMAGE_TAG.tar
           echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
       
+      - name: Create tarball
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          IMAGE_TAG=${TAG#v}
+          TAR_FILE=eml-admintool-$IMAGE_TAG.tar.gz
+          tar -czf $TAR_FILE eml-admintool-$IMAGE_TAG.tar docker/docker-compose.prod.yml
+          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${GITHUB_REF/refs\/tags\//}
+          release_name: Release ${GITHUB_REF/refs\/tags\//}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
       
-      - name: Upload Docker Compose file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: docker/docker-compose.prod.yml
-          asset_name: docker/docker-compose.prod.yml
-          asset_content_type: text/yaml
-      
-      - name: Upload Docker image as tarball
+      - name: Upload tarball
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

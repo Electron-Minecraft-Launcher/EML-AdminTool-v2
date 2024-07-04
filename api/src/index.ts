@@ -34,7 +34,7 @@ class App {
   constructor(routes: Route[], apiPort?: number, clientPort?: number) {
     this.app = express()
     this.apiPort = apiPort || 3000
-    this.clientPort = clientPort || (process.env.PORT ? +process.env.PORT : 5173)
+    this.clientPort = clientPort || (process.env.PORT ? +process.env.PORT : process.env.NODE_ENV === 'production' ? 4000 : 5173)
 
     dotenv.config()
 
