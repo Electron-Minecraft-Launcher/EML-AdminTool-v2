@@ -10,6 +10,6 @@ export let redirect$ = writable<string | null>(null)
 
 export const test = writable<string>('Bonjour')
 
-export const env = writable<Env>({ language: en, name: 'EML', theme: 'default' })
+export const env = writable<Env>({ language: en, name: 'EML', theme: 'default', version: ''})
 export const user = writable<User>()
 export const l = writable<typeof en | typeof fr>(en)

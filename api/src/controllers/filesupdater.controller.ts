@@ -18,7 +18,8 @@ class FilesUpdater {
   }
 
   async uploadFiles(req: Request): Promise<DataSuccess<File[]>> {
-    const basePath = req.body && req.body.path ? `../files/files-updater/${req.body.path}/` : `../files/files-updater/`
+    const basePath =
+      req.body && req.body.path ? `${filesService.cwd()}/files/files-updater/${req.body.path}/` : `${filesService.cwd()}/files/files-updater/`
 
     if (!fs.existsSync(basePath)) fs.mkdirSync(basePath, { recursive: true })
 

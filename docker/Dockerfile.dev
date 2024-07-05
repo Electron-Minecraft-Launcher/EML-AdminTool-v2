@@ -1,8 +1,12 @@
 FROM node:20
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 ENV CHOKIDAR_USEPOLLING=true
+
+RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-20.10.8.tgz | tar -xz && \
+  mv docker/docker /usr/local/bin/ && \
+  rm -rf docker
 
 COPY package*.json ./
 

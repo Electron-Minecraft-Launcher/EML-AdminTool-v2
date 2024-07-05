@@ -7,6 +7,7 @@ import { RequestException } from '../responses/exceptions/request-exception.resp
 import fs from 'fs'
 import { ServerException } from '../responses/exceptions/server-exception.response'
 import envService from '../services/env.service'
+import filesService from '../services/files.service'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,7 +32,8 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       if (req.body.platform === 'win' || req.body.platform === 'mac' || req.body.platform === 'lin') {
-        if (fs.existsSync(`../files/bootstraps/${req.body.platform}`)) fs.rmSync(`../files/bootstraps/${req.body.platform}`, { recursive: true })
+        if (fs.existsSync(`${filesService.cwd()}/files/bootstraps/${req.body.platform}`))
+          fs.rmSync(`../files/bootstraps/${req.body.platform}`, { recursive: true })
       } else {
         next(new RequestException('Invalid parameters'))
         return
@@ -42,7 +44,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
          return
        }
 
-      const path = `../files/bootstraps/${req.body.platform}`
+      const path = `${filesService.cwd()}/files/bootstraps/${req.body.platform}`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },

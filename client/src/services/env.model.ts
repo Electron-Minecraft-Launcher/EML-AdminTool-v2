@@ -5,4 +5,5 @@ export interface Env {
   language: typeof en | typeof fr
   name: string
   theme: string
+  version: string
 }

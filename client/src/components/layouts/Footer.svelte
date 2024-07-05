@@ -1,12 +1,12 @@
 <script lang="ts">
-  import p from '../../../../package.json'
   import cookiesService from '../../services/cookies.service'
+  import { env } from '../../services/store'
 </script>
 
 <footer>
   <hr />
   <p>
-    EML AdminTool v{p.version} – <a href="https://discord.gg/nfEHKtghPh" target="_blank">Discord</a> –
+    EML AdminTool v{$env.version} – <a href="https://discord.gg/nfEHKtghPh" target="_blank">Discord</a> –
     <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2" target="_blank">GitHub</a>
   </p>
   {#if process.env.NODE_ENV === 'development'}

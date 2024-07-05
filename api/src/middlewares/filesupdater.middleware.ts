@@ -3,9 +3,9 @@ import nexter from '../utils/nexter'
 import authService from '../services/auth.service'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import multer from 'multer'
-import { RequestException } from '../responses/exceptions/request-exception.response'
 import fs from 'fs'
 import { ServerException } from '../responses/exceptions/server-exception.response'
+import filesService from '../services/files.service'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,12 +23,14 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       const filepath = Buffer.from(file.originalname, 'latin1').toString('utf8').split('/').slice(0, -1).join('/')
-      const path = req.body && req.body.path ? `../files/files-updater/${req.body.path}/${filepath}/` : `../files/files-updater/${filepath}/`
+      const path =
+        req.body && req.body.path
+          ? `${filesService.cwd()}/files/files-updater/${req.body.path}/${filepath}/`
+          : `${filesService.cwd()}/files/files-updater/${filepath}/`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },
     filename: (req, file, cb) => {
-      // const filename = Buffer.from(file.originalname.split('/').slice(-1)[0], 'latin1').toString('utf8')
       const filename = Buffer.from(file.originalname, 'latin1').toString('utf8').split('/').slice(-1)
       cb(null, filename.slice(-1)[0])
     }
@@ -36,7 +38,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
 
   multer({ storage, preservePath: true }).array('files[]')(req, res, (err) => {
     if (err) {
-      console.log(err)
+      console.log('ERR!', err)
       next(new ServerException('Error uploading files'))
       return
     }

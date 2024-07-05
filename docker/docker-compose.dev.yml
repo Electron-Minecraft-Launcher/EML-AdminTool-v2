@@ -21,10 +21,12 @@ services:
     environment:
       NODE_ENV: 'development'
     volumes:
-      - ../api:/usr/src/app/api
-      - ../client:/usr/src/app/client
-      - ../shared:/usr/src/app/shared
-      - files:/usr/src/app/files
+      - ../api:/app/api
+      - ../client:/app/client
+      - ../shared:/app/shared
+      - files:/app/files
+      - /var/run/docker.sock:/var/run/docker.sock
+      - update:/app/update
     ports:
       - '3000:3000'
       - '5173:5173'
@@ -45,7 +47,7 @@ services:
   pma:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: db
     ports:
       - '8080:80'
     depends_on:
@@ -54,3 +56,4 @@ services:
 volumes:
   db-data:
   files:
+  update:
