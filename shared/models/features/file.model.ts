@@ -32,7 +32,7 @@ export interface File {
    * 
    * `'MOD'`: Mod from the modpack (hosted on the EML AdminTool)
    * 
-   * `'CONFIG'`: Configuration files
+   * `'CONFIG'`: Configuration file
    * 
    * `'OTHER'`: Other files
    */
