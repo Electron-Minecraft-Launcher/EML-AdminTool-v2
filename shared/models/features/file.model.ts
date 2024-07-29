@@ -24,17 +24,17 @@ export interface File {
    * 
    * `'JAVA'`: Java files
    * 
-   * `'ASSETS'`: Minecraft assets
+   * `'ASSET'`: Minecraft asset
    * 
-   * `'LIBRARIES'`: Minecraft libraries
+   * `'LIBRARY'`: Minecraft library
    * 
-   * `'NATIVES'`: Minecraft natives
+   * `'NATIVE'`: Minecraft native
    * 
-   * `'MODS'`: Mods from the modpack (hosted on the EML AdminTool)
+   * `'MOD'`: Mod from the modpack (hosted on the EML AdminTool)
    * 
    * `'CONFIG'`: Configuration files
    * 
    * `'OTHER'`: Other files
    */
-  type: 'JAVA' | 'ASSETS' | 'LIBRARIES' | 'NATIVES' | 'MODS' | 'CONFIG' | 'BOOTSTRAP' | 'BACKGROUND' | 'FOLDER' | 'IMAGE' | 'OTHER'
+  type: 'JAVA' | 'ASSET' | 'LIBRARY' | 'NATIVE' | 'MOD' | 'CONFIG' | 'BOOTSTRAP' | 'BACKGROUND' | 'FOLDER' | 'IMAGE' | 'OTHER'
 }
