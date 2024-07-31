@@ -75,18 +75,19 @@ class FilesService {
           type: 'FOLDER'
         })
       } else {
+        const fileHash = fs.readFileSync(`${this.cwd()}/files/${fulldir}/${name}`)
         let path = `${subdir}/`.split('\\').join('/').replace(/^\/+/, '')
         let size = fs.statSync(`${this.cwd()}/files/${fulldir}/${name}`).size
-        let sha1 = crypto.createHash('sha1').update(`${this.cwd()}/files/${fulldir}/${name}`).digest('hex')
+        let sha1 = crypto.createHash('sha1').update(fileHash).digest('hex')
         let url = `${domain}/files/${fulldir}/${name}`.split('\\').join('/').replace(/^\/+/, '')
-        let type: 'ASSETS' | 'LIBRARIES' | 'MODS' | 'CONFIG' | 'JAVA' | 'NATIVES' | 'BOOTSTRAP' | 'BACKGROUND' | 'IMAGE' | 'OTHER' = path.includes(
+        let type: 'ASSET' | 'LIBRARY' | 'MOD' | 'CONFIG' | 'JAVA' | 'NATIVE' | 'BOOTSTRAP' | 'BACKGROUND' | 'IMAGE' | 'OTHER' = path.includes(
           'assets'
         )
-          ? 'ASSETS'
+          ? 'ASSET'
           : path.includes('lib')
-            ? 'LIBRARIES'
+            ? 'LIBRARY'
             : path.includes('mods')
-              ? 'MODS'
+              ? 'MOD'
               : path.includes('config')
                 ? 'CONFIG'
                 : dir === 'bootstraps'

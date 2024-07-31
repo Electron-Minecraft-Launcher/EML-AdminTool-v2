@@ -40,6 +40,9 @@ class Bootstraps {
         lin: bootstrapsFiles.find((file) => file.path === 'lin/') || null,
         version: bootstraps.version || ''
       }
+      if (bootstrapsRes.win) bootstrapsRes.win.path = ''
+      if (bootstrapsRes.mac) bootstrapsRes.mac.path = ''
+      if (bootstrapsRes.lin) bootstrapsRes.lin.path = ''
     }
 
     return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', bootstrapsRes)
