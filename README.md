@@ -11,7 +11,7 @@
 
 ## Features
 
- * **Files Updater**: Update your Minecraft files.
+ * **Files Updater**: Update your Minecraft files and loader (Vanilla or Forge).
  * **Bootstraps**: Auto-update your Minecraft Launcher.
  * **Maintenance**: Manage your Minecraft Launcher.
  * **News**: Manage your Minecraft Launcher news.

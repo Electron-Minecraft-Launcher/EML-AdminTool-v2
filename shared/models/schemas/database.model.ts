@@ -15,6 +15,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'status', info: 'TINYINT' },
     { name: 'admin', info: 'TINYINT' },
     { name: 'p_files_updater_add_del', info: 'TINYINT' },
+    { name: 'p_files_updater_loader_mod', info: 'TINYINT' },
     { name: 'p_bootstraps_mod', info: 'TINYINT' },
     { name: 'p_maintenance_mod', info: 'TINYINT' },
     { name: 'p_news_add', info: 'TINYINT' },
@@ -24,6 +25,13 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'p_background_mod', info: 'TINYINT' },
     { name: 'p_stats_see', info: 'TINYINT' },
     { name: 'p_stats_del', info: 'TINYINT' }
+  ],
+
+  loader: [
+    { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
+    { name: 'loader', info: 'VARCHAR(255)' },
+    { name: 'version', info: 'VARCHAR(255)' },
+    { name: 'type', info: 'VARCHAR(255)' }
   ],
 
   logs: [
