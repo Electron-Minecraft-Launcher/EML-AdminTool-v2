@@ -92,6 +92,7 @@ class FilesUpdater {
   }
 
   async getLoader(req: Request): Promise<DataSuccess<Loader>> {
+    const defaultResponse = new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', minecraft_version: 'latest_release', loader_version: null, type: 'client' } as Loader)
     let loader: Loader
 
     try {
@@ -101,14 +102,15 @@ class FilesUpdater {
     }
 
     if (!loader || loader.id) {
-      return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', version: 'latest_release', type: 'client' })
+      return defaultResponse
     }
 
     delete loader.id
 
-    if (loader.loader === 'forge') {
-      const mcVersion = loader.version.split('-')[0]
-      const forgeVersion = loader.version.split('-')[1]
+    if (loader.loader === 'forge' && loader.loader_version) {
+      if (loader.loader_version.split('-')[0] !== loader.minecraft_version) {
+        return defaultResponse
+      }
 
       const res1 = await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`)
         .then((res) => res.json())
@@ -116,14 +118,17 @@ class FilesUpdater {
           throw new ServerException('Error fetching Forge versions')
         })
 
-      if (!Object.keys(res1).includes(mcVersion) || !res1[mcVersion].includes(loader.version)) {
-        return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', version: 'latest_release', type: 'client' })
+      if (!Object.keys(res1).includes(loader.minecraft_version) || !res1[loader.minecraft_version].includes(loader.loader_version)) {
+        return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', minecraft_version: 'latest_release', loader_version: null, type: 'client' })
       }
 
       return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', loader)
     } // TODO other loaders
 
-    if (loader.version === 'latest_release' || loader.version === 'latest_snapshot') {
+    loader.loader = 'vanilla'
+    loader.loader_version = null
+
+    if (loader.minecraft_version === 'latest_release' || loader.minecraft_version === 'latest_snapshot') {
       return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', loader)
     }
 
@@ -133,10 +138,10 @@ class FilesUpdater {
         throw new ServerException('Error fetching Minecraft versions')
       })
 
-    if ((res.versions as { id: string, type: string }[]).find(v => v.id === loader.version)) {
+    if ((res.versions as { id: string, type: string }[]).find(v => v.id === loader.minecraft_version)) {
       return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', loader)
     } else {
-      return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', version: 'latest_release', type: 'client' })
+      return defaultResponse
     }
   }
 
@@ -151,7 +156,7 @@ class FilesUpdater {
       throw new UnauthorizedException()
     }
 
-    if (!body.loader || !body.version) {
+    if (!body.loader || !body.minecraft_version || !body.loader_version) {
       throw new RequestException('Missing parameters')
     }
 
@@ -163,21 +168,23 @@ class FilesUpdater {
 
     if (body.loader === 'vanilla') {
       body.type = 'client'
+      body.loader_version = null
 
-      if (body.version !== 'latest_release' && body.version !== 'latest_snapshot') {
+      if (body.minecraft_version !== 'latest_release' && body.minecraft_version !== 'latest_snapshot') {
         const res = await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest.json`)
           .then((res) => res.json())
           .catch(() => {
             throw new ServerException('Error fetching Minecraft versions')
           })
 
-        if (!(res.versions as { id: string, type: string }[]).find(v => v.id === body.version)) {
+        if (!(res.versions as { id: string, type: string }[]).find(v => v.id === body.minecraft_version)) {
           throw new RequestException('Invalid parameters')
         }
       }
     } else if (body.loader === 'forge') {
-      const mcVersion = body.version.split('-')[0] || ''
-      const forgeVersion = body.version.split('-')[1] || ''
+      if (body.version.split('-')[0] !== body.minecraft_version) {
+        throw new RequestException('Invalid parameters')
+      }
 
       const res1 = await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`)
         .then((res) => res.json())
@@ -185,14 +192,14 @@ class FilesUpdater {
           throw new ServerException('Error fetching Forge versions')
         })
 
-        if (!Object.keys(res1).includes(mcVersion) || !res1[mcVersion].includes(body.version)) {
-          throw new RequestException('Invalid parameters')
-        }
+      if (!Object.keys(res1).includes(body.minecraft_version) || !res1[body.minecraft_version].includes(body.version)) {
+        throw new RequestException('Invalid parameters')
+      }
 
 
-      if (+mcVersion.split('.')[1] >= 13) {
+      if (+body.minecraft_version.split('.')[1] >= 13) {
         body.type = 'installer'
-      } else if (+mcVersion.split('.')[1] >= 3) {
+      } else if (+body.minecraft_version.split('.')[1] >= 3) {
         body.type = 'universal'
       } else {
         body.type = 'client'
