@@ -30,7 +30,8 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
   loader: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'loader', info: 'VARCHAR(255)' },
-    { name: 'version', info: 'VARCHAR(255)' },
+    { name: 'minecraft_version', info: 'VARCHAR(255)' },
+    { name: 'loader_version', info: 'VARCHAR(255)' },
     { name: 'type', info: 'VARCHAR(255)' }
   ],
 

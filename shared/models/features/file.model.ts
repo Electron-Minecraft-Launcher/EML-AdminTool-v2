@@ -46,6 +46,7 @@ export interface File {
 export interface Loader {
   id?: number
   loader: 'vanilla' | 'forge'
-  version: string
+  minecraft_version: string
+  loader_version: string | null
   type: 'installer' | 'universal' | 'client'
 }
