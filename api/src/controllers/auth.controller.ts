@@ -59,6 +59,7 @@ export default class Auth {
       status: 0,
       admin: 0,
       p_files_updater_add_del: 0,
+      p_files_updater_loader_mod: 0,
       p_bootstraps_mod: 0,
       p_maintenance_mod: 0,
       p_news_add: 0,

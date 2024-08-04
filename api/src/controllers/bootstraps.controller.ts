@@ -85,7 +85,7 @@ class Bootstraps {
       throw error as ServiceException
     }
 
-    if (+auth.p_files_updater_add_del! != 1) {
+    if (+auth.p_bootstraps_mod! != 1) {
       throw new UnauthorizedException()
     }
 

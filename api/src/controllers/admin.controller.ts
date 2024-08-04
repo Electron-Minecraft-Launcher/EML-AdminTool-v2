@@ -202,14 +202,19 @@ export default class Admin {
     if ((+body.p_news_mod_del == 1 || +body.p_news_categories_add_mod_del == 1 || +body.p_news_tags_add_mod_del == 1) && auth.admin && +auth.admin == 1) {
       body.p_news_add = 1
     }
-    
+
+    if (+body.p_files_updater_loader_mod == 1 && auth.admin && +auth.admin == 1) {
+      body.p_files_updater_add_del = 1
+    }
+
     let updatedUser: User = {
       id: userId,
       name: body.name || getUser.name,
       password: getUser.password,
       admin: getUser.admin,
       status: ((auth.admin && body.status) || (body.status && body.status == -2)) && !getUser.admin ? +body.status : getUser.status,
-      p_files_updater_add_del: auth.admin && +body.p_files_updater_add_del ? 1 : 0,
+      p_files_updater_add_del: auth.admin && +body.p_files_updater_add_del ? +body.p_files_updater_add_del : getUser.p_files_updater_add_del,
+      p_files_updater_loader_mod: auth.admin && +body.p_files_updater_loader_mod ? +body.p_files_updater_loader_mod : getUser.p_files_updater_loader_mod,
       p_bootstraps_mod: auth.admin && body.p_bootstraps_mod ? +body.p_bootstraps_mod : getUser.p_bootstraps_mod,
       p_maintenance_mod: auth.admin && body.p_maintenance_mod ? +body.p_maintenance_mod : getUser.p_maintenance_mod,
       p_news_add: auth.admin && body.p_news_add ? +body.p_news_add : getUser.p_news_add,
@@ -226,6 +231,7 @@ export default class Admin {
       updatedUser.admin = 1
       updatedUser.status = 1
       updatedUser.p_files_updater_add_del = 1
+      updatedUser.p_files_updater_loader_mod = 1
       updatedUser.p_bootstraps_mod = 1
       updatedUser.p_maintenance_mod = 1
       updatedUser.p_news_add = 1
