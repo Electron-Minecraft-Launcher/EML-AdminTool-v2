@@ -176,7 +176,9 @@ export default class FilesUpdaterRouter implements Route {
      *             properties:
      *               loader:
      *                 type: string
-     *               version:
+     *               minecraft_version:
+     *                 type: string
+     *               loader_version:
      *                 type: string
      *     responses:
      *       200:

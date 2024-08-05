@@ -16,10 +16,6 @@ export interface File {
    */
   sha1?: string
   /**
-   * The MD5 hash of the file.
-   */
-  md5?: string
-  /**
    * The URL to download the file.
    */
   url: string
@@ -48,5 +44,6 @@ export interface Loader {
   loader: 'vanilla' | 'forge'
   minecraft_version: string
   loader_version: string | null
-  type: 'installer' | 'universal' | 'client'
+  loader_type: 'installer' | 'universal' | 'client'
+  file?: File | string
 }

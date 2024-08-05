@@ -31,8 +31,9 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'loader', info: 'VARCHAR(255)' },
     { name: 'minecraft_version', info: 'VARCHAR(255)' },
-    { name: 'loader_version', info: 'VARCHAR(255)' },
-    { name: 'type', info: 'VARCHAR(255)' }
+    { name: 'loader_version', info: 'VARCHAR(255) NULL' },
+    { name: 'loader_type', info: 'VARCHAR(255)' },
+    { name: 'file', info: 'TEXT'}
   ],
 
   logs: [
