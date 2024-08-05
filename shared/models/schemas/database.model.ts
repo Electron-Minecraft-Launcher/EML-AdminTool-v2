@@ -32,7 +32,7 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'loader', info: 'VARCHAR(255)' },
     { name: 'minecraft_version', info: 'VARCHAR(255)' },
     { name: 'loader_version', info: 'VARCHAR(255) NULL' },
-    { name: 'loader_type', info: 'VARCHAR(255)' },
+    { name: 'loader_type', info: 'VARCHAR(255) NULL' },
     { name: 'file', info: 'TEXT'}
   ],
 

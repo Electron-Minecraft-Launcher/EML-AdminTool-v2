@@ -92,7 +92,7 @@ class FilesUpdater {
   }
 
   async getLoader(req: Request): Promise<DataSuccess<Loader>> {
-    const defaultResponse = new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', minecraft_version: 'latest_release', loader_version: null, loader_type: 'client' } as Loader)
+    const defaultResponse = new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', minecraft_version: 'latest_release', loader_version: 'latest_release', loader_type: 'client' } as Loader)
 
     let loader: Loader
 
@@ -127,16 +127,14 @@ class FilesUpdater {
     body = { ...body, loader_type: 'client' }
 
     if (body.loader === 'vanilla') {
-      body.loader_version = null
-
       if (body.minecraft_version !== 'latest_release' && body.minecraft_version !== 'latest_snapshot') {
         const minecraftVersions = await this.getMinecraftVersions()
-
-        console.log(body.minecraft_version)
 
         if (!(minecraftVersions.versions as { id: string, type: string }[]).find(v => v.id === body.minecraft_version)) {
           throw new RequestException('Invalid parameters')
         }
+
+        body.loader_version = body.minecraft_version
       }
     } else if (body.loader === 'forge') {
       if (body.loader_version!.split('-')[0] !== body.minecraft_version) throw new RequestException('Invalid parameters')
