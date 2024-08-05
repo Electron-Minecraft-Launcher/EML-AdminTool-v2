@@ -6,7 +6,7 @@
   import ModalTemplate from './ModalTemplate.svelte'
   import monaco from '../../services/monaco.service'
   import type { News } from '../../../../shared/models/features/news.model'
-  import {  slide } from 'svelte/transition'
+  import { slide } from 'svelte/transition'
   import apiNewsService from '../../services/api/api-news.service'
 
   export let data: PageData

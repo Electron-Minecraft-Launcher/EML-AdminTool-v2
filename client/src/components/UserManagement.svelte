@@ -17,6 +17,7 @@ The user will not be able to access the EML AdminTool anymore. However, the user
     ) {
       selectedAccount.status = -2
       selectedAccount.p_files_updater_add_del = 0
+      selectedAccount.p_files_updater_loader_mod = 0
       selectedAccount.p_bootstraps_mod = 0
       selectedAccount.p_maintenance_mod = 0
       selectedAccount.p_news_add = 0
@@ -81,8 +82,13 @@ All the user's actions and data will be deleted, including published news. This 
     {#if selectedAccount.admin}
       <p>Admin (all permissions)</p>
     {:else}
-      {#if selectedAccount.p_files_updater_add_del}
-        <p>Add and Delete files</p>
+      {#if selectedAccount.p_files_updater_add_del || selectedAccount.p_files_updater_loader_mod}
+        {#if selectedAccount.p_files_updater_add_del}
+          <p>Add and Delete files</p>
+        {/if}
+        {#if selectedAccount.p_files_updater_loader_mod}
+          <p>Change and Delete Minecraft loader</p>
+        {/if}
       {/if}
 
       {#if selectedAccount.p_bootstraps_mod}
@@ -113,7 +119,7 @@ All the user's actions and data will be deleted, including published news. This 
         <p>View{selectedAccount.p_stats_del ? ' and Delete' : ''} stats</p>
       {/if}
 
-      {#if !selectedAccount.p_files_updater_add_del && !selectedAccount.p_bootstraps_mod && !selectedAccount.p_maintenance_mod && !selectedAccount.p_news_add && !selectedAccount.p_news_mod_del && !selectedAccount.p_news_categories_add_mod_del && !selectedAccount.p_news_tags_add_mod_del && !selectedAccount.p_background_mod && !selectedAccount.p_stats_see}
+      {#if !selectedAccount.p_files_updater_add_del && !selectedAccount.p_files_updater_loader_mod && !selectedAccount.p_bootstraps_mod && !selectedAccount.p_maintenance_mod && !selectedAccount.p_news_add && !selectedAccount.p_news_mod_del && !selectedAccount.p_news_categories_add_mod_del && !selectedAccount.p_news_tags_add_mod_del && !selectedAccount.p_background_mod && !selectedAccount.p_stats_see}
         <p>No permissions</p>
       {/if}
     {/if}

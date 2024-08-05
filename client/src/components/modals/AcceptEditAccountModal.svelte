@@ -11,6 +11,7 @@
 
   $: name = '' as string
   $: p_files_updater_add_del = false as boolean
+  $: p_files_updater_loader_mod = false as boolean
   $: p_bootstraps_mod = false as boolean
   $: p_maintenance_mod = false as boolean
   $: p_news_add = false as boolean
@@ -26,6 +27,7 @@
   function update() {
     name = selectedAccount.name + ''
     p_files_updater_add_del = selectedAccount.p_files_updater_add_del == 1
+    p_files_updater_loader_mod = selectedAccount.p_files_updater_loader_mod == 1
     p_bootstraps_mod = selectedAccount.p_bootstraps_mod == 1
     p_maintenance_mod = selectedAccount.p_maintenance_mod == 1
     p_news_add = selectedAccount.p_news_add == 1
@@ -42,6 +44,7 @@
       name,
       status: 1,
       p_files_updater_add_del: p_files_updater_add_del ? 1 : 0,
+      p_files_updater_loader_mod: p_files_updater_loader_mod ? 1 : 0,
       p_bootstraps_mod: p_bootstraps_mod ? 1 : 0,
       p_maintenance_mod: p_maintenance_mod ? 1 : 0,
       p_news_add: p_news_add ? 1 : 0,
@@ -72,7 +75,24 @@
 
       <p class="label" style="margin-top: 20px">Files Updater</p>
       <label class="p" for="p_files_updater_add_del">
-        <input type="checkbox" id="p_files_updater_add_del" bind:checked={p_files_updater_add_del} /> Add and delete files
+        <input
+          type="checkbox"
+          id="p_files_updater_add_del"
+          bind:checked={p_files_updater_add_del}
+          on:change={() => {
+            if (!p_files_updater_add_del) p_files_updater_loader_mod = false
+          }}
+        /> Add and delete files
+      </label>
+      <label class="p" for="p_files_updater_loader_mod">
+        <input
+          type="checkbox"
+          id="p_files_updater_loader_mod"
+          bind:checked={p_files_updater_loader_mod}
+          on:change={() => {
+            if (p_files_updater_loader_mod) p_files_updater_add_del = true
+          }}
+        /> Change and delete Minecraft loader
       </label>
 
       <p class="label">Bootstraps</p>

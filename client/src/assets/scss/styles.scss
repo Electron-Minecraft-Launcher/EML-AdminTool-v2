@@ -33,9 +33,11 @@
   --gray-gradient: linear-gradient(#fefefe, #fcfcfc);
 }
 
+* {
+  font-family: 'Poppins', 'Arial', 'Helvetica', sans-serif;
+}
 
 body {
-  font-family: 'Poppins', 'Arial', 'Helvetica', sans-serif;
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
@@ -175,6 +177,7 @@ button {
   cursor: pointer;
   transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
   outline: 0px solid var(--primary-tr-color-hover);
+  line-height: 15px;
 
   &.primary {
     margin-top: 30px;

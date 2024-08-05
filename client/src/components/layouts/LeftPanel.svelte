@@ -90,7 +90,7 @@
     <Skeleton {randomWidth} {height} {customStyle} />
     <Skeleton {randomWidth} {height} {customStyle} />
   {:else if $user.status !== 0 && $user.status !== -1 && $user.status !== -2}
-    {#if $user.p_files_updater_add_del || $user.admin}
+    {#if $user.p_files_updater_add_del || $user.p_files_updater_loader_mod || $user.admin}
       <a href="/dashboard/files-updater" class:active={$page.url.pathname == '/dashboard/files-updater'}>
         <i class="fa-solid fa-folder-open"></i>Files Updater
       </a>
