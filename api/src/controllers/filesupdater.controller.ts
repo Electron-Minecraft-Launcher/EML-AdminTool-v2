@@ -92,7 +92,12 @@ class FilesUpdater {
   }
 
   async getLoader(req: Request): Promise<DataSuccess<Loader>> {
-    const defaultResponse = new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { loader: 'vanilla', minecraft_version: 'latest_release', loader_version: 'latest_release', loader_type: 'client' } as Loader)
+    const defaultResponse = new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
+      loader: 'vanilla',
+      minecraft_version: 'latest_release',
+      loader_version: 'latest_release',
+      loader_type: 'client'
+    } as Loader)
 
     let loader: Loader
 
@@ -130,22 +135,26 @@ class FilesUpdater {
       if (body.minecraft_version !== 'latest_release' && body.minecraft_version !== 'latest_snapshot') {
         const minecraftVersions = await this.getMinecraftVersions()
 
-        if (!(minecraftVersions.versions as { id: string, type: string }[]).find(v => v.id === body.minecraft_version)) {
+        if (!(minecraftVersions.versions as { id: string; type: string }[]).find((v) => v.id === body.minecraft_version)) {
           throw new RequestException('Invalid parameters')
         }
 
         body.loader_version = body.minecraft_version
       }
     } else if (body.loader === 'forge') {
-      if (body.loader_version!.split('-')[0] !== body.minecraft_version) throw new RequestException('Invalid parameters')
+      if (body.loader_version!.split('-')[0].replace('_', '-') !== body.minecraft_version) throw new RequestException('Invalid parameters')
 
       const forgeVersions = await this.getForgeVersions()
 
-      if (!Object.keys(forgeVersions).includes(body.minecraft_version) || !forgeVersions[body.minecraft_version].includes(body.loader_version)) {
+      if (
+        !Object.keys(forgeVersions).includes(body.minecraft_version.replace('-', '_')) ||
+        !forgeVersions[body.minecraft_version.replace('-', '_')].includes(body.loader_version)
+      ) {
         throw new RequestException('Invalid parameters')
       }
 
-      body.loader_type = +body.minecraft_version.split('.')[1] >= 13 ? 'installer' : +body.minecraft_version.split('.')[1] >= 3 ? 'universal' : 'client'
+      body.loader_type =
+        +body.minecraft_version.split('.')[1] >= 13 ? 'installer' : +body.minecraft_version.split('.')[1] >= 3 ? 'universal' : 'client'
 
       const forgeMeta = (await this.getForgeMeta(body.loader_version!)).classifiers
 
@@ -161,7 +170,7 @@ class FilesUpdater {
           url: `https://maven.minecraftforge.net/net/minecraftforge/forge/${body.loader_version}/forge-${body.loader_version}-${body.loader_type}.${ext}`,
           size: size,
           sha1: sha1,
-          type: 'LIBRARY',
+          type: 'LIBRARY'
         }
       }
     } // TODO other loaders
