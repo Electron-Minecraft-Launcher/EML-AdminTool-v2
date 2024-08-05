@@ -7,6 +7,7 @@ import { RequestException } from '../responses/exceptions/request-exception.resp
 import fs from 'fs'
 import { ServerException } from '../responses/exceptions/server-exception.response'
 import crypto from 'crypto'
+import filesService from '../services/files.service'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,7 +29,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
         return
       }
 
-      const path = `../files/backgrounds`
+      const path = `${filesService.cwd()}/files/backgrounds`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },

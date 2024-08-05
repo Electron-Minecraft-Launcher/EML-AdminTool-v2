@@ -34,12 +34,11 @@ jobs:
           IMAGE_TAG=${TAG#v}
           docker build -t eml-admintool:$IMAGE_TAG -f docker/Dockerfile.build .
       
-      - name: Save Docker image
+      - name: Save Docker image as tarball
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
           IMAGE_TAG=${TAG#v}
-          docker save eml-admintool:$IMAGE_TAG > eml-admintool-$IMAGE_TAG.tar
-          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
+          docker save eml-admintool:$IMAGE_TAG | gzip > eml-admintool-$IMAGE_TAG.tar.gz
       
       - name: Create tarball
         run: |
@@ -53,20 +52,30 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: EML AdminTool ${{ github.ref }}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
+          body_path: .changes/${{ github.ref }}.md
       
-      - name: Upload tarball
+      - name: Upload Docker Compose file
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.TAR_FILE }}
-          asset_name: ${{ env.TAR_FILE }}
-          asset_content_type: application/gzip
-        
+          asset_path: docker/docker-compose.prod.yml
+          asset_name: docker-compose.prod.yml
+          asset_content_type: text/yaml
+      
+      - name: Upload Docker image as tarball
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: eml-admintool-$IMAGE_TAG.tar.gz
+          asset_name: eml-admintool-$IMAGE_TAG.tar.gz
+          asset_content_type: application/gzip        

@@ -69,6 +69,10 @@ const options: swaggerJSDoc.OAS3Options = {
       {
         name: 'Stats',
         description: 'Stats of the Launcher'
+      },
+      {
+        name: 'Update',
+        description: 'Update the EML AdminTool'
       }
     ]
   },

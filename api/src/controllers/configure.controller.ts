@@ -86,6 +86,7 @@ export default class Configure {
         status: 1,
         admin: 1,
         p_files_updater_add_del: 1,
+        p_files_updater_loader_mod: 1,
         p_bootstraps_mod: 1,
         p_maintenance_mod: 1,
         p_news_add: 1,

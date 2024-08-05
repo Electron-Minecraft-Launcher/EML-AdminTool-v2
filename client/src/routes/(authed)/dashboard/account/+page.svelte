@@ -57,8 +57,13 @@
   <div class="container">
     <div>
       <p class="label">Files updater</p>
-      {#if $user.p_files_updater_add_del}
-        <p>Add and Delete files</p>
+      {#if $user.p_files_updater_add_del || $user.p_files_updater_loader_mod}
+        {#if $user.p_files_updater_add_del}
+          <p>Add and Delete files</p>
+        {/if}
+        {#if $user.p_files_updater_loader_mod}
+          <p>Change and Delete Minecraft loader</p>
+        {/if}
       {:else}
         <p>-</p>
       {/if}

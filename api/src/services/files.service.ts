@@ -10,6 +10,7 @@ import { ResponseType } from '../../../shared/models/types'
 import { File } from '../../../shared/models/features/file.model'
 import crypto from 'crypto'
 import { RequestException } from '../responses/exceptions/request-exception.response'
+import https from 'https'
 
 class FilesService {
   private filesArray: File[] = []
@@ -22,7 +23,10 @@ class FilesService {
   }
 
   rename(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', oldPath: string, newPath: string): DefaultServiceResponse {
-    if (!fs.existsSync(`../files/${dir}/${oldPath}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+    if (!fs.existsSync(`${this.cwd()}/files/${dir}/${oldPath}`)) {
+      return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+    }
+
     if (
       oldPath.includes('../') ||
       oldPath.includes('..\\') ||
@@ -30,10 +34,11 @@ class FilesService {
       newPath.includes('../') ||
       newPath.includes('..\\') ||
       newPath === '..'
-    )
+    ) {
       return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
+    }
 
-    fs.renameSync(`../files/${dir}/${oldPath}`, `../files/${dir}/${newPath}`)
+    fs.renameSync(`${this.cwd()}/files/${dir}/${oldPath}`, `${this.cwd()}/files/${dir}/${newPath}`)
     return { status: true, code: ResponseType.SUCCESS }
   }
 
@@ -49,14 +54,19 @@ class FilesService {
     return { status: true, code: ResponseType.SUCCESS }
   }
 
+  cwd() {
+    if (process.cwd().includes('api')) return '..'
+    if (process.cwd() === '/app') return '.'
+  }
+
   private browse(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', subdir: string, domain: string): void {
     const fulldir = subdir === '' ? dir : `${dir}/${subdir}`
-    if (!fs.existsSync(`../files/${fulldir}`)) return
+    if (!fs.existsSync(`${this.cwd()}/files/${fulldir}`)) return
 
-    const files = fs.readdirSync(`../files/${fulldir}`)
+    const files = fs.readdirSync(`${this.cwd()}/files/${fulldir}`)
 
     files.forEach((name) => {
-      if (fs.statSync(`../files/${fulldir}/${name}`).isDirectory()) {
+      if (fs.statSync(`${this.cwd()}/files/${fulldir}/${name}`).isDirectory()) {
         this.browse(dir, `${subdir}/${name}`.replace(/^\/+/, ''), domain)
         this.filesArray.push({
           name,
@@ -65,16 +75,19 @@ class FilesService {
           type: 'FOLDER'
         })
       } else {
+        const fileHash = fs.readFileSync(`${this.cwd()}/files/${fulldir}/${name}`)
         let path = `${subdir}/`.split('\\').join('/').replace(/^\/+/, '')
-        let size = fs.statSync(`../files/${fulldir}/${name}`).size
-        let sha1 = crypto.createHash('sha1').update(`../files/${fulldir}/${name}`).digest('hex')
+        let size = fs.statSync(`${this.cwd()}/files/${fulldir}/${name}`).size
+        let sha1 = crypto.createHash('sha1').update(fileHash).digest('hex')
         let url = `${domain}/files/${fulldir}/${name}`.split('\\').join('/').replace(/^\/+/, '')
-        let type: 'ASSETS' | 'LIBRARIES' | 'MODS' | 'CONFIG' | 'JAVA' | 'NATIVES' | 'BOOTSTRAP' | 'BACKGROUND' | 'IMAGE' | 'OTHER' = path.includes('assets')
-          ? 'ASSETS'
+        let type: 'ASSET' | 'LIBRARY' | 'MOD' | 'CONFIG' | 'JAVA' | 'NATIVE' | 'BOOTSTRAP' | 'BACKGROUND' | 'IMAGE' | 'OTHER' = path.includes(
+          'assets'
+        )
+          ? 'ASSET'
           : path.includes('lib')
-            ? 'LIBRARIES'
+            ? 'LIBRARY'
             : path.includes('mods')
-              ? 'MODS'
+              ? 'MOD'
               : path.includes('config')
                 ? 'CONFIG'
                 : dir === 'bootstraps'

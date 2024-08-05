@@ -18,6 +18,8 @@ import NewsRouter from './routers/news.router'
 import BackgroundsRouter from './routers/backgrounds.router'
 import StatsRouter from './routers/stats.router'
 import { createProxyMiddleware } from 'http-proxy-middleware'
+import filesService from './services/files.service'
+import UpdateRouter from './routers/update.router'
 
 class App {
   private app: express.Application
@@ -74,5 +76,6 @@ new App([
   new MaintenanceRouter(),
   new NewsRouter(),
   new BackgroundsRouter(),
-  new StatsRouter()
+  new StatsRouter(),
+  new UpdateRouter()
 ]).listen()

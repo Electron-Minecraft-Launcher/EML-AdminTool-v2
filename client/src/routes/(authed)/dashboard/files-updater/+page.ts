@@ -3,10 +3,18 @@ import apiAuthService from '../../../../services/api/api-auth.service'
 import cookiesService from '../../../../services/cookies.service'
 import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
-import type { File } from '../../../../../../shared/models/features/file.model'
+import type { File, Loader, LoaderVersion } from '../../../../../../shared/models/features/file.model'
+import apiFilesUpdaterService from '../../../../services/api/api-filesupdater.service'
 
 export const load: PageLoad = async () => {
   let files: File[] = []
+  let loader: Loader = {
+    loader: 'vanilla',
+    minecraft_version: 'latest_release',
+    loader_version: null,
+    loader_type: 'client'
+  }
+  let loadersList: { vanilla: LoaderVersion[]; forge: LoaderVersion[] } = { vanilla: [], forge: [] }
 
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
@@ -21,5 +29,11 @@ export const load: PageLoad = async () => {
     throw redirect(300, '/login')
   }
 
-  return { files }
+  ;(await apiFilesUpdaterService.getLoader()).subscribe({
+    next: (res) => {
+      loader = res.body!.data!
+    }
+  })
+
+  return { files, loader, loadersList }
 }

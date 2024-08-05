@@ -3,7 +3,7 @@ import { DataHttpResponse } from '../../../shared/models/responses/http/data-htt
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import FilesUpdater from '../controllers/filesupdater.controller'
-import { File } from '../../../shared/models/features/file.model'
+import { File, Loader } from '../../../shared/models/features/file.model'
 import filesUpdaterMiddleware from '../middlewares/filesupdater.middleware'
 
 export default class FilesUpdaterRouter implements Route {
@@ -132,6 +132,63 @@ export default class FilesUpdaterRouter implements Route {
     this.router.delete(`${this.path}`, async (req: Request, res: Response<DataHttpResponse<File[]>>, next: NextFunction) => {
       try {
         const resp = await new FilesUpdater().deleteFiles(req, req.headers, req.body)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /files-updater/loader:
+     *   get:
+     *     tags:
+     *       - Files Updater
+     *     summary: Get loader
+     *     responses:
+     *       200:
+     *         description: Loader
+     */
+    this.router.get(`${this.path}/loader`, async (req: Request, res: Response<DataHttpResponse<Loader>>, next: NextFunction) => {
+      try {
+        const resp = await new FilesUpdater().getLoader(req)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (error: unknown) {
+        next(error as ControllerException)
+      }
+    })
+
+    /**
+     * @openapi
+     * /files-updater/loader:
+     *   put:
+     *     tags:
+     *      - Files Updater
+     *     security:
+     *      - bearer: []
+     *     summary: Change loader
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/x-www-form-urlencoded:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               loader:
+     *                 type: string
+     *               minecraft_version:
+     *                 type: string
+     *               loader_version:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Loader changed
+     *       401:
+     *         description: Unauthorized
+     */
+    this.router.put(`${this.path}/loader`, async (req: Request, res: Response<DataHttpResponse<Loader>>, next: NextFunction) => {
+      try {
+        const resp = await new FilesUpdater().putLoader(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
       } catch (error: unknown) {
         next(error as ControllerException)

@@ -19,6 +19,7 @@ export const load: LayoutLoad = async () => {
           language: 'en',
           name: 'EML',
           theme: 'eml',
+          version: ''
         }
       }
     },
@@ -27,6 +28,7 @@ export const load: LayoutLoad = async () => {
         language: 'en',
         name: 'EML',
         theme: 'eml',
+        version: ''
       }
     },
     finally: () => {

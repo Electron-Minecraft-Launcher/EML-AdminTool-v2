@@ -8,6 +8,7 @@ import db from '../utils/db'
 import dotenv from 'dotenv'
 import envService from './env.service'
 import pinService from './pin.service'
+import filesService from './files.service'
 
 class CheckerService {
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
@@ -61,7 +62,7 @@ class CheckerService {
 
   private checkDotEnv(): boolean {
     return (
-      fs.existsSync(path.join(process.cwd(), '/.env')) &&
+      fs.existsSync(path.join(`${filesService.cwd()}/api/.env`)) &&
       process.env['DATABASE_PASSWORD'] !== undefined &&
       process.env['JWT_SECRET_KEY'] !== undefined
     )

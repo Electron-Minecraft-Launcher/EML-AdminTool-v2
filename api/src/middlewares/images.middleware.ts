@@ -3,10 +3,10 @@ import nexter from '../utils/nexter'
 import authService from '../services/auth.service'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import multer from 'multer'
-import { RequestException } from '../responses/exceptions/request-exception.response'
 import fs from 'fs'
 import { ServerException } from '../responses/exceptions/server-exception.response'
 import crypto from 'crypto'
+import filesService from '../services/files.service'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,7 +23,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      const path = `../files/images`
+      const path = `${filesService.cwd()}/files/images`
       if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
       cb(null, path)
     },

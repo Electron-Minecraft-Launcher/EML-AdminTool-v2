@@ -46,40 +46,21 @@ class Maintenance {
       throw new UnauthorizedException()
     }
 
-    let countMaintenance: count
-
-    try {
-      countMaintenance = (await db.query<count[]>('SELECT COUNT(*) AS count FROM maintenance'))[0]
-    } catch (error: unknown) {
-      throw error as ServiceException
-    }
-
     const maintenance: Maintenance_ = {
       start_date: body.start_date && body.start_date != '' ? new Date(body.start_date) : null,
       end_date: body.end_date && body.end_date != '' ? new Date(body.end_date) : null,
       reason: body.reason || ''
     }
 
-    if (countMaintenance.count > 0) {
-      try {
-        await db.query(`UPDATE maintenance SET start_date = ?, end_date = ?, reason = ? WHERE id = 1`, [
-          maintenance.start_date,
-          maintenance.end_date,
-          maintenance.reason
-        ])
-      } catch (error: any) {
-        throw new DBException()
-      }
-    } else {
-      try {
-        await db.query(`INSERT INTO maintenance (start_date, end_date, reason) VALUES (?, ?, ?)`, [
-          maintenance.start_date,
-          maintenance.end_date,
-          maintenance.reason
-        ])
-      } catch (error: any) {
-        throw new DBException()
-      }
+    try {
+      await db.query(`DELETE FROM maintenance`)
+      await db.query(`INSERT INTO maintenance (start_date, end_date, reason) VALUES (?, ?, ?)`, [
+        maintenance.start_date,
+        maintenance.end_date,
+        maintenance.reason
+      ])
+    } catch (error: any) {
+      throw new DBException()
     }
 
     return await this.getMaintenanceStatus(req)

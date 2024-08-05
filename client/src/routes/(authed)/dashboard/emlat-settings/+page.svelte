@@ -86,13 +86,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Users</p>
       {#each data.users as account}
         {#if account.status == 1}
-          <button
-            class="list"
-            class:active={selectedAccount == account}
-            on:click={() => {
-              selectedAccount = account
-            }}
-          >
+          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -101,13 +95,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Waiting users</p>
       {#each data.users as account}
         {#if account.status == 0}
-          <button
-            class="list"
-            class:active={selectedAccount == account}
-            on:click={() => {
-              selectedAccount = account
-            }}
-          >
+          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -116,13 +104,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Wrong PIN users</p>
       {#each data.users as account}
         {#if account.status == -1}
-          <button
-            class="list"
-            class:active={selectedAccount == account}
-            on:click={() => {
-              selectedAccount = account
-            }}
-          >
+          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -131,20 +113,14 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Deleted users</p>
       {#each data.users as account}
         {#if account.status == -2}
-          <button
-            class="list"
-            class:active={selectedAccount == account}
-            on:click={() => {
-              selectedAccount = account
-            }}
-          >
+          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
       {/each}
     </div>
 
-    <div class="perms">
+    <div class="content-list">
       <UserManagement bind:selectedAccount />
     </div>
   </div>
@@ -156,15 +132,15 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   <div class="container">
     <div>
       <p class="label">{$l.dashboard.emlatSettings.dockerInfo}</p>
-        <p>{data.vps.os}</p>
+      <p>{data.vps.os}</p>
     </div>
 
     <div>
       <p class="label">{$l.dashboard.emlatSettings.storage}</p>
-        <span class="storage">
-          <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'} />
-        </span>
-        {Math.round((data.vps.storage[0] / data.vps.storage[1]) * 100)} %
+      <span class="storage">
+        <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'} />
+      </span>
+      {Math.round((data.vps.storage[0] / data.vps.storage[1]) * 100)} %
     </div>
   </div>
 </section>
@@ -183,6 +159,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 
 <style lang="scss">
   @import '../../../../assets/scss/dashboard.scss';
+  @import '../../../../assets/scss/list.scss';
 
   span.pin {
     filter: blur(5px);
@@ -209,46 +186,6 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       top: -1px;
       background: var(--primary-color);
       border-radius: 3px;
-    }
-  }
-
-  div.list-container {
-    display: flex;
-    flex: auto;
-    flex-wrap: nowrap;
-    gap: 0 50px;
-    // margin-top: 30px;
-
-    div.list {
-      display: block;
-      flex: 1;
-      width: 175px;
-      overflow-x: hidden;
-      min-height: 400px;
-      max-height: 600px;
-      overflow-y: auto;
-
-      button.list {
-        overflow-x: hidden;
-        background: none;
-        display: block;
-        width: 175px;
-        text-align: left;
-        margin-top: 5px;
-
-        &.active {
-          background: #f5f5f5;
-        }
-
-        &:hover {
-          background: #eeeeee;
-        }
-      }
-    }
-
-    div.perms {
-      flex: calc(100% - 400px);
-      position: relative;
     }
   }
 </style>

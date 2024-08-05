@@ -4,17 +4,19 @@
   import { afterUpdate, onMount } from 'svelte'
   import apiFilesUpdaterService from '../../../../services/api/api-filesupdater.service'
   import FilesUpdater from '../../../../components/FilesUpdater.svelte'
+  import ChangeLoaderModal from '../../../../components/modals/ChangeLoaderModal.svelte'
+  import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
 
   export let data: PageData
 
-  let ready = false
-
+  let filesReady = false
   let isDragOver = false
-
   let path: HTMLSpanElement
   let oldPath: string
-
   let currentPath = ''
+
+  let loadersReady = false
+  let showChangeLoaderModal = false
 
   $: currentPathSplit = currentPath.split('/')
 
@@ -38,13 +40,18 @@
   })
 
   const getData = async () => {
-    ready = false
+    filesReady = false
     ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
       next: (res) => {
         data.files = res.body.data!
-        ready = true
+        filesReady = true
       }
     })
+    data.loadersList = {
+      vanilla: await apiFilesUpdaterService.getMinecraftVersions(),
+      forge: await apiFilesUpdaterService.getForgeVersions()
+    }
+    loadersReady = true
     if (!data.files.find((file) => `${file.path}${file.name}/` === currentPath)) {
       currentPath = ''
     }
@@ -59,7 +66,7 @@
 
   async function handleDrop(e: DragEvent) {
     isDragOver = false
-    ready = false
+    filesReady = false
     if (!e.dataTransfer || e.dataTransfer.items.length === 0) return
     const items = await getAllEntries(e.dataTransfer.items)
 
@@ -84,7 +91,7 @@
     ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
       next: (res) => {
         data.files = res.body.data!
-        ready = true
+        filesReady = true
       }
     })
   }
@@ -143,7 +150,7 @@
 <!-- svelte-ignore missing-declaration -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <section
-  class="section"
+  class="section explorer"
   style="position: relative;"
   class:drag={isDragOver}
   on:dragover|preventDefault={() => (isDragOver = true)}
@@ -164,13 +171,67 @@
     </span>
   </h3>
 
-  <FilesUpdater bind:data bind:currentPath bind:ready {getData} />
+  <FilesUpdater bind:data bind:currentPath bind:ready={filesReady} {getData} />
 </section>
+
+<section class="section">
+  {#if !loadersReady}
+    <LoadingSplash transparent></LoadingSplash>
+  {/if}
+
+  <button class="secondary right" on:click={() => (showChangeLoaderModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
+
+  <h3>Minecraft loader</h3>
+
+  <div class="container">
+    <div>
+      <p class="label">Minecraft version</p>
+      <p>
+        {data.loader.minecraft_version === 'latest_release'
+          ? 'Latest release'
+          : data.loader.minecraft_version === 'latest_snapshot'
+            ? 'Latest snapshot'
+            : data.loader.minecraft_version}
+      </p>
+    </div>
+
+    <div>
+      <p class="label">Loader</p>
+      <p>
+        {data.loader.loader === 'forge'
+          ? 'Forge'
+          : data.loader.loader === 'fabric'
+            ? 'Fabric'
+            : data.loader.loader === 'neoforge'
+              ? 'NeoForge'
+              : 'Vanilla'}
+      </p>
+    </div>
+
+    <div>
+      <p class="label">Loader version</p>
+      <p>{data.loader.loader_version || '-'}</p>
+    </div>
+
+    <div>
+      <p class="label">
+        Loader type (auto)&nbsp;&nbsp;<i
+          class="fa-solid fa-circle-question"
+          title="This field is automatically deduced from the loader version."
+          style="cursor: help"
+        ></i>
+      </p>
+      <p>{data.loader.loader_type === 'installer' ? 'Installer' : data.loader.loader_type === 'universal' ? 'Universal' : 'Client'}</p>
+    </div>
+  </div>
+</section>
+
+<ChangeLoaderModal bind:show={showChangeLoaderModal} bind:data bind:ready={loadersReady} />
 
 <style lang="scss">
   @import '../../../../assets/scss/dashboard.scss';
 
-  section.section {
+  section.section.explorer {
     &.drag::after {
       content: '\e09a';
       font-family: 'FontAwesome';
@@ -189,71 +250,71 @@
       border: 3px dashed rgba(194, 81, 5, 0.75);
       z-index: 1000;
     }
-  }
 
-  h3 {
-    span {
-      display: inline-block;
-      max-width: 730px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      height: 53px;
-      white-space: nowrap;
-      vertical-align: top;
-
-      i.fa-solid.fa-caret-right {
-        margin: 0 5px;
+    h3 {
+      span {
         display: inline-block;
-        line-height: 29px;
-        padding: 10px 0;
-      }
-
-      &.scrolled-left::before {
-        content: '';
-        position: absolute;
-        top: 50px;
-        left: 103px;
-        width: 60px;
+        max-width: 730px;
+        overflow-x: auto;
+        overflow-y: hidden;
         height: 53px;
-        background: linear-gradient(to right, white, transparent);
-        z-index: 10;
+        white-space: nowrap;
+        vertical-align: top;
+
+        i.fa-solid.fa-caret-right {
+          margin: 0 5px;
+          display: inline-block;
+          line-height: 29px;
+          padding: 10px 0;
+        }
+
+        &.scrolled-left::before {
+          content: '';
+          position: absolute;
+          top: 50px;
+          left: 103px;
+          width: 60px;
+          height: 53px;
+          background: linear-gradient(to right, white, transparent);
+          z-index: 10;
+        }
+
+        &.scrolled-right::after {
+          content: '';
+          position: absolute;
+          top: 50px;
+          left: 774px;
+          width: 60px;
+          height: 53px;
+          background: linear-gradient(to right, transparent, white);
+          z-index: 10;
+        }
       }
 
-      &.scrolled-right::after {
-        content: '';
-        position: absolute;
-        top: 50px;
-        left: 774px;
-        width: 60px;
-        height: 53px;
-        background: linear-gradient(to right, transparent, white);
-        z-index: 10;
-      }
-    }
-
-    button {
-      display: inline;
-      border-bottom: none;
-      color: black;
-      font-size: 18.72px;
-      border-radius: 5px;
-      padding: 10px 15px;
-      font-weight: bold;
-      position: relative;
-      overflow: hidden;
-      white-space: nowrap;
-      font-family: 'Poppins';
-      background: none;
-      vertical-align: top;
-
-      &:hover {
-        color: var(--primary-color-hover);
-        background: #eeeeee;
+      button {
+        display: inline;
+        border-bottom: none;
         color: black;
-      }
+        font-size: 18.72px;
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-weight: bold;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        font-family: 'Poppins';
+        background: none;
+        vertical-align: top;
 
-      &.active {
-        background: #f5f5f5;
+        &:hover {
+          color: var(--primary-color-hover);
+          background: #eeeeee;
+          color: black;
+        }
+
+        &.active {
+          background: #f5f5f5;
+        }
       }
     }
   }

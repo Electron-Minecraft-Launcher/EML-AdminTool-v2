@@ -3,7 +3,14 @@ import type { DataHttpResponse } from '../../../../shared/models/responses/http/
 import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
 import type { EMLAdminToolInfo } from '../../../../shared/models/features/emlat-info.model'
 import type { User } from '../../../../shared/models/features/user.model'
-import type { File as File_ } from '../../../../shared/models/features/file.model'
+import type {
+  File as File_,
+  ForgeManifest,
+  ForgePromotions,
+  Loader,
+  LoaderVersion,
+  MinecraftManifest
+} from '../../../../shared/models/features/file.model'
 
 class ApiFilesUpdaterService {
   async getFilesUpdater() {
@@ -13,7 +20,6 @@ class ApiFilesUpdaterService {
   async uploadFiles(path: string, files: File[]) {
     let body = new FormData()
     body.set('path', path)
-    console.log(files.length, files)
     for (let i = 0; i < files.length; i++) {
       body.append('files[]', files[i])
     }
@@ -26,6 +32,63 @@ class ApiFilesUpdaterService {
 
   async deleteFiles(paths: string[]) {
     return await http.delete<DataHttpResponse<File_[]>>('/api/files-updater', { paths: JSON.stringify(paths) })
+  }
+
+  async getLoader() {
+    return await http.get<DataHttpResponse<Loader>>('/api/files-updater/loader')
+  }
+
+  async putLoader(loader: Loader) {
+    return await http.put<DataHttpResponse<Loader>>('/api/files-updater/loader', loader)
+  }
+
+  async getMinecraftVersions(): Promise<LoaderVersion[]> {
+    const res: MinecraftManifest = await fetch('https://piston-meta.mojang.com/mc/game/version_manifest.json')
+      .then((res) => res.json())
+      .catch((err) => err)
+
+    let versions: LoaderVersion[] = [
+      { minecraftVersion: 'Latest', loaderVersion: 'latest_release', type: ['release'] },
+      { minecraftVersion: 'Latest', loaderVersion: 'latest_snapshot', type: ['snapshot'] }
+    ]
+    let release = 'Latest'
+    for (const version of res.versions) {
+      if (version.type === 'release') release = version.id.split('.').slice(0, 2).join('.')
+      versions.push({
+        minecraftVersion: release,
+        loaderVersion: version.id,
+        type: [version.type]
+      })
+    }
+    
+    return versions
+  }
+
+  async getForgeVersions() {
+    const res1: ForgeManifest = await fetch('https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json')
+      .then((res) => res.json())
+      .catch((err) => err)
+
+    const res2: ForgePromotions = await fetch('https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json')
+      .then((res) => res.json())
+      .catch((err) => err)
+    let versions: LoaderVersion[] = []
+    for (const [version, data] of Object.entries(res1)) {
+      versions.push(
+        ...data.map((v) => ({ minecraftVersion: version.split('.').slice(0, 2).join('.'), loaderVersion: v, type: ['default' as 'default'] }))
+      )
+    }
+    for (const [version, data] of Object.entries(res2.promos)) {
+      const minecraftVersion = version.split('-')[0]
+      const type = version.split('-')[1] as 'recommended' | 'latest'
+      const i = versions.findIndex((v) => v.loaderVersion.startsWith(`${minecraftVersion}-${data}`))
+      versions[i].type =
+        (versions[i].type.includes('recommended') || versions[i].type.includes('latest')) && !versions[i].type.includes(type)
+          ? ['latest', 'recommended']
+          : [type]
+    }
+
+    return versions.reverse()
   }
 }
 

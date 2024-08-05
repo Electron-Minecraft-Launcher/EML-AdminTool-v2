@@ -6,6 +6,8 @@ import { ResponseType } from '../../../shared/models/types'
 import { Config } from '../../../shared/models/configurations/config.model'
 import { User } from '../../../shared/models/features/user.model'
 import db from '../utils/db'
+import filesService from './files.service'
+import pkg from '../../../package.json'
 
 class EnvService {
   setEnv(dbPassword?: string): DefaultServiceResponse {
@@ -28,7 +30,7 @@ class EnvService {
 
     try {
       fs.writeFileSync(
-        path.join(process.cwd(), '/.env'),
+        path.join(`${filesService.cwd()}/api/.env`),
         `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #          DO NOT MODIFY OR DELETE THIS FILE          #
 #                                                     #
@@ -67,10 +69,12 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
       language: string
       name: string
       theme: string
+      version: string
     } = {
       language: 'en',
       name: 'EML',
-      theme: 'eml'
+      theme: 'eml',
+      version: ''
     }
 
     try {
@@ -87,6 +91,7 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
     env.language = config.find((language) => language.data == 'language')?.value || 'en'
     env.name = name[0] && name[0].name ? name[0].name : 'EML'
     env.theme = config.find((theme) => theme.data == 'theme')?.value || 'eml'
+    env.version = pkg.version
 
     return env
   }

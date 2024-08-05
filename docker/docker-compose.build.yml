@@ -22,6 +22,7 @@ services:
       PORT: 4000
     volumes:
       - files:/app/files
+      - api/.env:/app/api/.env
     ports:
       - '3000:3000'
     depends_on:
