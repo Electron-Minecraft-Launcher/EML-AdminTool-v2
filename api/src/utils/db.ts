@@ -45,7 +45,7 @@ class Database {
    * @returns The escaped string
    */
   escapeHtml(value: string): string {
-    return value.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('&', '&amp;')
+    return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
   }
 
   /**
