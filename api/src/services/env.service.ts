@@ -1,21 +1,18 @@
 import fs from 'fs'
 import path from 'path'
 import dotenv from 'dotenv'
-import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
-import { ResponseType } from '../../../shared/models/types'
-import { Config } from '../../../shared/models/configurations/config.model'
-import { User } from '../../../shared/models/features/user.model'
+import { DefaultServiceResponse } from '../../../shared/types/responses/services/default-service-response'
+import { ResponseType } from '../../../shared/types/types'
+import { Config } from '../../../shared/types/configurations/config'
+import { User } from '../../../shared/types/features/user'
 import db from '../utils/db'
 import filesService from './files.service'
 import pkg from '../../../package.json'
+import crypto from 'crypto'
 
 class EnvService {
-  setEnv(dbPassword?: string): DefaultServiceResponse {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%^&*()_+-=[]{};:<>,.?/'
-    let jwtSecretKey = ''
-    for (let i = 0; i < 128; i++) {
-      jwtSecretKey += characters[Math.floor(Math.random() * characters.length)]
-    }
+  async setEnv(dbPassword?: string): Promise<DefaultServiceResponse> {
+    let jwtSecretKey = crypto.randomBytes(32).toString('hex')
 
     if (!dbPassword) dbPassword = 'eml'
 

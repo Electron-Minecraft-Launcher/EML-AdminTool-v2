@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
 import dateFormat from 'moment'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
 import { ControllerException } from '../responses/types'
 
 const middleware = (err: ControllerException, req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {

@@ -5,12 +5,12 @@ import nexter from '../utils/nexter'
 import authService from './auth.service'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import { ServerException } from '../responses/exceptions/server-exception.response'
-import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
-import { ResponseType } from '../../../shared/models/types'
-import { File } from '../../../shared/models/features/file.model'
+import { DefaultServiceResponse } from '../../../shared/types/responses/services/default-service-response'
+import { ResponseType } from '../../../shared/types/types'
+import { File } from '../../../shared/types/features/file'
 import crypto from 'crypto'
 import { RequestException } from '../responses/exceptions/request-exception.response'
-import https from 'https'
+import path_ from 'path'
 
 class FilesService {
   private filesArray: File[] = []
@@ -23,40 +23,56 @@ class FilesService {
   }
 
   rename(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', oldPath: string, newPath: string): DefaultServiceResponse {
-    if (!fs.existsSync(`${this.cwd()}/files/${dir}/${oldPath}`)) {
-      return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
-    }
-
-    if (
-      oldPath.includes('../') ||
-      oldPath.includes('..\\') ||
-      oldPath === '..' ||
-      newPath.includes('../') ||
-      newPath.includes('..\\') ||
-      newPath === '..'
-    ) {
+    try {
+      oldPath = this.sanitize('files', dir, oldPath)
+      newPath = this.sanitize('files', dir, newPath)
+    } catch (error) {
       return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
     }
 
-    fs.renameSync(`${this.cwd()}/files/${dir}/${oldPath}`, `${this.cwd()}/files/${dir}/${newPath}`)
+    if (!fs.existsSync(oldPath)) {
+      return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+    }
+
+    fs.renameSync(oldPath, newPath)
+
     return { status: true, code: ResponseType.SUCCESS }
   }
 
   delete(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', paths: string[]): DefaultServiceResponse {
     paths.forEach((path) => {
-      if (!fs.existsSync(`../files/${dir}/${path}`)) return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
-      if (path.includes('../') || path.includes('..\\') || path === '..')
+      try {
+        path = this.sanitize('files', dir, path)
+      } catch (error) {
         return { status: false, code: ResponseType.CLIENT_ERROR, message: 'Invalid path' }
+      }
 
-      fs.rmSync(`../files/${dir}/${path}`, { recursive: true })
+      if (!fs.existsSync(path)) {
+        return { status: false, code: ResponseType.CLIENT_ERROR, message: 'No file or folder' }
+      }
+
+      fs.rmSync(path, { recursive: true })
     })
 
     return { status: true, code: ResponseType.SUCCESS }
   }
 
+  /**
+   * @param path The path to sanitize (relative to the **app root**).
+   */
+  sanitize(...path: string[]): string {
+    const root = path_.join(process.cwd(), this.cwd())
+    const p = path_.join(...path).replace(/^\\+/, '')
+    const sanitizedPath = path_.resolve(root, p)
+    if (!sanitizedPath.startsWith(root)) {
+      throw 'Invalid path'
+    }
+    return sanitizedPath
+  }
+  
   cwd() {
     if (process.cwd().includes('api')) return '..'
-    if (process.cwd() === '/app') return '.'
+    return '.'
   }
 
   private browse(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', subdir: string, domain: string): void {

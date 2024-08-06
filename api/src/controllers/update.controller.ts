@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
-import { ResponseType } from '../../../shared/models/types'
+import { ResponseType } from '../../../shared/types/types'
 import { DefaultSuccess } from '../responses/success/default-success.response'
 import { IncomingHttpHeaders } from 'http'
 import authService from '../services/auth.service'

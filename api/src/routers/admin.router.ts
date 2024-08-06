@@ -1,8 +1,8 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { EMLAdminToolInfo } from '../../../shared/models/features/emlat-info.model'
-import { User } from '../../../shared/models/features/user.model'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { EMLAdminToolInfo } from '../../../shared/types/features/emlat-info'
+import { User } from '../../../shared/types/features/user'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
+import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import Admin from '../controllers/admin.controller'
@@ -35,6 +35,7 @@ export default class AdminRouter implements Route {
       try {
         const resp = await new Admin().getAdminToolInfo(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+        console.log('here')
       } catch (error: unknown) {
         next(error as ControllerException)
       }

@@ -1,31 +1,17 @@
 import type { PageLoad } from './$types'
-import apiAuthService from '../../../../services/api/api-auth.service'
 import apiAdminService from '../../../../services/api/api-admin.service'
 import cookiesService from '../../../../services/cookies.service'
-import notificationsService from '../../../../services/notifications.service'
-import { user } from '../../../../services/store'
 import { redirect } from '@sveltejs/kit'
-import type { EMLAT, VPS } from '../../../../../../shared/models/features/emlat-info.model'
-import type { User } from '../../../../../../shared/models/features/user.model'
+import type { EMLAT, VPS } from '../../../../../../shared/types/features/emlat-info'
+import type { User } from '../../../../../../shared/types/features/user'
 
-export const load: PageLoad = async () => {
+export const load: PageLoad = async ({ parent }) => {
   let emlat!: EMLAT
   let users!: User[]
   let vps!: VPS
 
-  if (cookiesService.get('JWT')) {
-    ;(await apiAuthService.getVerify()).subscribe({
-      next: (res) => {
-        user.set(res.body!.data!.user)
-        if (!res.body.data?.user.admin) {
-          notificationsService.update({ type: 'ERROR', code: 'permission' })
-          throw redirect(300, '/dashboard')
-        }
-      }
-    })
-  } else {
-    throw redirect(300, '/login')
-  }
+  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
+  if (!(await parent()).user.admin) throw redirect(300, '/dashboard')
 
   ;(await apiAdminService.getAdminTool()).subscribe({
     next: (res) => {
@@ -35,5 +21,5 @@ export const load: PageLoad = async () => {
     }
   })
 
-  return { emlat, users, vps}
+  return { emlat, users, vps }
 }

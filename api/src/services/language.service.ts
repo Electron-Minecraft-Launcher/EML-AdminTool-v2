@@ -1,4 +1,4 @@
-import { Config } from '../../../shared/models/configurations/config.model'
+import { Config } from '../../../shared/types/configurations/config'
 import db from '../utils/db'
 
 class LanguageService {

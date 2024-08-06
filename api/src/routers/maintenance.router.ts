@@ -1,9 +1,9 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import Bootstraps from '../controllers/bootstraps.controller'
-import { Maintenance as Maintenance_ } from '../../../shared/models/features/maintenance.model'
+import { Maintenance as Maintenance_ } from '../../../shared/types/features/maintenance'
 import Maintenance from '../controllers/maintenance.controller'
 
 export default class MaintenanceRouter implements Route {

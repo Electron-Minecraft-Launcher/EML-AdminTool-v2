@@ -1,8 +1,8 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
-import type { EMLAdminToolInfo } from '../../../../shared/models/features/emlat-info.model'
-import type { User } from '../../../../shared/models/features/user.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { DefaultHttpResponse } from '../../../../shared/types/responses/http/default-http-response'
+import type { EMLAdminToolInfo } from '../../../../shared/types/features/emlat-info'
+import type { User } from '../../../../shared/types/features/user'
 
 class ApiAdminService {
   async getAdminTool() {

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import checkerService from '../services/checker.service'
-import { ResponseType } from '../../../shared/models/types'
+import { ResponseType } from '../../../shared/types/types'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import { ConfigurationException } from '../responses/exceptions/configuration-exception.response'
 import { ServerException } from '../responses/exceptions/server-exception.response'

@@ -1,8 +1,6 @@
 import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
-import { ResponseType, count } from '../../../shared/models/types'
-import { File } from '../../../shared/models/features/file.model'
-import filesService from '../services/files.service'
+import { ResponseType } from '../../../shared/types/types'
 import { IncomingHttpHeaders } from 'http'
 import nexter from '../utils/nexter'
 import authService from '../services/auth.service'
@@ -10,7 +8,7 @@ import { ServiceException } from '../responses/types'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
 import db from '../utils/db'
 import { DBException } from '../responses/exceptions/db-exception.response'
-import { Maintenance as Maintenance_ } from '../../../shared/models/features/maintenance.model'
+import { Maintenance as Maintenance_ } from '../../../shared/types/features/maintenance'
 
 class Maintenance {
   async getMaintenanceStatus(req: Request): Promise<DataSuccess<Maintenance_>> {

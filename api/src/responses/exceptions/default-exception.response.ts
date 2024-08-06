@@ -1,4 +1,4 @@
-import { Code, ErrorCode } from "../../../../shared/models/types"
+import { Code, ErrorCode } from "../../../../shared/types/types"
 
 export class DefaultException {
   httpStatus: number

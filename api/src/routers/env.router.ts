@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from 'express'
 import { Route } from '../services/routes.model'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import Env from '../controllers/env.controller'
 
 export default class EnvRouter implements Route {

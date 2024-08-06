@@ -1,11 +1,11 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import Backgrounds from '../controllers/backgrounds.controller'
 import backgroundsMiddleware from '../middlewares/backgrounds.middleware'
-import { BootstrapsRes } from '../../../shared/models/features/bootstraps.model'
-import { BackgroundsRes } from '../../../shared/models/features/background.model'
+import { BootstrapsRes } from '../../../shared/types/features/bootstraps'
+import { BackgroundsRes } from '../../../shared/types/features/background'
 
 export default class BackgroundsRouter implements Route {
   path = '/backgrounds'

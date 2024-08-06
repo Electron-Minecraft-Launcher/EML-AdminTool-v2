@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
-import { ResponseType, count } from '../../../shared/models/types'
-import { File } from '../../../shared/models/features/file.model'
+import { ResponseType, count } from '../../../shared/types/types'
+import { File } from '../../../shared/types/features/file'
 import filesService from '../services/files.service'
 import { IncomingHttpHeaders } from 'http'
 import nexter from '../utils/nexter'
@@ -11,7 +11,7 @@ import { UnauthorizedException } from '../responses/exceptions/unauthorized-exce
 import { RequestException } from '../responses/exceptions/request-exception.response'
 import db from '../utils/db'
 import { DBException } from '../responses/exceptions/db-exception.response'
-import { BootstrapsRes, Bootstraps as Bootstraps_ } from '../../../shared/models/features/bootstraps.model'
+import { BootstrapsRes, Bootstraps as Bootstraps_ } from '../../../shared/types/features/bootstraps'
 
 class Bootstraps {
   async getBootstraps(req: Request): Promise<DataSuccess<BootstrapsRes>> {

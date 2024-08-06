@@ -1,6 +1,6 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { Maintenance } from '../../../../shared/models/features/maintenance.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { Maintenance } from '../../../../shared/types/features/maintenance.'
 
 class ApiMaintenanceService {
   async getMaintenanceStatus() {

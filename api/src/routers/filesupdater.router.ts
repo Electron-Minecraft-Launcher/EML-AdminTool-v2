@@ -1,9 +1,9 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import FilesUpdater from '../controllers/filesupdater.controller'
-import { File, Loader } from '../../../shared/models/features/file.model'
+import { File, Loader } from '../../../shared/types/features/file'
 import filesUpdaterMiddleware from '../middlewares/filesupdater.middleware'
 
 export default class FilesUpdaterRouter implements Route {

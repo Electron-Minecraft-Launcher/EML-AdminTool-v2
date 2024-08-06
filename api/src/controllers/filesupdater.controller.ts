@@ -1,8 +1,8 @@
 import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
 import envService from '../services/env.service'
-import { ResponseType } from '../../../shared/models/types'
-import { File, Loader } from '../../../shared/models/features/file.model'
+import { ResponseType } from '../../../shared/types/types'
+import { File, Loader } from '../../../shared/types/features/file'
 import filesService from '../services/files.service'
 import { IncomingHttpHeaders } from 'http'
 import nexter from '../utils/nexter'
@@ -22,7 +22,9 @@ class FilesUpdater {
 
   async uploadFiles(req: Request): Promise<DataSuccess<File[]>> {
     const basePath =
-      req.body && req.body.path ? `${filesService.cwd()}/files/files-updater/${req.body.path}/` : `${filesService.cwd()}/files/files-updater/`
+      req.body && req.body.path
+        ? filesService.sanitize('files', 'files-updater', req.body.path) + '\\'
+        : filesService.sanitize('files', 'files-updater') + '\\'
 
     if (!fs.existsSync(basePath)) fs.mkdirSync(basePath, { recursive: true })
 
@@ -92,13 +94,6 @@ class FilesUpdater {
   }
 
   async getLoader(req: Request): Promise<DataSuccess<Loader>> {
-    const defaultResponse = new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
-      loader: 'vanilla',
-      minecraft_version: 'latest_release',
-      loader_version: 'latest_release',
-      loader_type: 'client'
-    } as Loader)
-
     let loader: Loader
 
     try {
@@ -107,7 +102,14 @@ class FilesUpdater {
       throw new DBException()
     }
 
-    if (!loader || !loader.id) return defaultResponse
+    if (!loader || !loader.id) {
+      return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
+        loader: 'vanilla',
+        minecraft_version: 'latest_release',
+        loader_version: 'latest_release',
+        loader_type: 'client'
+      })
+    }
 
     delete loader.id
 

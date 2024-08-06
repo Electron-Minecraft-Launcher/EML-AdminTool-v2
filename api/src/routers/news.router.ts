@@ -1,13 +1,10 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
-import Bootstraps from '../controllers/bootstraps.controller'
-import { Maintenance as Maintenance_ } from '../../../shared/models/features/maintenance.model'
-import Maintenance from '../controllers/maintenance.controller'
-import { NewsCategory, NewsCategoryRes, NewsTag, News as News_ } from '../../../shared/models/features/news.model'
+import { NewsCategory, NewsCategoryRes, NewsTag, News as News_ } from '../../../shared/types/features/news'
 import News from '../controllers/news.controller'
-import { File } from '../../../shared/models/features/file.model'
+import { File } from '../../../shared/types/features/file'
 import imagesMiddleware from '../middlewares/images.middleware'
 
 export default class NewsRouter implements Route {

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
 import dateFormat from 'moment'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
-import { ResponseType } from '../../../shared/models/types'
+import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
+import { ResponseType } from '../../../shared/types/types'
 
 const middleware = (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/files')) {

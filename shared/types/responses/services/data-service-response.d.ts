@@ -1,4 +1,4 @@
-import { DefaultServiceResponse } from './default-service-response.model'
+import { DefaultServiceResponse } from './default-service-response'
 
 export interface DataServiceResponse<T> extends DefaultServiceResponse {
   data?: T

@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { ResponseType, SuccessCode } from '../../../../shared/models/types'
+import { ResponseType, SuccessCode } from '../../../../shared/types/types'
 import { Request } from 'express'
 
 export class DefaultSuccess {
@@ -11,7 +11,5 @@ export class DefaultSuccess {
     this.httpStatus = httpStatus
     this.code = code
     this.message = message
-
-    console.log(`LOG  ${moment().format('YYYY-MM-DD HH:mm:ss')}  ${req.ip} ${req.method} ${req.path}`)
   }
 }

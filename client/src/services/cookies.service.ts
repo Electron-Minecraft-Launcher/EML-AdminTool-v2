@@ -1,4 +1,4 @@
-import type { Cookie } from '../../../shared/models/data/cookie.model'
+import type { Cookie } from '../../../shared/types/data/cookie'
 
 class CookiesService {
   get(name: string): string {

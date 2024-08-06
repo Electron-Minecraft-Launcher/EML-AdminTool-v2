@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { ResponseType, SuccessCode } from '../../../../shared/models/types'
+import { ResponseType, SuccessCode } from '../../../../shared/types/types'
 import { DefaultSuccess } from './default-success.response'
 
 export class DataSuccess<T> extends DefaultSuccess {

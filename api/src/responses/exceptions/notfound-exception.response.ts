@@ -1,4 +1,4 @@
-import { ResponseType } from '../../../../shared/models/types'
+import { ResponseType } from '../../../../shared/types/types'
 import { DefaultException } from './default-exception.response'
 
 export class NotFoundException extends DefaultException {

@@ -1,18 +1,18 @@
 export interface User {
   /**
-   * In the JWT as `sub`
+   * In the JWT as `sub`.
    */
   id?: number
   /**
-   * In the JWT
+   * In the JWT.
    */
   name?: string
   /**
-   * Not in the JWT
+   * **Not** in the JWT.
    */
   password?: string
   /**
-   * Not in the JWT
+   * **Not** in the JWT.
    *
    * ` 1` Accepted
    *
@@ -24,9 +24,9 @@ export interface User {
    */
   status?: number
   /**
-   * **In** the JWT
+   * **In** the JWT.
    *
-   * `p_*` are **not** in the JWT
+   * `p_*` **are** in the JWT.
    */
   admin?: number
   p_files_updater_add_del?: number
