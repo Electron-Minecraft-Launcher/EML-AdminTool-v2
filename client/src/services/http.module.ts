@@ -134,7 +134,9 @@ class Http {
       goto('/configure')
     }
 
-    if (response.body.code == 'AUTH_ERROR') {
+    if (response.body.code == 'TOO_MANY_REQUESTS_ERROR') {
+      notificationsService.update({ type: 'ERROR', code: 'tmr' })
+    } else if (response.body.code == 'AUTH_ERROR') {
       if (url.includes('/auth')) {
         notificationsService.update({ type: 'ERROR', code: 'auth' })
       } else if (

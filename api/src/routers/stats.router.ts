@@ -35,8 +35,8 @@ export default class StatsRouter implements Route {
       try {
         const resp = await new Stats().getStats(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -64,8 +64,8 @@ export default class StatsRouter implements Route {
       try {
         const resp = await new Stats().postStat(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -86,8 +86,8 @@ export default class StatsRouter implements Route {
       try {
         const resp = await new Stats().deleteStats(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

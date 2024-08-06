@@ -1,11 +1,22 @@
-import { RequestHandler } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
+import { DefaultResponse } from '../responses/response.response'
 
-const middleware: RequestHandler = async (req, res, next) => {
+const middleware = async (req: Request, res: Response, next: NextFunction) => {
   const send = res.send
-  res.send = function (body: any) {
-    console.log(`LOG  ${moment().format('YYYY-MM-DD HH:mm:ss')}  ${req.ip} ${req.method} ${req.path}`)
-    return send.call(this, body)
+  res.send = function (body: DefaultResponse) {
+    if (typeof body === 'object') {
+      if (body.code === 'SUCCESS') {
+        console.log(
+          `LOG  ${moment().format('YYYY-MM-DD HH:mm:ss')}  ${req.ip} ${req.method} ${!req.path.startsWith('/api') ? '/api' + req.path : req.path}`
+        )
+      } else {
+        console.error(
+          `ERR  ${moment().format('YYYY-MM-DD HH:mm:ss')}  ${req.ip} ${req.method} ${!req.path.startsWith('/api') ? '/api' + req.path : req.path} with code ${res.statusCode} and message '${body.message}'`
+        )
+      }
+    }
+    return send.call(res, body)
   }
   next()
 }

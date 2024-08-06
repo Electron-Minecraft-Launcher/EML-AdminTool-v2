@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { User } from '../../../shared/models/features/user.model'
+  import type { User } from '../../../shared/types/features/user'
   import { user, l } from '../services/store'
   import AcceptEditAccountModal from './modals/AcceptEditAccountModal.svelte'
   import apiAdminService from '../services/api/api-admin.service'

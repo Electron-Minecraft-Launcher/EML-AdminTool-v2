@@ -9,7 +9,6 @@ export const load: LayoutLoad = async () => {
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
       next: (res) => {
-        console.log(res.body!.data!.user)
         user.set(res.body!.data!.user)
         return { user: res.body!.data!.user }
       },

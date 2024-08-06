@@ -30,17 +30,14 @@ export default class AuthRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(
-      `${this.path}/auth`,
-      async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
-        try {
-          const resp = await new Auth().auth(req, req.headers)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.get(`${this.path}/auth`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
+      try {
+        const resp = await new Auth().auth(req, req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
-    )
+    })
 
     /**
      * @openapi
@@ -57,17 +54,14 @@ export default class AuthRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(
-      `${this.path}/verify`,
-      async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
-        try {
-          const resp = await new Auth().verify(req, req.headers)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.get(`${this.path}/verify`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
+      try {
+        const resp = await new Auth().verify(req, req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
-    )
+    })
 
     /**
      * @openapi
@@ -101,8 +95,8 @@ export default class AuthRouter implements Route {
         try {
           const resp = await new Auth().register(req, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -124,8 +118,8 @@ export default class AuthRouter implements Route {
       try {
         const resp = await new Auth().logout(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { invalidateAll } from '$app/navigation'
-  import type { File } from '../../../../shared/models/features/file.model'
-  import type { NewsTag } from '../../../../shared/models/features/news.model'
+  import type { NewsTag } from '../../../../shared/types/features/news'
   import type { PageData } from '../../routes/(authed)/dashboard/news/$types'
   import apiNewsService from '../../services/api/api-news.service'
   import { l } from '../../services/store'
@@ -23,7 +22,6 @@
   }
 
   async function submit() {
-    console.log(title, color)
     if (action.action === 'add') {
       ;(await apiNewsService.postTag({ title, color })).subscribe({
         next: (res) => {

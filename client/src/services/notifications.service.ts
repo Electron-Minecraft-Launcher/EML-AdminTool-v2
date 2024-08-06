@@ -10,6 +10,9 @@ class NotificationsService {
 
   async update(notification: { type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'; code: string }) {
     switch (notification.code) {
+      case 'tmr':
+        this.set({ type: 'ERROR', content: 'Too many requests. Please refresh the page in few minutes.' })
+        break
       case 'login':
         this.set({ type: 'ERROR', content: 'Please log in again.' })
         break

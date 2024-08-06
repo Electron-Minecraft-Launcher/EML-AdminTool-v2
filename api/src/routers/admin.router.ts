@@ -35,9 +35,8 @@ export default class AdminRouter implements Route {
       try {
         const resp = await new Admin().getAdminToolInfo(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        console.log('here')
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -73,8 +72,8 @@ export default class AdminRouter implements Route {
       try {
         const resp = await new Admin().putAdminToolInfo(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -97,8 +96,8 @@ export default class AdminRouter implements Route {
       try {
         const resp = await new Admin().getUsers(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -127,8 +126,8 @@ export default class AdminRouter implements Route {
         try {
           const resp = await new Admin().getUser(req, req.headers, req.params.user_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -199,8 +198,8 @@ export default class AdminRouter implements Route {
         try {
           const resp = await new Admin().putUser(req, req.headers, req.body, req.params.user_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -232,8 +231,8 @@ export default class AdminRouter implements Route {
         try {
           const resp = await new Admin().deleteUser(req, req.headers, req.params.user_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )

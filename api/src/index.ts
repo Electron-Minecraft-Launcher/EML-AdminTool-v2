@@ -2,8 +2,6 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { Route } from './services/routes.model'
 import bodyParser from 'body-parser'
-import notFoundMiddleware from './middlewares/notfound.middleware'
-import errorMiddleware from './middlewares/error.middleware'
 import checkerMiddleware from './middlewares/checker.middleware'
 import DefaultRouter from './routers/default.router'
 import ConfigureRouter from './routers/configure.router'
@@ -20,8 +18,9 @@ import StatsRouter from './routers/stats.router'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import rateLimit, { Options } from 'express-rate-limit'
 import UpdateRouter from './routers/update.router'
-import { TooManyRequestException } from './responses/exceptions/toomanyrequest-exception.response copy'
 import responseMiddleware from './middlewares/response.middleware'
+import { ResponseType } from '../../shared/types/types'
+import notFountMiddleware from './middlewares/notfound.middleware'
 
 class App {
   private app: express.Express
@@ -40,7 +39,7 @@ class App {
     this.app = express()
     this.apiPort = apiPort || 3000
     this.clientPort = clientPort || (process.env.PORT ? +process.env.PORT : process.env.NODE_ENV === 'production' ? 4000 : 5173)
-    this.rateLimiter = { windowMs: 60 * 1000, limit: 40, message: new  TooManyRequestException()}
+    this.rateLimiter = { windowMs: 60 * 1000 * 10, limit: 500, message: { code: ResponseType.TOO_MANY_REQUESTS_ERROR, message: 'Too many requests' } }
 
     dotenv.config()
 
@@ -54,15 +53,15 @@ class App {
   }
 
   private init(routes: Route[]) {
-    this.app.use(bodyParser.urlencoded({ extended: false }), bodyParser.json(), checkerMiddleware)
+    this.app.use(bodyParser.urlencoded({ extended: false }), bodyParser.json(), responseMiddleware, checkerMiddleware)
 
     routes.forEach((route) => {
       this.app.use('/api', rateLimit(this.rateLimiter), route.router)
     })
 
-    this.app.use('/files', cors(), express.static('../files/'))
+    this.app.use(notFountMiddleware)
 
-    this.app.use(notFoundMiddleware, errorMiddleware)
+    this.app.use('/files', cors(), express.static('../files/'))
 
     this.app.use('/', createProxyMiddleware({ target: `http://localhost:${this.clientPort}`, changeOrigin: true }))
   }

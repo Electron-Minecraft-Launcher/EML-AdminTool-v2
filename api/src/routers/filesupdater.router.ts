@@ -30,8 +30,8 @@ export default class FilesUpdaterRouter implements Route {
       try {
         const resp = await new FilesUpdater().getFilesUpdater(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -65,8 +65,8 @@ export default class FilesUpdaterRouter implements Route {
       try {
         const resp = await new FilesUpdater().uploadFiles(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -100,8 +100,8 @@ export default class FilesUpdaterRouter implements Route {
       try {
         const resp = await new FilesUpdater().putRenameFile(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -133,8 +133,8 @@ export default class FilesUpdaterRouter implements Route {
       try {
         const resp = await new FilesUpdater().deleteFiles(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -153,8 +153,8 @@ export default class FilesUpdaterRouter implements Route {
       try {
         const resp = await new FilesUpdater().getLoader(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -190,8 +190,8 @@ export default class FilesUpdaterRouter implements Route {
       try {
         const resp = await new FilesUpdater().putLoader(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

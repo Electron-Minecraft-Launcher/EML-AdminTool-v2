@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte'
-  import type { File as File_ } from '../../../shared/models/features/file.model'
+  import type { File as File_ } from '../../../shared/types/features/file'
   import type { PageData } from '../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../services/api/api-filesupdater.service'
   import { l } from '../services/store'

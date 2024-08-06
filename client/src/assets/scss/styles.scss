@@ -304,4 +304,8 @@ section.section {
 
 div.monaco-editor, div.monaco-editor>div {
   border-radius: 5px;
+
+  * {
+    font-family: 'Consolas', 'Courier New', monospace;
+  }
 }

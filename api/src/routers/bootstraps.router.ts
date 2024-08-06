@@ -30,8 +30,8 @@ export default class BootstrapsRouter implements Route {
       try {
         const resp = await new Bootstraps().getBootstraps(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -70,8 +70,8 @@ export default class BootstrapsRouter implements Route {
         try {
           const resp = await new Bootstraps().uploadBootstrap(req, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -104,8 +104,8 @@ export default class BootstrapsRouter implements Route {
       try {
         const resp = await new Bootstraps().deleteBootstrap(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

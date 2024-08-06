@@ -1,7 +1,5 @@
 <script lang="ts">
   import { user } from '../../services/store'
-  import userService from '../../services/user.service'
-  import { onMount } from 'svelte'
   import Skeleton from './Skeleton.svelte'
   import utils from '../../services/utils'
   import { page } from '$app/stores'

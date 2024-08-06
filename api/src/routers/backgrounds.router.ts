@@ -31,8 +31,8 @@ export default class BackgroundsRouter implements Route {
       try {
         const resp = await new Backgrounds().getBackgrounds(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -57,8 +57,8 @@ export default class BackgroundsRouter implements Route {
         try {
           const resp = await new Backgrounds().getBackground(req, req.params.background_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -97,8 +97,8 @@ export default class BackgroundsRouter implements Route {
         try {
           const resp = await new Backgrounds().uploadBackground(req, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -130,8 +130,8 @@ export default class BackgroundsRouter implements Route {
       try {
         const resp = await new Backgrounds().putActiveBackground(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -168,8 +168,8 @@ export default class BackgroundsRouter implements Route {
         try {
           const resp = await new Backgrounds().putBackgroundTitle(req, req.headers, req.body, req.params.background_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -199,8 +199,8 @@ export default class BackgroundsRouter implements Route {
         try {
           const resp = await new Backgrounds().deleteBackground(req, req.headers, req.params.background_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )

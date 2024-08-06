@@ -27,7 +27,9 @@ export default class EnvRouter implements Route {
       try {
         const resp = await new Env().env(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error) {}
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
+      }
     })
   }
 }

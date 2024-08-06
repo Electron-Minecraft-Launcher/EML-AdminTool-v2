@@ -25,6 +25,7 @@
     "mysql2": "^3.10.1",
     "node-fetch": "^2.6.7",
     "os": "^0.1.2",
+    "remove": "^0.1.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "tslib": "^2.6.3"

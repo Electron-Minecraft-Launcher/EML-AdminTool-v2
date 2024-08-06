@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import type { File as File_ } from '../../../../shared/models/features/file.model'
+  import type { File as File_ } from '../../../../shared/types/features/file'
   import type { PageData } from '../../routes/(authed)/dashboard/news/$types'
   import { l } from '../../services/store'
   import ModalTemplate from './ModalTemplate.svelte'
   import monaco from '../../services/monaco.service'
-  import type { News } from '../../../../shared/models/features/news.model'
+  import type { News } from '../../../../shared/types/features/news'
   import { slide } from 'svelte/transition'
   import apiNewsService from '../../services/api/api-news.service'
 

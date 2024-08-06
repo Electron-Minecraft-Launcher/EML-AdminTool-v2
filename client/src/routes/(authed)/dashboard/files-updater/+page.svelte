@@ -79,7 +79,6 @@
           let newFile = new File([file.slice(0, file.size)], items[i].fullPath, { type: file.type })
 
           files.push(newFile)
-          console.log('hello')
           resolve()
         })
       })

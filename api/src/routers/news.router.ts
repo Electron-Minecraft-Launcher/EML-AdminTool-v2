@@ -31,8 +31,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().getCategories(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -59,8 +59,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().getCategory(req, req.params.category_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -93,8 +93,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().postCategory(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -134,8 +134,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().putCategory(req, req.headers, req.body, req.params.category_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -167,8 +167,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().deleteCategory(req, req.headers, req.params.category_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -190,8 +190,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().getTags(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -218,8 +218,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().getTag(req, req.params.tag_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -254,8 +254,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().postTag(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -297,8 +297,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().putTag(req, req.headers, req.body, req.params.tag_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -330,8 +330,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().deleteTag(req, req.headers, req.params.tag_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -353,8 +353,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().getImages(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -386,8 +386,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().uploadImage(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -421,8 +421,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().deleteImage(req, req.headers, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -444,8 +444,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().getNews(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -472,8 +472,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().getNews1(req, req.params.news_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -512,8 +512,8 @@ export default class NewsRouter implements Route {
       try {
         const resp = await new News().postNews(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -559,8 +559,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().putNews(req, req.headers, req.body, req.params.news_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -592,8 +592,8 @@ export default class NewsRouter implements Route {
         try {
           const resp = await new News().deleteNews(req, req.headers, req.params.news_id)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )

@@ -2,8 +2,7 @@
   import ModalTemplate from './ModalTemplate.svelte'
   import { l } from '../../services/store'
   import type { PageData } from '../../routes/(authed)/dashboard/backgrounds/$types'
-  import apiBootstrapsService from '../../services/api/api-bootstraps.service'
-  import type { BackgroundsRes } from '../../../../shared/models/features/background.model'
+  import type { BackgroundsRes } from '../../../../shared/types/features/background'
   import apiBackgroundsService from '../../services/api/api-backgrounds.service'
   import Toggle from '../Toggle.svelte'
 

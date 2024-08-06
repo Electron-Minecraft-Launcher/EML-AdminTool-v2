@@ -30,8 +30,8 @@ export default class MaintenanceRouter implements Route {
       try {
         const resp = await new Maintenance().getMaintenanceStatus(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -67,8 +67,8 @@ export default class MaintenanceRouter implements Route {
       try {
         const resp = await new Maintenance().updateMaintenanceStatus(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

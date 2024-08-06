@@ -82,7 +82,6 @@ class ApiNewsService {
 
   async uploadImages(files: File[]) {
     let body = new FormData()
-    console.log(files.length, files)
     for (let i = 0; i < files.length; i++) {
       body.append('files[]', files[i])
     }
