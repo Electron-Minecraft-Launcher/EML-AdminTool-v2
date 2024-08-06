@@ -1,5 +1,5 @@
-import { Config } from "../../../shared/models/configurations/config.model"
-import { count } from "../../../shared/models/types"
+import { Config } from "../../../shared/types/configurations/config"
+import { count } from "../../../shared/types/types"
 import db from "../utils/db"
 
 class PINService {

@@ -42,7 +42,6 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
 
   multer({ storage }).single('file')(req, res, (err) => {
     if (err) {
-      console.log(err)
       next(new ServerException('Error uploading file'))
       return
     }

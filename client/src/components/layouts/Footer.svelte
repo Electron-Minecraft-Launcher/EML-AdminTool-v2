@@ -10,7 +10,17 @@
     <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2" target="_blank">GitHub</a>
   </p>
   {#if process.env.NODE_ENV === 'development'}
-    <p style="font-size: 8px">User JWT: <code>{cookiesService.get('JWT')}</code></p>
+    <p style="font-size: 9px">
+      User JWT: <input
+        value={cookiesService.get('JWT')}
+        on:click={(e) => {
+          // @ts-ignore
+          e.target.select()
+          // @ts-ignore
+          navigator.clipboard.writeText(e.target.value)
+        }}
+      />
+    </p>
   {/if}
 </footer>
 
@@ -34,5 +44,17 @@
     height: 1px;
     border-width: 0px;
     margin-bottom: 30px;
+  }
+
+  /**
+   * Dev purposes only
+   */
+  input {
+    padding: 3px;
+    font-size: 9px;
+    box-shadow: none;
+    outline: none !important;
+    width: 500px;
+    display: inline;
   }
 </style>

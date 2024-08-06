@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from 'http'
-import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
-import { ResponseType, count } from '../../../shared/models/types'
+import { DefaultServiceResponse } from '../../../shared/types/responses/services/default-service-response'
+import { ResponseType, count } from '../../../shared/types/types'
 import authService from './auth.service'
 import fs from 'fs'
 import path from 'path'

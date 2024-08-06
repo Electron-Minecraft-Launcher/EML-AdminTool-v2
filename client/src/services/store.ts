@@ -1,6 +1,6 @@
 import type { Env } from './env.model'
-import type { Notification } from '../../../shared/models/data/notification.model'
-import type { User } from '../../../shared/models/features/user.model'
+import type { Notification } from '../../../shared/types/data/notification'
+import type { User } from '../../../shared/types/features/user'
 import { writable } from 'svelte/store'
 import en from '../assets/language/en'
 import type fr from '../assets/language/fr'

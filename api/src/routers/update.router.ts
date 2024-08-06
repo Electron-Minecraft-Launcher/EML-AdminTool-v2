@@ -1,10 +1,10 @@
 import { NextFunction, Router, Request, Response } from 'express'
 import { Route } from '../services/routes.model'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import Env from '../controllers/env.controller'
-import { StatsRes } from '../../../shared/models/features/stats.model'
+import { StatsRes } from '../../../shared/types/features/stats'
 import { ControllerException } from '../responses/types'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
 import Update from '../controllers/update.controller'
 
 export default class UpdateRouter implements Route {
@@ -37,8 +37,8 @@ export default class UpdateRouter implements Route {
         try {
           const resp = await new Update().getUpdate(req, req.headers)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error) {
-          next(error as ControllerException)
+        } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -60,8 +60,8 @@ export default class UpdateRouter implements Route {
       try {
         const resp = await new Update().postUpdate(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

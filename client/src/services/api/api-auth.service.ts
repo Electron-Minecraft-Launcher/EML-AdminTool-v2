@@ -1,7 +1,7 @@
 import http from '../http.module'
-import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { User } from '../../../../shared/models/features/user.model'
+import type { DefaultHttpResponse } from '../../../../shared/types/responses/http/default-http-response'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { User } from '../../../../shared/types/features/user'
 import { Buffer } from 'buffer'
 
 class ApiAuthService {

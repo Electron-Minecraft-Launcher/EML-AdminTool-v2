@@ -1,8 +1,8 @@
 import { ResultSetHeader } from 'mysql2'
-import { User } from '../../../shared/models/features/user.model'
-import { DataServiceResponse } from '../../../shared/models/responses/services/data-service-response.model'
-import { DefaultServiceResponse } from '../../../shared/models/responses/services/default-service-response.model'
-import { ResponseType, count } from '../../../shared/models/types'
+import { User } from '../../../shared/types/features/user'
+import { DataServiceResponse } from '../../../shared/types/responses/services/data-service-response'
+import { DefaultServiceResponse } from '../../../shared/types/responses/services/default-service-response'
+import { ResponseType, count } from '../../../shared/types/types'
 import db from '../utils/db'
 
 class AdminService {

@@ -1,5 +1,5 @@
-import { DataServiceResponse } from "../../../shared/models/responses/services/data-service-response.model"
-import { ResponseType } from "../../../shared/models/types"
+import { DataServiceResponse } from "../../../shared/types/responses/services/data-service-response"
+import { ResponseType } from "../../../shared/types/types"
 import { ConfigurationException } from "../responses/exceptions/configuration-exception.response"
 import { DBException } from "../responses/exceptions/db-exception.response"
 import { DefaultException } from "../responses/exceptions/default-exception.response"

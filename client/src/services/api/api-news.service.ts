@@ -1,7 +1,7 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { News, NewsCategory, NewsCategoryRes, NewsTag } from '../../../../shared/models/features/news.model'
-import type { File as File_ } from '../../../../shared/models/features/file.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { News, NewsCategory, NewsCategoryRes, NewsTag } from '../../../../shared/types/features/news'
+import type { File as File_ } from '../../../../shared/types/features/file'
 
 class ApiNewsService {
   //* News ======================================
@@ -82,7 +82,6 @@ class ApiNewsService {
 
   async uploadImages(files: File[]) {
     let body = new FormData()
-    console.log(files.length, files)
     for (let i = 0; i < files.length; i++) {
       body.append('files[]', files[i])
     }

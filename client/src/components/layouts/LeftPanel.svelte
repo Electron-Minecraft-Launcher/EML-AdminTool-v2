@@ -1,7 +1,5 @@
 <script lang="ts">
   import { user } from '../../services/store'
-  import userService from '../../services/user.service'
-  import { onMount } from 'svelte'
   import Skeleton from './Skeleton.svelte'
   import utils from '../../services/utils'
   import { page } from '$app/stores'
@@ -16,12 +14,12 @@
   const height = '21px'
   const customStyle: { [key: string]: string }[] = [{ display: 'block' }, { margin: '30px 15px 20px 15px' }]
 
-  let ready = false
+  let ready = true
   let accountDropdownOpen = false
 
-  onMount(async () => {
-    ready = await userService.reload()
-  })
+  // onMount(async () => {
+  //   ready = await userService.reload()
+  // })
 
   document.addEventListener('click', async () => {
     if (accountDropdownOpen) {

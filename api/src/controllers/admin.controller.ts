@@ -1,9 +1,9 @@
 import { Request } from 'express'
 import { IncomingHttpHeaders } from 'http'
-import { EMLAdminToolInfo } from '../../../shared/models/features/emlat-info.model'
-import { User } from '../../../shared/models/features/user.model'
-import { DataServiceResponse } from '../../../shared/models/responses/services/data-service-response.model'
-import { ResponseType, count } from '../../../shared/models/types'
+import { EMLAdminToolInfo } from '../../../shared/types/features/emlat-info'
+import { User } from '../../../shared/types/features/user'
+import { DataServiceResponse } from '../../../shared/types/responses/services/data-service-response'
+import { ResponseType, count } from '../../../shared/types/types'
 import { DBException } from '../responses/exceptions/db-exception.response'
 import { RequestException } from '../responses/exceptions/request-exception.response'
 import { UnauthorizedException } from '../responses/exceptions/unauthorized-exception.response'
@@ -29,7 +29,7 @@ export default class Admin {
       throw error as ServiceException
     }
 
-    var env_ = await envService.getEnv()
+    var env = await envService.getEnv()
     var pin: string = ''
     var countUsers: count
 
@@ -46,7 +46,7 @@ export default class Admin {
     }
 
     return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', {
-      emlat: { ...env_, pin, nbUsers: countUsers.count },
+      emlat: { ...env, pin, nbUsers: countUsers.count },
       vps: { os: vpsService.getOS(), storage: vpsService.getStorage() },
       users: await this.getUsers(req, headers).then((res) => res.data)
     })

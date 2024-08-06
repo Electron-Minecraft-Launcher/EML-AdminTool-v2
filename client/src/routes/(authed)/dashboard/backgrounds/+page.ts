@@ -1,30 +1,16 @@
 import { redirect } from '@sveltejs/kit'
-import type { Maintenance } from '../../../../../../shared/models/features/maintenance.model'
-import apiAuthService from '../../../../services/api/api-auth.service'
 import cookiesService from '../../../../services/cookies.service'
-import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
-import apiMaintenanceService from '../../../../services/api/api-maintenance.service'
 import apiBackgroundsService from '../../../../services/api/api-backgrounds.service'
-import type { BackgroundsRes } from '../../../../../../shared/models/features/background.model'
+import type { BackgroundsRes } from '../../../../../../shared/types/features/background'
 
-export const load: PageLoad = async () => {
+export const load: PageLoad = async ({ parent }) => {
   let backgrounds: BackgroundsRes[] = []
 
-  if (cookiesService.get('JWT')) {
-    ;(await apiAuthService.getVerify()).subscribe({
-      next: (res) => {
-        user.set(res.body!.data!.user)
-        if (res.body!.data!.user.p_background_mod != 1) {
-          throw redirect(300, '/dashboard')
-        }
-      }
-    })
-  } else {
-    throw redirect(300, '/login')
-  }
-
-  ;(await apiBackgroundsService.getBackgrounds()).subscribe({
+  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
+  if (!(await parent()).user.p_background_mod) throw redirect(300, '/dashboard')
+  
+    ;(await apiBackgroundsService.getBackgrounds()).subscribe({
     next: (res) => {
       backgrounds = res.body.data!
     }

@@ -22,6 +22,10 @@ export enum ResponseType {
    */
   NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
   /**
+   * HTTP `429`
+   */
+  TOO_MANY_REQUESTS_ERROR = 'TOO_MANY_REQUESTS_ERROR',
+  /**
    * HTTP `5xx`
    */
   SERVER_ERROR = 'SERVER_ERROR',
@@ -41,6 +45,7 @@ export type ErrorCode =
   | typeof ResponseType.AUTH_ERROR
   | typeof ResponseType.CONFIG_ERROR
   | typeof ResponseType.NOT_FOUND_ERROR
+  | typeof ResponseType.TOO_MANY_REQUESTS_ERROR
   | typeof ResponseType.SERVER_ERROR
   | typeof ResponseType.DATABASE_ERROR
   | typeof ResponseType.UNKNOWN_ERROR

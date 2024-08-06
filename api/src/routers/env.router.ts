@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from 'express'
 import { Route } from '../services/routes.model'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import Env from '../controllers/env.controller'
 
 export default class EnvRouter implements Route {
@@ -27,7 +27,9 @@ export default class EnvRouter implements Route {
       try {
         const resp = await new Env().env(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error) {}
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
+      }
     })
   }
 }

@@ -1,34 +1,17 @@
 import { redirect } from '@sveltejs/kit'
-import apiAuthService from '../../../../services/api/api-auth.service'
 import cookiesService from '../../../../services/cookies.service'
 import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
-import type { BootstrapsRes } from '../../../../../../shared/models/features/bootstraps.model'
-import apiBootstrapsService from '../../../../services/api/api-bootstraps.service'
-import type { StatsRes } from '../../../../../../shared/models/features/stats.model'
+import type { StatsRes } from '../../../../../../shared/types/features/stats'
 import apiStatsService from '../../../../services/api/api-stats.service'
+import { get } from 'svelte/store'
 
-export const load: PageLoad = async () => {
-  let stats: StatsRes = {
-    startups: [],
-    launches: [],
-    connections: [],
-    devtools: []
-  }
+export const load: PageLoad = async ({ parent }) => {
+  let stats: StatsRes = { startups: [], launches: [], connections: [], devtools: [] }
 
-  if (cookiesService.get('JWT')) {
-    ;(await apiAuthService.getVerify()).subscribe({
-      next: (res) => {
-        user.set(res.body!.data!.user)
-        if (res.body!.data!.user.p_stats_see != 1) {
-          throw redirect(300, '/dashboard')
-        }
-      }
-    })
-  } else {
-    throw redirect(300, '/login')
-  }
-
+  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
+  if (!(await parent()).user.p_stats_see) throw redirect(300, '/dashboard')
+    
   ;(await apiStatsService.getStats()).subscribe({
     next: (res) => {
       stats = res.body.data!

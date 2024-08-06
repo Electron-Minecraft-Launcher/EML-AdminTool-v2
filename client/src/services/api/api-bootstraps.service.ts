@@ -1,7 +1,7 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { File as File_ } from '../../../../shared/models/features/file.model'
-import type { BootstrapsRes } from '../../../../shared/models/features/bootstraps.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { File as File_ } from '../../../../shared/types/features/file'
+import type { BootstrapsRes } from '../../../../shared/types/features/bootstraps'
 
 class ApiBootstrapsService {
   async getBootstraps() {

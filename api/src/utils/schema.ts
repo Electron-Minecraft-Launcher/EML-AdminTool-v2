@@ -1,5 +1,5 @@
-import { DBGeneration } from '../configurations/db-generation.model'
-import { TableColumn } from '../configurations/tables-column.model'
+import { DBGeneration } from '../../../shared/types/configurations/db-generation'
+import { TableColumn } from '../../../shared/types/configurations/tables-column'
 
 const schema: DBGeneration & Record<string, TableColumn[]> = {
   config: [

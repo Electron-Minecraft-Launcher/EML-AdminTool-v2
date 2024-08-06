@@ -1,10 +1,10 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import { Route } from '../services/routes.model'
 import { ControllerException } from '../responses/types'
 import Bootstraps from '../controllers/bootstraps.controller'
 import bootstrapsMiddleware from '../middlewares/bootstraps.middleware'
-import { BootstrapsRes } from '../../../shared/models/features/bootstraps.model'
+import { BootstrapsRes } from '../../../shared/types/features/bootstraps'
 
 export default class BootstrapsRouter implements Route {
   path = '/bootstraps'
@@ -30,8 +30,8 @@ export default class BootstrapsRouter implements Route {
       try {
         const resp = await new Bootstraps().getBootstraps(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -70,8 +70,8 @@ export default class BootstrapsRouter implements Route {
         try {
           const resp = await new Bootstraps().uploadBootstrap(req, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -104,8 +104,8 @@ export default class BootstrapsRouter implements Route {
       try {
         const resp = await new Bootstraps().deleteBootstrap(req, req.headers, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

@@ -1,7 +1,7 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { File as File_ } from '../../../../shared/models/features/file.model'
-import type { BackgroundsRes } from '../../../../shared/models/features/background.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { File as File_ } from '../../../../shared/types/features/file'
+import type { BackgroundsRes } from '../../../../shared/types/features/background'
 
 class ApiBackgroundsService {
   async getBackgrounds() {

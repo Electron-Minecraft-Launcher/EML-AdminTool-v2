@@ -1,5 +1,5 @@
 import http from '../http.module'
-import type { DefaultHttpResponse } from '../../../../shared/models/responses/http/default-http-response.model'
+import type { DefaultHttpResponse } from '../../../../shared/types/responses/http/default-http-response'
 
 class ApiConfigureService {
   async getConfigure() {

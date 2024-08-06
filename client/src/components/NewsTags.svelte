@@ -1,12 +1,8 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from 'svelte'
-  import { l } from '../services/store'
-  import notificationsService from '../services/notifications.service'
-  import type { News, NewsTag } from '../../../shared/models/features/news.model'
+  import type { NewsTag } from '../../../shared/types/features/news'
   import type { PageData } from '../routes/(authed)/dashboard/news/$types'
   import apiNewsService from '../services/api/api-news.service'
   import AddEditNewsTagModal from './modals/AddEditNewsTagModal.svelte'
-  import { invalidateAll } from '$app/navigation'
 
   export let data: PageData
   export let addEditTagAction: { action: 'add' } | { action: 'edit'; tag: NewsTag } = { action: 'add' }

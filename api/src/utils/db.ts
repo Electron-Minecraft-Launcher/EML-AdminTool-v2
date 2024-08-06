@@ -1,9 +1,9 @@
 import dotenv from 'dotenv'
 import mysql, { RowDataPacket } from 'mysql2/promise'
-import { count } from '../../../shared/models/types'
-import dbSchema from '../../../shared/models/schemas/database.model'
-import { DBGeneration } from '../../../shared/models/configurations/db-generation.model'
-import { TableColumn } from '../../../shared/models/configurations/tables-column.model'
+import { count } from '../../../shared/types/types'
+import dbSchema from './schema'
+import { DBGeneration } from '../../../shared/types/configurations/db-generation'
+import { TableColumn } from '../../../shared/types/configurations/tables-column'
 
 dotenv.config()
 
@@ -45,7 +45,7 @@ class Database {
    * @returns The escaped string
    */
   escapeHtml(value: string): string {
-    return value.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('&', '&amp;')
+    return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
   }
 
   /**

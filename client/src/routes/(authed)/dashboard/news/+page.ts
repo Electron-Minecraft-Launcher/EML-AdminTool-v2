@@ -1,33 +1,21 @@
 import { redirect } from '@sveltejs/kit'
-import apiAuthService from '../../../../services/api/api-auth.service'
 import cookiesService from '../../../../services/cookies.service'
-import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
-import type { News, NewsCategory, NewsTag } from '../../../../../../shared/models/features/news.model'
+import type { News, NewsCategory, NewsTag } from '../../../../../../shared/types/features/news'
 import apiNewsService from '../../../../services/api/api-news.service'
-import type { User } from '../../../../../../shared/models/features/user.model'
+import type { User } from '../../../../../../shared/types/features/user'
 import apiAdminService from '../../../../services/api/api-admin.service'
-import type { File } from '../../../../../../shared/models/features/file.model'
+import type { File } from '../../../../../../shared/types/features/file'
 
-export const load: PageLoad = async () => {
+export const load: PageLoad = async ({ parent }) => {
   let users: User[] = []
   let news: News[] = []
   let categories: NewsCategory[] = []
   let tags: NewsTag[] = []
   let images: File[] = []
 
-  if (cookiesService.get('JWT')) {
-    ;(await apiAuthService.getVerify()).subscribe({
-      next: (res) => {
-        user.set(res.body!.data!.user)
-        if (res.body!.data!.user.p_news_add != 1) {
-          throw redirect(300, '/dashboard')
-        }
-      }
-    })
-  } else {
-    throw redirect(300, '/login')
-  }
+  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
+  if (!(await parent()).user.p_news_add) throw redirect(300, '/dashboard')
 
   ;(await apiAdminService.getUsers()).subscribe({
     next: (res) => {

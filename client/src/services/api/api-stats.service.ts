@@ -1,6 +1,6 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
-import type { StatsRes } from '../../../../shared/models/features/stats.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
+import type { StatsRes } from '../../../../shared/types/features/stats'
 
 class ApiEnvService {
   async getStats() {

@@ -1,5 +1,5 @@
 import http from '../http.module'
-import type { DataHttpResponse } from '../../../../shared/models/responses/http/data-http-response.model'
+import type { DataHttpResponse } from '../../../../shared/types/responses/http/data-http-response'
 
 class ApiEnvService {
   async getEnv() {

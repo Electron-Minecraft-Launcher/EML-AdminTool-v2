@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { User } from '../../../shared/models/features/user.model'
-import { DataHttpResponse } from '../../../shared/models/responses/http/data-http-response.model'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { User } from '../../../shared/types/features/user'
+import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
+import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
 import { Route } from '../services/routes.model'
 import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
@@ -30,17 +30,14 @@ export default class AuthRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(
-      `${this.path}/auth`,
-      async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
-        try {
-          const resp = await new Auth().auth(req, req.headers)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.get(`${this.path}/auth`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string }>>, next: NextFunction) => {
+      try {
+        const resp = await new Auth().auth(req, req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
-    )
+    })
 
     /**
      * @openapi
@@ -57,17 +54,14 @@ export default class AuthRouter implements Route {
      *       401:
      *         description: Unauthorized
      */
-    this.router.get(
-      `${this.path}/verify`,
-      async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
-        try {
-          const resp = await new Auth().verify(req, req.headers)
-          res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
-        }
+    this.router.get(`${this.path}/verify`, async (req: Request, res: Response<DataHttpResponse<{ jwt: string; user: User }>>, next: NextFunction) => {
+      try {
+        const resp = await new Auth().verify(req, req.headers)
+        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
-    )
+    })
 
     /**
      * @openapi
@@ -101,8 +95,8 @@ export default class AuthRouter implements Route {
         try {
           const resp = await new Auth().register(req, req.body)
           res.status(resp.httpStatus).send({ code: resp.code, message: resp.message, data: resp.data })
-        } catch (error: unknown) {
-          next(error as ControllerException)
+        } catch (err: any) {
+          res.status(err.httpStatus).send({ code: err.code, message: err.message })
         }
       }
     )
@@ -124,8 +118,8 @@ export default class AuthRouter implements Route {
       try {
         const resp = await new Auth().logout(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }

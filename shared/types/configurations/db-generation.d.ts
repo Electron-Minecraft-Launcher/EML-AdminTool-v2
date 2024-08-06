@@ -1,4 +1,4 @@
-import { TableColumn } from './tables-column.model'
+import { TableColumn } from './tables-column'
 
 export interface DBGeneration {
   config: boolean | TableColumn[]

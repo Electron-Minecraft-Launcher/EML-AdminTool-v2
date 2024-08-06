@@ -57,7 +57,6 @@
 
   if (datesDevTools.length > 0) {
     let currentDateDevTools = new Date(datesDevTools[0].date)
-    console.log(currentDateDevTools, today)
     while (currentDateDevTools < today) {
       currentDateDevTools = new Date(currentDateDevTools.setHours(currentDateDevTools.getHours() + 1))
       datesDevTools.push({ date: new Date(currentDateDevTools), devtools: 0 })

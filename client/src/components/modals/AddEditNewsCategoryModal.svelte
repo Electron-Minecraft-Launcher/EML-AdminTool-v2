@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from '$app/navigation'
-  import type { File } from '../../../../shared/models/features/file.model'
-  import type { NewsCategory } from '../../../../shared/models/features/news.model'
+  import type { File } from '../../../../shared/types/features/file'
+  import type { NewsCategory } from '../../../../shared/types/features/news'
   import type { PageData } from '../../routes/(authed)/dashboard/news/$types'
   import apiNewsService from '../../services/api/api-news.service'
   import { l } from '../../services/store'

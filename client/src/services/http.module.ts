@@ -1,5 +1,5 @@
-import type { Observable, HttpResponse } from '../../../shared/models/responses/services/api-response.model'
-import type { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import type { Observable, HttpResponse } from '../../../shared/types/responses/services/api-response'
+import type { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
 import { redirect } from '@sveltejs/kit'
 import cookiesService from './cookies.service'
 import notificationsService from './notifications.service'
@@ -134,7 +134,9 @@ class Http {
       goto('/configure')
     }
 
-    if (response.body.code == 'AUTH_ERROR') {
+    if (response.body.code == 'TOO_MANY_REQUESTS_ERROR') {
+      notificationsService.update({ type: 'ERROR', code: 'tmr' })
+    } else if (response.body.code == 'AUTH_ERROR') {
       if (url.includes('/auth')) {
         notificationsService.update({ type: 'ERROR', code: 'auth' })
       } else if (

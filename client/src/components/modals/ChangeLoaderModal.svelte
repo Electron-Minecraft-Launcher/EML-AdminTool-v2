@@ -4,7 +4,7 @@
   import ModalTemplate from './ModalTemplate.svelte'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import apiFilesupdaterService from '../../services/api/api-filesupdater.service'
-  import type { Loader } from '../../../../shared/models/features/file.model'
+  import type { Loader } from '../../../../shared/types/features/file'
 
   export let data: PageData
   export let show: boolean
@@ -29,7 +29,6 @@
     loader_version = data.loader.loader_version
     minecraftVersions = [...new Set(data.loadersList[loader].map((version) => version.minecraftVersion))]
   }
-  $: console.log(loader_version)
 
   async function submit() {
     const newLoader: Loader = {

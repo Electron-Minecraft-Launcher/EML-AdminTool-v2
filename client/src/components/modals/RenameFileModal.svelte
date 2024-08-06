@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { File } from '../../../../shared/models/features/file.model'
+  import type { File } from '../../../../shared/types/features/file'
   import type { PageData } from '../../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../../services/api/api-filesupdater.service'
   import notificationsService from '../../services/notifications.service'

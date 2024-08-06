@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from 'svelte'
   import { l, user } from '../services/store'
-  import notificationsService from '../services/notifications.service'
-  import type { News } from '../../../shared/models/features/news.model'
+  import type { News } from '../../../shared/types/features/news'
   import type { PageData } from '../routes/(authed)/dashboard/news/$types'
   import apiNewsService from '../services/api/api-news.service'
   import AddEditNewsModal from './modals/AddEditNewsModal.svelte'

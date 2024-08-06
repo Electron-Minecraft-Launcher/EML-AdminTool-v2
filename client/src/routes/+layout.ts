@@ -7,7 +7,6 @@ import fr from '../assets/language/fr'
 export const prerender = true
 export const ssr = false
 
-
 export const load: LayoutLoad = async () => {
   let env_!: any
 

@@ -1,5 +1,5 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { DefaultHttpResponse } from '../../../shared/models/responses/http/default-http-response.model'
+import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
 import { Route } from '../services/routes.model'
 import Configure from '../controllers/configure.controller'
 import { ControllerException } from '../responses/types'
@@ -28,7 +28,9 @@ export default class ConfigureRouter implements Route {
       try {
         const resp = await new Configure().check(req)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error) {}
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
+      }
     })
 
     /**
@@ -60,8 +62,8 @@ export default class ConfigureRouter implements Route {
       try {
         const resp = await new Configure().language(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -94,8 +96,8 @@ export default class ConfigureRouter implements Route {
       try {
         const resp = await new Configure().database(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -130,8 +132,8 @@ export default class ConfigureRouter implements Route {
       try {
         const resp = await new Configure().admin(req, req.body)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
 
@@ -154,8 +156,8 @@ export default class ConfigureRouter implements Route {
       try {
         const resp = await new Configure().reset(req, req.headers)
         res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (error: unknown) {
-        next(error as ControllerException)
+      } catch (err: any) {
+        res.status(err.httpStatus).send({ code: err.code, message: err.message })
       }
     })
   }
