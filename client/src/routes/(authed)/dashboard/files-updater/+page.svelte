@@ -304,6 +304,7 @@
         font-family: 'Poppins';
         background: none;
         vertical-align: top;
+        line-height: 28.72px;
 
         &:hover {
           color: var(--primary-color-hover);

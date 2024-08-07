@@ -59,9 +59,9 @@ class App {
       this.app.use('/api', rateLimit(this.rateLimiter), route.router)
     })
 
-    this.app.use(notFountMiddleware)
-
     this.app.use('/files', cors(), express.static('../files/'))
+
+    this.app.use(notFountMiddleware)
 
     this.app.use('/', createProxyMiddleware({ target: `http://localhost:${this.clientPort}`, changeOrigin: true }))
   }
