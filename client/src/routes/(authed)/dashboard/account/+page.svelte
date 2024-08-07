@@ -62,7 +62,7 @@
           <p>Add and Delete files</p>
         {/if}
         {#if $user.p_files_updater_loader_mod}
-          <p>Change and Delete Minecraft loader</p>
+          <p>Change Minecraft loader</p>
         {/if}
       {:else}
         <p>-</p>
