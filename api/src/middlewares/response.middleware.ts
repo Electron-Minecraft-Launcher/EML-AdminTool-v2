@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
-import { DefaultResponse } from '../responses/response.response'
+import { DefaultResponse } from '../responses/response'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   const send = res.send

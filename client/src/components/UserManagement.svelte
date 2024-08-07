@@ -87,7 +87,7 @@ All the user's actions and data will be deleted, including published news. This 
           <p>Add and Delete files</p>
         {/if}
         {#if selectedAccount.p_files_updater_loader_mod}
-          <p>Change and Delete Minecraft loader</p>
+          <p>Change Minecraft loader</p>
         {/if}
       {/if}
 
