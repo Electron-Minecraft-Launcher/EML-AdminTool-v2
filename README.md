@@ -8,7 +8,6 @@
 
 ---
 
-
 ## Features
 
  * **Files Updater**: Update your Minecraft files and loader (Vanilla or Forge).
