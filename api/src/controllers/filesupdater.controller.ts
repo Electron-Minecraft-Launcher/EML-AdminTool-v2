@@ -154,12 +154,11 @@ class FilesUpdater {
       ) {
         throw new RequestException('Invalid parameters')
       }
-
-      body.loader_type =
-        +body.minecraft_version.split('.')[1] >= 13 ? 'installer' : +body.minecraft_version.split('.')[1] >= 3 ? 'universal' : 'client'
-
+      
       const forgeMeta = (await this.getForgeMeta(body.loader_version!)).classifiers
-
+      
+      body.loader_type = forgeMeta.installer ? 'installer' : forgeMeta.client ? 'client' : 'universal'
+      
       const ext = Object.keys(forgeMeta[body.loader_type])[0]
 
       const size = +(await this.getForgeArtifactSize(body.loader_version!, body.loader_type, ext))
@@ -167,12 +166,12 @@ class FilesUpdater {
       body = {
         ...body,
         file: {
-          name: `forge-${body.loader_version}-${body.loader_type}.${ext}`,
-          path: '',
+          name: `forge-${body.loader_version}.jar`,
+          path: `versions/forge-${body.loader_version}/`,
           url: `https://maven.minecraftforge.net/net/minecraftforge/forge/${body.loader_version}/forge-${body.loader_version}-${body.loader_type}.${ext}`,
           size: size,
           sha1: sha1,
-          type: 'LIBRARY'
+          type: 'OTHER'
         }
       }
     } // TODO other loaders

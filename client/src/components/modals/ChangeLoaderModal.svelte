@@ -83,7 +83,7 @@
         <div class="content-list">
           <div class="list-container">
             <div class="list">
-              <p class="label" style="margin-top: 0; position: sticky; top: 0; background: white;">Minecraft versions</p>
+              <p class="label" style="margin-top: 0; position: sticky; top: 0; background: white; z-index: 100">Minecraft versions</p>
               {#each minecraftVersions as version}
                 <button class="list" type="button" class:active={temp_minecraft_version === version} on:click={() => (temp_minecraft_version = version)}>
                   {version}
