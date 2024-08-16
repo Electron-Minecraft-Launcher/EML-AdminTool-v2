@@ -50,12 +50,13 @@ class Update {
     let latestVersion: string = ''
 
     try {
-      const response = await fetch('https://api.github.com/repos/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/latest')
-      const data = (await response.json()) as { assets: { name: string; browser_download_url: string }[]; tag_name: string }
-      data.assets.forEach(({ name, browser_download_url }: { name: string; browser_download_url: string }) => {
+      const res = await fetch('https://api.github.com/repos/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/latest').then(
+        (res) => res.json() as Promise<{ assets: { name: string; browser_download_url: string }[]; tag_name: string }>
+      )
+      res.assets.forEach(({ name, browser_download_url }: { name: string; browser_download_url: string }) => {
         assets.push({ name, url: browser_download_url })
       })
-      latestVersion = data.tag_name.replace('v', '')
+      latestVersion = res.tag_name.replace('v', '')
       currentVersion = pkg.version
     } catch (error) {
       throw new ServerException()
@@ -74,7 +75,7 @@ class Update {
       throw new ServerException()
     }
 
-    if (!fs.existsSync(dest)) fs.mkdirSync(dest)
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true })
 
     try {
       const imageResponse = await fetch(image.url, { headers: { Accept: 'application/octet-stream' } })
@@ -112,9 +113,11 @@ class Update {
 
 WORKDIR /app
 
+# Install dependencies
 RUN apk update && \
   apk add --no-cache build-base wget binutils
 
+# Install curl
 RUN wget -qO- https://curl.se/download/curl-7.78.0.tar.gz | tar -xz && \\
   ls && \\
   cd curl-7.78.0 && \\
@@ -124,13 +127,16 @@ RUN wget -qO- https://curl.se/download/curl-7.78.0.tar.gz | tar -xz && \\
   cd .. && \\
   rm -rf curl-7.78.0
 
+# Install Docker
 RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-20.10.8.tgz | tar -xz && \\
   mv docker/docker /usr/local/bin/ && \\
   rm -rf docker
 
+# Install Docker Compose
 RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.29.2/docker-compose-\`uname -s\`-\`uname -m\` && \\
   chmod +x /usr/local/bin/docker-compose
 
+# Install jq
 RUN wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.7.1/jq-linux64 && \\
   chmod +x ./jq && \\
   cp jq /usr/bin
@@ -158,7 +164,7 @@ CMD ["ls"]
     })
     docker.on('close', (code) => {
       console.log(`[DOCKER ${name} close] Code ${code}`)
-      if (code == 0) this.docker('RUN', 'run', '-v', '/app/update:/app/update', '--name', 'eml-admintool-update', 'eml-admintool-update')
+      if (code === 0) this.docker('RUN', 'run', '-v', '/app/update:/app/update', '--name', 'eml-admintool-update', 'eml-admintool-update')
     })
   }
 }

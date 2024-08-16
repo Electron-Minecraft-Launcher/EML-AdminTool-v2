@@ -10,7 +10,7 @@ dotenv.config()
 class Database {
   static db: mysql.Pool = mysql.createPool({
     user: 'eml',
-    host: 'db', // @git-ignore
+    host: 'db',
     password: process.env['DATABASE_PASSWORD'] || 'eml',
     database: 'eml_admintool'
   })
@@ -57,6 +57,7 @@ class Database {
       config: false,
       users: false,
       logs: false,
+      loader: false,
       bootstraps: false,
       maintenance: false,
       news: false,
@@ -106,7 +107,7 @@ class Database {
 
     Database.db = mysql.createPool({
       user: 'eml',
-      host: 'db', // @git-ignore
+      host: 'db',
       password: process.env['DATABASE_PASSWORD'] || 'eml',
       database: 'eml_admintool'
     })

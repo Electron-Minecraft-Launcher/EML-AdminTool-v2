@@ -27,21 +27,21 @@ const schema: DBGeneration & Record<string, TableColumn[]> = {
     { name: 'p_stats_del', info: 'TINYINT' }
   ],
 
-  loader: [
-    { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
-    { name: 'loader', info: 'VARCHAR(255)' },
-    { name: 'minecraft_version', info: 'VARCHAR(255)' },
-    { name: 'loader_version', info: 'VARCHAR(255) NULL' },
-    { name: 'loader_type', info: 'VARCHAR(255) NULL' },
-    { name: 'file', info: 'TEXT'}
-  ],
-
   logs: [
     { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
     { name: 'date', info: 'VARCHAR(255)' },
     { name: 'user', info: 'INT(11)' },
     { name: 'type', info: 'VARCHAR(255)' },
     { name: 'data', info: 'TEXT' }
+  ],
+
+  loader: [
+    { name: 'id', info: 'INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT' },
+    { name: 'loader', info: 'VARCHAR(255)' },
+    { name: 'minecraft_version', info: 'VARCHAR(255)' },
+    { name: 'loader_version', info: 'VARCHAR(255) NULL' },
+    { name: 'loader_type', info: 'VARCHAR(255) NULL' },
+    { name: 'file', info: 'TEXT' }
   ],
 
   bootstraps: [
