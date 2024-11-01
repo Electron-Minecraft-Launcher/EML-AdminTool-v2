@@ -11,7 +11,7 @@ export const load: PageLoad = async () => {
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
       next: () => {
-        throw redirect(300, '/dashboard')
+        redirect(300, '/dashboard');
       },
     })
   }
@@ -19,7 +19,7 @@ export const load: PageLoad = async () => {
   ;(await apiConfigureService.getConfigure()).subscribe({
     finally: (res) => {
       if (res.body?.code == 'SUCCESS') {
-        throw redirect(300, '/')
+        redirect(300, '/');
       } else {
         start = true
       }

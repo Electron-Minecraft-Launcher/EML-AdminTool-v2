@@ -14,10 +14,8 @@ export const load: PageLoad = async ({ parent }) => {
   let tags: NewsTag[] = []
   let images: File[] = []
 
-  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
-  if (!(await parent()).user.p_news_add) throw redirect(300, '/dashboard')
-
-  ;(await apiAdminService.getUsers()).subscribe({
+  if (!cookiesService.get('JWT')) redirect(300, '/login');
+  if (!(await parent()).user.p_news_add) redirect(300, '/dashboard');(await apiAdminService.getUsers()).subscribe({
     next: (res) => {
       users = res.body.data!
     }

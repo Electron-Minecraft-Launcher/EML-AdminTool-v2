@@ -148,7 +148,7 @@ class Http {
       ) {
         cookiesService.delete('JWT')
         notificationsService.update({ type: 'ERROR', code: 'login' })
-        throw redirect(300, '/login')
+        redirect(300, '/login');
       } else if (response.body.message == 'Name used') {
         notificationsService.update({ type: 'ERROR', code: 'auth' })
       }

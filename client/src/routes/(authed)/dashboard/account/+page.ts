@@ -12,6 +12,6 @@ export const load: PageLoad = async () => {
       },
     })
   } else {
-    throw redirect(300, '/login')
+    redirect(300, '/login');
   }
 }

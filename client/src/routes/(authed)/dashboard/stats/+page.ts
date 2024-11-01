@@ -9,10 +9,8 @@ import { get } from 'svelte/store'
 export const load: PageLoad = async ({ parent }) => {
   let stats: StatsRes = { startups: [], launches: [], connections: [], devtools: [] }
 
-  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
-  if (!(await parent()).user.p_stats_see) throw redirect(300, '/dashboard')
-    
-  ;(await apiStatsService.getStats()).subscribe({
+  if (!cookiesService.get('JWT')) redirect(300, '/login');
+  if (!(await parent()).user.p_stats_see) redirect(300, '/dashboard');(await apiStatsService.getStats()).subscribe({
     next: (res) => {
       stats = res.body.data!
     }
