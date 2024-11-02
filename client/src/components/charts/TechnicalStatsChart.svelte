@@ -2,14 +2,18 @@
   import { Chart } from 'chart.js/auto'
   import { onMount } from 'svelte'
 
-  export let datesDevTools: { date: Date; devtools: number }[]
-  export let datesOS: { date: Date; os: { windows: number; mac: number; linux: number } }[]
+  interface Props {
+    datesDevTools: { date: Date; devtools: number }[]
+    datesOS: { date: Date; os: { windows: number; mac: number; linux: number } }[]
+  }
 
-  let ctx2: HTMLCanvasElement
+  let { datesDevTools = $bindable(), datesOS = $bindable() }: Props = $props()
+
+  let ctx2: HTMLCanvasElement | undefined = $state()
   let chart2: Chart
   let usedDatesDevTools: { date: Date | string; devtools: number }[]
 
-  let ctx1: HTMLCanvasElement
+  let ctx1: HTMLCanvasElement | undefined = $state()
   let chart1: Chart
   let counterOS: { windows: number; mac: number; linux: number } = datesOS
     .slice(-2160)
@@ -25,7 +29,7 @@
     )
 
   onMount(() => {
-    chart1 = new Chart(ctx1, {
+    chart1 = new Chart(ctx1!, {
       type: 'doughnut',
       data: {
         labels: ['Windows', 'Mac', 'Linux'],
@@ -48,7 +52,7 @@
     } as any)
 
     usedDatesDevTools = truncateLabel(datesDevTools)!
-    chart2 = new Chart(ctx2, {
+    chart2 = new Chart(ctx2!, {
       type: 'line',
       data: {
         labels: usedDatesDevTools.map((date) => formatDate(date.date as Date)),

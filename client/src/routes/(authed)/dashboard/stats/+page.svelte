@@ -9,96 +9,102 @@
   import { goto, invalidateAll } from '$app/navigation'
   import { redirect } from '@sveltejs/kit'
 
-  export let data: PageData
-
-  let datesLauncher: { date: Date; startups: number; launches: number; connections: number }[] = []
-  let datesDevTools: { date: Date; devtools: number }[] = []
-  let datesOS: { date: Date; os: { windows: number; mac: number; linux: number } }[] = []
-
-  let dateSelector: HTMLSelectElement
-
-  if (data.stats.startups.length > 0) {
-    datesLauncher.push({ date: new Date(data.stats.startups[0].date), startups: 0, launches: 0, connections: 0 })
-  }
-  if (data.stats.launches.length > 0) {
-    datesLauncher.push({ date: new Date(data.stats.launches[0].date), startups: 0, launches: 0, connections: 0 })
-  }
-  if (data.stats.connections.length > 0) {
-    datesLauncher.push({ date: new Date(data.stats.connections[0].date), startups: 0, launches: 0, connections: 0 })
-  }
-  if (datesLauncher.length > 0) {
-    datesLauncher = datesLauncher.sort((a, b) => a.date.getTime() - b.date.getTime()).slice(0, 1)
-    datesLauncher[0].date.setMinutes(0, 0, 0)
+  interface Props {
+    data: PageData
   }
 
-  if (data.stats.devtools.length > 0) {
-    datesDevTools.push({ date: new Date(data.stats.devtools[0].date), devtools: 0 })
-  }
-  if (datesDevTools.length > 0) {
-    datesDevTools[0].date.setMinutes(0, 0, 0)
-  }
-
-  if (data.stats.launches.length > 0) {
-    datesOS.push({ date: new Date(data.stats.launches[0].date), os: { windows: 0, mac: 0, linux: 0 } })
-  }
-  if (datesOS.length > 0) {
-    datesOS[0].date.setMinutes(0, 0, 0)
-  }
+  let { data }: Props = $props()
 
   const today = new Date(new Date().setMinutes(0, 0, 0))
 
-  if (datesLauncher.length > 0) {
-    let currentDateLauncher = new Date(datesLauncher[0].date)
-    while (currentDateLauncher < today) {
-      currentDateLauncher = new Date(currentDateLauncher.setHours(currentDateLauncher.getHours() + 1))
-      datesLauncher.push({ date: new Date(currentDateLauncher), startups: 0, launches: 0, connections: 0 })
-    }
-  }
+  let datesLauncher: { date: Date; startups: number; launches: number; connections: number }[] = $state([])
+  let datesDevTools: { date: Date; devtools: number }[] = $state([])
+  let datesOS: { date: Date; os: { windows: number; mac: number; linux: number } }[] = $state([])
 
-  if (datesDevTools.length > 0) {
-    let currentDateDevTools = new Date(datesDevTools[0].date)
-    while (currentDateDevTools < today) {
-      currentDateDevTools = new Date(currentDateDevTools.setHours(currentDateDevTools.getHours() + 1))
-      datesDevTools.push({ date: new Date(currentDateDevTools), devtools: 0 })
-    }
-  }
+  let dateSelector: HTMLSelectElement | undefined = $state()
 
-  data.stats.startups.forEach(({ date }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
-    date = new Date(date)
-    const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
-    if (index !== -1) {
-      datesLauncher[index].startups++
+  onMount(() => {
+    if (data.stats.startups.length > 0) {
+      datesLauncher.push({ date: new Date(data.stats.startups[0].date), startups: 0, launches: 0, connections: 0 })
     }
-  })
-  data.stats.connections.forEach(({ date }: { date: Date }) => {
-    date = new Date(date)
-    const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
-    if (index !== -1) {
-      datesLauncher[index].connections++
+    if (data.stats.launches.length > 0) {
+      datesLauncher.push({ date: new Date(data.stats.launches[0].date), startups: 0, launches: 0, connections: 0 })
     }
-  })
-  data.stats.launches.forEach(({ date, os }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
-    date = new Date(date)
-    const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
-    const index2 = datesOS.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
-    if (index !== -1) {
-      datesLauncher[index].launches++
-      datesOS[index2].os[os]++
+    if (data.stats.connections.length > 0) {
+      datesLauncher.push({ date: new Date(data.stats.connections[0].date), startups: 0, launches: 0, connections: 0 })
     }
-  })
-  data.stats.devtools.forEach(({ date }: { date: Date }) => {
-    date = new Date(date)
-    const index = datesDevTools.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
-    if (index !== -1) {
-      datesDevTools[index].devtools++
+    if (datesLauncher.length > 0) {
+      datesLauncher = datesLauncher.sort((a, b) => a.date.getTime() - b.date.getTime()).slice(0, 1)
+      datesLauncher[0].date.setMinutes(0, 0, 0)
     }
+
+    if (data.stats.devtools.length > 0) {
+      datesDevTools.push({ date: new Date(data.stats.devtools[0].date), devtools: 0 })
+    }
+    if (datesDevTools.length > 0) {
+      datesDevTools[0].date.setMinutes(0, 0, 0)
+    }
+
+    if (data.stats.launches.length > 0) {
+      datesOS.push({ date: new Date(data.stats.launches[0].date), os: { windows: 0, mac: 0, linux: 0 } })
+    }
+    if (datesOS.length > 0) {
+      datesOS[0].date.setMinutes(0, 0, 0)
+    }
+
+    if (datesLauncher.length > 0) {
+      let currentDateLauncher = new Date(datesLauncher[0].date)
+      while (currentDateLauncher < today) {
+        currentDateLauncher = new Date(currentDateLauncher.setHours(currentDateLauncher.getHours() + 1))
+        datesLauncher.push({ date: new Date(currentDateLauncher), startups: 0, launches: 0, connections: 0 })
+      }
+    }
+
+    if (datesDevTools.length > 0) {
+      let currentDateDevTools = new Date(datesDevTools[0].date)
+      while (currentDateDevTools < today) {
+        currentDateDevTools = new Date(currentDateDevTools.setHours(currentDateDevTools.getHours() + 1))
+        datesDevTools.push({ date: new Date(currentDateDevTools), devtools: 0 })
+      }
+    }
+
+    data.stats.startups.forEach(({ date }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
+      date = new Date(date)
+      const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
+      if (index !== -1) {
+        datesLauncher[index].startups++
+      }
+    })
+    data.stats.connections.forEach(({ date }: { date: Date }) => {
+      date = new Date(date)
+      const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
+      if (index !== -1) {
+        datesLauncher[index].connections++
+      }
+    })
+    data.stats.launches.forEach(({ date, os }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
+      date = new Date(date)
+      const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
+      const index2 = datesOS.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
+      if (index !== -1) {
+        datesLauncher[index].launches++
+        datesOS[index2].os[os]++
+      }
+    })
+    data.stats.devtools.forEach(({ date }: { date: Date }) => {
+      date = new Date(date)
+      const index = datesDevTools.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
+      if (index !== -1) {
+        datesDevTools[index].devtools++
+      }
+    })
   })
 
   async function resetStats() {
     if (confirm('Are you sure you want to reset the statistics?')) {
       ;(await apiStatsService.deleteStats()).subscribe({
         next: () => {
-          window.location.reload()          
+          window.location.reload()
         }
       })
     }
@@ -137,15 +143,15 @@
 </section>
 
 {#if $user.p_stats_del == 1}
-<section class="section">
-  <h3>Reset</h3>
+  <section class="section">
+    <h3>Reset</h3>
 
-  <button class="secondary reset" on:click={resetStats}><i class="fa-solid fa-trash"></i>&nbsp;&nbsp;Reset statistics</button>
-</section>
+    <button class="secondary reset" onclick={resetStats}><i class="fa-solid fa-trash"></i>&nbsp;&nbsp;Reset statistics</button>
+  </section>
 {/if}
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 
   button.reset {
     color: #6e2626;

@@ -7,8 +7,10 @@ import type { BackgroundsRes } from '../../../../../../shared/types/features/bac
 export const load: PageLoad = async ({ parent }) => {
   let backgrounds: BackgroundsRes[] = []
 
-  if (!cookiesService.get('JWT')) redirect(300, '/login');
-  if (!(await parent()).user.p_background_mod) redirect(300, '/dashboard');(await apiBackgroundsService.getBackgrounds()).subscribe({
+  if (!cookiesService.get('JWT')) redirect(300, '/login')
+  if (!(await parent()).user.p_background_mod) redirect(300, '/dashboard')
+    
+  ;(await apiBackgroundsService.getBackgrounds()).subscribe({
     next: (res) => {
       backgrounds = res.body.data!
     }

@@ -4,9 +4,13 @@
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
 
-  let showChangeMaintenanceStatusModal = false
+  let { data = $bindable() }: Props = $props()
+
+  let showChangeMaintenanceStatusModal = $state(false)
 
   async function turnMaintenanceOff() {
     ;(await apiMaintenanceService.putMaintenanceStatus(null, null, '')).subscribe({
@@ -35,7 +39,8 @@
 <h2>Maintenance</h2>
 
 <section class="section">
-  <button class="secondary right" on:click={() => (showChangeMaintenanceStatusModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right" onclick={() => (showChangeMaintenanceStatusModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
 
   <h3>Maintenance status</h3>
 
@@ -44,12 +49,12 @@
       <p class="label">Status</p>
       {#if data.maintenance.start_date == null}
         <p class="no-link off">OFF</p>
-        <button class="off" on:click={() => (showChangeMaintenanceStatusModal = true)}>
+        <button class="off" onclick={() => (showChangeMaintenanceStatusModal = true)}>
           <i class="fa-solid fa-power-off"></i>&nbsp;&nbsp;Turn on...
         </button>
       {:else}
         <p class="no-link on">ON</p>
-        <button class="on" on:click={turnMaintenanceOff}><i class="fa-solid fa-power-off"></i>&nbsp;&nbsp;Turn off</button>
+        <button class="on" onclick={turnMaintenanceOff}><i class="fa-solid fa-power-off"></i>&nbsp;&nbsp;Turn off</button>
       {/if}
     </div>
 
@@ -96,7 +101,7 @@ You will need to disable maintenance manually."
 <ChangeMaintenanceStatusModal bind:data bind:show={showChangeMaintenanceStatusModal}></ChangeMaintenanceStatusModal>
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 
   div.container button {
     display: inline-block;

@@ -6,18 +6,20 @@
   import apiFilesupdaterService from '../../services/api/api-filesupdater.service'
   import type { Loader } from '../../../../shared/types/features/file'
 
-  export let data: PageData
-  export let show: boolean
-  export let ready: boolean
+  interface Props {
+    data: PageData
+    show: boolean
+    ready: boolean
+  }
 
-  $: loader = '' as 'vanilla' | 'forge'
-  $: temp_loader = '' as 'vanilla' | 'forge'
-  $: minecraft_version = '' as string
-  $: temp_minecraft_version = '' as string
-  $: loader_version = '' as string
-  $: minecraftVersions = [] as string[]
+  let { data = $bindable(), show = $bindable(), ready = $bindable() }: Props = $props()
 
-  $: if (show && data.loadersList) update()
+  let loader: 'vanilla' | 'forge' = $state('vanilla')
+  let temp_loader: 'vanilla' | 'forge' = $state('vanilla')
+  let minecraft_version: string = $state('')
+  let temp_minecraft_version: string = $state('')
+  let loader_version: string = $state('')
+  let minecraftVersions: string[] = $state([])
 
   async function update() {
     loader = data.loader.loader
@@ -30,7 +32,8 @@
     minecraftVersions = [...new Set(data.loadersList[loader].map((version) => version.minecraftVersion))]
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     const newLoader: Loader = {
       loader,
       minecraft_version,
@@ -43,6 +46,10 @@
       }
     })
   }
+
+  $effect(() => {
+    if (show && data.loadersList) update()
+  })
 </script>
 
 <ModalTemplate size={'l'} bind:show>
@@ -50,7 +57,7 @@
     <LoadingSplash transparent></LoadingSplash>
   {/if}
 
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>Change loader</h2>
 
     <div class="list-container">
@@ -60,7 +67,7 @@
           class="list"
           type="button"
           class:active={temp_loader === 'vanilla'}
-          on:click={() => {
+          onclick={() => {
             temp_loader = 'vanilla'
             minecraftVersions = [...new Set(data.loadersList[temp_loader].map((version) => version.minecraftVersion))]
           }}>Vanilla</button
@@ -69,7 +76,7 @@
           class="list"
           type="button"
           class:active={temp_loader === 'forge'}
-          on:click={() => {
+          onclick={() => {
             temp_loader = 'forge'
             minecraftVersions = [...new Set(data.loadersList[temp_loader].map((version) => version.minecraftVersion))]
             if (!minecraftVersions.includes(temp_minecraft_version)) {
@@ -85,7 +92,12 @@
             <div class="list">
               <p class="label" style="margin-top: 0; position: sticky; top: 0; background: white; z-index: 100">Minecraft versions</p>
               {#each minecraftVersions as version}
-                <button class="list" type="button" class:active={temp_minecraft_version === version} on:click={() => (temp_minecraft_version = version)}>
+                <button
+                  class="list"
+                  type="button"
+                  class:active={temp_minecraft_version === version}
+                  onclick={() => (temp_minecraft_version = version)}
+                >
                   {version}
                 </button>
               {/each}
@@ -105,7 +117,7 @@
                     <button
                       class:active={loader_version === version.loaderVersion && temp_loader === 'vanilla'}
                       type="button"
-                      on:click={() => {
+                      onclick={() => {
                         loader = temp_loader = 'vanilla'
                         minecraft_version = loader_version = 'latest_release'
                       }}
@@ -122,7 +134,7 @@
                     <button
                       class:active={loader_version === version.loaderVersion && temp_loader === 'vanilla'}
                       type="button"
-                      on:click={() => {
+                      onclick={() => {
                         loader = temp_loader = 'vanilla'
                         minecraft_version = loader_version = version.loaderVersion
                       }}
@@ -138,7 +150,7 @@
                     <button
                       class:active={loader_version === version.loaderVersion && temp_loader === 'vanilla'}
                       type="button"
-                      on:click={() => {
+                      onclick={() => {
                         loader = temp_loader = 'vanilla'
                         minecraft_version = loader_version = 'latest_snapshot'
                       }}
@@ -155,7 +167,7 @@
                     <button
                       class:active={loader_version === version.loaderVersion && temp_loader === 'vanilla'}
                       type="button"
-                      on:click={() => {
+                      onclick={() => {
                         loader = temp_loader = 'vanilla'
                         minecraft_version = loader_version = version.loaderVersion
                       }}
@@ -171,7 +183,7 @@
                   <button
                     class:active={loader_version === version.loaderVersion && temp_loader === 'forge'}
                     type="button"
-                    on:click={() => {
+                    onclick={() => {
                       loader = temp_loader = 'forge'
                       minecraft_version = version.loaderVersion.split('-')[0].replace('_', '-')
                       loader_version = version.loaderVersion
@@ -189,7 +201,7 @@
                   <button
                     class:active={loader_version === version.loaderVersion && temp_loader === 'forge'}
                     type="button"
-                    on:click={() => {
+                    onclick={() => {
                       loader = temp_loader = 'forge'
                       minecraft_version = version.loaderVersion.split('-')[0].replace('_', '-')
                       loader_version = version.loaderVersion
@@ -207,7 +219,7 @@
                   <button
                     class:active={loader_version === version.loaderVersion && temp_loader === 'forge'}
                     type="button"
-                    on:click={() => {
+                    onclick={() => {
                       loader = temp_loader = 'forge'
                       minecraft_version = version.loaderVersion.split('-')[0].replace('_', '-')
                       loader_version = version.loaderVersion
@@ -227,15 +239,15 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
-  @import '../../assets/scss/list.scss';
+  @use '../../assets/scss/modals.scss';
+  @use '../../assets/scss/list.scss';
 
   div.list,
   div.content-list {

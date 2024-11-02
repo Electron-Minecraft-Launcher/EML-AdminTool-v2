@@ -11,19 +11,19 @@ export const load: PageLoad = async () => {
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
       next: () => {
-        redirect(300, '/dashboard');
-      },
+        redirect(300, '/dashboard')
+      }
     })
   }
 
   ;(await apiConfigureService.getConfigure()).subscribe({
     finally: (res) => {
       if (res.body?.code == 'SUCCESS') {
-        redirect(300, '/');
+        redirect(300, '/')
       } else {
         start = true
       }
-    },
+    }
   })
 
   return { start }

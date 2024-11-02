@@ -3,13 +3,18 @@
   import { user, l } from '../../services/store'
   import apiAdminService from '../../services/api/api-admin.service'
 
-  export let show: boolean
+  interface Props {
+    show: boolean
+  }
 
-  let name: string = ''
-  let password: string = ''
-  let passwordCfr: string = ''
+  let { show = $bindable() }: Props = $props()
 
-  async function submit() {
+  let name: string = $state('')
+  let password: string = $state('')
+  let passwordCfr: string = $state('')
+
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     ;(await apiAdminService.putUser('me', { name, password })).subscribe({
       next: (res) => {
         user.set(res.body.data?.user!)
@@ -20,7 +25,7 @@
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>Edit account information</h2>
 
     <p>Leave blank if you don't want to change.</p>
@@ -35,14 +40,14 @@
     <input type="password" id="password-cfr" placeholder={$l.auth.confirmPassword} bind:value={passwordCfr} />
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={password != passwordCfr}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

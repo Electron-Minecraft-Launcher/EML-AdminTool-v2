@@ -1,23 +1,27 @@
 <script lang="ts">
-  export let padding: string = '0px'
-  export let height: string = '24px'
-  export let randomWidth: { times: number, min: number } = { times: 100, min: 30 }
-  export let customStyle: { [key: string]: string }[] = []
+  interface Props {
+    padding?: string
+    height?: string
+    randomWidth?: { times: number; min: number }
+    customStyle?: { [key: string]: string }[]
+  }
+
+  let { padding = '0px', height = '24px', randomWidth = { times: 100, min: 30 }, customStyle = [] }: Props = $props()
   let width: string = ''
-  let style = ''
+  let style = $state('')
 
-  width = (Math.random() * randomWidth.times + randomWidth.min) + 'px'
+  width = Math.random() * randomWidth.times + randomWidth.min + 'px'
 
-    style += 'padding: ' + padding + '; '
-    style += 'height: ' + height + '; '
-    style += 'width: ' + width + '; '
+  style += 'padding: ' + padding + '; '
+  style += 'height: ' + height + '; '
+  style += 'width: ' + width + '; '
 
-    customStyle.forEach(element => {
-      style += Object.entries(element)[0][0] + ': ' + element[Object.entries(element)[0][0]] + ' !important; '
-    })
+  customStyle.forEach((element) => {
+    style += Object.entries(element)[0][0] + ': ' + element[Object.entries(element)[0][0]] + ' !important; '
+  })
 </script>
 
-<span class="span-skeleton" {style} />
+<span class="span-skeleton" {style}></span>
 
 <style lang="scss">
   span {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from 'svelte'
+  import { onMount } from 'svelte'
   import type { File as File_ } from '../../../shared/types/features/file'
   import type { PageData } from '../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../services/api/api-filesupdater.service'
@@ -11,28 +11,31 @@
   import AddEditFileModal from './modals/AddEditFileModal.svelte'
   import notificationsService from '../services/notifications.service'
 
-  export let currentPath: string
-  export let data: PageData
-  export let ready: boolean
-  export let getData: () => void
+  interface Props {
+    currentPath: string
+    data: PageData
+    ready: boolean
+    dataFiles: File_[]
+    getData: () => void
+  }
 
-  let showRenameModal = false
-  let showCreateFolderModal = false
-  let showAddEditFileModal = false
-  let addEditFileAction: { action: 'add' } | { action: 'edit'; file: File_ } = { action: 'add' }
+  let { currentPath = $bindable(), data = $bindable(), ready = $bindable(), dataFiles = $bindable(), getData = $bindable() }: Props = $props()
 
-  let addElementDropdownOpen = false
+  let showRenameModal = $state(false)
+  let showCreateFolderModal = $state(false)
+  let showAddEditFileModal = $state(false)
+  let addEditFileAction: { action: 'add' } | { action: 'edit'; file: File_ } = $state({ action: 'add' })
+
+  let addElementDropdownOpen = $state(false)
 
   let filesUpload: HTMLInputElement
   let folderUpload: HTMLInputElement
-  let currentFilesAndFolders: File_[] = []
-  let selectedItems: File_[] = []
+  let selectedItems: File_[] = $state([])
 
-  afterUpdate(() => {
-    currentFiles = currentFilesAndFolders.filter((file) => file.type !== 'FOLDER')
-    currentFolders = currentFilesAndFolders.filter((file) => file.type === 'FOLDER')
-    currentFilesAndFoldersSorted = [...currentFolders, ...currentFiles]
-  })
+  let currentFilesAndFolders: File_[] = $derived(dataFiles.filter((file) => file.path === currentPath))
+  let currentFolders = $derived(currentFilesAndFolders.filter((file) => file.type === 'FOLDER'))
+  let currentFiles = $derived(currentFilesAndFolders.filter((file) => file.type !== 'FOLDER'))
+  let currentFilesAndFoldersSorted = $derived([...currentFolders, ...currentFiles])
 
   onMount(() => {
     folderUpload.setAttribute('directory', '')
@@ -40,13 +43,11 @@
     folderUpload.setAttribute('mozdirectory', '')
   })
 
-  $: if (data.files || currentPath) {
-    currentFilesAndFolders = data.files.filter((file) => file.path === currentPath)
-  }
-
-  $: currentFiles = currentFilesAndFolders.filter((file) => file.type !== 'FOLDER')
-  $: currentFolders = currentFilesAndFolders.filter((file) => file.type === 'FOLDER')
-  $: currentFilesAndFoldersSorted = [...currentFolders, ...currentFiles]
+  // $effect(() => {
+  //   if (data.files || currentPath) {
+  //     currentFilesAndFolders =
+  //   }
+  // })
 
   async function uploadFolder() {
     folderUpload.click()
@@ -90,6 +91,7 @@
     ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
       next: (res) => {
         data.files = res.body.data!
+        dataFiles = res.body.data!
         ready = true
       },
       error: () => {
@@ -126,7 +128,7 @@
       'properties'
     ]
 
-    if (file.type === 'FOLDER') {
+    if (file.type && file.type === 'FOLDER') {
       currentPath = `${file.path}${file.name}/`
       selectedItems = []
     } else if (file.name.split('.').length > 1 && readable.includes(file.name.split('.').slice(-1)[0])) {
@@ -168,8 +170,9 @@
     ;(await apiFilesUpdaterService.deleteFiles(paths)).subscribe({
       next: (res) => {
         data.files = res.body.data!
+        dataFiles = res.body.data!
         selectedItems = []
-        currentFilesAndFolders = data.files.filter((file) => file.path === currentPath)
+        // currentFilesAndFolders = data.files.filter((file) => file.path === currentPath)
         ready = true
       }
     })
@@ -272,21 +275,21 @@
   function size(file: File_) {
     if (file.type === 'FOLDER') return ''
     const b = $l.dashboard.filesUpdater.b
-    file.size = file.size || 0
-    if (file.size < 1000) {
+    const fileSize = file.size || 0
+    if (fileSize < 1000) {
       return `${file.size} ${b}`
-    } else if (file.size < 1000000) {
-      return `${(file.size / 1000).toFixed(2)} K${b}`
-    } else if (file.size < 2000000000) {
-      return `${(file.size / 1000000).toFixed(2)} M${b}`
+    } else if (fileSize < 1000000) {
+      return `${(fileSize / 1000).toFixed(2)} K${b}`
+    } else if (fileSize < 2000000000) {
+      return `${(fileSize / 1000000).toFixed(2)} M${b}`
     } else {
-      return `${(file.size / 1000000000).toFixed(2)} G${b}`
+      return `${(fileSize / 1000000000).toFixed(2)} G${b}`
     }
   }
 </script>
 
 <svelte:body
-  on:click={(e) => {
+  onclick={(e) => {
     // @ts-ignore
     if (selectedItems && e.target && !e.target.closest('.explorer tbody tr') && !e.target.closest('button.small')) {
       selectedItems = []
@@ -296,7 +299,7 @@
       addElementDropdownOpen = false
     }
   }}
-  on:keydown={(e) => {
+  onkeydown={(e) => {
     if (e.key === 'Escape') {
       selectedItems = []
     }
@@ -314,32 +317,33 @@
     <LoadingSplash transparent></LoadingSplash>
   {/if}
 
-  <button class="primary small add" style="margin-right: 30px" on:click={() => (addElementDropdownOpen = !addElementDropdownOpen)}>
+  <button class="primary small add" style="margin-right: 30px" onclick={() => (addElementDropdownOpen = !addElementDropdownOpen)}>
+    <!-- svelte-ignore element_invalid_self_closing_tag -->
     <i class="fa-solid fa-plus" />&nbsp;&nbsp;New elements
   </button>
 
   <button
     class="secondary small"
     disabled={selectedItems.length !== 1 || (selectedItems[0] && selectedItems[0].type === 'FOLDER')}
-    on:click={download}
+    onclick={download}
   >
     <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download
   </button>
-  <button class="secondary small" disabled={selectedItems.length !== 1} on:click={() => (showRenameModal = true)}>
+  <button class="secondary small" disabled={selectedItems.length !== 1} onclick={() => (showRenameModal = true)}>
     <i class="fa-solid fa-i-cursor"></i>&nbsp;&nbsp;Rename
   </button>
-  <button class="secondary small" disabled={selectedItems.length === 0} on:click={deleteItems}>
+  <button class="secondary small" disabled={selectedItems.length === 0} onclick={deleteItems}>
     <i class="fa-solid fa-trash"></i>&nbsp;&nbsp;Delete
   </button>
 
   {#if addElementDropdownOpen}
     <div class="add-element-dropdown" transition:slide={{ duration: 200 }}>
-      <button on:click={uploadFolder}><i class="fap-fix fa-solid fap-folder-arrow-up"></i>&nbsp;&nbsp;Upload folder</button>
-      <button on:click={uploadFiles}><i class="fap-fix fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload files</button>
+      <button onclick={uploadFolder}><i class="fap-fix fa-solid fap-folder-arrow-up"></i>&nbsp;&nbsp;Upload folder</button>
+      <button onclick={uploadFiles}><i class="fap-fix fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload files</button>
       <hr />
-      <button on:click={() => (showCreateFolderModal = true)}><i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder</button>
+      <button onclick={() => (showCreateFolderModal = true)}><i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder</button>
       <button
-        on:click={() => {
+        onclick={() => {
           addEditFileAction = { action: 'add' }
           showAddEditFileModal = true
         }}
@@ -359,7 +363,7 @@
     </thead>
     <tbody>
       {#each currentFilesAndFoldersSorted as file, i}
-        <tr class:focused={selectedItems.includes(file)} on:click={(e) => select(e, i)} on:dblclick={() => open(file)}>
+        <tr class:focused={selectedItems.includes(file)} onclick={(e) => select(e, i)} ondblclick={() => open(file)}>
           <td class="icon"><i class={icon(file)}></i></td>
           <td class="name">{file.name}</td>
           <td class="size">{size(file)}</td>
@@ -392,9 +396,9 @@
 <input type="file" name="files[]" multiple bind:this={filesUpload} style="display: none" />
 <input type="file" name="files[]" multiple bind:this={folderUpload} style="display: none" />
 
-<RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal} {getData}></RenameFileModal>
-<CreateFolderModal bind:data bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
-<AddEditFileModal bind:data bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal>
+<RenameFileModal bind:data bind:dataFiles bind:selectedItems bind:show={showRenameModal} {getData}></RenameFileModal>
+<CreateFolderModal bind:data bind:dataFiles bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
+<AddEditFileModal bind:data bind:dataFiles bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal>
 
 <style lang="scss">
   .fap-fix {

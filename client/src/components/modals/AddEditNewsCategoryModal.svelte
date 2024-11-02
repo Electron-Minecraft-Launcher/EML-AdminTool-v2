@@ -8,19 +8,20 @@
   import utils from '../../services/utils'
   import ModalTemplate from './ModalTemplate.svelte'
 
-  export let data: PageData
-  export let show: boolean
-  export let action: { action: 'add' } | { action: 'edit'; category: NewsCategory } = { action: 'add' }
+  interface Props {
+    data: PageData
+    show: boolean
+    action?: { action: 'add' } | { action: 'edit'; category: NewsCategory }
+  }
 
-  $: title = '' as string
-
-  $: if (show) update()
+  let { data = $bindable(), show = $bindable(), action = $bindable({ action: 'add' }) }: Props = $props()
 
   function update() {
     title = action.action === 'add' ? '' : action.category.title
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     if (action.action === 'add') {
       ;(await apiNewsService.postCategory({ title })).subscribe({
         next: (res) => {
@@ -37,24 +38,30 @@
       })
     }
   }
+
+  let title = $state('' as string)
+
+  $effect(() => {
+    if (show) update()
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>{action.action === 'add' ? 'Create a category' : 'Edit the category'}</h2>
 
     <label for="name">Title</label>
     <input type="text" id="name" placeholder={action.action === 'add' ? 'Title' : title} bind:value={title} />
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={title.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

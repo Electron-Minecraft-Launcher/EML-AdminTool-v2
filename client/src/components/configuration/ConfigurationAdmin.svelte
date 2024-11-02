@@ -2,16 +2,16 @@
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
   import { l } from '../../services/store'
 
-  let relN!: string
-  let rel: string = '   '
+  let relN: string = $state('')
+  let rel: string = $state('   ')
 
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = {
+  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
     data: 'ADMIN',
     value: {
       name: '',
       password: ''
     }
-  }
+  })
 
   function inputChange() {
     if (!data.value.password) {
@@ -108,7 +108,7 @@
   <p><b>{@html $l.configuration.step3.subtitle}</b></p>
   <div class="actions">
     <input type="text" name="name" placeholder={$l.main.serverName} bind:value={data.value.name} />
-    <input type="password" name="password" placeholder={$l.main.password} bind:value={data.value.password} on:keyup={inputChange} />
+    <input type="password" name="password" placeholder={$l.main.password} bind:value={data.value.password} onkeyup={inputChange} />
 
     <div class="rel-progress">
       <div
@@ -118,7 +118,7 @@
         class:progress-2={relN == '2'}
         class:progress-3={relN == '3'}
         class:progress-4={relN == '4'}
-      />
+      ></div>
     </div>
 
     <span class="rel">{rel}</span>
@@ -126,7 +126,7 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/configure.scss';
+  @use '../../assets/scss/configure.scss';
 
   // div.flex {
   //   display: flex;

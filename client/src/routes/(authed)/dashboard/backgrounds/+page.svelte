@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BackgroundsRes } from '../../../../../../shared/models/features/background.model'
+  import type { BackgroundsRes } from '../../../../../../shared/types/features/background'
   import ChangeMaintenanceStatusModal from '../../../../components/modals/ChangeMaintenanceStatusModal.svelte'
   import UploadEditBackgroundModal from '../../../../components/modals/UploadEditBackgroundModal.svelte'
   import UploadEditBackgroundModalcopy from '../../../../components/modals/UploadEditBackgroundModal.svelte'
@@ -8,10 +8,14 @@
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
 
-  let showUploadEditBackgroundModal = false
-  let uploadEditBackgroundAction: { action: 'upload' } | { action: 'edit'; background: BackgroundsRes } = { action: 'upload' }
+  let { data = $bindable() }: Props = $props()
+
+  let showUploadEditBackgroundModal: boolean = $state(false)
+  let uploadEditBackgroundAction: { action: 'upload' } | { action: 'edit'; background: BackgroundsRes } = $state({ action: 'upload' })
 
   async function activate(background: BackgroundsRes) {
     ;(await apiBackgroundsService.putActiveBackground(background.id!)).subscribe({
@@ -38,9 +42,10 @@
 <h2>Backgrounds</h2>
 
 <section class="section">
+  <!-- svelte-ignore a11y_consider_explicit_label -->
   <button
     class="secondary right"
-    on:click={() => {
+    onclick={() => {
       uploadEditBackgroundAction = { action: 'upload' }
       showUploadEditBackgroundModal = true
     }}><i class="fa-solid fa-file-arrow-up"></i></button
@@ -53,19 +58,21 @@
       <div style="background-image: url('{background.url}'" class="img" class:active={background.status == 1}>
         <div>
           {#if background.status != 1}
-            <button on:click={() => activate(background)}><i class="fa-solid fa-bolt"></i>&nbsp;&nbsp;Activate</button><br />
+            <button onclick={() => activate(background)}><i class="fa-solid fa-bolt"></i>&nbsp;&nbsp;Activate</button><br />
           {/if}
+          <!-- svelte-ignore a11y_consider_explicit_label -->
           <button
-            on:click={() => {
+            onclick={() => {
               uploadEditBackgroundAction = { action: 'edit', background: background }
               showUploadEditBackgroundModal = true
             }}><i class="fa-solid fa-pen"></i></button
           >
+          <!-- svelte-ignore a11y_consider_explicit_label -->
           <button
             disabled={background.status == 1}
             title={background.status == 1 ? 'You cannot delete the active background.' : ''}
             class="remove"
-            on:click={() => deleteBackground(background)}><i class="fa-solid fa-trash"></i></button
+            onclick={() => deleteBackground(background)}><i class="fa-solid fa-trash"></i></button
           >
         </div>
         <p class="title">{background.title}</p>
@@ -79,7 +86,7 @@
 <UploadEditBackgroundModal bind:data bind:action={uploadEditBackgroundAction} bind:show={showUploadEditBackgroundModal}></UploadEditBackgroundModal>
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 
   div.container {
     margin-top: 30px;
@@ -148,7 +155,7 @@
     }
   }
 
-  button:not(.secondary) {
+  button:not(:global(.secondary)) {
     display: inline-block;
     margin-top: 0;
     border-bottom: none;

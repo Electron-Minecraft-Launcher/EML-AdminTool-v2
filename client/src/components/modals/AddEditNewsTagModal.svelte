@@ -7,21 +7,24 @@
   import utils from '../../services/utils'
   import ModalTemplate from './ModalTemplate.svelte'
 
-  export let data: PageData
-  export let show: boolean
-  export let action: { action: 'add' } | { action: 'edit'; tag: NewsTag } = { action: 'add' }
+  interface Props {
+    data: PageData
+    show: boolean
+    action?: { action: 'add' } | { action: 'edit'; tag: NewsTag }
+  }
 
-  $: title = '' as string
-  $: color = '' as string
+  let { data = $bindable(), show = $bindable(), action = $bindable({ action: 'add' }) }: Props = $props()
 
-  $: if (show) update()
+  let title: string = $state('')
+  let color: string = $state('')
 
   function update() {
     title = action.action === 'add' ? '' : action.tag.title
     color = action.action === 'add' ? '' : action.tag.color
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     if (action.action === 'add') {
       ;(await apiNewsService.postTag({ title, color })).subscribe({
         next: (res) => {
@@ -38,33 +41,39 @@
       })
     }
   }
+
+  $effect(() => {
+    if (show) update()
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>{action.action === 'add' ? 'Create a tag' : 'Edit the tag'}</h2>
 
     <label for="name">Title</label>
     <input type="text" id="name" placeholder={action.action === 'add' ? 'Title' : title} bind:value={title} />
-    
-    <label for="color">Color&nbsp;&nbsp;<i class="fa-solid fa-question-circle" style="cursor: help" title="You should use a dark color to make it readable."></i></label>
+
+    <label for="color">
+      Color&nbsp;&nbsp;<i class="fa-solid fa-question-circle" style="cursor: help" title="You should use a dark color to make it readable."></i>
+    </label>
     <input type="color" id="color" bind:value={color} />
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={title.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.label {
     margin-top: 15px;
   }
 
-  input[type="color"] {
+  input[type='color'] {
     width: 100%;
     height: 40px;
     padding: 7px 10px;

@@ -5,15 +5,27 @@
   import { createEventDispatcher } from 'svelte'
   import utils from '../../services/utils'
 
-  export let step: number
-  export let cond: boolean = true
-  export let prev: boolean = true
-  export let next: boolean = true
-  export let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any }
+  interface Props {
+    step: number;
+    cond?: boolean;
+    prev?: boolean;
+    next?: boolean;
+    data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any };
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    step,
+    cond = true,
+    prev = true,
+    next = true,
+    data,
+    children
+  }: Props = $props();
 
   const dispatch = createEventDispatcher()
 
-  let splash = false
+  let splash = $state(false)
 
   function nextStep() {   
     dispatch('nextStep', {
@@ -27,7 +39,8 @@
     })
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     if (data.data == 'LANGUAGE') {
       splash = true
       ;(await apiConfigureService.putLanguage(data.value)).subscribe({
@@ -62,23 +75,23 @@
 
 </script>
 
-<form on:submit|preventDefault={submit}>
+<form onsubmit={submit}>
   {#if splash}
     <LoadingSplash transparent={true} />
   {/if}
-  <slot />
+  {@render children?.()}
   <div class="steps-actions">
     {#if prev}
       <div class="prev" style={'width: ' + (!next ? '100%' : 'auto')}>
-        <button type="button" class="secondary" on:click={prevStep}>
-          <i class="fa-solid fa-arrow-left" />&nbsp;&nbsp;<span>{$l.main.prev}</span>
+        <button type="button" class="secondary" onclick={prevStep}>
+          <i class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;<span>{$l.main.prev}</span>
         </button>
       </div>
     {/if}
     {#if next}
       <div class="next" style={(!prev ? 'width: 100%' : 'float: right; position: relative; top: -5px')}>
         <button type="submit" class="primary" disabled={!cond}>
-          <span>{step < 3 ? $l.main.next : $l.main.finish}</span>&nbsp;&nbsp;<i class="fa-solid fa-arrow-right" />
+          <span>{step < 3 ? $l.main.next : $l.main.finish}</span>&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
     {/if}
@@ -86,5 +99,5 @@
 </form>
 
 <style lang="scss">
-  @import '../../assets/scss/configure.scss';
+  @use '../../assets/scss/configure.scss';
 </style>

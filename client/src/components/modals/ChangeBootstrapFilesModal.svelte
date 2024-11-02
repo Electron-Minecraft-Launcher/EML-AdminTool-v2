@@ -3,30 +3,33 @@
   import { l } from '../../services/store'
   import type { PageData } from '../../routes/(authed)/dashboard/bootstraps/$types'
   import apiBootstrapsService from '../../services/api/api-bootstraps.service'
+  import { onMount } from 'svelte'
 
-  export let data: PageData
-  export let show: boolean
+  interface Props {
+    data: PageData
+    show: boolean
+  }
 
-  $: version = '' as string
-  $: win = '' as string
-  $: mac = '' as string
-  $: lin = '' as string
-  $: files = [] as File[]
+  let { data = $bindable(), show = $bindable() }: Props = $props()
 
-  $: winUpload = null as HTMLInputElement | null
-  $: macUpload = null as HTMLInputElement | null
-  $: linUpload = null as HTMLInputElement | null
+  let version: string = $state('')
+  let win: string = $state('')
+  let mac: string = $state('')
+  let lin: string = $state('')
+  let files: File[] = $state([])
 
-  $: disabled =
+  let winUpload: HTMLInputElement | null = $state(null)
+  let macUpload: HTMLInputElement | null = $state(null)
+  let linUpload: HTMLInputElement | null = $state(null)
+  let disabled: boolean = $derived(
     !version.match(/(\d\.\d\.\d)(-[a-z]*(\.\d)?)?/gi) ||
-    !winUpload?.files ||
-    !macUpload?.files ||
-    !linUpload?.files ||
-    !winUpload?.files[0] ||
-    !macUpload?.files[0] ||
-    !linUpload?.files[0]
-
-  $: if (show) update()
+      !(winUpload as HTMLInputElement | null)?.files ||
+      !(macUpload as HTMLInputElement | null)?.files ||
+      !(linUpload as HTMLInputElement | null)?.files ||
+      !(winUpload as HTMLInputElement | null)?.files![0] ||
+      !(macUpload as HTMLInputElement | null)?.files![0] ||
+      !(linUpload as HTMLInputElement | null)?.files![0]
+  )
 
   function update() {
     version = data.bootstraps.version || ''
@@ -61,15 +64,6 @@
     if (platform === 'win') win = winUpload!.files!.item(0)!.name
     if (platform === 'mac') mac = macUpload!.files!.item(0)!.name
     if (platform === 'lin') lin = linUpload!.files!.item(0)!.name
-
-    disabled =
-      !version.match(/(\d\.\d\.\d)(-[a-z]*(\.\d)?)?/gi) ||
-      !winUpload?.files ||
-      !macUpload?.files ||
-      !linUpload?.files ||
-      !winUpload?.files[0] ||
-      !macUpload?.files[0] ||
-      !linUpload?.files[0]
   }
 
   function reset(platform: 'win' | 'mac' | 'lin') {
@@ -92,7 +86,8 @@
     }
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     if (version === '') return
     if (
       version === data.bootstraps.version &&
@@ -125,10 +120,19 @@
       })
     }
   }
+
+  $effect(() => {
+    if (show) update()
+
+    files = [] as File[]
+    winUpload = null as HTMLInputElement | null
+    macUpload = null as HTMLInputElement | null
+    linUpload = null as HTMLInputElement | null
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>Change bootstraps and version</h2>
 
     <label for="version" style="margin-top: 0">Version</label>
@@ -136,36 +140,39 @@
 
     <p class="label" style="margin-top: 20px"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
     {#if !win || win === ''}
-      <button class="secondary upload" on:click={() => uploadFile('win')} type="button">
+      <button class="secondary upload" onclick={() => uploadFile('win')} type="button">
         <i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Select a file...
       </button>
     {:else}
       <p class="no-link">{win}</p>
-      <button class="remove" on:click={() => reset('win')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <button class="remove" onclick={() => reset('win')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
     {/if}
 
     <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
     {#if !mac || mac === ''}
-      <button class="secondary upload" on:click={() => uploadFile('mac')} type="button">
+      <button class="secondary upload" onclick={() => uploadFile('mac')} type="button">
         <i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Select a file...
       </button>
     {:else}
       <p class="no-link">{mac}</p>
-      <button class="remove" on:click={() => reset('mac')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <button class="remove" onclick={() => reset('mac')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
     {/if}
 
     <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
     {#if !lin || lin === ''}
-      <button class="secondary upload" on:click={() => uploadFile('lin')} type="button">
+      <button class="secondary upload" onclick={() => uploadFile('lin')} type="button">
         <i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Select a file...
       </button>
     {:else}
       <p class="no-link">{lin}</p>
-      <button class="remove" on:click={() => reset('lin')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <button class="remove" onclick={() => reset('lin')} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
     {/if}
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" {disabled}>{$l.main.save}</button>
     </div>
 
@@ -176,7 +183,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   button.secondary.upload {
     margin-top: 0;

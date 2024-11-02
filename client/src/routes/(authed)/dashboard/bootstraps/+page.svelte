@@ -1,13 +1,17 @@
 <script lang="ts">
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
-  import { afterUpdate, onMount } from 'svelte'
+  import { onMount } from 'svelte'
   import apiBootstrapsService from '../../../../services/api/api-bootstraps.service'
   import ChangeBootstrapFilesModal from '../../../../components/modals/ChangeBootstrapFilesModal.svelte'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
 
-  let showChangeBootstrapFileModal = false
+  let { data = $bindable() }: Props = $props()
+
+  let showChangeBootstrapFileModal: boolean = $state(false)
 
   async function download(platform: 'win' | 'mac' | 'lin') {
     if (!data.bootstraps[platform]) return
@@ -48,7 +52,8 @@
 <h2>Bootstraps</h2>
 
 <section class="section" style="position: relative;">
-  <button class="secondary right" on:click={() => (showChangeBootstrapFileModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right" onclick={() => (showChangeBootstrapFileModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
 
   <h3>Bootstraps and Launcher version</h3>
 
@@ -61,8 +66,9 @@
     <div>
       <p class="label"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
       {#if data.bootstraps.win}
-        <button on:click={() => download('win')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.win.name}</button>
-        <button class="remove" on:click={() => deleteFile('win')}><i class="fa-solid fa-trash"></i></button>
+        <button onclick={() => download('win')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.win.name}</button>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button class="remove" onclick={() => deleteFile('win')}><i class="fa-solid fa-trash"></i></button>
       {:else}
         <p class="no-link">-</p>
       {/if}
@@ -71,8 +77,9 @@
     <div>
       <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
       {#if data.bootstraps.mac}
-        <button on:click={() => download('mac')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.mac.name}</button>
-        <button class="remove" on:click={() => deleteFile('mac')}><i class="fa-solid fa-trash"></i></button>
+        <button onclick={() => download('mac')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.mac.name}</button>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button class="remove" onclick={() => deleteFile('mac')}><i class="fa-solid fa-trash"></i></button>
       {:else}
         <p class="no-link">-</p>
       {/if}
@@ -81,8 +88,9 @@
     <div>
       <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
       {#if data.bootstraps.lin}
-        <button on:click={() => download('lin')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.lin.name}</button>
-        <button class="remove" on:click={() => deleteFile('lin')}><i class="fa-solid fa-trash"></i></button>
+        <button onclick={() => download('lin')}><i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{data.bootstraps.lin.name}</button>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button class="remove" onclick={() => deleteFile('lin')}><i class="fa-solid fa-trash"></i></button>
       {:else}
         <p class="no-link">-</p>
       {/if}
@@ -93,7 +101,7 @@
 <ChangeBootstrapFilesModal bind:data bind:show={showChangeBootstrapFileModal} />
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 
   div.container button {
     display: inline-block;

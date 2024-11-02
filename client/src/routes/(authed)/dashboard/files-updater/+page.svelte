@@ -1,41 +1,40 @@
+<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
-  import { afterUpdate, onMount } from 'svelte'
+  import { onMount } from 'svelte'
   import apiFilesUpdaterService from '../../../../services/api/api-filesupdater.service'
   import FilesUpdater from '../../../../components/FilesUpdater.svelte'
   import ChangeLoaderModal from '../../../../components/modals/ChangeLoaderModal.svelte'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
 
-  let filesReady = false
-  let isDragOver = false
-  let path: HTMLSpanElement
-  let oldPath: string
-  let currentPath = ''
+  let { data }: Props = $props()
 
-  let loadersReady = false
-  let showChangeLoaderModal = false
+  let dataFiles: PageData['files'] = $state([])
+  let filesReady: boolean = $state(false)
+  let isDragOver: boolean = $state(false)
+  let path: HTMLSpanElement | undefined = $state()
+  let oldPath: string = $state('')
+  let currentPath: string = $state('')
 
-  $: currentPathSplit = currentPath.split('/')
+  let loadersReady: boolean = $state(false)
+  let showChangeLoaderModal: boolean = $state(false)
 
-  let sL = false
-  let sR = false
+  let currentPathSplit: string[] = $derived(currentPath.split('/'))
 
-  afterUpdate(() => {
-    if (oldPath !== path.innerHTML) {
-      oldPath = path.innerHTML
-      path.scrollLeft = path.scrollWidth
-    }
-  })
+  let sL: boolean = $state(false)
+  let sR: boolean = $state(false)
 
   onMount(() => {
-    oldPath = path.innerHTML
+    oldPath = path!.innerHTML
 
-    path.addEventListener('scroll', () => {
-      sL = path.scrollLeft > 0
-      sR = path.scrollLeft < path.scrollWidth - path.clientWidth - 1
+    path!.addEventListener('scroll', () => {
+      sL = path!.scrollLeft > 0
+      sR = path!.scrollLeft < path!.scrollWidth - path!.clientWidth - 1
     })
   })
 
@@ -44,6 +43,7 @@
     ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
       next: (res) => {
         data.files = res.body.data!
+        dataFiles = res.body.data!
         filesReady = true
       }
     })
@@ -59,12 +59,14 @@
   getData()
 
   function handleLeave(e: any) {
+    e.preventDefault()
     if (!e.currentTarget!.contains(e.relatedTarget)) {
       isDragOver = false
     }
   }
 
   async function handleDrop(e: DragEvent) {
+    e.preventDefault()
     isDragOver = false
     filesReady = false
     if (!e.dataTransfer || e.dataTransfer.items.length === 0) return
@@ -90,6 +92,7 @@
     ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
       next: (res) => {
         data.files = res.body.data!
+        dataFiles = res.body.data!
         filesReady = true
       }
     })
@@ -138,6 +141,13 @@
       return []
     }
   }
+
+  $effect(() => {
+    if (oldPath !== path!.innerHTML) {
+      oldPath = path!.innerHTML
+      path!.scrollLeft = path!.scrollWidth
+    }
+  })
 </script>
 
 <svelte:head>
@@ -146,31 +156,37 @@
 
 <h2>Files Updater</h2>
 
-<!-- svelte-ignore missing-declaration -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <section
   class="section explorer"
   style="position: relative;"
   class:drag={isDragOver}
-  on:dragover|preventDefault={() => (isDragOver = true)}
-  on:dragenter|preventDefault={() => (isDragOver = true)}
-  on:dragleave|preventDefault={handleLeave}
-  on:drop|preventDefault={handleDrop}
+  ondragover={(e) => {
+    e.preventDefault()
+    isDragOver = true
+  }}
+  ondragenter={(e) => {
+    e.preventDefault()
+    isDragOver = true
+  }}
+  ondragleave={handleLeave}
+  ondrop={handleDrop}
 >
   <h3>
-    <button style="margin-right: 5px" on:click={getData}><i class="fa-solid fa-rotate-right"></i></button><span
+    <!-- svelte-ignore a11y_consider_explicit_label -->
+    <button style="margin-right: 5px" onclick={getData}><i class="fa-solid fa-rotate-right"></i></button><span
       bind:this={path}
       class:scrolled-left={sL}
       class:scrolled-right={sR}
-      ><button on:click={() => (currentPath = '')}>Files Updater</button>{#each currentPathSplit as dir, i}{#if dir !== ''}<i
+      ><button onclick={() => (currentPath = '')}>Files Updater</button>{#each currentPathSplit as dir, i}{#if dir !== ''}<i
             class="fa-solid fa-caret-right"
-          ></i><button on:click={() => (currentPath = currentPathSplit.slice(0, i + 1).join('/') + '/')}>{dir}</button>
+          ></i><button onclick={() => (currentPath = currentPathSplit.slice(0, i + 1).join('/') + '/')}>{dir}</button>
         {/if}
       {/each}
     </span>
   </h3>
 
-  <FilesUpdater bind:data bind:currentPath bind:ready={filesReady} {getData} />
+  <FilesUpdater bind:data bind:currentPath bind:ready={filesReady} {getData} bind:dataFiles />
 </section>
 
 <section class="section">
@@ -178,7 +194,8 @@
     <LoadingSplash transparent></LoadingSplash>
   {/if}
 
-  <button class="secondary right" on:click={() => (showChangeLoaderModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right" onclick={() => (showChangeLoaderModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
 
   <h3>Minecraft loader</h3>
 
@@ -228,7 +245,7 @@
 <ChangeLoaderModal bind:show={showChangeLoaderModal} bind:data bind:ready={loadersReady} />
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 
   section.section.explorer {
     &.drag::after {

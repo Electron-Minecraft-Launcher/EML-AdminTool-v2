@@ -4,10 +4,10 @@ import { redirect } from '@sveltejs/kit'
 
 export const load: LayoutLoad = async () => {
   if (cookiesService.get('JWT')) {
-    redirect(300, '/dashboard');
+    redirect(300, '/dashboard')
   } else {
     if (window.location.pathname != '/register') {
-      redirect(300, '/login');
+      redirect(300, '/login')
     }
   }
 }

@@ -1,25 +1,26 @@
 import adapter from '@sveltejs/adapter-node'
-import preprocess from 'svelte-preprocess'
+import { sveltePreprocess } from 'svelte-preprocess'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: preprocess({
+  preprocess: sveltePreprocess({
     scss: {
       includePaths: ['src/assets/scss/']
     }
   }),
-  kit: {
-    adapter: adapter({ out: '../dist/client' })
+  compilerOptions: {
+    warningFilter: (warning) => !warning.code?.includes('unused')
   },
   onwarn: (warning, handler) => {
-    const { code, frame, filename } = warning
-    if (code === 'css-unused-selector' || code === 'css-unused-global') {
-      return
-    }
+    if (warning.code.startsWith('css-unused-selector')) return
     handler(warning)
+  },
+  kit: {
+    adapter: adapter({ out: '../dist/client' })
   }
 }
 
 export default config
+
 
 

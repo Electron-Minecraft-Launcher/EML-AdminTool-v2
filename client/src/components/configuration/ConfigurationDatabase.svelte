@@ -2,13 +2,13 @@
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
   import { env, l } from '../../services/store'
 
-  let relN!: string
-  let rel: string = '   '
+  let relN: string = $state('')
+  let rel: string = $state('   ')
 
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = {
+  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
     data: 'DATABASE',
-    value: undefined,
-  }
+    value: undefined
+  })
 
   env.subscribe((value) => {
     if (value && value.language && typeof value.language !== 'string') inputChange()
@@ -109,16 +109,10 @@
   <p><b>{$l.configuration.step2.subtitle}</b></p>
   <div class="actions">
     <div class="flex">
-      <input
-        type="text"
-        name="db-password"
-        placeholder={$l.configuration.step2.placeholder}
-        bind:value={data.value}
-        on:keyup={inputChange}
-      />
+      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={data.value} onkeyup={inputChange} />
 
-      <button class="secondary" on:click={generatePassword} type="button">
-        <i class="fa-solid fa-arrows-rotate" />&nbsp;&nbsp;{$l.configuration.step2.generate}
+      <button class="secondary" onclick={generatePassword} type="button">
+        <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.configuration.step2.generate}
       </button>
     </div>
 
@@ -130,7 +124,7 @@
         class:progress-2={relN == '2'}
         class:progress-3={relN == '3'}
         class:progress-4={relN == '4'}
-      />
+      ></div>
     </div>
 
     <span class="rel">{rel}</span>
@@ -138,7 +132,7 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/configure.scss';
+  @use '../../assets/scss/configure.scss';
 
   div.flex {
     display: flex;

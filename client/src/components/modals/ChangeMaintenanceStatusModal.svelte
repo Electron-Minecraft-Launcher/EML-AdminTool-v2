@@ -5,28 +5,23 @@
   import Toggle from '../Toggle.svelte'
   import ModalTemplate from './ModalTemplate.svelte'
 
-  export let data: PageData
-  export let show: boolean
+  interface Props {
+    data: PageData
+    show: boolean
+  }
 
-  $: status = false as boolean
-  $: reason = '' as string
+  let { data = $bindable(), show = $bindable() }: Props = $props()
 
-  $: startDate = '' as string
-  $: endDate = '' as string
-
-  $: if (show) update()
+  let status: boolean = $state(false)
+  let reason: string = $state('')
+  let startDate: string = $state('')
+  let endDate: string = $state('')
 
   function update() {
     status = data.maintenance.start_date != null
     startDate = data.maintenance.start_date ? formatDate(new Date(data.maintenance.start_date)) : ''
     endDate = data.maintenance.end_date ? formatDate(new Date(data.maintenance.end_date)) : ''
     reason = data.maintenance.reason || ''
-  }
-
-  $: if (!status) {
-    startDate = ''
-    endDate = ''
-    reason = ''
   }
 
   function formatDate(date: Date) {
@@ -39,7 +34,8 @@
     return `${year}-${month}-${day}T${hours}:${minutes}`
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     if (!status) {
       ;(await apiMaintenanceService.putMaintenanceStatus(null, null, '')).subscribe({
         next: (res) => {
@@ -56,10 +52,20 @@
       })
     }
   }
+
+  $effect(() => {
+    if (show) update()
+
+    if (!status) {
+      startDate = ''
+      endDate = ''
+      reason = ''
+    }
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>Change maintenance status</h2>
 
     <p class="label">Maintenance status</p>
@@ -84,14 +90,14 @@ You will need to disable maintenance manually."
     <input type="text" name="reason" id="reason" placeholder="Maintenance..." bind:value={reason} disabled={!status} />
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

@@ -8,14 +8,18 @@
   import { slide } from 'svelte/transition'
   import { goto } from '$app/navigation'
 
-  export let leftPanelOpen = true
+  interface Props {
+    leftPanelOpen?: boolean
+  }
+
+  let { leftPanelOpen = $bindable(true) }: Props = $props()
 
   const randomWidth = { times: 100, min: 50 }
   const height = '21px'
   const customStyle: { [key: string]: string }[] = [{ display: 'block' }, { margin: '30px 15px 20px 15px' }]
 
   let ready = true
-  let accountDropdownOpen = false
+  let accountDropdownOpen = $state(false)
 
   // onMount(async () => {
   //   ready = await userService.reload()
@@ -49,7 +53,7 @@
 </script>
 
 <nav class:closed={!leftPanelOpen}>
-  <button class="toggle-left-panel" on:click={toggleLeftPanel}>
+  <button class="toggle-left-panel" onclick={toggleLeftPanel}>
     {@html leftPanelOpen ? '<i class="fa-solid fa-chevron-left" />' : '<i class="fa-solid fa-chevron-right" />'}
   </button>
 
@@ -78,6 +82,7 @@
   {#if leftPanelOpen}
     <h4>Features</h4>
   {:else}
+    <!-- svelte-ignore a11y_missing_content -->
     <h4 style="height: 21px;"><hr style="border-color: #505050; border-top: 0; position: relative; top: 5px;" /></h4>
   {/if}
 
@@ -132,10 +137,10 @@
       customStyle={[{ display: 'block' }, { margin: '30px 15px 20px 15px' }, { position: 'absolute' }, { bottom: '90px' }, { width: '170px' }]}
     />
   {:else}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <a class="account" on:click={accountClick}>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_missing_attribute -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <a class="account" onclick={accountClick}>
       <i class="fa-solid fa-circle-user"></i>{$user.name}<i class="fa-solid fa-caret-up"></i>
     </a>
   {/if}
@@ -145,10 +150,10 @@
       <a href="/dashboard/account" class="account-settings" class:active={$page.url.pathname == '/dashboard/account'}>
         <i class="fa-solid fa-gear"></i>Settings
       </a>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-missing-attribute -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <a class="account-logout" on:click={logoutClick}><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_missing_attribute -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <a class="account-logout" onclick={logoutClick}><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
     </div>
   {/if}
 </nav>
@@ -226,8 +231,8 @@
     overflow: hidden;
     white-space: nowrap;
 
-    &:hover:not(.account),
-    &.active:hover:not(.account) {
+    &:hover:not(:global(.account)),
+    &.active:hover:not(:global(.account)) {
       color: var(--primary-color-hover);
       background: #eeeeee;
     }

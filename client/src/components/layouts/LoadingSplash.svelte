@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let transparent: boolean = false
+  interface Props {
+    transparent?: boolean
+  }
+
+  let { transparent = false }: Props = $props()
 </script>
 
 <div class="splash-background" style={transparent ? 'background: rgba(255, 255, 255, 0.5); border-radius: 5px' : ''}>

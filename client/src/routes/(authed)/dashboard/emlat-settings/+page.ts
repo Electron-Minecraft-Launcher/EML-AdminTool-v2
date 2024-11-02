@@ -10,8 +10,10 @@ export const load: PageLoad = async ({ parent }) => {
   let users!: User[]
   let vps!: VPS
 
-  if (!cookiesService.get('JWT')) redirect(300, '/login');
-  if (!(await parent()).user.admin) redirect(300, '/dashboard');(await apiAdminService.getAdminTool()).subscribe({
+  if (!cookiesService.get('JWT')) redirect(300, '/login')
+  if (!(await parent()).user.admin) redirect(300, '/dashboard')
+    
+  ;(await apiAdminService.getAdminTool()).subscribe({
     next: (res) => {
       emlat = res.body.data?.emlat!
       vps = res.body.data?.vps!

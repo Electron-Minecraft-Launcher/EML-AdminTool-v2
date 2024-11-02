@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run, preventDefault } from 'svelte/legacy'
+
   import { onDestroy } from 'svelte'
   import type { File as File_ } from '../../../../shared/types/features/file'
   import type { PageData } from '../../routes/(authed)/dashboard/news/$types'
@@ -9,41 +11,31 @@
   import { slide } from 'svelte/transition'
   import apiNewsService from '../../services/api/api-news.service'
 
-  export let data: PageData
-  export let show: boolean
-  export let action: { action: 'add' } | { action: 'edit'; news: News }
+  interface Props {
+    data: PageData
+    show: boolean
+    action: { action: 'add' } | { action: 'edit'; news: News }
+  }
 
-  let container: HTMLDivElement
-  let editor: monaco.editor.IStandaloneCodeEditor
-  let model: monaco.editor.ITextModel
+  let { data = $bindable(), show = $bindable(), action = $bindable() }: Props = $props()
 
-  let addCategoriesDropdownOpen = false
-  let addTagsDropdownOpen = false
+  let title: string = $state('')
+  let content: string = $state('')
+  let categories: number[] = $state([])
+  let tags: number[] = $state([])
+  let imagesUpload: HTMLInputElement | null = $state(null)
 
-  $: title = '' as string
-  $: content = '' as string
-  $: categories = [] as number[]
-  $: tags = [] as number[]
+  let container: HTMLDivElement | undefined = $state()
+  let editor: monaco.editor.IStandaloneCodeEditor | undefined = $state()
+  let model: monaco.editor.ITextModel | undefined = $state()
 
-  $: imagesUpload = null as HTMLInputElement | null
-
-  $: if (show) update()
+  let addCategoriesDropdownOpen = $state(false)
+  let addTagsDropdownOpen = $state(false)
 
   onDestroy(() => {
     monaco?.editor.getModels().forEach((model) => model.dispose())
     editor?.dispose()
   })
-
-  $: if (container) {
-    if (editor) {
-      editor.dispose()
-      model?.dispose()
-    }
-
-    editor = monaco.editor.create(container, { minimap: { enabled: false }, wordWrap: 'on' })
-    model = monaco.editor.createModel(content, 'markdown')
-    editor.setModel(model)
-  }
 
   function backgroundColor(color: string) {
     const r = parseInt(color.slice(1, 3), 16)
@@ -116,8 +108,9 @@
     })
   }
 
-  async function submit() {
-    content = editor.getValue()
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
+    content = editor!.getValue()
     if (action.action === 'add') {
       ;(await apiNewsService.postNews({ title, content, categories, tags })).subscribe({
         next: (res) => {
@@ -134,10 +127,27 @@
       })
     }
   }
+
+  $effect(() => {
+    if (show) update()
+
+    imagesUpload = null as HTMLInputElement | null
+
+    if (container) {
+      if (editor) {
+        editor.dispose()
+        model?.dispose()
+      }
+
+      editor = monaco.editor.create(container, { minimap: { enabled: false }, wordWrap: 'on' })
+      model = monaco.editor.createModel(content, 'markdown')
+      editor.setModel(model)
+    }
+  })
 </script>
 
 <svelte:body
-  on:click={(e) => {
+  onclick={(e) => {
     // @ts-ignore
     if (addCategoriesDropdownOpen && e.target && !e.target.closest('button.categories.add')) {
       addCategoriesDropdownOpen = false
@@ -159,8 +169,10 @@
       {#each data.images as image}
         <div class="img" style="background-image: url('{image.url}')">
           <div>
-            <button on:click={() => copy(image)}><i class="fa-solid fa-copy"></i></button>
-            <button class="remove" on:click={() => deleteImage(image)}><i class="fa-solid fa-trash"></i></button>
+            <!-- svelte-ignore a11y_consider_explicit_label -->
+            <button onclick={() => copy(image)}><i class="fa-solid fa-copy"></i></button>
+            <!-- svelte-ignore a11y_consider_explicit_label -->
+            <button class="remove" onclick={() => deleteImage(image)}><i class="fa-solid fa-trash"></i></button>
           </div>
         </div>
       {:else}
@@ -171,7 +183,7 @@
       {/if}
     </div>
 
-    <button class="secondary" on:click={uploadImages}><i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload images...</button>
+    <button class="secondary" onclick={uploadImages}><i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload images...</button>
     <input type="file" multiple name="images" id="images" accept="image/*" style="display: none " bind:this={imagesUpload} />
   </div>
 {/if}
@@ -179,7 +191,7 @@
 <!--* Modal -->
 
 <ModalTemplate size={'m'} bind:show translateX={'-23%'}>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>{action.action === 'add' ? 'Publish a news' : 'Edit the news'}</h2>
 
     <label for="title">Title</label>
@@ -193,24 +205,28 @@
         {#if data.categories.find((cat) => cat.id == category)}
           <span class="category">
             <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{data.categories.find((cat) => cat.id == category).title}
-            <button type="button" class="remove" on:click={() => (categories = categories.filter((cat) => cat !== category))}>
+            <!-- svelte-ignore a11y_consider_explicit_label -->
+            <button type="button" class="remove" onclick={() => (categories = categories.filter((cat) => cat !== category))}>
               <i class="fa-solid fa-circle-xmark"></i>
             </button>
           </span>
         {/if}
       {/each}
       <span class="add">
+        <!-- svelte-ignore a11y_consider_explicit_label -->
         <button
           type="button"
           class="secondary categories add"
-          on:click={() => (addCategoriesDropdownOpen = !addCategoriesDropdownOpen)}
+          onclick={() => (addCategoriesDropdownOpen = !addCategoriesDropdownOpen)}
           disabled={categories.length === data.categories.length}><i class="fa-solid fa-plus"></i></button
         >
         {#if addCategoriesDropdownOpen}
           <div class="add-category-dropdown" transition:slide={{ duration: 200 }}>
             {#each data.categories as category}
               {#if !categories.includes(category.id)}
-                <button type="button" on:click={() => (categories = [...categories, category.id])}><i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.title}</button>
+                <button type="button" onclick={() => (categories = [...categories, category.id])}
+                  ><i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.title}</button
+                >
               {/if}
             {/each}
           </div>
@@ -229,21 +245,30 @@
             style="color: {data.tags.find((t) => t.id == tag).color}; background-color: {backgroundColor(data.tags.find((t) => t.id == tag).color)}"
           >
             <i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{data.tags.find((t) => t.id == tag).title}
-            <button type="button" class="remove" on:click={() => (tags = tags.filter((t) => t !== tag))}>
+            <!-- svelte-ignore a11y_consider_explicit_label -->
+            <button type="button" class="remove" onclick={() => (tags = tags.filter((t) => t !== tag))}>
               <i class="fa-solid fa-circle-xmark"></i>
             </button>
           </span>
         {/if}
       {/each}
       <span class="add">
-        <button type="button" class="secondary tags add" on:click={() => (addTagsDropdownOpen = !addTagsDropdownOpen)} disabled={tags.length === data.tags.length}>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button
+          type="button"
+          class="secondary tags add"
+          onclick={() => (addTagsDropdownOpen = !addTagsDropdownOpen)}
+          disabled={tags.length === data.tags.length}
+        >
           <i class="fa-solid fa-plus"></i>
         </button>
         {#if addTagsDropdownOpen}
           <div class="add-tags-dropdown" transition:slide={{ duration: 200 }}>
             {#each data.tags as tag}
               {#if !tags.includes(tag.id)}
-                <button type="button" on:click={() => (tags = [...tags, tag.id])} style="color: {tag.color}"><i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.title}</button>
+                <button type="button" onclick={() => (tags = [...tags, tag.id])} style="color: {tag.color}"
+                  ><i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.title}</button
+                >
               {/if}
             {/each}
           </div>
@@ -252,14 +277,14 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={title.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   div.explorer {
     position: fixed;
@@ -328,7 +353,7 @@
       }
     }
 
-    button:not(.secondary) {
+    button:not(:global(.secondary)) {
       display: inline-block;
       margin-top: 0;
       border-bottom: none;

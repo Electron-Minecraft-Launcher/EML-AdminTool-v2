@@ -8,11 +8,12 @@
   import { goto } from '$app/navigation'
   import type fr from '../../../assets/language/fr'
 
-  let name: string = ''
-  let password = ''
-  let splash: boolean = false
+  let name: string = $state('')
+  let password: string = $state('')
+  let splash: boolean = $state(false)
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     splash = true
     ;(await apiAuthService.getAuth(name + '', password + '')).subscribe({
       next: async (res) => {
@@ -35,7 +36,7 @@
   <title>{$l.auth.login} • {$env.name} AdminTool</title>
 </svelte:head>
 
-<form on:submit|preventDefault={submit}>
+<form onsubmit={submit}>
   {#if splash}
     <LoadingSplash transparent={true} />
   {/if}
@@ -56,5 +57,5 @@
 </form>
 
 <style lang="scss">
-  @import '../../../assets/scss/login.scss';
+  @use '../../../assets/scss/login.scss';
 </style>

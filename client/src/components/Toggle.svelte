@@ -1,14 +1,19 @@
 <script lang="ts">
-  export let status: boolean
-  export let disabled: boolean = false
-  export let text: string[] = ['Enabled', 'Disabled']
+  interface Props {
+    status: boolean
+    disabled?: boolean
+    text?: string[]
+  }
+
+  let { status = $bindable(), disabled = false, text = ['Enabled', 'Disabled'] }: Props = $props()
 </script>
 
 <label class="switch p" class:disabled>
   <div style="display: inline">
-    <input type="checkbox" bind:checked={status} disabled={disabled} />
+    <input type="checkbox" bind:checked={status} {disabled} />
     <span class="slider round"></span>
-  <span style="padding-left: 35px">{status ? text[0] : text[1]}</span>
+    <span style="padding-left: 35px">{status ? text[0] : text[1]}</span>
+  </div>
 </label>
 
 <style lang="scss">
@@ -37,16 +42,15 @@
       height: 0;
     }
 
-    &:not(.disabled):hover span.slider {
+    &:not(:global(.disabled)):hover span.slider {
       background: var(--secondary-color-hover);
-
     }
 
-    &:not(.disabled):hover input:checked + span.slider {
+    &:not(:global(.disabled)):hover input:checked + span.slider {
       background: var(--primary-color-hover);
     }
 
-    &:not(.disabled):active {
+    &:not(:global(.disabled)):active {
       transform: translateY(1px);
     }
   }

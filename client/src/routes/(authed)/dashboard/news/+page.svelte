@@ -1,18 +1,22 @@
 <script lang="ts">
-  import type { NewsCategory, NewsTag } from '../../../../../../shared/models/features/news.model'
+  import type { NewsCategory, NewsTag } from '../../../../../../shared/types/features/news'
   import News from '../../../../components/News.svelte'
   import NewsCategories from '../../../../components/NewsCategories.svelte'
   import NewsTags from '../../../../components/NewsTags.svelte'
   import { env, user } from '../../../../services/store'
   import type { PageData } from './$types'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
 
-  let showAddEditCategoryModal = false
-  let addEditCategoryAction: { action: 'add' } | { action: 'edit'; category: NewsCategory } = { action: 'add' }
+  let { data = $bindable() }: Props = $props()
 
-  let showAddEditTagModal = false
-  let addEditTagAction: { action: 'add' } | { action: 'edit'; tag: NewsTag } = { action: 'add' }
+  let showAddEditCategoryModal = $state(false)
+  let addEditCategoryAction: { action: 'add' } | { action: 'edit'; category: NewsCategory } = $state({ action: 'add' })
+
+  let showAddEditTagModal = $state(false)
+  let addEditTagAction: { action: 'add' } | { action: 'edit'; tag: NewsTag } = $state({ action: 'add' })
 </script>
 
 <svelte:head>
@@ -29,14 +33,15 @@
 
 {#if $user.p_news_categories_add_mod_del == 1}
   <section class="section">
+    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="secondary right"
-      on:click={() => {
+      onclick={() => {
         addEditCategoryAction = { action: 'add' }
         showAddEditCategoryModal = true
       }}
     >
-      <i class="fa-solid fa-plus" />
+      <i class="fa-solid fa-plus"></i>
     </button>
 
     <h3>Categories list</h3>
@@ -49,12 +54,12 @@
   <section class="section">
     <button
       class="secondary right"
-      on:click={() => {
+      onclick={() => {
         addEditTagAction = { action: 'add' }
         showAddEditTagModal = true
       }}
     >
-      <i class="fa-solid fa-plus" />
+      <i class="fa-solid fa-plus"></i>
     </button>
 
     <h3>Tags list</h3>
@@ -64,7 +69,7 @@
 {/if}
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 
   div.container button {
     display: inline-block;

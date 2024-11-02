@@ -11,17 +11,21 @@
   import utils from '../../services/utils'
   import { fade } from 'svelte/transition'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
+
+  let { data }: Props = $props()
 
   if (data.start) {
     start()
   }
 
-  let h1Visible = false
-  let sliderVisible = false
-  let h1 = ''
+  let h1Visible: boolean = $state(false)
+  let sliderVisible: boolean = $state(false)
+  let h1: string = $state('')
 
-  let step = 0
+  let step = $state(0)
 
   async function start() {
     await utils.sleep(1000)
@@ -69,13 +73,7 @@
 </svelte:head>
 
 <div class="progress">
-  <span
-    class:step-0={step == 0}
-    class:step-1={step == 1}
-    class:step-2={step == 2}
-    class:step-3={step == 3}
-    class:step-4={step == 4}
-  />
+  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4}></span>
 </div>
 
 {#if h1Visible}
@@ -110,7 +108,9 @@
     text-align: center;
     font-size: 56px;
     margin-top: 33vh;
-    transition: opacity 0.5s, display 0.5s;
+    transition:
+      opacity 0.5s,
+      display 0.5s;
   }
 
   div.config-slider {

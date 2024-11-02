@@ -9,8 +9,10 @@ export const load: PageLoad = async ({ parent }) => {
   let loader: Loader = { loader: 'vanilla', minecraft_version: 'latest_release', loader_version: null, loader_type: 'client' }
   let loadersList: { vanilla: LoaderVersion[]; forge: LoaderVersion[] } = { vanilla: [], forge: [] }
 
-  if (!cookiesService.get('JWT')) redirect(300, '/login');
-  if (!(await parent()).user.p_files_updater_add_del) redirect(300, '/dashboard');(await apiFilesUpdaterService.getLoader()).subscribe({
+  if (!cookiesService.get('JWT')) redirect(300, '/login')
+  if (!(await parent()).user.p_files_updater_add_del) redirect(300, '/dashboard')
+    
+  ;(await apiFilesUpdaterService.getLoader()).subscribe({
     next: (res) => {
       loader = res.body!.data!
     }

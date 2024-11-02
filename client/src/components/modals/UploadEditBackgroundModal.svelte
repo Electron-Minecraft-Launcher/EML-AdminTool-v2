@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run, preventDefault } from 'svelte/legacy'
+
   import ModalTemplate from './ModalTemplate.svelte'
   import { l } from '../../services/store'
   import type { PageData } from '../../routes/(authed)/dashboard/backgrounds/$types'
@@ -6,18 +8,19 @@
   import apiBackgroundsService from '../../services/api/api-backgrounds.service'
   import Toggle from '../Toggle.svelte'
 
-  export let data: PageData
-  export let show: boolean
-  export let action: { action: 'upload' } | { action: 'edit'; background: BackgroundsRes } = { action: 'upload' }
+  interface Props {
+    data: PageData
+    show: boolean
+    action?: { action: 'upload' } | { action: 'edit'; background: BackgroundsRes }
+  }
 
-  $: title = '' as string
-  $: status = false as boolean
-  $: disableStatus = false as boolean
-  $: file = null as File | null
+  let { data = $bindable(), show = $bindable(), action = $bindable({ action: 'upload' }) }: Props = $props()
 
-  $: backgroundUpload = null as HTMLInputElement | null
-
-  $: if (show) update()
+  let title: string = $state('')
+  let status: boolean = $state(false)
+  let disableStatus: boolean = $state(false)
+  let file: File | null = $state(null)
+  let backgroundUpload: HTMLInputElement | null = $state(null)
 
   function update() {
     if (action.action === 'upload') {
@@ -79,10 +82,17 @@
       }
     }
   }
+
+  $effect(() => {
+    if (show) update()
+
+    file = null as File | null
+    backgroundUpload = null as HTMLInputElement | null
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={preventDefault(submit)}>
     <h2>{action.action === 'upload' ? 'Upload a background' : 'Edit the background title'}</h2>
 
     <label for="version" style="margin-top: 0">Title</label>
@@ -91,12 +101,13 @@
     {#if action.action === 'upload'}
       <p class="label" style="margin-top: 20px">Background</p>
       {#if !file}
-        <button class="secondary upload" on:click={uploadFile} type="button">
+        <button class="secondary upload" onclick={uploadFile} type="button">
           <i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Select a file...
         </button>
       {:else}
         <p class="no-link">{backgroundUpload?.files?.item(0)?.name}</p>
-        <button class="remove" on:click={reset} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button class="remove" onclick={reset} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
       {/if}
     {/if}
 
@@ -104,7 +115,7 @@
     <Toggle bind:status text={['Active', 'Inactive']} disabled={disableStatus}></Toggle>
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={!title || title == '' || (!file && action.action === 'upload')}>{$l.main.save}</button>
     </div>
 
@@ -113,7 +124,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   button.secondary.upload {
     margin-top: 0;
