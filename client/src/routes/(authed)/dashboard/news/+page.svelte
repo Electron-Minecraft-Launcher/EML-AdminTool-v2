@@ -12,6 +12,7 @@
 
   let { data = $bindable() }: Props = $props()
 
+  let data_: PageData = $state(data)
   let showAddEditCategoryModal = $state(false)
   let addEditCategoryAction: { action: 'add' } | { action: 'edit'; category: NewsCategory } = $state({ action: 'add' })
 
@@ -28,7 +29,7 @@
 <section class="section">
   <h3>News list</h3>
 
-  <News bind:data></News>
+  <News bind:data={data_}></News>
 </section>
 
 {#if $user.p_news_categories_add_mod_del == 1}
@@ -46,12 +47,13 @@
 
     <h3>Categories list</h3>
 
-    <NewsCategories bind:data bind:showAddEditCategoryModal bind:addEditCategoryAction></NewsCategories>
+    <NewsCategories bind:data={data_} bind:showAddEditCategoryModal bind:addEditCategoryAction></NewsCategories>
   </section>
 {/if}
 
 {#if $user.p_news_tags_add_mod_del == 1}
   <section class="section">
+    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="secondary right"
       onclick={() => {
@@ -64,7 +66,7 @@
 
     <h3>Tags list</h3>
 
-    <NewsTags bind:data bind:showAddEditTagModal bind:addEditTagAction></NewsTags>
+    <NewsTags bind:data={data_} bind:showAddEditTagModal bind:addEditTagAction></NewsTags>
   </section>
 {/if}
 

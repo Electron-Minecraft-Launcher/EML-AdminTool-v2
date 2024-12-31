@@ -15,11 +15,10 @@
     currentPath: string
     data: PageData
     ready: boolean
-    dataFiles: File_[]
     getData: () => void
   }
 
-  let { currentPath = $bindable(), data = $bindable(), ready = $bindable(), dataFiles = $bindable(), getData = $bindable() }: Props = $props()
+  let { currentPath = $bindable(), data = $bindable(), ready = $bindable(), getData = $bindable() }: Props = $props()
 
   let showRenameModal = $state(false)
   let showCreateFolderModal = $state(false)
@@ -32,7 +31,7 @@
   let folderUpload: HTMLInputElement
   let selectedItems: File_[] = $state([])
 
-  let currentFilesAndFolders: File_[] = $derived(dataFiles.filter((file) => file.path === currentPath))
+  let currentFilesAndFolders: File_[] = $derived(data.files.filter((file) => file.path === currentPath))
   let currentFolders = $derived(currentFilesAndFolders.filter((file) => file.type === 'FOLDER'))
   let currentFiles = $derived(currentFilesAndFolders.filter((file) => file.type !== 'FOLDER'))
   let currentFilesAndFoldersSorted = $derived([...currentFolders, ...currentFiles])
@@ -91,7 +90,6 @@
     ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
       next: (res) => {
         data.files = res.body.data!
-        dataFiles = res.body.data!
         ready = true
       },
       error: () => {
@@ -107,6 +105,8 @@
   }
 
   async function open(file: File_) {
+    if (!file) return
+
     const readable = [
       'txt',
       'md',
@@ -128,7 +128,7 @@
       'properties'
     ]
 
-    if (file.type && file.type === 'FOLDER') {
+    if (file.type === 'FOLDER') {
       currentPath = `${file.path}${file.name}/`
       selectedItems = []
     } else if (file.name.split('.').length > 1 && readable.includes(file.name.split('.').slice(-1)[0])) {
@@ -170,7 +170,6 @@
     ;(await apiFilesUpdaterService.deleteFiles(paths)).subscribe({
       next: (res) => {
         data.files = res.body.data!
-        dataFiles = res.body.data!
         selectedItems = []
         // currentFilesAndFolders = data.files.filter((file) => file.path === currentPath)
         ready = true
@@ -290,8 +289,17 @@
 
 <svelte:body
   onclick={(e) => {
-    // @ts-ignore
-    if (selectedItems && e.target && !e.target.closest('.explorer tbody tr') && !e.target.closest('button.small')) {
+    if (
+      selectedItems &&
+      e.target &&
+      // @ts-ignore
+      !e.target.closest('.explorer tbody tr') &&
+      // @ts-ignore
+      !e.target.closest('button.small') &&
+      !showAddEditFileModal &&
+      !showRenameModal &&
+      !showCreateFolderModal
+    ) {
       selectedItems = []
     }
     // @ts-ignore
@@ -300,13 +308,13 @@
     }
   }}
   onkeydown={(e) => {
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && (showAddEditFileModal || showRenameModal || showCreateFolderModal)) {
       selectedItems = []
     }
-    if (e.key === 'Delete') {
+    if (e.key === 'Delete' && !showAddEditFileModal && !showRenameModal && !showCreateFolderModal) {
       deleteItems()
     }
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !showAddEditFileModal && !showRenameModal && !showCreateFolderModal) {
       open(selectedItems[0])
     }
   }}
@@ -318,8 +326,7 @@
   {/if}
 
   <button class="primary small add" style="margin-right: 30px" onclick={() => (addElementDropdownOpen = !addElementDropdownOpen)}>
-    <!-- svelte-ignore element_invalid_self_closing_tag -->
-    <i class="fa-solid fa-plus" />&nbsp;&nbsp;New elements
+    <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;New elements
   </button>
 
   <button
@@ -329,7 +336,13 @@
   >
     <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download
   </button>
-  <button class="secondary small" disabled={selectedItems.length !== 1} onclick={() => (showRenameModal = true)}>
+  <button
+    class="secondary small"
+    disabled={selectedItems.length !== 1}
+    onclick={() => {
+      showRenameModal = true
+    }}
+  >
     <i class="fa-solid fa-i-cursor"></i>&nbsp;&nbsp;Rename
   </button>
   <button class="secondary small" disabled={selectedItems.length === 0} onclick={deleteItems}>
@@ -396,9 +409,9 @@
 <input type="file" name="files[]" multiple bind:this={filesUpload} style="display: none" />
 <input type="file" name="files[]" multiple bind:this={folderUpload} style="display: none" />
 
-<RenameFileModal bind:data bind:dataFiles bind:selectedItems bind:show={showRenameModal} {getData}></RenameFileModal>
-<CreateFolderModal bind:data bind:dataFiles bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
-<AddEditFileModal bind:data bind:dataFiles bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal>
+<RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal} {getData}></RenameFileModal>
+<CreateFolderModal bind:data bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
+<AddEditFileModal bind:data bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal>
 
 <style lang="scss">
   .fap-fix {

@@ -14,7 +14,7 @@
 
   let { data = $bindable(), show = $bindable(), ready = $bindable() }: Props = $props()
 
-  let loader: 'vanilla' | 'forge' = $state('vanilla')
+  let loader: 'vanilla' | 'forge' = 'vanilla'
   let temp_loader: 'vanilla' | 'forge' = $state('vanilla')
   let minecraft_version: string = $state('')
   let temp_minecraft_version: string = $state('')
@@ -22,12 +22,12 @@
   let minecraftVersions: string[] = $state([])
 
   async function update() {
-    loader = data.loader.loader
-    temp_loader = data.loader.loader
+    console.log('here')
+    loader = temp_loader = data.loader.loader
     minecraft_version = data.loader.minecraft_version
     temp_minecraft_version = data.loader.minecraft_version.includes('latest')
-      ? 'Latest'
-      : data.loader.minecraft_version.split('.').slice(0, 2).join('.')
+    ? 'Latest'
+    : data.loader.minecraft_version.split('.').slice(0, 2).join('.')
     loader_version = data.loader.loader_version
     minecraftVersions = [...new Set(data.loadersList[loader].map((version) => version.minecraftVersion))]
   }
@@ -48,7 +48,8 @@
   }
 
   $effect(() => {
-    if (show && data.loadersList) update()
+    console.log('show', show)
+    if (show) update()
   })
 </script>
 
@@ -70,8 +71,10 @@
           onclick={() => {
             temp_loader = 'vanilla'
             minecraftVersions = [...new Set(data.loadersList[temp_loader].map((version) => version.minecraftVersion))]
-          }}>Vanilla</button
+          }}
         >
+          Vanilla
+        </button>
         <button
           class="list"
           type="button"
@@ -82,8 +85,10 @@
             if (!minecraftVersions.includes(temp_minecraft_version)) {
               temp_minecraft_version = minecraftVersions[0]
             }
-          }}>Forge</button
+          }}
         >
+          Forge
+        </button>
       </div>
 
       {#if ready && data.loadersList}

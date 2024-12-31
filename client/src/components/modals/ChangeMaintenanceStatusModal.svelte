@@ -55,7 +55,9 @@
 
   $effect(() => {
     if (show) update()
+  })
 
+  $effect(() => {
     if (!status) {
       startDate = ''
       endDate = ''
@@ -76,14 +78,14 @@
     </label>
     <input type="datetime-local" name="start-date" id="start-date" bind:value={startDate} disabled={!status} />
 
-    <label for="end-date"
-      >End date&nbsp;&nbsp;<i
+    <label for="end-date">
+      End date&nbsp;&nbsp;<i
         class="fa-solid fa-circle-question"
         title="Maintenance will NOT end on this date; this date is given as an indication for Launcher users.
 You will need to disable maintenance manually."
         style="cursor: help"
-      ></i></label
-    >
+      ></i>
+    </label>
     <input type="datetime-local" name="end-date" id="end-date" bind:value={endDate} disabled={!status} />
 
     <label for="reason">Reason</label>

@@ -10,12 +10,13 @@
 
   let { data = $bindable() }: Props = $props()
 
+  let data_: PageData = $state(data)
   let showChangeMaintenanceStatusModal = $state(false)
 
   async function turnMaintenanceOff() {
     ;(await apiMaintenanceService.putMaintenanceStatus(null, null, '')).subscribe({
       next: (res) => {
-        data.maintenance = res.body.data!
+        data_.maintenance = res.body.data!
       }
     })
   }
@@ -47,7 +48,7 @@
   <div class="container">
     <div>
       <p class="label">Status</p>
-      {#if data.maintenance.start_date == null}
+      {#if data_.maintenance.start_date == null}
         <p class="no-link off">OFF</p>
         <button class="off" onclick={() => (showChangeMaintenanceStatusModal = true)}>
           <i class="fa-solid fa-power-off"></i>&nbsp;&nbsp;Turn on...
@@ -62,8 +63,8 @@
       <p class="label">
         Start date&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title="Maintenance starts automatically on the date." style="cursor: help"></i>
       </p>
-      {#if data.maintenance.start_date != null}
-        <p class="no-link">{formatDate(new Date(data.maintenance.start_date))}</p>
+      {#if data_.maintenance.start_date != null}
+        <p class="no-link">{formatDate(new Date(data_.maintenance.start_date))}</p>
       {:else}
         <p class="no-link">-</p>
       {/if}
@@ -78,9 +79,9 @@ You will need to disable maintenance manually."
           style="cursor: help"
         ></i>
       </p>
-      {#if data.maintenance.end_date != null}
-        <p class="no-link">{formatDate(new Date(data.maintenance.end_date))}</p>
-      {:else if data.maintenance.start_date != null}
+      {#if data_.maintenance.end_date != null}
+        <p class="no-link">{formatDate(new Date(data_.maintenance.end_date))}</p>
+      {:else if data_.maintenance.start_date != null}
         <p class="no-link">Undefined</p>
       {:else}
         <p class="no-link">-</p>
@@ -89,8 +90,8 @@ You will need to disable maintenance manually."
 
     <div>
       <p class="label">Reason</p>
-      {#if data.maintenance.reason && data.maintenance.reason.length > 0}
-        <p class="no-link">{data.maintenance.reason}</p>
+      {#if data_.maintenance.reason && data_.maintenance.reason.length > 0}
+        <p class="no-link">{data_.maintenance.reason}</p>
       {:else}
         <p class="no-link">-</p>
       {/if}
@@ -98,7 +99,7 @@ You will need to disable maintenance manually."
   </div>
 </section>
 
-<ChangeMaintenanceStatusModal bind:data bind:show={showChangeMaintenanceStatusModal}></ChangeMaintenanceStatusModal>
+<ChangeMaintenanceStatusModal bind:data={data_} bind:show={showChangeMaintenanceStatusModal}></ChangeMaintenanceStatusModal>
 
 <style lang="scss">
   @use '../../../../assets/scss/dashboard.scss';

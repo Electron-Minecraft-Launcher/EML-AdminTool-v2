@@ -7,12 +7,11 @@
 
   interface Props {
     data: PageData
-    dataFiles: PageData['files']
     show: boolean
     currentPath: string
   }
 
-  let { data = $bindable(), dataFiles = $bindable(), show = $bindable(), currentPath = $bindable() }: Props = $props()
+  let { data = $bindable(), show = $bindable(), currentPath = $bindable() }: Props = $props()
 
   let name: string = $state('')
 

@@ -268,6 +268,7 @@
           overflow: hidden;
           display: -webkit-box;
           text-overflow: ellipsis;
+          line-clamp: 3;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           max-height: 62.39px;

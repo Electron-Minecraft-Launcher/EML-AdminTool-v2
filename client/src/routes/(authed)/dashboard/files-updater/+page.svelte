@@ -1,4 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
@@ -14,7 +13,7 @@
 
   let { data }: Props = $props()
 
-  let dataFiles: PageData['files'] = $state([])
+  let data_: PageData = $state(data)
   let filesReady: boolean = $state(false)
   let isDragOver: boolean = $state(false)
   let path: HTMLSpanElement | undefined = $state()
@@ -42,17 +41,16 @@
     filesReady = false
     ;(await apiFilesUpdaterService.getFilesUpdater()).subscribe({
       next: (res) => {
-        data.files = res.body.data!
-        dataFiles = res.body.data!
+        data_.files = res.body.data!
         filesReady = true
       }
     })
-    data.loadersList = {
+    data_.loadersList = {
       vanilla: await apiFilesUpdaterService.getMinecraftVersions(),
       forge: await apiFilesUpdaterService.getForgeVersions()
     }
     loadersReady = true
-    if (!data.files.find((file) => `${file.path}${file.name}/` === currentPath)) {
+    if (!data_.files.find((file) => `${file.path}${file.name}/` === currentPath)) {
       currentPath = ''
     }
   }
@@ -91,8 +89,7 @@
     await Promise.all(filePromises)
     ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
       next: (res) => {
-        data.files = res.body.data!
-        dataFiles = res.body.data!
+        data_.files = res.body.data!
         filesReady = true
       }
     })
@@ -186,7 +183,7 @@
     </span>
   </h3>
 
-  <FilesUpdater bind:data bind:currentPath bind:ready={filesReady} {getData} bind:dataFiles />
+  <FilesUpdater bind:data={data_} bind:currentPath bind:ready={filesReady} {getData} />
 </section>
 
 <section class="section">
@@ -203,22 +200,22 @@
     <div>
       <p class="label">Minecraft version</p>
       <p>
-        {data.loader.minecraft_version === 'latest_release'
+        {data_.loader.minecraft_version === 'latest_release'
           ? 'Latest release'
-          : data.loader.minecraft_version === 'latest_snapshot'
+          : data_.loader.minecraft_version === 'latest_snapshot'
             ? 'Latest snapshot'
-            : data.loader.minecraft_version}
+            : data_.loader.minecraft_version}
       </p>
     </div>
 
     <div>
       <p class="label">Loader</p>
       <p>
-        {data.loader.loader === 'forge'
+        {data_.loader.loader === 'forge'
           ? 'Forge'
-          : data.loader.loader === 'fabric'
+          : data_.loader.loader === 'fabric'
             ? 'Fabric'
-            : data.loader.loader === 'neoforge'
+            : data_.loader.loader === 'neoforge'
               ? 'NeoForge'
               : 'Vanilla'}
       </p>
@@ -226,7 +223,7 @@
 
     <div>
       <p class="label">Loader version</p>
-      <p>{data.loader.loader_version || '-'}</p>
+      <p>{data_.loader.loader_version || '-'}</p>
     </div>
 
     <div>
@@ -237,12 +234,12 @@
           style="cursor: help"
         ></i>
       </p>
-      <p>{data.loader.loader_type === 'installer' ? 'Installer' : data.loader.loader_type === 'universal' ? 'Universal' : 'Client'}</p>
+      <p>{data_.loader.loader_type === 'installer' ? 'Installer' : data_.loader.loader_type === 'universal' ? 'Universal' : 'Client'}</p>
     </div>
   </div>
 </section>
 
-<ChangeLoaderModal bind:show={showChangeLoaderModal} bind:data bind:ready={loadersReady} />
+<ChangeLoaderModal bind:show={showChangeLoaderModal} bind:data={data_} bind:ready={loadersReady} />
 
 <style lang="scss">
   @use '../../../../assets/scss/dashboard.scss';

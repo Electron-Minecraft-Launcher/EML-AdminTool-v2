@@ -9,13 +9,12 @@
 
   interface Props {
     data: PageData
-    dataFiles: PageData['files']
     show: boolean
     selectedItems: File[]
     getData: () => void
   }
 
-  let { data = $bindable(), dataFiles = $bindable(), show = $bindable(), selectedItems = $bindable(), getData }: Props = $props()
+  let { data = $bindable(), show = $bindable(), selectedItems = $bindable(), getData }: Props = $props()
 
   let path: string = $state('')
   let name: string = $state('')

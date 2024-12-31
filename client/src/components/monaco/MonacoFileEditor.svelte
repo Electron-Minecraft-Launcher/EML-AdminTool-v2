@@ -1,18 +1,17 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import monaco from '../services/monaco.service'
-  import { l } from '../services/store'
+  import monaco from '../../services/monaco.service'
+  import { l } from '../../services/store'
 
   interface Props {
     language: string
-    height?: string
+    newName: string
     content: string
     submit: (e: Event | null, close: boolean) => void
     show: boolean
-    newName: string
   }
 
-  let { language, height, content = $bindable(), submit, show = $bindable(), newName }: Props = $props()
+  let { language, newName, content = $bindable(), submit, show = $bindable() }: Props = $props()
 
   let container: HTMLDivElement | undefined = $state()
   let editor: monaco.editor.IStandaloneCodeEditor | undefined = $state()
@@ -37,9 +36,7 @@
   })
 
   $effect(() => {
-    if (editor && model) {
-      model.setValue(content)
-    }
+    if (editor && model) model.setValue(content)
   })
 
   $effect(() => {
@@ -49,7 +46,7 @@
   })
 </script>
 
-<div id="container-editor" class="container-editor" style={'height:' + height}></div>
+<div id="container-editor" class="container-editor"></div>
 
 <div class="actions">
   <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
@@ -60,11 +57,12 @@
 </div>
 
 <style lang="scss">
-  @use '../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   div.container-editor {
     margin-top: 20px;
     border: 1px solid var(--border-color2);
     border-radius: 5px;
+    height: calc(100vh - 177px - 106px - 48px - 63px)
   }
 </style>

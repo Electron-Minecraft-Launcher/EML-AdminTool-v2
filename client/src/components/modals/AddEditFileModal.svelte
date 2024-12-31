@@ -5,19 +5,17 @@
   import apiFilesUpdaterService from '../../services/api/api-filesupdater.service'
   import { l } from '../../services/store'
   import ModalTemplate from './ModalTemplate.svelte'
-  import monaco from '../../services/monaco.service'
   import utils from '../../services/utils'
-  import MonacoEditor from '../MonacoEditor.svelte'
+  import MonacoFileEditor from '../monaco/MonacoFileEditor.svelte'
 
   interface Props {
     data: PageData
-    dataFiles: PageData['files']
     show: boolean
     action: { action: 'add' } | { action: 'edit'; file: File }
     currentPath: string
   }
 
-  let { data = $bindable(), dataFiles = $bindable(), show = $bindable(), action = $bindable(), currentPath = $bindable() }: Props = $props()
+  let { data = $bindable(), show = $bindable(), action = $bindable(), currentPath = $bindable() }: Props = $props()
 
   let path: string = $state('')
   let name: string = $state('')
@@ -49,21 +47,11 @@
       newName = ''
       content = ''
     }
-
-    // if (!editor && !container) {
-    //   container = document.getElementById('container-editor') as HTMLDivElement
-    //   editor = monaco.editor.create(container!, { minimap: { enabled: false } })
-    //   model = monaco.editor.createModel(content, 'plaintext')
-    //   editor.setModel(model!)
-    // } else {
-    //   model!.setValue(content)
-    // }
   }
 
   async function download() {
     try {
       newName = utils.removeUnwantedFilenameChars(newName)
-      // content = editor!.getValue()
       const blob = new Blob([content], { type: 'text/plain' })
       const downloadUrl = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -85,13 +73,11 @@
       ;(await apiFilesUpdaterService.renameFile(`${path}${name}`, `${path}${newName}`)).subscribe({})
       name = newName
     }
-    // let finalContent = editor!.getValue()
     const blob = new Blob([content], { type: 'text/plain' })
     const file = new File([blob], newName, { type: 'text/plain' })
     ;(await apiFilesUpdaterService.uploadFiles(`${path}`, [file])).subscribe({
       next: (res) => {
         data.files = res.body.data!
-        dataFiles = res.body.data!
         if (close) show = false
       }
     })
@@ -177,7 +163,7 @@
     />
 
     <!-- <div ></div> -->
-    <MonacoEditor bind:content {language} height="calc(100vh - 177px - 106px - 51px - 63px)" {submit} {newName} bind:show></MonacoEditor>
+    <MonacoFileEditor bind:content {language} {newName} {submit} bind:show></MonacoFileEditor>
   </form>
 </ModalTemplate>
 
