@@ -2,6 +2,13 @@
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
   import { l } from '../../services/store'
 
+  interface Props {
+    nextStep: (arg: { step: number }) => void
+    prevStep: (arg: { step: number }) => void
+  }
+
+  let { nextStep, prevStep }: Props = $props()
+
   let relN: string = $state('')
   let rel: string = $state('   ')
 
@@ -103,7 +110,7 @@
   }
 </script>
 
-<ConfigurationFormTemplate step={2} cond={+relN >= 3 && data.value.name.length > 2} {data} on:nextStep on:prevStep>
+<ConfigurationFormTemplate step={2} cond={+relN >= 3 && data.value.name.length > 2} {data} {nextStep} {prevStep}>
   <h2>{@html $l.configuration.step3.title}</h2>
   <p><b>{@html $l.configuration.step3.subtitle}</b></p>
   <div class="actions">

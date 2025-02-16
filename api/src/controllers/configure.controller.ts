@@ -26,6 +26,11 @@ export default class Configure {
     try {
       await db.query("ALTER USER 'eml'@'%' IDENTIFIED BY ?", [body.password]) // @git-ignore
     } catch (error: any) {
+      try {
+        await db.query("ALTER USER 'eml'@'db' IDENTIFIED BY ?", [body.password]) // @git-ignore
+      } catch (error: any) {
+        throw new DBException(error.code)
+      }
       throw new DBException(error.code)
     }
 

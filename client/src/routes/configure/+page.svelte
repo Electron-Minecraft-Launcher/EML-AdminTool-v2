@@ -92,13 +92,13 @@
     transition:fade
   >
     <div class="config-1">
-      <ConfigurationLanguage on:nextStep={nextStep} />
+      <ConfigurationLanguage {nextStep} />
     </div>
     <div class="config-2">
-      <ConfigurationDatabase on:nextStep={nextStep} on:prevStep={prevStep} />
+      <ConfigurationDatabase {nextStep} {prevStep} />
     </div>
     <div class="config-3">
-      <ConfigurationAdmin on:nextStep={nextStep} on:prevStep={prevStep} />
+      <ConfigurationAdmin {nextStep} {prevStep} />
     </div>
   </div>
 {/if}

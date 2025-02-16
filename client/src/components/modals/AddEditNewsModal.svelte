@@ -1,12 +1,8 @@
 <script lang="ts">
-  import { run, preventDefault } from 'svelte/legacy'
-
-  import { onDestroy } from 'svelte'
   import type { File as File_ } from '../../../../shared/types/features/file'
   import type { PageData } from '../../routes/(authed)/dashboard/news/$types'
   import { l } from '../../services/store'
   import ModalTemplate from './ModalTemplate.svelte'
-  import monaco from '../../services/monaco.service'
   import type { News } from '../../../../shared/types/features/news'
   import { slide } from 'svelte/transition'
   import apiNewsService from '../../services/api/api-news.service'
@@ -27,6 +23,8 @@
 
   async function uploadImages() {
     const imagesUpload = document.getElementById('images') as HTMLInputElement
+
+    imagesUpload.click()
 
     await new Promise((resolve) => {
       imagesUpload!.addEventListener('change', resolve, { once: true })

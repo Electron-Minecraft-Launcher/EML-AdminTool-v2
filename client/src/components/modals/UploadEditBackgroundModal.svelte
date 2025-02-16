@@ -57,7 +57,9 @@
     }
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
+
     if (!title || title === '' || !backgroundUpload?.files) return
     if (action.action === 'upload') {
       ;(await apiBackgroundsService.uploadBackground(title, status === true ? 1 : 0, backgroundUpload!.files!.item(0)!)).subscribe({
@@ -92,7 +94,7 @@
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form onsubmit={preventDefault(submit)}>
+  <form onsubmit={submit}>
     <h2>{action.action === 'upload' ? 'Upload a background' : 'Edit the background title'}</h2>
 
     <label for="version" style="margin-top: 0">Title</label>

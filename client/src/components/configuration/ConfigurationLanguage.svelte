@@ -7,6 +7,12 @@
   import frFlag from '../../assets/images/fr.png'
   import { env, l } from '../../services/store'
 
+  interface Props {
+    nextStep: (arg: { step: number }) => void
+  }
+
+  let { nextStep }: Props = $props()
+
   let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
     data: 'LANGUAGE',
     value: undefined
@@ -53,7 +59,7 @@
   }
 </script>
 
-<ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data} on:nextStep>
+<ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data} {nextStep}>
   <h2>{@html $l.configuration.step1.title}</h2>
   <p><b>{$l.configuration.step1.subtitle}</b></p>
   <div class="actions language">

@@ -4,6 +4,7 @@ import { DefaultResponse } from '../responses/response'
 
 const middleware = async (req: Request, res: Response, next: NextFunction) => {
   const send = res.send
+  
   res.send = function (body: DefaultResponse) {
     if (typeof body === 'object') {
       if (body.code === 'SUCCESS') {
@@ -18,6 +19,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
     }
     return send.call(res, body)
   }
+
   next()
 }
 

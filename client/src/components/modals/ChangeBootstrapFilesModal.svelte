@@ -3,8 +3,7 @@
   import { l } from '../../services/store'
   import type { PageData } from '../../routes/(authed)/dashboard/bootstraps/$types'
   import apiBootstrapsService from '../../services/api/api-bootstraps.service'
-  import { onMount } from 'svelte'
-  import type { Bootstraps, BootstrapsRes } from '../../../../shared/types/features/bootstraps'
+  import type { BootstrapsRes } from '../../../../shared/types/features/bootstraps'
 
   interface Props {
     data: PageData
