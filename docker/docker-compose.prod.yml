@@ -12,7 +12,7 @@ name: eml_admintool
 
 services:
   web:
-    image: eml-admintool:2.0.0-alpha.9
+    image: eml-admintool:2.0.0-alpha.10
     environment:
       NODE_ENV: 'production'
       PORT: 4000

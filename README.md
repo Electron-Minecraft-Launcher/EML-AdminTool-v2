@@ -4,7 +4,7 @@
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
-[<img src="https://img.shields.io/badge/version-2.0.0--alpha.9-orangered?style=for-the-badge&color=orangered">](package.json)</p>
+[<img src="https://img.shields.io/badge/version-2.0.0--alpha.10-orangered?style=for-the-badge&color=orangered">](package.json)</p>
 
 ---
 
@@ -117,7 +117,7 @@ For more information, you can read the [NGINX documentation](https://nginx.org/e
 You can now start the EML AdminTool with the following command:
 ```bash
 cd EML-AdminTool-v2/docker
-docker-compose up
+docker-compose -f docker-compose.prod.yml up
 ```
 
 > [!TIP]
@@ -151,7 +151,7 @@ npm i
 You can now start the development server:
 ```bash
 cd docker
-docker-compose up
+docker-compose -f dockerfile.dev.yml up
 ```
 
 The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access phpMyAdmin at [https://localhost:8080](http://localhost:8080).
