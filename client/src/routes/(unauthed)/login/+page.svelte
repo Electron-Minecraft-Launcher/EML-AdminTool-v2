@@ -3,10 +3,7 @@
   import { env, user, l } from '../../../services/store'
   import apiAuthService from '../../../services/api/api-auth.service'
   import cookiesService from '../../../services/cookies.service'
-  import type { Env } from '../../../services/env.model'
-  import type en from '../../../assets/language/en'
   import { goto } from '$app/navigation'
-  import type fr from '../../../assets/language/fr'
 
   let name: string = $state('')
   let password: string = $state('')

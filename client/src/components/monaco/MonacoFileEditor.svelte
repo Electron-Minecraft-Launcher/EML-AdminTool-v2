@@ -50,10 +50,14 @@
 
 <div class="actions">
   <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
-  <button class="primary" disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''} onclick={(e) => {
-    content = editor!.getValue()
-    submit(e, true)
-    }}>{$l.main.save}</button>
+  <button
+    class="primary"
+    disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''}
+    onclick={(e) => {
+      content = editor!.getValue()
+      submit(e, true)
+    }}>{$l.main.save}</button
+  >
 </div>
 
 <style lang="scss">
@@ -63,6 +67,6 @@
     margin-top: 20px;
     border: 1px solid var(--border-color2);
     border-radius: 5px;
-    height: calc(100vh - 177px - 106px - 48px - 63px)
+    height: calc(100vh - 177px - 106px - 48px - 63px);
   }
 </style>

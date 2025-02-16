@@ -3,10 +3,10 @@
   import { l } from '../../services/store'
 
   interface Props {
-    show: boolean;
+    show: boolean
   }
 
-  let { show = $bindable() }: Props = $props();
+  let { show = $bindable() }: Props = $props()
 </script>
 
 <ModalTemplate size={'s'} bind:show>

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run, preventDefault } from 'svelte/legacy'
-
   import ModalTemplate from './ModalTemplate.svelte'
   import { l } from '../../services/store'
   import type { PageData } from '../../routes/(authed)/dashboard/backgrounds/$types'

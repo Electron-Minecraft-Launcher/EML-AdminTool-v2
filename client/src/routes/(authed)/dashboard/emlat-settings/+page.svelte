@@ -1,7 +1,6 @@
 <script lang="ts">
-  import Skeleton from '../../../../components/layouts/Skeleton.svelte'
   import type { User } from '../../../../../../shared/types/features/user'
-  import { env, user, l } from '../../../../services/store'
+  import { env, l } from '../../../../services/store'
   import EditAdminToolModal from '../../../../components/modals/EditAdminToolModal.svelte'
   import UserManagement from '../../../../components/UserManagement.svelte'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'

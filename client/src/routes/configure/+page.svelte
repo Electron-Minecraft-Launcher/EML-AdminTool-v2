@@ -1,10 +1,7 @@
 <script lang="ts">
-  import type en from '../../assets/language/en'
-  import type fr from '../../assets/language/fr'
   import ConfigurationAdmin from '../../components/configuration/ConfigurationAdmin.svelte'
   import ConfigurationDatabase from '../../components/configuration/ConfigurationDatabase.svelte'
   import ConfigurationLanguage from '../../components/configuration/ConfigurationLanguage.svelte'
-  import type { Env } from '../../services/env.model'
   import { env, l } from '../../services/store'
   import { goto } from '$app/navigation'
   import type { PageData } from './$types'

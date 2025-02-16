@@ -2,7 +2,7 @@
   import { user } from '../../services/store'
   import Skeleton from './Skeleton.svelte'
   import utils from '../../services/utils'
-  import { page } from '$app/stores'
+  import { page } from '$app/state'
   import apiAuthService from '../../services/api/api-auth.service'
   import cookiesService from '../../services/cookies.service'
   import { slide } from 'svelte/transition'
@@ -71,9 +71,9 @@
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '50px 15px 20px 15px' }]} />
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '30px 15px 40px 15px' }]} />
   {:else}
-    <a href="/dashboard" class:active={$page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>Home</a>
+    <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>Home</a>
     {#if $user.admin}
-      <a href="/dashboard/emlat-settings" class:active={$page.url.pathname == '/dashboard/emlat-settings'}>
+      <a href="/dashboard/emlat-settings" class:active={page.url.pathname == '/dashboard/emlat-settings'}>
         <i class="fa-solid fa-gear"></i>Settings
       </a>
     {/if}
@@ -94,37 +94,37 @@
     <Skeleton {randomWidth} {height} {customStyle} />
   {:else if $user.status !== 0 && $user.status !== -1 && $user.status !== -2}
     {#if $user.p_files_updater_add_del || $user.p_files_updater_loader_mod || $user.admin}
-      <a href="/dashboard/files-updater" class:active={$page.url.pathname == '/dashboard/files-updater'}>
+      <a href="/dashboard/files-updater" class:active={page.url.pathname == '/dashboard/files-updater'}>
         <i class="fa-solid fa-folder-open"></i>Files Updater
       </a>
     {/if}
 
     {#if $user.p_bootstraps_mod || $user.admin}
-      <a href="/dashboard/bootstraps" class:active={$page.url.pathname == '/dashboard/bootstraps'}>
+      <a href="/dashboard/bootstraps" class:active={page.url.pathname == '/dashboard/bootstraps'}>
         <i class="fa-solid fa-arrows-rotate"></i>Bootstraps
       </a>
     {/if}
 
     {#if $user.p_maintenance_mod || $user.admin}
-      <a href="/dashboard/maintenance" class:active={$page.url.pathname == '/dashboard/maintenance'}>
+      <a href="/dashboard/maintenance" class:active={page.url.pathname == '/dashboard/maintenance'}>
         <i class="fa-solid fa-screwdriver-wrench"></i>Maintenance
       </a>
     {/if}
 
     {#if $user.p_news_add || $user.p_news_mod_del || $user.p_news_categories_add_mod_del || $user.p_news_tags_add_mod_del || $user.admin}
-      <a href="/dashboard/news" class:active={$page.url.pathname == '/dashboard/news'}>
+      <a href="/dashboard/news" class:active={page.url.pathname == '/dashboard/news'}>
         <i class="fa-solid fa-newspaper"></i>News
       </a>
     {/if}
 
     {#if $user.p_background_mod || $user.admin}
-      <a href="/dashboard/backgrounds" class:active={$page.url.pathname == '/dashboard/backgrounds'}>
+      <a href="/dashboard/backgrounds" class:active={page.url.pathname == '/dashboard/backgrounds'}>
         <i class="fa-solid fa-image"></i>Backgrounds
       </a>
     {/if}
 
     {#if $user.p_stats_see || $user.p_stats_del || $user.admin}
-      <a href="/dashboard/stats" class:active={$page.url.pathname == '/dashboard/stats'}>
+      <a href="/dashboard/stats" class:active={page.url.pathname == '/dashboard/stats'}>
         <i class="fa-solid fa-chart-simple"></i>Stats
       </a>
     {/if}
@@ -147,7 +147,7 @@
 
   {#if accountDropdownOpen}
     <div class="account-dropdown" id="account-dropdown" transition:slide={{ duration: 200 }}>
-      <a href="/dashboard/account" class="account-settings" class:active={$page.url.pathname == '/dashboard/account'}>
+      <a href="/dashboard/account" class="account-settings" class:active={page.url.pathname == '/dashboard/account'}>
         <i class="fa-solid fa-gear"></i>Settings
       </a>
       <!-- svelte-ignore a11y_click_events_have_key_events -->

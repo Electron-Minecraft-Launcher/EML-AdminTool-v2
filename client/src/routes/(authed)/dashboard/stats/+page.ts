@@ -1,10 +1,8 @@
 import { redirect } from '@sveltejs/kit'
 import cookiesService from '../../../../services/cookies.service'
-import { user } from '../../../../services/store'
 import type { PageLoad } from './$types'
 import type { StatsRes } from '../../../../../../shared/types/features/stats'
 import apiStatsService from '../../../../services/api/api-stats.service'
-import { get } from 'svelte/store'
 
 export const load: PageLoad = async ({ parent }) => {
   let stats: StatsRes = { startups: [], launches: [], connections: [], devtools: [] }

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
-  import { onMount } from 'svelte'
   import apiBootstrapsService from '../../../../services/api/api-bootstraps.service'
   import ChangeBootstrapFilesModal from '../../../../components/modals/ChangeBootstrapFilesModal.svelte'
 

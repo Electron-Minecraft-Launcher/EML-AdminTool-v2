@@ -2,7 +2,6 @@ import type { PageLoad } from './$types'
 import cookiesService from '../../services/cookies.service'
 import apiAuthService from '../../services/api/api-auth.service'
 import apiConfigureService from '../../services/api/api-configure.service'
-import router from '../../services/router'
 import { redirect } from '@sveltejs/kit'
 
 export const load: PageLoad = async () => {

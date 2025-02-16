@@ -2,12 +2,9 @@
   import { onMount } from 'svelte'
   import { env, user } from '../../../../services/store'
   import type { PageData } from './$types'
-  import { Chart } from 'chart.js/auto'
   import LauncherStatsChart from '../../../../components/charts/LauncherStatsChart.svelte'
   import TechnicalStatsChart from '../../../../components/charts/TechnicalStatsChart.svelte'
   import apiStatsService from '../../../../services/api/api-stats.service'
-  import { goto, invalidateAll } from '$app/navigation'
-  import { redirect } from '@sveltejs/kit'
 
   interface Props {
     data: PageData

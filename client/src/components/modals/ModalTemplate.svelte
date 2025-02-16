@@ -2,18 +2,13 @@
   import { scale } from 'svelte/transition'
 
   interface Props {
-    size?: 's' | 'm' | 'l';
-    show: boolean;
-    translateX?: string;
-    children?: import('svelte').Snippet;
+    size?: 's' | 'm' | 'l'
+    show: boolean
+    translateX?: string
+    children?: import('svelte').Snippet
   }
 
-  let {
-    size = 'm',
-    show = $bindable(),
-    translateX = '0',
-    children
-  }: Props = $props();
+  let { size = 'm', show = $bindable(), translateX = '0', children }: Props = $props()
 </script>
 
 {#if show}

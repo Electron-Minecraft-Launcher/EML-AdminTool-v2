@@ -15,15 +15,7 @@
     show: boolean
   }
 
-  let { 
-    data = $bindable(), 
-    content = $bindable(), 
-    title, 
-    categories = $bindable(), 
-    tags = $bindable(),
-    submit, 
-    show = $bindable() 
-  }: Props = $props()
+  let { data = $bindable(), content = $bindable(), title, categories = $bindable(), tags = $bindable(), submit, show = $bindable() }: Props = $props()
 
   let container: HTMLDivElement | undefined = $state()
   let editor: monaco.editor.IStandaloneCodeEditor | undefined = $state()
@@ -78,86 +70,90 @@
 <div id="container-editor" class="container-editor"></div>
 
 <p class="label" style="margin-top: 20px">Categories</p>
-  <div class="categories">
-    {#each categories as category}
-      {#if data.categories.find((cat) => cat.id == category)}
-        <span class="category">
-          <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{data.categories.find((cat) => cat.id == category).title}
-          <!-- svelte-ignore a11y_consider_explicit_label -->
-          <button type="button" class="remove" onclick={() => (categories = categories.filter((cat) => cat !== category))}>
-            <i class="fa-solid fa-circle-xmark"></i>
-          </button>
-        </span>
-      {/if}
-    {/each}
-    <span class="add">
-      <!-- svelte-ignore a11y_consider_explicit_label -->
-      <button
-        type="button"
-        class="secondary categories add"
-        onclick={() => (addCategoriesDropdownOpen = !addCategoriesDropdownOpen)}
-        disabled={categories.length === data.categories.length}><i class="fa-solid fa-plus"></i></button
+<div class="categories">
+  {#each categories as category}
+    {#if data.categories.find((cat) => cat.id == category)}
+      <span class="category">
+        <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{data.categories.find((cat) => cat.id == category).title}
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button type="button" class="remove" onclick={() => (categories = categories.filter((cat) => cat !== category))}>
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </span>
+    {/if}
+  {/each}
+  <span class="add">
+    <!-- svelte-ignore a11y_consider_explicit_label -->
+    <button
+      type="button"
+      class="secondary categories add"
+      onclick={() => (addCategoriesDropdownOpen = !addCategoriesDropdownOpen)}
+      disabled={categories.length === data.categories.length}><i class="fa-solid fa-plus"></i></button
+    >
+    {#if addCategoriesDropdownOpen}
+      <div class="add-category-dropdown" transition:slide={{ duration: 200 }}>
+        {#each data.categories as category}
+          {#if !categories.includes(category.id)}
+            <button type="button" onclick={() => (categories = [...categories, category.id])}
+              ><i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.title}</button
+            >
+          {/if}
+        {/each}
+      </div>
+    {/if}
+  </span>
+</div>
+<!--  -->
+<p class="label" style="margin-top: 20px">Tags</p>
+<div class="tags">
+  {#each tags as tag}
+    {#if data.tags.find((t) => t.id == tag)}
+      <span
+        class="tags"
+        style="color: {data.tags.find((t) => t.id == tag).color}; background-color: {backgroundColor(data.tags.find((t) => t.id == tag).color)}"
       >
-      {#if addCategoriesDropdownOpen}
-        <div class="add-category-dropdown" transition:slide={{ duration: 200 }}>
-          {#each data.categories as category}
-            {#if !categories.includes(category.id)}
-              <button type="button" onclick={() => (categories = [...categories, category.id])}
-                ><i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.title}</button
-              >
-            {/if}
-          {/each}
-        </div>
-      {/if}
-    </span>
-  </div>
-  <!--  -->
-  <p class="label" style="margin-top: 20px">Tags</p>
-  <div class="tags">
-    {#each tags as tag}
-      {#if data.tags.find((t) => t.id == tag)}
-        <span
-          class="tags"
-          style="color: {data.tags.find((t) => t.id == tag).color}; background-color: {backgroundColor(data.tags.find((t) => t.id == tag).color)}"
-        >
-          <i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{data.tags.find((t) => t.id == tag).title}
-          <!-- svelte-ignore a11y_consider_explicit_label -->
-          <button type="button" class="remove" onclick={() => (tags = tags.filter((t) => t !== tag))}>
-            <i class="fa-solid fa-circle-xmark"></i>
-          </button>
-        </span>
-      {/if}
-    {/each}
-    <span class="add">
-      <!-- svelte-ignore a11y_consider_explicit_label -->
-      <button
-        type="button"
-        class="secondary tags add"
-        onclick={() => (addTagsDropdownOpen = !addTagsDropdownOpen)}
-        disabled={tags.length === data.tags.length}
-      >
-        <i class="fa-solid fa-plus"></i>
-      </button>
-      {#if addTagsDropdownOpen}
-        <div class="add-tags-dropdown" transition:slide={{ duration: 200 }}>
-          {#each data.tags as tag}
-            {#if !tags.includes(tag.id)}
-              <button type="button" onclick={() => (tags = [...tags, tag.id])} style="color: {tag.color}"
-                ><i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.title}</button
-              >
-            {/if}
-          {/each}
-        </div>
-      {/if}
-    </span>
-  </div>
+        <i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{data.tags.find((t) => t.id == tag).title}
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button type="button" class="remove" onclick={() => (tags = tags.filter((t) => t !== tag))}>
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </span>
+    {/if}
+  {/each}
+  <span class="add">
+    <!-- svelte-ignore a11y_consider_explicit_label -->
+    <button
+      type="button"
+      class="secondary tags add"
+      onclick={() => (addTagsDropdownOpen = !addTagsDropdownOpen)}
+      disabled={tags.length === data.tags.length}
+    >
+      <i class="fa-solid fa-plus"></i>
+    </button>
+    {#if addTagsDropdownOpen}
+      <div class="add-tags-dropdown" transition:slide={{ duration: 200 }}>
+        {#each data.tags as tag}
+          {#if !tags.includes(tag.id)}
+            <button type="button" onclick={() => (tags = [...tags, tag.id])} style="color: {tag.color}"
+              ><i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.title}</button
+            >
+          {/if}
+        {/each}
+      </div>
+    {/if}
+  </span>
+</div>
 
 <div class="actions">
   <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
-  <button class="primary" disabled={title.replaceAll(' ', '').replaceAll('.', '') === ''} onclick={(e) => {
-    content = editor!.getValue()
-    submit(e)
-    }}>{$l.main.save}</button>
+  <button
+    class="primary"
+    disabled={title.replaceAll(' ', '').replaceAll('.', '') === ''}
+    onclick={(e) => {
+      content = editor!.getValue()
+      submit(e)
+    }}>{$l.main.save}</button
+  >
 </div>
 
 <style lang="scss">

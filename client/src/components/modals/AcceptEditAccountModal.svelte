@@ -1,6 +1,6 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import { user, l } from '../../services/store'
+  import { l } from '../../services/store'
   import type { User } from '../../../../shared/types/features/user'
   import apiAdminService from '../../services/api/api-admin.service'
   import { invalidateAll } from '$app/navigation'

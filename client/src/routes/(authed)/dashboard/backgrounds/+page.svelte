@@ -1,10 +1,7 @@
 <script lang="ts">
   import type { BackgroundsRes } from '../../../../../../shared/types/features/background'
-  import ChangeMaintenanceStatusModal from '../../../../components/modals/ChangeMaintenanceStatusModal.svelte'
   import UploadEditBackgroundModal from '../../../../components/modals/UploadEditBackgroundModal.svelte'
-  import UploadEditBackgroundModalcopy from '../../../../components/modals/UploadEditBackgroundModal.svelte'
   import apiBackgroundsService from '../../../../services/api/api-backgrounds.service'
-  import apiMaintenanceService from '../../../../services/api/api-maintenance.service'
   import { env } from '../../../../services/store'
   import type { PageData } from './$types'
 

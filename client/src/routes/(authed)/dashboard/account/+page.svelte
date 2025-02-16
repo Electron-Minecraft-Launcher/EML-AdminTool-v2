@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Skeleton from '../../../../components/layouts/Skeleton.svelte'
   import { env, user, l } from '../../../../services/store'
   import EditAccountModal from '../../../../components/modals/EditAccountModal.svelte'
   import apiAdminService from '../../../../services/api/api-admin.service'
