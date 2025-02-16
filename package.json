@@ -1,6 +1,6 @@
 {
   "name": "eml-admintool",
-  "version": "2.0.0-alpha.9",
+  "version": "2.0.0-alpha.10",
   "description": "Manage your Minecraft Launcher (working with EML Core) from the Web.",
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
@@ -26,5 +26,8 @@
   },
   "dependencies": {
     "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "prettier-plugin-svelte": "^3.2.7"
   }
 }

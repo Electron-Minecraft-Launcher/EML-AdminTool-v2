@@ -1,28 +1,30 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import { user, l } from '../../services/store'
+  import { l } from '../../services/store'
   import type { User } from '../../../../shared/types/features/user'
   import apiAdminService from '../../services/api/api-admin.service'
   import { invalidateAll } from '$app/navigation'
 
-  export let show: boolean
-  export let selectedAccount: User
-  export let action: 'accept' | 'edit'
+  interface Props {
+    show: boolean
+    selectedAccount: User
+    action: 'accept' | 'edit'
+  }
 
-  $: name = '' as string
-  $: p_files_updater_add_del = false as boolean
-  $: p_files_updater_loader_mod = false as boolean
-  $: p_bootstraps_mod = false as boolean
-  $: p_maintenance_mod = false as boolean
-  $: p_news_add = false as boolean
-  $: p_news_mod_del = false as boolean
-  $: p_news_categories_add_mod_del = false as boolean
-  $: p_news_tags_add_mod_del = false as boolean
-  $: p_background_mod = false as boolean
-  $: p_stats_see = false as boolean
-  $: p_stats_del = false as boolean
+  let { show = $bindable(), selectedAccount = $bindable(), action = $bindable() }: Props = $props()
 
-  $: if (show) update()
+  let name = $state('' as string)
+  let p_files_updater_add_del = $state(false as boolean)
+  let p_files_updater_loader_mod = $state(false as boolean)
+  let p_bootstraps_mod = $state(false as boolean)
+  let p_maintenance_mod = $state(false as boolean)
+  let p_news_add = $state(false as boolean)
+  let p_news_mod_del = $state(false as boolean)
+  let p_news_categories_add_mod_del = $state(false as boolean)
+  let p_news_tags_add_mod_del = $state(false as boolean)
+  let p_background_mod = $state(false as boolean)
+  let p_stats_see = $state(false as boolean)
+  let p_stats_del = $state(false as boolean)
 
   function update() {
     name = selectedAccount.name + ''
@@ -39,7 +41,8 @@
     p_stats_del = selectedAccount.p_stats_del == 1
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     const tempUser = {
       name,
       status: 1,
@@ -63,10 +66,14 @@
       }
     })
   }
+
+  $effect(() => {
+    if (show) update()
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>{action === 'accept' ? 'Accept' : 'Edit'} user</h2>
 
     <div class="overflow">
@@ -79,7 +86,7 @@
           type="checkbox"
           id="p_files_updater_add_del"
           bind:checked={p_files_updater_add_del}
-          on:change={() => {
+          onchange={() => {
             if (!p_files_updater_add_del) p_files_updater_loader_mod = false
           }}
         /> Add and delete files
@@ -89,7 +96,7 @@
           type="checkbox"
           id="p_files_updater_loader_mod"
           bind:checked={p_files_updater_loader_mod}
-          on:change={() => {
+          onchange={() => {
             if (p_files_updater_loader_mod) p_files_updater_add_del = true
           }}
         /> Change and delete Minecraft loader
@@ -111,7 +118,7 @@
           type="checkbox"
           id="p_news_add"
           bind:checked={p_news_add}
-          on:change={() => {
+          onchange={() => {
             if (!p_news_add) {
               p_news_mod_del = false
               p_news_categories_add_mod_del = false
@@ -125,7 +132,7 @@
           type="checkbox"
           id="p_news_mod_del"
           bind:checked={p_news_mod_del}
-          on:change={() => {
+          onchange={() => {
             if (p_news_mod_del) p_news_add = true
           }}
         /> Edit and Delete every news
@@ -135,7 +142,7 @@
           type="checkbox"
           id="p_news_categories_add_mod_del"
           bind:checked={p_news_categories_add_mod_del}
-          on:change={() => {
+          onchange={() => {
             if (p_news_categories_add_mod_del) p_news_add = true
           }}
         /> Add, Edit and Delete news categories
@@ -145,7 +152,7 @@
           type="checkbox"
           id="p_news_tags_add_mod_del"
           bind:checked={p_news_tags_add_mod_del}
-          on:change={() => {
+          onchange={() => {
             if (p_news_tags_add_mod_del) p_news_add = true
           }}
         /> Add, Edit and Delete news tags
@@ -162,7 +169,7 @@
           type="checkbox"
           id="p_stats_see"
           bind:checked={p_stats_see}
-          on:change={() => {
+          onchange={() => {
             if (!p_stats_see) p_stats_del = false
           }}
         /> View stats
@@ -172,7 +179,7 @@
           type="checkbox"
           id="p_stats_del"
           bind:checked={p_stats_del}
-          on:change={() => {
+          onchange={() => {
             if (p_stats_del) p_stats_see = true
           }}
         /> Delete stats
@@ -180,14 +187,14 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

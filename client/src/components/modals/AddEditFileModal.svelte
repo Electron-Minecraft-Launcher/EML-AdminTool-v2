@@ -1,98 +1,44 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
   import type { File } from '../../../../shared/types/features/file'
   import type { PageData } from '../../routes/(authed)/dashboard/files-updater/$types'
   import apiFilesUpdaterService from '../../services/api/api-filesupdater.service'
   import { l } from '../../services/store'
   import ModalTemplate from './ModalTemplate.svelte'
-  import monaco from '../../services/monaco.service'
   import utils from '../../services/utils'
+  import MonacoFileEditor from '../monaco/MonacoFileEditor.svelte'
 
-  export let data: PageData
-  export let show: boolean
-  export let action: { action: 'add' } | { action: 'edit'; file: File }
-  export let currentPath: string
-
-  let container: HTMLDivElement
-  let editor: monaco.editor.IStandaloneCodeEditor
-  let model: monaco.editor.ITextModel
-
-  $: path = '' as string
-  $: name = '' as string
-  $: newName = '' as string
-  $: content = '' as string
-
-  $: if (show) update()
-
-  onDestroy(() => {
-    monaco?.editor.getModels().forEach((model) => model.dispose())
-    editor?.dispose()
-  })
-
-  $: if (container) {
-    if (editor) {
-      editor.dispose()
-      model?.dispose()
-    }
-
-    editor = monaco.editor.create(container, { minimap: { enabled: false } })
-    model = monaco.editor.createModel(content, 'plaintext')
-    editor.setModel(model)
+  interface Props {
+    data: PageData
+    show: boolean
+    action: { action: 'add' } | { action: 'edit'; file: File }
+    currentPath: string
   }
 
-  $: if (container && editor && newName) {
-    let language = ''
-    const ext = newName.split('.').pop()
-    switch (ext) {
-      case 'js':
-      case 'jsx':
-        language = 'javascript'
-        break
-      case 'ts':
-      case 'tsx':
-        language = 'typescript'
-        break
-      case 'html':
-        language = 'html'
-        break
-      case 'css':
-        language = 'css'
-        break
-      case 'xml':
-        language = 'xml'
-        break
-      case 'json':
-        language = 'json'
-        break
-      case 'yaml':
-      case 'yml':
-        language = 'yaml'
-        break
-      case 'md':
-        language = 'markdown'
-        break
-      case 'sql':
-        language = 'sql'
-        break
-      case 'sh':
-        language = 'shell'
-        break
-      case 'py':
-        language = 'python'
-        break
-      default:
-        language = 'plaintext'
-        break
-    }
-    monaco.editor.setModelLanguage(model, language)
-  }
+  let { data = $bindable(), show = $bindable(), action = $bindable(), currentPath = $bindable() }: Props = $props()
+
+  let path: string = $state('')
+  let name: string = $state('')
+  let newName: string = $state('')
+  let content: string = $state('')
+  let language: string = $state('plaintext')
+
+  // let container: HTMLDivElement | undefined = $state()
+  // let editor: monaco.editor.IStandaloneCodeEditor | undefined = $state()
+  // let model: monaco.editor.ITextModel | undefined = $state()
+
+  // onDestroy(() => {
+  //   console.log('destroy')
+  //   monaco?.editor.getModels().forEach((model) => model.dispose())
+  //   editor?.dispose()
+  //   model?.dispose()
+  //   editor = undefined
+  // })
 
   async function update() {
     if (action.action === 'edit') {
       path = action.file.path
       name = action.file.name
       newName = action.file.name
-      content = ''
       content = await fetch(action.file.url).then((res) => res.text())
     } else {
       path = currentPath
@@ -105,7 +51,6 @@
   async function download() {
     try {
       newName = utils.removeUnwantedFilenameChars(newName)
-      content = editor.getValue()
       const blob = new Blob([content], { type: 'text/plain' })
       const downloadUrl = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -120,13 +65,13 @@
     }
   }
 
-  async function submit(e: SubmitEvent | null, close: boolean = true) {
+  async function submit(e: Event | null, close: boolean = true) {
+    e?.preventDefault()
     if (action.action === 'edit') {
       newName = utils.removeUnwantedFilenameChars(newName)
       ;(await apiFilesUpdaterService.renameFile(`${path}${name}`, `${path}${newName}`)).subscribe({})
       name = newName
     }
-    let content = editor.getValue()
     const blob = new Blob([content], { type: 'text/plain' })
     const file = new File([blob], newName, { type: 'text/plain' })
     ;(await apiFilesUpdaterService.uploadFiles(`${path}`, [file])).subscribe({
@@ -136,10 +81,61 @@
       }
     })
   }
+
+  $effect(() => {
+    if (show) update()
+  })
+
+  $effect(() => {
+    if (newName) {
+      const ext = newName.split('.').pop()
+      switch (ext) {
+        case 'js':
+        case 'jsx':
+          language = 'javascript'
+          break
+        case 'ts':
+        case 'tsx':
+          language = 'typescript'
+          break
+        case 'html':
+          language = 'html'
+          break
+        case 'css':
+          language = 'css'
+          break
+        case 'xml':
+          language = 'xml'
+          break
+        case 'json':
+          language = 'json'
+          break
+        case 'yaml':
+        case 'yml':
+          language = 'yaml'
+          break
+        case 'md':
+          language = 'markdown'
+          break
+        case 'sql':
+          language = 'sql'
+          break
+        case 'sh':
+          language = 'shell'
+          break
+        case 'py':
+          language = 'python'
+          break
+        default:
+          language = 'plaintext'
+          break
+      }
+    }
+  })
 </script>
 
 <svelte:body
-  on:keydown={(e) => {
+  onkeydown={(e) => {
     if (e.ctrlKey && e.key === 's') {
       e.preventDefault()
       submit(null, false)
@@ -148,10 +144,10 @@
 />
 
 <ModalTemplate size={'l'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form>
     <h2>{action.action === 'add' ? 'Create a new file' : 'Edit the file'}</h2>
 
-    <button class="secondary small right" type="button"  on:click={download}>
+    <button class="secondary small right" type="button" onclick={download}>
       <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;Download file
     </button>
 
@@ -162,20 +158,16 @@
       class="name"
       placeholder="File name"
       bind:value={newName}
-      on:keyup={() => (newName = utils.removeUnwantedFilenameChars(newName))}
+      onkeyup={() => (newName = utils.removeUnwantedFilenameChars(newName))}
     />
 
-    <div bind:this={container} class="container-editor"></div>
-
-    <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
-    </div>
+    <!-- <div ></div> -->
+    <MonacoFileEditor bind:content {language} {newName} {submit} bind:show></MonacoFileEditor>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   button.right {
     opacity: 1;
@@ -193,10 +185,10 @@
     margin-top: 0;
   }
 
-  div.container-editor {
-    height: calc(100vh - 177px - 106px - 30px - 63px);
-    margin-top: 20px;
-    border: 1px solid var(--border-color2);
-    border-radius: 5px;
-  }
+  // div.container-editor {
+  //   height: calc(100vh - 177px - 106px - 30px - 63px);
+  //   margin-top: 20px;
+  //   border: 1px solid var(--border-color2);
+  //   border-radius: 5px;
+  // }
 </style>

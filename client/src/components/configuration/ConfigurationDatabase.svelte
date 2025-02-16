@@ -2,13 +2,20 @@
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
   import { env, l } from '../../services/store'
 
-  let relN!: string
-  let rel: string = '   '
-
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = {
-    data: 'DATABASE',
-    value: undefined,
+  interface Props {
+    nextStep: (arg: { step: number }) => void
+    prevStep: (arg: { step: number }) => void
   }
+
+  let { nextStep, prevStep }: Props = $props()
+
+  let relN: string = $state('')
+  let rel: string = $state('   ')
+
+  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
+    data: 'DATABASE',
+    value: undefined
+  })
 
   env.subscribe((value) => {
     if (value && value.language && typeof value.language !== 'string') inputChange()
@@ -104,21 +111,15 @@
   }
 </script>
 
-<ConfigurationFormTemplate step={2} cond={+relN >= 3} {data} on:nextStep on:prevStep>
+<ConfigurationFormTemplate step={2} cond={+relN >= 3} {data} {nextStep} {prevStep}>
   <h2>{@html $l.configuration.step2.title}</h2>
   <p><b>{$l.configuration.step2.subtitle}</b></p>
   <div class="actions">
     <div class="flex">
-      <input
-        type="text"
-        name="db-password"
-        placeholder={$l.configuration.step2.placeholder}
-        bind:value={data.value}
-        on:keyup={inputChange}
-      />
+      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={data.value} onkeyup={inputChange} />
 
-      <button class="secondary" on:click={generatePassword} type="button">
-        <i class="fa-solid fa-arrows-rotate" />&nbsp;&nbsp;{$l.configuration.step2.generate}
+      <button class="secondary" onclick={generatePassword} type="button">
+        <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.configuration.step2.generate}
       </button>
     </div>
 
@@ -130,7 +131,7 @@
         class:progress-2={relN == '2'}
         class:progress-3={relN == '3'}
         class:progress-4={relN == '4'}
-      />
+      ></div>
     </div>
 
     <span class="rel">{rel}</span>
@@ -138,7 +139,7 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/configure.scss';
+  @use '../../assets/scss/configure.scss';
 
   div.flex {
     display: flex;

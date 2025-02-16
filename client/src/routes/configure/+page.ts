@@ -2,7 +2,6 @@ import type { PageLoad } from './$types'
 import cookiesService from '../../services/cookies.service'
 import apiAuthService from '../../services/api/api-auth.service'
 import apiConfigureService from '../../services/api/api-configure.service'
-import router from '../../services/router'
 import { redirect } from '@sveltejs/kit'
 
 export const load: PageLoad = async () => {
@@ -11,19 +10,19 @@ export const load: PageLoad = async () => {
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
       next: () => {
-        throw redirect(300, '/dashboard')
-      },
+        redirect(300, '/dashboard')
+      }
     })
   }
 
   ;(await apiConfigureService.getConfigure()).subscribe({
     finally: (res) => {
       if (res.body?.code == 'SUCCESS') {
-        throw redirect(300, '/')
+        redirect(300, '/')
       } else {
         start = true
       }
-    },
+    }
   })
 
   return { start }

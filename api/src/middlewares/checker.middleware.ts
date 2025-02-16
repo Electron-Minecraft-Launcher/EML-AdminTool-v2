@@ -11,9 +11,9 @@ const middleware: RequestHandler = async (req, res, next) => {
   const resp = await checkerService.check(body, path, headers)
 
   if (resp.code === ResponseType.SUCCESS) next()
-  else if (resp.code === ResponseType.AUTH_ERROR) next(new UnauthorizedException())
-  else if (resp.code === ResponseType.CONFIG_ERROR) next(new ConfigurationException())
-  else next(new ServerException())
+  else if (resp.code === ResponseType.AUTH_ERROR) res.status(401).send(new UnauthorizedException())
+  else if (resp.code === ResponseType.CONFIG_ERROR) res.status(403).send(new ConfigurationException())
+  else res.status(500).send(new ServerException())
 }
 
 export default middleware

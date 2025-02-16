@@ -4,6 +4,7 @@ export interface DBGeneration {
   config: boolean | TableColumn[]
   users: boolean | TableColumn[]
   logs: boolean | TableColumn[]
+  loader: boolean | TableColumn[]
   bootstraps: boolean | TableColumn[]
   maintenance: boolean | TableColumn[]
   news: boolean | TableColumn[]

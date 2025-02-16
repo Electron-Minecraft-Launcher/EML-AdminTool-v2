@@ -9,17 +9,17 @@ export const load: PageLoad = async () => {
   ;(await apiConfigureService.getConfigure()).subscribe({
     finally: (res) => {
       if (res.body.code == 'CONFIG_ERROR') {
-        throw redirect(300, '/configure')
+        redirect(300, '/configure')
       }
-    },
+    }
   })
 
   if (cookiesService.get('JWT')) {
     ;(await apiAuthService.getVerify()).subscribe({
       next: (res) => {
         user.set(res.body.data!.user)
-        throw redirect(300, '/dashboard')
-      },
+        redirect(300, '/dashboard')
+      }
     })
   }
 }

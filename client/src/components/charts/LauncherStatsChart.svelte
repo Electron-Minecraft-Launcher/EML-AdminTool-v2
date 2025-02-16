@@ -2,16 +2,20 @@
   import { Chart } from 'chart.js/auto'
   import { onMount } from 'svelte'
 
-  export let dateSelector: HTMLSelectElement
-  export let datesLauncher: { date: Date; startups: number; launches: number; connections: number }[]
+  interface Props {
+    dateSelector: HTMLSelectElement
+    datesLauncher: { date: Date; startups: number; launches: number; connections: number }[]
+  }
 
-  let ctx: HTMLCanvasElement
-  let chart: Chart
-  let usedDates: { date: Date | string; startups: number; launches: number, connections: number }[]
+  let { dateSelector = $bindable(), datesLauncher = $bindable() }: Props = $props()
+
+  let ctx: HTMLCanvasElement | undefined = $state()
+  let chart: Chart | undefined = $state()
+  let usedDates: { date: Date | string; startups: number; launches: number; connections: number }[] = $state([])
 
   onMount(() => {
     usedDates = truncateLabel(datesLauncher, 72)!
-    chart = new Chart(ctx, {
+    chart = new Chart(ctx!, {
       type: 'line',
       data: {
         labels: usedDates.map((date) => formatDate(date.date as Date)),
@@ -82,31 +86,6 @@
     })
   })
 
-  $: if (dateSelector) {
-    dateSelector.addEventListener('change', () => {
-      if (ctx) {
-        // @ts-ignore
-        usedDates = truncateLabel(datesLauncher, dateSelector.value)
-        chart.data.labels = usedDates.map(
-          (date) => formatDate(date.date),
-          dateSelector.value === '81000' ? 'month' : dateSelector.value === '5400' ? 'day' : 'hour'
-        )
-        chart.data.datasets[0].data = usedDates.map((date) => date.startups)
-        chart.data.datasets[1].data = usedDates.map((date) => date.connections)
-        chart.data.datasets[2].data = usedDates.map((date) => date.launches)
-        // @ts-ignore
-        chart.options.plugins.tooltip.callbacks.title = function (tooltipItems) {
-          if (tooltipItems.length) {
-            const index = tooltipItems[0].dataIndex
-            return `${formatDate(usedDates[index].date, dateSelector.value === '81000' ? 'month' : dateSelector.value === '5400' ? 'day' : 'hour')}`
-          }
-          return ''
-        }
-        chart.update()
-      }
-    })
-  }
-
   function formatDate(date: Date | string, type: 'hour' | 'day' | 'month' = 'hour') {
     date = new Date(date)
     if (type === 'day') {
@@ -142,7 +121,7 @@
       for (let i = 0; i < length; i++) {
         if (usableDates[i]) {
           if (usableDates[i].date.getHours() === 0) {
-            days.push({ date: usableDates[i].date, startups: 0, launches: 0 , connections: 0})
+            days.push({ date: usableDates[i].date, startups: 0, launches: 0, connections: 0 })
           }
           days[days.length - 1].startups += usableDates[i].startups
           days[days.length - 1].launches += usableDates[i].launches
@@ -163,7 +142,7 @@
       for (let i = 0; i < length; i++) {
         if (usableDates[i]) {
           if (usableDates[i].date.getDate() === 1 && usableDates[i].date.getHours() === 0) {
-            months.push({ date: usableDates[i].date, startups: 0, launches: 0, connections: 0})
+            months.push({ date: usableDates[i].date, startups: 0, launches: 0, connections: 0 })
           }
           months[months.length - 1].startups += usableDates[i].startups
           months[months.length - 1].launches += usableDates[i].launches
@@ -173,6 +152,33 @@
       return months.slice(-360)
     }
   }
+
+  $effect(() => {
+    if (dateSelector) {
+      dateSelector.addEventListener('change', () => {
+        if (ctx) {
+          // @ts-ignore
+          usedDates = truncateLabel(datesLauncher, dateSelector.value)
+          chart!.data.labels = usedDates.map(
+            (date) => formatDate(date.date),
+            dateSelector.value === '81000' ? 'month' : dateSelector.value === '5400' ? 'day' : 'hour'
+          )
+          chart!.data.datasets[0].data = usedDates.map((date) => date.startups)
+          chart!.data.datasets[1].data = usedDates.map((date) => date.connections)
+          chart!.data.datasets[2].data = usedDates.map((date) => date.launches)
+          // @ts-ignore
+          chart.options.plugins.tooltip.callbacks.title = function (tooltipItems) {
+            if (tooltipItems.length) {
+              const index = tooltipItems[0].dataIndex
+              return `${formatDate(usedDates[index].date, dateSelector.value === '81000' ? 'month' : dateSelector.value === '5400' ? 'day' : 'hour')}`
+            }
+            return ''
+          }
+          chart!.update()
+        }
+      })
+    }
+  })
 </script>
 
 <canvas bind:this={ctx}></canvas>

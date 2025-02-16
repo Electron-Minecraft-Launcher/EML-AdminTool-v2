@@ -5,10 +5,14 @@
   import apiAdminService from '../services/api/api-admin.service'
   import { invalidateAll } from '$app/navigation'
 
-  export let selectedAccount: User
+  interface Props {
+    selectedAccount: User
+  }
 
-  let showEditUserModal = false
-  let action: 'accept' | 'edit'
+  let { selectedAccount = $bindable() }: Props = $props()
+
+  let showEditUserModal = $state(false)
+  let action: 'accept' | 'edit' = $state('accept')
 
   async function deleteUser() {
     if (
@@ -50,25 +54,30 @@ All the user's actions and data will be deleted, including published news. This 
 </script>
 
 {#if !selectedAccount.admin && selectedAccount.status == 1}
-  <button class="secondary right refuse" on:click={deleteUser}><i class="fa-solid fa-trash" /></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right refuse" onclick={deleteUser}><i class="fa-solid fa-trash"></i></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
   <button
     class="secondary right"
-    on:click={() => {
+    onclick={() => {
       showEditUserModal = true
       action = 'edit'
-    }}><i class="fa-solid fa-pen" /></button
+    }}><i class="fa-solid fa-pen"></i></button
   >
 {:else if selectedAccount.status == 0}
-  <button class="secondary right refuse" on:click={deleteUser}><i class="fa-solid fa-times" /></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right refuse" onclick={deleteUser}><i class="fa-solid fa-times"></i></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
   <button
     class="secondary right accept"
-    on:click={() => {
+    onclick={() => {
       showEditUserModal = true
       action = 'accept'
-    }}><i class="fa-solid fa-check" /></button
+    }}><i class="fa-solid fa-check"></i></button
   >
 {:else if selectedAccount.status && selectedAccount.status < 0}
-  <button class="secondary right refuse" on:click={deleteUserForever}><i class="fa-solid fa-trash" /></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right refuse" onclick={deleteUserForever}><i class="fa-solid fa-trash"></i></button>
 {/if}
 
 <div class="perms">

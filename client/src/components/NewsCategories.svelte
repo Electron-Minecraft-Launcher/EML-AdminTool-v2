@@ -4,10 +4,13 @@
   import apiNewsService from '../services/api/api-news.service'
   import AddEditNewsCategoryModal from './modals/AddEditNewsCategoryModal.svelte'
 
-  export let data: PageData
-  export let addEditCategoryAction: { action: 'add' } | { action: 'edit'; category: NewsCategory } = { action: 'add' }
-  export let showAddEditCategoryModal = false
+  interface Props {
+    data: PageData
+    addEditCategoryAction?: { action: 'add' } | { action: 'edit'; category: NewsCategory }
+    showAddEditCategoryModal?: boolean
+  }
 
+  let { data = $bindable(), addEditCategoryAction = $bindable({ action: 'add' }), showAddEditCategoryModal = $bindable(false) }: Props = $props()
 
   function formatDate(date: Date) {
     const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -34,14 +37,15 @@
     <div class="category">
       <button
         class="no-link"
-        on:click={() => {
+        onclick={() => {
           addEditCategoryAction = { action: 'edit', category: category }
           showAddEditCategoryModal = true
         }}
       >
         <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.title} <span class="date">(created on {formatDate(new Date(category.date))})</span>
       </button>
-      <button class="remove" on:click={() => deleteCategory(category)}><i class="fa-solid fa-trash"></i></button>
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <button class="remove" onclick={() => deleteCategory(category)}><i class="fa-solid fa-trash"></i></button>
     </div>
   {/each}
 </div>

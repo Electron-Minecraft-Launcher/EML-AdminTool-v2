@@ -7,17 +7,19 @@
   import utils from '../../services/utils'
   import ModalTemplate from './ModalTemplate.svelte'
 
-  export let data: PageData
-  export let show: boolean
-  export let selectedItems: File[]
-  export let getData: () => void
+  interface Props {
+    data: PageData
+    show: boolean
+    selectedItems: File[]
+    getData: () => void
+  }
 
-  $: path = '' as string
-  $: name = '' as string
-  $: type = '' as string
-  $: newName = '' as string
+  let { data = $bindable(), show = $bindable(), selectedItems = $bindable(), getData }: Props = $props()
 
-  $: if (show) update()
+  let path: string = $state('')
+  let name: string = $state('')
+  let type: string = $state('')
+  let newName: string = $state('')
 
   function update() {
     path = selectedItems[0].path
@@ -26,7 +28,8 @@
     newName = selectedItems[0].name
   }
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     newName = utils.removeUnwantedFilenameChars(newName)
     ;(await apiFilesUpdaterService.renameFile(`${path}${name}`, `${path}${newName}`)).subscribe({
       next: (res) => {
@@ -35,29 +38,33 @@
       },
       error: (err) => {
         show = false
-        notificationsService.update({ type: 'ERROR', code: 'rename'})
+        notificationsService.update({ type: 'ERROR', code: 'rename' })
         getData()
       }
     })
   }
+
+  $effect(() => {
+    if (show) update()
+  })
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <h2>Rename {type === 'FOLDER' ? 'folder' : 'file'}</h2>
 
     <label for="name">Files Updater/{path}</label>
-    <input type="text" id="name" placeholder={name} bind:value={newName} on:keyup={() => newName = utils.removeUnwantedFilenameChars(newName)} />
+    <input type="text" id="name" placeholder={name} bind:value={newName} onkeyup={() => (newName = utils.removeUnwantedFilenameChars(newName))} />
 
     <div class="actions">
-      <button class="secondary" on:click={() => (show = false)} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary" disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

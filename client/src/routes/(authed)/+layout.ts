@@ -13,11 +13,11 @@ export const load: LayoutLoad = async () => {
         return { user: res.body!.data!.user }
       },
       error: () => {
-        throw redirect(300, '/login')
+        redirect(300, '/login');
       }
     })
   } else {
-    throw redirect(300, '/login')
+    redirect(300, '/login');
   }
   return { user: get(user) }
 }

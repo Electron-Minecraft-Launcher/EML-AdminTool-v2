@@ -4,9 +4,13 @@
   import apiNewsService from '../services/api/api-news.service'
   import AddEditNewsTagModal from './modals/AddEditNewsTagModal.svelte'
 
-  export let data: PageData
-  export let addEditTagAction: { action: 'add' } | { action: 'edit'; tag: NewsTag } = { action: 'add' }
-  export let showAddEditTagModal = false
+  interface Props {
+    data: PageData
+    addEditTagAction?: { action: 'add' } | { action: 'edit'; tag: NewsTag }
+    showAddEditTagModal?: boolean
+  }
+
+  let { data = $bindable(), addEditTagAction = $bindable({ action: 'add' }), showAddEditTagModal = $bindable(false) }: Props = $props()
 
   function backgroundColor(color: string) {
     const r = parseInt(color.slice(1, 3), 16)
@@ -31,7 +35,7 @@
     <div class="category">
       <button
         class="no-link"
-        on:click={() => {
+        onclick={() => {
           addEditTagAction = { action: 'edit', tag: tag }
           showAddEditTagModal = true
         }}
@@ -39,7 +43,8 @@
       >
         <i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.title}
       </button>
-      <button class="remove" on:click={() => deleteTag(tag)}><i class="fa-solid fa-trash"></i></button>
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <button class="remove" onclick={() => deleteTag(tag)}><i class="fa-solid fa-trash"></i></button>
     </div>
   {/each}
 </div>

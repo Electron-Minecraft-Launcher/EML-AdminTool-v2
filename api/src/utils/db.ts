@@ -57,6 +57,7 @@ class Database {
       config: false,
       users: false,
       logs: false,
+      loader: false,
       bootstraps: false,
       maintenance: false,
       news: false,

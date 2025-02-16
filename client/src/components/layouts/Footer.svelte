@@ -13,7 +13,7 @@
     <p style="font-size: 9px">
       User JWT: <input
         value={cookiesService.get('JWT')}
-        on:click={(e) => {
+        onclick={(e) => {
           // @ts-ignore
           e.target.select()
           // @ts-ignore

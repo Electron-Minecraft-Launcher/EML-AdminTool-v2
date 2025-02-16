@@ -4,7 +4,7 @@
   let notificationValue: {
     type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'
     content: string
-  } | null
+  } | null = $state(null)
 
   notification$.subscribe((value) => {
     notificationValue = value
@@ -13,25 +13,25 @@
 
 {#if notificationValue && notificationValue.type == 'INFO'}
   <div class="notification info">
-    <i class="fa-solid fa-circle-info" />{@html notificationValue.content}
+    <i class="fa-solid fa-circle-info"></i>{@html notificationValue.content}
   </div>
 {/if}
 
 {#if notificationValue && notificationValue.type == 'SUCCESS'}
   <div class="notification success">
-    <i class="fa-solid fa-circle-check" />{@html notificationValue.content}
+    <i class="fa-solid fa-circle-check"></i>{@html notificationValue.content}
   </div>
 {/if}
 
 {#if notificationValue && notificationValue.type == 'WARNING'}
   <div class="notification warning">
-    <i class="fa-solid fa-circle-exclamation" />{@html notificationValue.content}
+    <i class="fa-solid fa-circle-exclamation"></i>{@html notificationValue.content}
   </div>
 {/if}
 
 {#if notificationValue && notificationValue.type == 'ERROR'}
   <div class="notification error">
-    <i class="fa-solid fa-circle-xmark" />{@html notificationValue.content}
+    <i class="fa-solid fa-circle-xmark"></i>{@html notificationValue.content}
   </div>
 {/if}
 
@@ -49,7 +49,9 @@
     color: #303030;
     width: 300px;
     z-index: 10000;
-    animation: in 0.5s ease 0.5s 1 forwards, out 0.5s ease 5s 1 forwards;
+    animation:
+      in 0.5s ease 0.5s 1 forwards,
+      out 0.5s ease 5s 1 forwards;
 
     i.fa-solid {
       display: inline-block;

@@ -1,28 +1,29 @@
 <script lang="ts">
   import { scale } from 'svelte/transition'
 
-  export let size: 's' | 'm' | 'l' = 'm'
-  export let show: boolean
-  export let translateX: string = '0'
-
-  async function closeModal() {
-    show = false
+  interface Props {
+    size?: 's' | 'm' | 'l'
+    show: boolean
+    translateX?: string
+    children?: import('svelte').Snippet
   }
+
+  let { size = 'm', show = $bindable(), translateX = '0', children }: Props = $props()
 </script>
 
 {#if show}
   <div class="modal-background" transition:scale={{ start: 1.5 }}>
     <div class={'modal size-' + size} style="transform: translateX({translateX})">
       <section class="close">
-        <button class="close" on:click={() => (show = false)}>Close&nbsp;&nbsp;<i class="fa-solid fa-times" /></button>
+        <button class="close" onclick={() => (show = false)}>Close&nbsp;&nbsp;<i class="fa-solid fa-times"></i></button>
       </section>
-      <slot />
+      {@render children?.()}
     </div>
   </div>
 {/if}
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   div.modal-background {
     position: fixed;

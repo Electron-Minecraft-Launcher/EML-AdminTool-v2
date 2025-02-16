@@ -1,8 +1,14 @@
 <script lang="ts">
   import LeftPanel from '../../components/layouts/LeftPanel.svelte'
   import Footer from '../../components/layouts/Footer.svelte'
+  
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
 
-  let leftPanelOpen = true
+  let { children }: Props = $props();
+
+  let leftPanelOpen = $state(true)
 </script>
 
 <div class="container">
@@ -11,7 +17,7 @@
   </div>
 
   <div class="content">
-    <slot />
+    {@render children?.()}
     <Footer />
   </div>
 </div>

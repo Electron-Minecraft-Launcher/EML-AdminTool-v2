@@ -1,11 +1,10 @@
 <script lang="ts">
-  import Skeleton from '../../../../components/layouts/Skeleton.svelte'
   import { env, user, l } from '../../../../services/store'
   import EditAccountModal from '../../../../components/modals/EditAccountModal.svelte'
   import apiAdminService from '../../../../services/api/api-admin.service'
   import { goto } from '$app/navigation'
 
-  let showEditAccountModal = false
+  let showEditAccountModal = $state(false)
 
   async function editAccountModal() {
     showEditAccountModal = true
@@ -30,7 +29,8 @@
 <h2>{$l.dashboard.account.accountSettings}</h2>
 
 <section class="section">
-  <button class="secondary right" on:click={editAccountModal}><i class="fa-solid fa-pen" /></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right" onclick={editAccountModal}><i class="fa-solid fa-pen"></i></button>
   <h3>{$l.dashboard.information}</h3>
 
   <div class="container">
@@ -131,7 +131,7 @@
 
     <div class="container">
       <div>
-        <button class="primary danger" on:click={deleteAccount}>Delete account</button>
+        <button class="primary danger" onclick={deleteAccount}>Delete account</button>
       </div>
     </div>
   </section>
@@ -140,5 +140,5 @@
 <EditAccountModal bind:show={showEditAccountModal} />
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/dashboard.scss';
 </style>

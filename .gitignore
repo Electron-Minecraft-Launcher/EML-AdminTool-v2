@@ -13,3 +13,5 @@
 
 /dist
 /update
+
+.DS_Store

@@ -119,6 +119,7 @@ input:not([type=checkbox]) {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   outline: 0px solid var(--primary-tr-color-hover);
   transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
+  line-height: 15px;
 
   &:hover:not(:disabled) {
     box-shadow: none;

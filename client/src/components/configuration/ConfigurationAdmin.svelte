@@ -2,16 +2,23 @@
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
   import { l } from '../../services/store'
 
-  let relN!: string
-  let rel: string = '   '
+  interface Props {
+    nextStep: (arg: { step: number }) => void
+    prevStep: (arg: { step: number }) => void
+  }
 
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = {
+  let { nextStep, prevStep }: Props = $props()
+
+  let relN: string = $state('')
+  let rel: string = $state('   ')
+
+  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
     data: 'ADMIN',
     value: {
       name: '',
       password: ''
     }
-  }
+  })
 
   function inputChange() {
     if (!data.value.password) {
@@ -103,12 +110,12 @@
   }
 </script>
 
-<ConfigurationFormTemplate step={2} cond={+relN >= 3 && data.value.name.length > 2} {data} on:nextStep on:prevStep>
+<ConfigurationFormTemplate step={2} cond={+relN >= 3 && data.value.name.length > 2} {data} {nextStep} {prevStep}>
   <h2>{@html $l.configuration.step3.title}</h2>
   <p><b>{@html $l.configuration.step3.subtitle}</b></p>
   <div class="actions">
     <input type="text" name="name" placeholder={$l.main.serverName} bind:value={data.value.name} />
-    <input type="password" name="password" placeholder={$l.main.password} bind:value={data.value.password} on:keyup={inputChange} />
+    <input type="password" name="password" placeholder={$l.main.password} bind:value={data.value.password} onkeyup={inputChange} />
 
     <div class="rel-progress">
       <div
@@ -118,7 +125,7 @@
         class:progress-2={relN == '2'}
         class:progress-3={relN == '3'}
         class:progress-4={relN == '4'}
-      />
+      ></div>
     </div>
 
     <span class="rel">{rel}</span>
@@ -126,7 +133,7 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/configure.scss';
+  @use '../../assets/scss/configure.scss';
 
   // div.flex {
   //   display: flex;

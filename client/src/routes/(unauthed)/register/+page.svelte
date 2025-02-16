@@ -3,32 +3,30 @@
   import { env, user, l } from '../../../services/store'
   import apiAuthService from '../../../services/api/api-auth.service'
   import cookiesService from '../../../services/cookies.service'
-  import type { Env } from '../../../services/env.model'
-  import type en from '../../../assets/language/en'
   import { goto } from '$app/navigation'
-  import type fr from '../../../assets/language/fr'
 
-  let name: string = ''
-  let password = ''
-  let passwordCfr = ''
-  let pin = ['', '', '']
-  let splash: boolean = false
+  let name: string = $state('')
+  let password: string = $state('')
+  let passwordCfr: string = $state('')
+  let pin: string[] = $state(['', '', ''])
+  let splash: boolean = $state(false)
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     splash = true
     ;(await apiAuthService.postRegister(name + '', password + '', pin[0] + '' + pin[1] + '' + pin[2])).subscribe({
       next: async (res) => {
         cookiesService.add({
           name: 'JWT',
           value: res.body?.data?.jwt + '',
-          expireDays: 30,
+          expireDays: 30
         })
         user.set(res.body?.data?.user!)
         goto('/dashboard')
       },
       error: (err) => {
         splash = false
-      },
+      }
     })
   }
 
@@ -63,7 +61,7 @@
   <title>{$l.auth.register} • {$env.name} AdminTool</title>
 </svelte:head>
 
-<form on:submit|preventDefault={submit}>
+<form onsubmit={submit}>
   {#if splash}
     <LoadingSplash transparent={true} />
   {/if}
@@ -73,17 +71,17 @@
 
   <label for="name">{$l.main.username}</label>
   <input type="text" id="name" placeholder={$l.main.username} bind:value={name} />
-  
+
   <label for="password">{$l.main.password}</label>
   <input type="password" id="password" placeholder={$l.main.password} bind:value={password} />
-  
+
   <label for="password-cfr">{$l.auth.confirmPassword}</label>
   <input type="password" id="password-cfr" placeholder={$l.auth.confirmPassword} bind:value={passwordCfr} />
 
   <label for="pin-1" style="display: inline-block">{@html $l.main.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
-  <input type="text" maxlength="1" size="1" id="pin-1" on:keyup={focusNext} bind:value={pin[0]} />
-  <input type="text" maxlength="1" size="1" id="pin-2" on:keyup={focusNext} bind:value={pin[1]} />
-  <input type="text" maxlength="1" size="1" id="pin-3" on:keyup={focusNext} bind:value={pin[2]} />
+  <input type="text" maxlength="1" size="1" id="pin-1" onkeyup={focusNext} bind:value={pin[0]} />
+  <input type="text" maxlength="1" size="1" id="pin-2" onkeyup={focusNext} bind:value={pin[1]} />
+  <input type="text" maxlength="1" size="1" id="pin-3" onkeyup={focusNext} bind:value={pin[2]} />
 
   <button class="primary" disabled={!name || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}>
     {$l.auth.register}
@@ -94,5 +92,5 @@
 </form>
 
 <style lang="scss">
-  @import '../../../assets/scss/login.scss';
+  @use '../../../assets/scss/login.scss';
 </style>

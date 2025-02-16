@@ -7,12 +7,18 @@
   import frFlag from '../../assets/images/fr.png'
   import { env, l } from '../../services/store'
 
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = {
-    data: 'LANGUAGE',
-    value: undefined,
+  interface Props {
+    nextStep: (arg: { step: number }) => void
   }
 
-  let showLanguageModal = false
+  let { nextStep }: Props = $props()
+
+  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
+    data: 'LANGUAGE',
+    value: undefined
+  })
+
+  let showLanguageModal = $state(false)
 
   async function toEn() {
     if (data.value != 'en') {
@@ -49,31 +55,31 @@
   }
 
   async function languageModal() {
-    showLanguageModal = true   
+    showLanguageModal = true
   }
 </script>
 
-<ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data} on:nextStep>
+<ConfigurationFormTemplate step={1} prev={false} cond={data.value ? true : false} {data} {nextStep}>
   <h2>{@html $l.configuration.step1.title}</h2>
   <p><b>{$l.configuration.step1.subtitle}</b></p>
   <div class="actions language">
-    <button type="button" class="secondary" class:selected={data.value == 'en'} id="en-button" on:click={toEn}>
+    <button type="button" class="secondary" class:selected={data.value == 'en'} id="en-button" onclick={toEn}>
       <p>
         <img src={enFlag} alt="English flag" />
         English
       </p>
     </button>
-    <button type="button" class="secondary" class:selected={data.value == 'fr'} id="fr-button" on:click={toFr}>
+    <button type="button" class="secondary" class:selected={data.value == 'fr'} id="fr-button" onclick={toFr}>
       <p>
         <img src={frFlag} alt="French flag" />
         Français
       </p>
     </button>
     <p class="center">
-      <!-- svelte-ignore a11y-missing-attribute -->
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <a class="small-link" on:click={languageModal}>{$l.configuration.step1.other}</a>
+      <!-- svelte-ignore a11y_missing_attribute -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <a class="small-link" onclick={languageModal}>{$l.configuration.step1.other}</a>
     </p>
   </div>
 </ConfigurationFormTemplate>
@@ -81,8 +87,8 @@
 <LanguageModal bind:show={showLanguageModal} />
 
 <style lang="scss">
-  @import '../../assets/scss/configure.scss';
-  
+  @use '../../assets/scss/configure.scss';
+
   div.language {
     width: 500px;
     margin: 0 auto;

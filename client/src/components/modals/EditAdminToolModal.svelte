@@ -6,18 +6,23 @@
   import frFlag from '../../assets/images/fr.png'
   import LoadingSplash from '../../components/layouts/LoadingSplash.svelte'
 
-  export let show: boolean
+  interface Props {
+    show: boolean
+  }
 
-  let name: string = ''
-  let language: string = 'en'
-  let pin: any = false
-  let splash = false
+  let { show = $bindable() }: Props = $props()
+
+  let name: string = $state('')
+  let language: string = $state('en')
+  let pin: any = $state(false)
+  let splash = $state(false)
 
   env.subscribe((value) => {
     if (value && value.language && typeof value.language !== 'string') language = $l.l
   })
 
-  async function submit() {
+  async function submit(e: SubmitEvent) {
+    e.preventDefault()
     splash = true
     ;(await apiAdminService.putAdminTool(name, language, pin)).subscribe({
       next: (res) => {
@@ -25,7 +30,7 @@
       },
       finally: () => {
         splash = false
-      },
+      }
     })
   }
 </script>
@@ -37,7 +42,7 @@
 
   <h2>Edit EML AdminTool information</h2>
 
-  <form on:submit|preventDefault={submit}>
+  <form onsubmit={submit}>
     <p>Leave blank if you don't want to change.</p>
 
     <label for="name">{$l.dashboard.emlatSettings.emlAdminToolName}</label>
@@ -45,13 +50,13 @@
     <p class="warn">Changing the EML AdminTool name will change your username/pseudo too!</p>
 
     <p class="label">{$l.dashboard.emlatSettings.language}</p>
-    <button type="button" class="secondary language" class:selected={language == 'en'} id="en-button" on:click={() => language = 'en'}>
+    <button type="button" class="secondary language" class:selected={language == 'en'} id="en-button" onclick={() => (language = 'en')}>
       <p>
         <img src={enFlag} alt="English flag" />
         English
       </p>
     </button>
-    <button type="button" class="secondary language" class:selected={language == 'fr'} id="fr-button" on:click={() => language = 'fr'}>
+    <button type="button" class="secondary language" class:selected={language == 'fr'} id="fr-button" onclick={() => (language = 'fr')}>
       <p>
         <img src={frFlag} alt="French flag" />
         Français
@@ -62,14 +67,14 @@
     <label class="p" for="regenerate-pin"><input type="checkbox" bind:checked={pin} id="regenerate-pin" /> Regenerate PIN</label>
 
     <div class="actions">
-      <button class="secondary" on:click={() => show = false} type="button">{$l.main.cancel}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
       <button class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
 
 <style lang="scss">
-  @import '../../assets/scss/modals.scss';
+  @use '../../assets/scss/modals.scss';
 
   p.warn {
     margin: 5px 0 0 0;

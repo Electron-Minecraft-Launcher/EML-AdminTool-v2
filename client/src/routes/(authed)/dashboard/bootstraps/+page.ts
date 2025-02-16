@@ -7,9 +7,9 @@ import apiBootstrapsService from '../../../../services/api/api-bootstraps.servic
 export const load: PageLoad = async ({ parent }) => {
   let bootstraps: BootstrapsRes = { version: '', win: null, mac: null, lin: null }
 
-  if (!cookiesService.get('JWT')) throw redirect(300, '/login')
-  if (!(await parent()).user.p_bootstraps_mod) throw redirect(300, '/dashboard')
-  
+  if (!cookiesService.get('JWT')) redirect(300, '/login')
+  if (!(await parent()).user.p_bootstraps_mod) redirect(300, '/dashboard')
+    
   ;(await apiBootstrapsService.getBootstraps()).subscribe({
     next: (res) => {
       bootstraps = res.body.data!

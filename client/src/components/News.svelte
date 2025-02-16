@@ -5,15 +5,19 @@
   import apiNewsService from '../services/api/api-news.service'
   import AddEditNewsModal from './modals/AddEditNewsModal.svelte'
 
-  export let data: PageData
+  interface Props {
+    data: PageData;
+  }
 
-  let showAddEditNewsModal = false
-  let addEditNewsAction: { action: 'add' } | { action: 'edit'; news: News } = { action: 'add' }
+  let { data = $bindable() }: Props = $props();
+
+  let showAddEditNewsModal = $state(false)
+  let addEditNewsAction: { action: 'add' } | { action: 'edit'; news: News } = $state({ action: 'add' })
 
   let iLength = 25
-  let iStart = 0
+  let iStart = $state(0)
 
-  let selectedNews: News[] = []
+  let selectedNews: News[] = $state([])
 
   function formatDate(date: Date) {
     const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -60,15 +64,15 @@
 <button
   class="primary small add"
   style="margin-right: 30px"
-  on:click={() => {
+  onclick={() => {
     addEditNewsAction = { action: 'add' }
     showAddEditNewsModal = true
   }}
 >
-  <i class="fa-solid fa-plus" />&nbsp;&nbsp;New news
+  <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;New news
 </button>
 
-<button class="secondary small" disabled={selectedNews.length === 0} on:click={deleteNews}>
+<button class="secondary small" disabled={selectedNews.length === 0} onclick={deleteNews}>
   <i class="fa-solid fa-trash"></i>&nbsp;&nbsp;Delete
 </button>
 
@@ -80,7 +84,7 @@
           class:disabled={$user.p_news_mod_del != 1 && news.author != $user.id}
           title={$user.p_news_mod_del != 1 && news.author != $user.id ? 'You do not have permission to edit this news.' : ''}
           class:focused={selectedNews.includes(news)}
-          on:click={() => {
+          onclick={() => {
             if ($user.p_news_mod_del == 1 || news.author == $user.id) {
               addEditNewsAction = { action: 'edit', news: news }
               showAddEditNewsModal = true
@@ -90,8 +94,8 @@
           <td class="checkbox">
             <input
               type="checkbox"
-              on:click|stopPropagation
-              on:change={(e) => {
+              onclick={(e) => e.stopPropagation()}
+              onchange={(e) => {
                 // @ts-ignore
                 e.target.checked ? selectedNews.push(news) : (selectedNews = selectedNews.filter((n) => n !== news))
                 selectedNews = [...selectedNews]
@@ -145,25 +149,27 @@
     {iStart}-{data.news.length <= iStart + iLength ? data.news.length : iStart + iLength} of {data.news.length} news
   </p>
   <p>
+    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="page"
       disabled={iStart === 0}
-      on:click={() => {
+      onclick={() => {
         iStart -= iLength
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }}
     >
-      <i class="fa-solid fa-chevron-left" />
+      <i class="fa-solid fa-chevron-left"></i>
     </button>
+    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="page"
       disabled={iStart + iLength >= data.news.length}
-      on:click={() => {
+      onclick={() => {
         iStart += iLength
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }}
     >
-      <i class="fa-solid fa-chevron-right" />
+      <i class="fa-solid fa-chevron-right"></i>
     </button>
   </p>
   {#if selectedNews.length === 1}
@@ -211,7 +217,7 @@
       transition: all 0.3s;
       cursor: pointer;
 
-      &:hover:not(.disabled) {
+      &:hover:not(:global(.disabled)) {
         background-color: #eeeeee;
 
         &:active {
@@ -262,6 +268,7 @@
           overflow: hidden;
           display: -webkit-box;
           text-overflow: ellipsis;
+          line-clamp: 3;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           max-height: 62.39px;

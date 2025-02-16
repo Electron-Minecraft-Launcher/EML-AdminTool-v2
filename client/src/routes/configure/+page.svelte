@@ -1,27 +1,28 @@
 <script lang="ts">
-  import type en from '../../assets/language/en'
-  import type fr from '../../assets/language/fr'
   import ConfigurationAdmin from '../../components/configuration/ConfigurationAdmin.svelte'
   import ConfigurationDatabase from '../../components/configuration/ConfigurationDatabase.svelte'
   import ConfigurationLanguage from '../../components/configuration/ConfigurationLanguage.svelte'
-  import type { Env } from '../../services/env.model'
   import { env, l } from '../../services/store'
   import { goto } from '$app/navigation'
   import type { PageData } from './$types'
   import utils from '../../services/utils'
   import { fade } from 'svelte/transition'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
+
+  let { data }: Props = $props()
 
   if (data.start) {
     start()
   }
 
-  let h1Visible = false
-  let sliderVisible = false
-  let h1 = ''
+  let h1Visible: boolean = $state(false)
+  let sliderVisible: boolean = $state(false)
+  let h1: string = $state('')
 
-  let step = 0
+  let step = $state(0)
 
   async function start() {
     await utils.sleep(1000)
@@ -69,13 +70,7 @@
 </svelte:head>
 
 <div class="progress">
-  <span
-    class:step-0={step == 0}
-    class:step-1={step == 1}
-    class:step-2={step == 2}
-    class:step-3={step == 3}
-    class:step-4={step == 4}
-  />
+  <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4}></span>
 </div>
 
 {#if h1Visible}
@@ -94,13 +89,13 @@
     transition:fade
   >
     <div class="config-1">
-      <ConfigurationLanguage on:nextStep={nextStep} />
+      <ConfigurationLanguage {nextStep} />
     </div>
     <div class="config-2">
-      <ConfigurationDatabase on:nextStep={nextStep} on:prevStep={prevStep} />
+      <ConfigurationDatabase {nextStep} {prevStep} />
     </div>
     <div class="config-3">
-      <ConfigurationAdmin on:nextStep={nextStep} on:prevStep={prevStep} />
+      <ConfigurationAdmin {nextStep} {prevStep} />
     </div>
   </div>
 {/if}
@@ -110,7 +105,9 @@
     text-align: center;
     font-size: 56px;
     margin-top: 33vh;
-    transition: opacity 0.5s, display 0.5s;
+    transition:
+      opacity 0.5s,
+      display 0.5s;
   }
 
   div.config-slider {

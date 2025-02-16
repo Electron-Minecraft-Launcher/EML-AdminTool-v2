@@ -1,23 +1,26 @@
 <script lang="ts">
-  import Skeleton from '../../../../components/layouts/Skeleton.svelte'
-  import type { User } from '../../../../../../shared/models/features/user.model'
-  import { env, user, l } from '../../../../services/store'
+  import type { User } from '../../../../../../shared/types/features/user'
+  import { env, l } from '../../../../services/store'
   import EditAdminToolModal from '../../../../components/modals/EditAdminToolModal.svelte'
   import UserManagement from '../../../../components/UserManagement.svelte'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import apiConfigureService from '../../../../services/api/api-configure.service'
   import type { PageData } from './$types'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
+
+  let { data = $bindable() }: Props = $props()
 
   data.users = data.users.sort((a, b) => {
     return a.id! - b.id!
   })
 
-  let splash = false
+  let splash: boolean = $state(false)
 
-  let showEditAdminToolModal = false
-  let selectedAccount: User = data.users[0]
+  let showEditAdminToolModal = $state(false)
+  let selectedAccount: User = $state(data.users[0])
 
   async function editAdminToolModal() {
     showEditAdminToolModal = true
@@ -52,7 +55,8 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 <h2>{$l.dashboard.emlatSettings.emlatSettings}</h2>
 
 <section class="section">
-  <button class="secondary right" on:click={editAdminToolModal}><i class="fa-solid fa-pen" /></button>
+  <!-- svelte-ignore a11y_consider_explicit_label -->
+  <button class="secondary right" onclick={editAdminToolModal}><i class="fa-solid fa-pen"></i></button>
   <h3>{$l.dashboard.information}</h3>
 
   <div class="container">
@@ -86,7 +90,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Users</p>
       {#each data.users as account}
         {#if account.status == 1}
-          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -95,7 +99,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Waiting users</p>
       {#each data.users as account}
         {#if account.status == 0}
-          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -104,7 +108,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Wrong PIN users</p>
       {#each data.users as account}
         {#if account.status == -1}
-          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -113,7 +117,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Deleted users</p>
       {#each data.users as account}
         {#if account.status == -2}
-          <button class="list" class:active={selectedAccount == account} on:click={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -138,7 +142,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     <div>
       <p class="label">{$l.dashboard.emlatSettings.storage}</p>
       <span class="storage">
-        <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'} />
+        <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'}></span>
       </span>
       {Math.round((data.vps.storage[0] / data.vps.storage[1]) * 100)} %
     </div>
@@ -150,7 +154,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 
   <div class="container">
     <div>
-      <button class="primary danger" on:click={reset}>Reset</button>
+      <button class="primary danger" onclick={reset}>Reset</button>
     </div>
   </div>
 </section>
@@ -158,8 +162,8 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 <EditAdminToolModal bind:show={showEditAdminToolModal} />
 
 <style lang="scss">
-  @import '../../../../assets/scss/dashboard.scss';
-  @import '../../../../assets/scss/list.scss';
+  @use '../../../../assets/scss/dashboard.scss';
+  @use '../../../../assets/scss/list.scss';
 
   span.pin {
     filter: blur(5px);
