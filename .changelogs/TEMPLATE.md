@@ -1,4 +1,4 @@
-## Change Log
+## Change Logs
 
 ### New features
 

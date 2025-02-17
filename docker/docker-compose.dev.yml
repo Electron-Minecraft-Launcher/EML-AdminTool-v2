@@ -3,7 +3,7 @@
 #                                                     #
 # This file is used to run the application in a       #
 # development environment.                            #
-# It allows hot-reloading of the application, and     #
+# It enables hot-reloading of the application, and    #
 # gives an access to the database through phpMyAdmin. #
 #                                                     #
 # To run the application in a production environment, #
@@ -24,6 +24,7 @@ services:
       - ../api:/app/api
       - ../client:/app/client
       - ../shared:/app/shared
+      - ../package.json:/app/package.json
       - files:/app/files
       - /var/run/docker.sock:/var/run/docker.sock
       - update:/app/update

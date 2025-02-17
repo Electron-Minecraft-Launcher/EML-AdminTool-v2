@@ -11,29 +11,41 @@ import filesService from '../services/files.service'
 import fs from 'fs'
 import fetch from 'node-fetch'
 import { exec, spawn } from 'child_process'
+import { Update as Update_ } from '../../../shared/types/data/update'
 import pkg from '../../../package.json'
 
 class Update {
-  async getUpdate(req: Request, headers: IncomingHttpHeaders): Promise<DataSuccess<{ currentVersion: string; latestVersion: string }>> {
+  async getUpdate(req: Request, headers: IncomingHttpHeaders): Promise<DataSuccess<Update_>> {
     try {
       nexter.serviceToException(await authService.isAdmin(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }
 
-    const currentVersion = pkg.version
-    let latestVersion: string
+    let data: { tag_name: string; published_at: string } = { tag_name: '', published_at: '' }
 
     try {
       const response = await fetch('https://api.github.com/repos/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/latest')
-      const data = (await response.json()) as { tag_name: string }
-      latestVersion = data.tag_name.replace('v', '')
+      data = (await response.json()) as { tag_name: string; published_at: string }
     } catch (error) {
       console.log(error)
-      latestVersion = currentVersion
     }
 
-    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { currentVersion, latestVersion })
+    const currentVersion = pkg.version
+    const latestVersion = data.tag_name.replace('v', '') || currentVersion
+    const releaseDate = data.published_at.split('T')[0] || Date.now().toString()
+    const shortLastVersion = latestVersion.split('.').slice(0, 2).join('.')
+    const logoUrl = `https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/refs/heads/main/.changelogs/v${shortLastVersion}.png`
+    const changelogs =
+      (await fetch(`https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.changelogs/v${latestVersion}.md`).then(
+        (res) => res.text()
+      )) || ''
+    // const changelogs =
+    //   (await fetch(`https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.changelogs/TEMPLATE.md`).then(
+    //     (res) => res.text()
+    //   )) || ''
+
+    return new DataSuccess(req, 200, ResponseType.SUCCESS, 'Success', { currentVersion, latestVersion, releaseDate, logoUrl, changelogs })
   }
 
   async postUpdate(req: Request, headers: IncomingHttpHeaders): Promise<DefaultSuccess> {
@@ -80,7 +92,7 @@ class Update {
     try {
       const imageResponse = await fetch(image.url, { headers: { Accept: 'application/octet-stream' } })
       const imageStream = fs.createWriteStream(`${dest}/${image.name}`)
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         imageResponse.body.pipe(imageStream)
         imageResponse.body.on('error', reject)
         imageStream.on('finish', resolve)
@@ -88,7 +100,7 @@ class Update {
 
       const composeResponse = await fetch(compose.url, { headers: { Accept: 'application/octet-stream' } })
       const composeStream = fs.createWriteStream(`${dest}/${compose.name}`)
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         composeResponse.body.pipe(composeStream)
         composeResponse.body.on('error', reject)
         composeStream.on('finish', resolve)
@@ -96,7 +108,7 @@ class Update {
 
       const scriptResponse = await fetch(script.url, { headers: { Accept: 'application/octet-stream' } })
       const scriptStream = fs.createWriteStream(`${dest}/${script.name}`)
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         scriptResponse.body.pipe(scriptStream)
         scriptResponse.body.on('error', reject)
         scriptStream.on('finish', resolve)
@@ -170,3 +182,4 @@ CMD ["ls"]
 }
 
 export default Update
+

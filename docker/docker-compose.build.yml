@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                BUIDLD CONFIGURATION                 #
+#                 BUILD CONFIGURATION                 #
 #                                                     #
 # This file is used to build the application.         #
-# You wan use it to build your application locally or #
+# You can use it to build your application locally or #
 # to create your own Docker image.                    #
 #                                                     #
 # If you want to run a production environment, you    #
