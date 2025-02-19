@@ -5,20 +5,20 @@
 # production environment.                             #
 # Please use it with an existing Docker image. You    #
 # can download an image from GitHub or build your     #
-# own image using the docker-compose.build.yml file.  #
+# own image using the Dockerfile.build file.          #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 name: eml_admintool
 
 services:
   web:
-    image: eml-admintool:2.0.0-alpha.10
+    image: eml-admintool:2.0.0-alpha.11
     environment:
       NODE_ENV: 'production'
       PORT: 4000
     volumes:
       - files:/app/files
-      - api/.env:/app/api/.env
+      - env:/app/api/.env
       - loader:/app/loader
     ports:
       - '3000:3000'
@@ -39,4 +39,4 @@ volumes:
   db-data:
   files:
   loader:
-  api:
+  env:
