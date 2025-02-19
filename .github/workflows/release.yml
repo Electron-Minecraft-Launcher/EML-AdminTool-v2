@@ -39,15 +39,16 @@ jobs:
           TAG=${GITHUB_REF/refs\/tags\//}
           IMAGE_TAG=${TAG#v}
           docker save eml-admintool:$IMAGE_TAG > eml-admintool-$IMAGE_TAG.tar
-          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
       
       - name: Create tarball
         run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          IMAGE_TAG=${TAG#v}
           TAR_FILE=eml-admintool-$IMAGE_TAG.tar.gz
           tar -czf $TAR_FILE eml-admintool-$IMAGE_TAG.tar -C docker docker-compose.prod.yml
           echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
+
+      - name: Set IMAGE_TAG environment variable
+        run: echo "IMAGE_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -55,9 +56,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          name: EML AdminTool ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          name: EML AdminTool ${{ github.ref_name }}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
-          body_path: .changelogs/${{ github.ref }}.md
-          files: eml-admintool-$IMAGE_TAG.tar.gz
+          body_path: .changelogs/${{ github.ref_name }}.md
+          files: eml-admintool-${{ env.IMAGE_TAG }}.tar.gz
