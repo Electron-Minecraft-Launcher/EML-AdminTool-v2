@@ -38,7 +38,8 @@ jobs:
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
           IMAGE_TAG=${TAG#v}
-          docker save eml-admintool:$IMAGE_TAG | gzip > eml-admintool-$IMAGE_TAG.tar.gz
+          docker save eml-admintool:$IMAGE_TAG > eml-admintool-$IMAGE_TAG.tar
+          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
       
       - name: Create tarball
         run: |
@@ -50,32 +51,13 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: EML AdminTool ${{ github.ref }}
+          name: EML AdminTool ${{ github.ref }}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
-          body_path: .changes/${{ github.ref }}.md
-      
-      - name: Upload Docker Compose file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: docker/docker-compose.prod.yml
-          asset_name: docker-compose.prod.yml
-          asset_content_type: text/yaml
-      
-      - name: Upload Docker image as tarball
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: eml-admintool-$IMAGE_TAG.tar.gz
-          asset_name: eml-admintool-$IMAGE_TAG.tar.gz
-          asset_content_type: application/gzip        
+          body_path: .changelogs/${{ github.ref }}.md
+          files: eml-admintool-$IMAGE_TAG.tar.gz
