@@ -46,7 +46,7 @@ jobs:
           TAG=${GITHUB_REF/refs\/tags\//}
           IMAGE_TAG=${TAG#v}
           TAR_FILE=eml-admintool-$IMAGE_TAG.tar.gz
-          tar -czf $TAR_FILE eml-admintool-$IMAGE_TAG.tar -C docker docker-compose.prod.yml update.sh
+          tar -czf $TAR_FILE eml-admintool-$IMAGE_TAG.tar -C docker docker-compose.prod.yml
           echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
 
       - name: Create Release
