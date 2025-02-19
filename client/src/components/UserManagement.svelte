@@ -7,9 +7,10 @@
 
   interface Props {
     selectedAccount: User
+    accounts: User[]
   }
 
-  let { selectedAccount = $bindable() }: Props = $props()
+  let { selectedAccount = $bindable(), accounts }: Props = $props()
 
   let showEditUserModal = $state(false)
   let action: 'accept' | 'edit' = $state('accept')
@@ -46,6 +47,7 @@ All the user's actions and data will be deleted, including published news. This 
     ) {
       ;(await apiAdminService.deleteUser(selectedAccount.id)).subscribe({
         next: () => {
+          selectedAccount = accounts[0]
           invalidateAll()
         }
       })

@@ -6,6 +6,7 @@
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import apiConfigureService from '../../../../services/api/api-configure.service'
   import type { PageData } from './$types'
+  import utils from '../../../../services/utils'
 
   interface Props {
     data: PageData
@@ -24,6 +25,15 @@
 
   async function editAdminToolModal() {
     showEditAdminToolModal = true
+  }
+
+  async function update() {
+    if (
+      confirm(`Are you sure you want to update the EML AdminTool?
+Please note that the EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 2 minutes).`)
+    ) {
+      //...
+    }
   }
 
   async function reset() {
@@ -90,7 +100,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Users</p>
       {#each data.users as account}
         {#if account.status == 1}
-          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -99,16 +109,16 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Waiting users</p>
       {#each data.users as account}
         {#if account.status == 0}
-          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
       {/each}
 
-      <p class="label">Wrong PIN users</p>
+      <p class="label">Wrong-PIN users</p>
       {#each data.users as account}
         {#if account.status == -1}
-          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -117,7 +127,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       <p class="label">Deleted users</p>
       {#each data.users as account}
         {#if account.status == -2}
-          <button class="list" class:active={selectedAccount == account} onclick={() => (selectedAccount = account)}>
+          <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
           </button>
         {/if}
@@ -125,9 +135,58 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div class="content-list">
-      <UserManagement bind:selectedAccount />
+      <UserManagement bind:selectedAccount accounts={data.users} />
     </div>
   </div>
+</section>
+
+<section class="section">
+  <h3>Update</h3>
+
+  <!-- {#if data.update.currentVersion.includes('beta') || data.update.latestVersion.includes('alpha')} -->
+  <!-- <div class="no-update">
+      <p><i class="fa-solid fa-times-circle"></i></p>
+      <p>
+        You are using a alpha/beta version of the EML AdminTool. This version is not linked to the update system, so you have to update manually.
+        Please see <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/" target="_blank">GitHub</a> to get the latest version.
+      </p>
+    </div> -->
+  <!-- {:else} -->
+  <div class="container">
+    <div>
+      <p class="label">Current version</p>
+      <p>EML AdminTool {data.update.currentVersion}</p>
+    </div>
+
+    <div>
+      <p class="label">Latest version</p>
+      <p>EML AdminTool {data.update.latestVersion}</p>
+    </div>
+  </div>
+
+  {#if data.update.currentVersion != data.update.latestVersion}
+    <div class="updater">
+      <div style="line-height: 1;">
+        <img src={data.update.logoUrl} alt="Version logo" />
+      </div>
+      <div>
+        <p class="release-name"><b>EML AdminTool {data.update.latestVersion}</b></p>
+        <p class="release-date">Released on {new Date(data.update.releaseDate).toLocaleDateString()}</p>
+      </div>
+      <div class="actions">
+        <button class="secondary" onclick={update}>Update</button>
+        <p>
+          <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data.update.latestVersion}" target="_blank">
+            See on GitHub...&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="changelogs">
+      {@html utils.markdownToHtml(data.update.changelogs, false, { h1: 18, h2: 16, h3: 15, p: 14 })}
+    </div>
+  {/if}
+  <!-- {/if} -->
 </section>
 
 <section class="section">
@@ -172,6 +231,72 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     &:hover {
       filter: blur(0px);
     }
+  }
+
+  div.no-update {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+
+    p {
+      margin: 0;
+
+      i {
+        font-size: 20px;
+        color: var(--red-color);
+      }
+    }
+  }
+
+  div.updater {
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    p.release-name {
+      font-size: 17px;
+      margin-bottom: 3px;
+    }
+
+    p.release-date {
+      font-size: 14px;
+      color: var(--text-dark-color);
+    }
+
+    div.actions {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      gap: 20px;
+
+      button.secondary {
+        margin-top: 0;
+        display: inline-block;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+
+    img {
+      width: 55px;
+      height: 55px;
+      border-radius: 15px;
+    }
+  }
+  div.changelogs {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    background: rgb(252, 252, 252);
+    border: 1px solid rgb(240, 240, 240);
+    height: 200px;
+    overflow-y: auto;
   }
 
   span.storage {
