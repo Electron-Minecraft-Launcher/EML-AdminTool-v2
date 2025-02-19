@@ -19,7 +19,7 @@ services:
     volumes:
       - files:/app/files
       - api/.env:/app/api/.env
-      - update:/app/update
+      - loader:/app/loader
     ports:
       - '3000:3000'
     depends_on:
@@ -38,4 +38,5 @@ services:
 volumes:
   db-data:
   files:
-  update:
+  loader:
+  api:

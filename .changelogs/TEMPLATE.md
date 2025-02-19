@@ -26,6 +26,8 @@ Please follow [this guide](https://github.com/Electron-Minecraft-Launcher/EML-Ad
 
 ### Upgrading from a previous version
 
+Make sure that Docker is installed on your server, and the default Docker socket is available at `/var/run/docker.sock`.
+
 1. Log in to the EML AdminTool as administrator.
 2. Click on the "Settings" tab.
 3. Scroll down to the "Update" section.
