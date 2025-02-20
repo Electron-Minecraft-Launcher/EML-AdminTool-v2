@@ -2,7 +2,7 @@ import { NextFunction, Router, Request, Response } from 'express'
 import { User } from '../../../shared/types/features/user'
 import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
-import { Route } from '../services/routes.model'
+import { Route } from '../services/route.model'
 import Auth from '../controllers/auth.controller'
 import { ControllerException } from '../responses/types'
 

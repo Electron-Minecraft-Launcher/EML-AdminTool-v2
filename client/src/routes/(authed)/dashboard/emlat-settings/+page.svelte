@@ -7,6 +7,10 @@
   import apiConfigureService from '../../../../services/api/api-configure.service'
   import type { PageData } from './$types'
   import utils from '../../../../services/utils'
+  import { io } from 'socket.io-client'
+  import cookiesService from '../../../../services/cookies.service'
+  import { fade } from 'svelte/transition'
+  import notificationsService from '../../../../services/notifications.service'
 
   interface Props {
     data: PageData
@@ -22,6 +26,7 @@
 
   let showEditAdminToolModal = $state(false)
   let selectedAccount: User = $state(data.users[0])
+  let updateMessage: undefined | string = $state(undefined)
 
   async function editAdminToolModal() {
     showEditAdminToolModal = true
@@ -30,9 +35,32 @@
   async function update() {
     if (
       confirm(`Are you sure you want to update the EML AdminTool?
-Please note that the EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 2 minutes).`)
+Please note that the EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 1 minutes downtime).`)
     ) {
-      //...
+      const socket = io({ auth: { token: cookiesService.get('JWT') } })
+      socket.emit('update')
+      splash = true
+      document.body.style.overflow = 'hidden'
+
+      socket.on('updating', (message: string) => {
+        if (message == 'fetching' || message == 'downloading') updateMessage = 'Downloading the update...'
+        else if (message == 'extracting' || message == 'script' || message.startsWith('docker')) updateMessage = 'Installing the update...'
+      })
+
+      socket.on('updating_success', (message: string, args: any) => {
+        if (message == 'up-to-date') {
+          splash = false
+          notificationsService.update({ type: 'SUCCESS', code: `updating_up-to-date` })
+          document.body.style.overflow = 'auto'
+        }
+      })
+
+      socket.on('updating_error', (message: string, args: any) => {
+        updateMessage = undefined
+        splash = false
+        notificationsService.update({ type: 'ERROR', code: `updating_${message}` })
+        document.body.style.overflow = 'auto'
+      })
     }
   }
 
@@ -59,7 +87,14 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 </svelte:head>
 
 {#if splash}
-  <LoadingSplash transparent={true} />
+  <div class="splash" transition:fade>
+    <div>
+      <LoadingSplash transparent={false} />
+    </div>
+    {#if updateMessage}
+      <p transition:fade>{updateMessage}</p>
+    {/if}
+  </div>
 {/if}
 
 <h2>{$l.dashboard.emlatSettings.emlatSettings}</h2>
@@ -224,6 +259,37 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   @use '../../../../assets/scss/dashboard.scss';
   @use '../../../../assets/scss/list.scss';
 
+  div.splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    background-color: white;
+
+    div {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 100px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      background-color: white;
+    }
+
+    p {
+      padding-top: 20px;
+      z-index: 1100;
+    }
+  }
+
   span.pin {
     filter: blur(5px);
     transition: filter 0.3s;
@@ -286,7 +352,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     img {
       width: 55px;
       height: 55px;
-      border-radius: 15px;
+      border-radius: 12px;
     }
   }
   div.changelogs {

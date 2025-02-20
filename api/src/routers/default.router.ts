@@ -1,5 +1,5 @@
 import { Request, Router } from 'express'
-import { Route } from '../services/routes.model'
+import { Route } from '../services/route.model'
 import bodyParser from 'body-parser'
 import swaggerUi from 'swagger-ui-express'
 import swagger from '../swagger/swagger'

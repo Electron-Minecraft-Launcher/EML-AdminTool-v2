@@ -61,7 +61,7 @@ class FilesService {
    * @param path The path to sanitize (relative to the **app root**).
    */
   sanitize(...path: string[]): string {
-    const root = path_.join(process.cwd(), this.cwd())
+    const root = path_.join(this.cwd())
     const p = path_.join(...path).replace(/^\\+/, '')
     const sanitizedPath = path_.resolve(root, p)
     if (!sanitizedPath.startsWith(root)) {
@@ -70,9 +70,12 @@ class FilesService {
     return sanitizedPath
   }
   
+  /**
+   * @returns The current working directory _without_ the `api` folder (root of the app).
+   */
   cwd() {
-    if (process.cwd().includes('api')) return '..'
-    return '.'
+    if (process.cwd().includes('api')) return path_.join(process.cwd(), '..')
+    return process.cwd()
   }
 
   private browse(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', subdir: string, domain: string): void {
