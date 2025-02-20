@@ -1,5 +1,5 @@
 import { NextFunction, Router, Request, Response } from 'express'
-import { Route } from '../services/routes.model'
+import { Route } from '../services/route.model'
 import { DataHttpResponse } from '../../../shared/types/responses/http/data-http-response'
 import Env from '../controllers/env.controller'
 import { StatsRes } from '../../../shared/types/features/stats'
@@ -42,27 +42,5 @@ export default class UpdateRouter implements Route {
         }
       }
     )
-
-    /**
-     * @openapi
-     * /update:
-     *   post:
-     *     tags:
-     *      - Update
-     *     summary: Update
-     *     security:
-     *      - bearer: []
-     *     responses:
-     *       200:
-     *         description: Success
-     */
-    this.router.post(`${this.path}`, async (req: Request, res: Response<DefaultHttpResponse>, next: NextFunction) => {
-      try {
-        const resp = await new Update().postUpdate(req, req.headers)
-        res.status(resp.httpStatus).send({ code: resp.code, message: resp.message })
-      } catch (err: any) {
-        res.status(err.httpStatus).send({ code: err.code, message: err.message })
-      }
-    })
   }
 }

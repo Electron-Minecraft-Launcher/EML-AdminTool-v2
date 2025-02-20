@@ -4,8 +4,10 @@ import { count } from '../../../shared/types/types'
 import dbSchema from './schema'
 import { DBGeneration } from '../../../shared/types/configurations/db-generation'
 import { TableColumn } from '../../../shared/types/configurations/tables-column'
+import filesService from '../services/files.service'
+import path from 'path'
 
-dotenv.config()
+dotenv.config({ path: path.join(filesService.cwd(), 'api', 'env', '.env') })
 
 class Database {
   static db: mysql.Pool = mysql.createPool({
@@ -163,3 +165,4 @@ class Database {
 }
 
 export default new Database()
+

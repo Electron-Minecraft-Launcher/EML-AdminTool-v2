@@ -43,7 +43,6 @@
     padding: 15px 17px;
     border-radius: 10px;
     backdrop-filter: blur(3px);
-    background-color: #ffffffa0;
     box-shadow: 0 0 30px #00000030;
     font-size: 14px;
     color: #303030;
@@ -59,16 +58,16 @@
     }
 
     &.info {
-      border: 1px solid #dedede70;
+      background: #5094d040;
     }
     &.success {
-      border: 1px solid #50805070;
+      background: #50805040;
     }
     &.error {
-      border: 1px solid #d0bd5070;
+      background: #d0bd5040;
     }
     &.error {
-      border: 1px solid #d0505070;
+      background: #d0505040;
     }
   }
 

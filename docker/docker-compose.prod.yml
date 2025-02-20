@@ -12,7 +12,7 @@ name: eml_admintool
 
 services:
   web:
-    image: eml-admintool:2.0.0-alpha.11
+    image: eml-admintool:2.0.0-alpha.12
     environment:
       NODE_ENV: 'production'
       PORT: 4000
@@ -20,6 +20,7 @@ services:
       - files:/app/files
       - env:/app/api/.env
       - loader:/app/loader
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - '3000:3000'
     depends_on:

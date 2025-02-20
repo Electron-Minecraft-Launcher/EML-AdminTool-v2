@@ -4,7 +4,7 @@
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
-[<img src="https://img.shields.io/badge/version-2.0.0--alpha.11-orangered?style=for-the-badge&color=orangered">](package.json)</p>
+[<img src="https://img.shields.io/badge/version-2.0.0--alpha.12-orangered?style=for-the-badge&color=orangered">](package.json)</p>
 
 ---
 
@@ -155,6 +155,9 @@ docker-compose -f dockerfile.dev.yml up
 ```
 
 The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access phpMyAdmin at [https://localhost:8080](http://localhost:8080).
+
+> [!NOTE]
+> You are not supposed to access the application from port `3000` in development mode, because of interference with Vite WebSocket and Server API WebSocket.
 
 You can now make pull requests!
 

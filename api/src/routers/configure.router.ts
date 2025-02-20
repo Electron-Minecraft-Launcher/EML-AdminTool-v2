@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from 'express'
 import { DefaultHttpResponse } from '../../../shared/types/responses/http/default-http-response'
-import { Route } from '../services/routes.model'
+import { Route } from '../services/route.model'
 import Configure from '../controllers/configure.controller'
 import { ControllerException } from '../responses/types'
 

@@ -3,7 +3,7 @@ import { DefaultServiceResponse } from '../../../shared/types/responses/services
 import { ResponseType, count } from '../../../shared/types/types'
 import authService from './auth.service'
 import fs from 'fs'
-import path from 'path'
+import path_ from 'path'
 import db from '../utils/db'
 import dotenv from 'dotenv'
 import envService from './env.service'
@@ -12,7 +12,7 @@ import filesService from './files.service'
 
 class CheckerService {
   async check(body: any, path: string, headers: IncomingHttpHeaders): Promise<DefaultServiceResponse> {
-    dotenv.config()
+    dotenv.config({path: path_.join(filesService.cwd(), 'api', 'env', '.env')})
 
     const location = path.split('/')
 
@@ -62,7 +62,7 @@ class CheckerService {
 
   private checkDotEnv(): boolean {
     return (
-      fs.existsSync(path.join(`${filesService.cwd()}/api/.env`)) &&
+      fs.existsSync(path_.join(filesService.cwd(), 'api', 'env', '.env')) &&
       process.env['DATABASE_PASSWORD'] !== undefined &&
       process.env['JWT_SECRET_KEY'] !== undefined
     )

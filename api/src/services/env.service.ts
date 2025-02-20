@@ -27,7 +27,7 @@ class EnvService {
 
     try {
       fs.writeFileSync(
-        path.join(`${filesService.cwd()}/api/.env`),
+        path.join(filesService.cwd(), 'api', 'env', '.env'),
         `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #          DO NOT MODIFY OR DELETE THIS FILE          #
 #                                                     #
@@ -52,7 +52,7 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
       )
       process.env['DATABASE_PASSWORD'] = dbPassword
       process.env['JWT_SECRET_KEY'] = jwtSecretKey
-      dotenv.config()
+      dotenv.config({ path: path.join(filesService.cwd(), 'api', 'env', '.env') })
       return { status: true, code: ResponseType.SUCCESS }
     } catch (error: any) {
       return { status: false, code: ResponseType.SERVER_ERROR, message: error.code }
@@ -95,3 +95,4 @@ JWT_SECRET_KEY="${jwtSecretKey + ''}"
 }
 
 export default new EnvService()
+

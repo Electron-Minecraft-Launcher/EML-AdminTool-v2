@@ -37,11 +37,36 @@ class NotificationsService {
       case 'rename':
         this.set({ type: 'ERROR', content: 'Unable to rename the file. It may have been deleted.' })
         break
+      case 'updating_up-to-date':
+        this.set({ type: 'SUCCESS', content: 'You are already up to date.' })
+        break
+      // case 'updating_fetching':
+      //   this.set({ type: 'ERROR', content: 'Unable to fetch the update. Please see the logs.' })
+      //   break
+      // case 'updating_downloading':
+      //   this.set({ type: 'ERROR', content: 'Unable to download the update. Please see the logs.' })
+      //   break
+      // case 'updating_script':
+      //   this.set({ type: 'ERROR', content: 'Unable to run the update script. Please see the logs.' })
+      //   break
+      // case 'updating_docker_load':
+      //   this.set({ type: 'ERROR', content: 'Unable to install the update. Please see the logs.' })
+      //   break
+      // case 'updating_docker_run':
+      //   this.set({ type: 'ERROR', content: 'Unable to install the update. Please see the logs.' })
+      //   break
       default:
-        this.set({ type: 'ERROR', content: 'An unknown error happened' })
+        if (notification.code.startsWith('updating_')) {
+          this.set({ type: 'ERROR', content: 'Unable to update. Please see the logs.' })
+          return
+        }
+        this.set({ type: 'ERROR', content: 'An unknown error happened.' })
         break
     }
   }
 }
 
 export default new NotificationsService()
+
+
+

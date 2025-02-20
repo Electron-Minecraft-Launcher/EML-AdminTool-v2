@@ -1,6 +1,6 @@
 {
   "name": "eml-admintool-client",
-  "version": "2.0.0-alpha.11",
+  "version": "2.0.0-alpha.12",
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
   "private": true,
@@ -17,6 +17,7 @@
     "@sveltejs/kit": "^2.5.27",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@types/chart.js": "^2.9.41",
+    "@types/socket.io-client": "^3.0.0",
     "prettier": "^3.3.2",
     "prettier-plugin-svelte": "^3.2.6",
     "svelte": "^5.1.9",
@@ -31,6 +32,7 @@
     "@sveltejs/adapter-static": "^3.0.2",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.3",
-    "monaco-editor": "^0.50.0"
+    "monaco-editor": "^0.50.0",
+    "socket.io-client": "^4.8.1"
   }
 }

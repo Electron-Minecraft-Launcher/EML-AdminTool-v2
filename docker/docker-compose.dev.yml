@@ -21,14 +21,14 @@ services:
     environment:
       NODE_ENV: 'development'
     volumes:
-      - ../api/.env:/app/api/.env
       - ../api:/app/api
+      - ../api/env:/app/api/env
       - ../client:/app/client
       - ../shared:/app/shared
       - ../package.json:/app/package.json
       - files:/app/files
-      - /var/run/docker.sock:/var/run/docker.sock
       - loader:/app/loader
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - '3000:3000'
       - '5173:5173'
