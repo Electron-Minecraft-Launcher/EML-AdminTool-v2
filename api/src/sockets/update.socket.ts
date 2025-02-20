@@ -119,7 +119,7 @@ export default class UpdateSocket implements Socket {
 
       try {
         await new Promise<void>((resolve, reject) => {
-          exec(`chmod +x ${dest}/${scriptFile}`)
+          spawn('chmod',  ['+x', `${dest}/${scriptFile}`])
           const scriptExec = spawn(`${dest}/${scriptFile}`)
           scriptExec.stdout.on('data', (data) => console.log(`[INSTALL SCRIPT] ${data}`))
           scriptExec.stderr.on('data', (data) => console.error(`[INSTALL SCRIPT] ${data}`))
