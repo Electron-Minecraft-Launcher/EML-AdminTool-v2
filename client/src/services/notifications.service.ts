@@ -40,6 +40,9 @@ class NotificationsService {
       case 'updating_up-to-date':
         this.set({ type: 'SUCCESS', content: 'You are already up to date.' })
         break
+      case 'updating_success':
+        this.set({ type: 'SUCCESS', content: 'The update was successful.' })
+        break
       // case 'updating_fetching':
       //   this.set({ type: 'ERROR', content: 'Unable to fetch the update. Please see the logs.' })
       //   break

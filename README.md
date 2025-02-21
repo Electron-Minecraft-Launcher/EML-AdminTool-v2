@@ -1,6 +1,6 @@
 # EML AdminTool
 
-**EML AdminTool is a Web software to manage a Minecraft Launcher built with the [EML Core](https://github.com/Electron-Minecraft-Launcher/EML-Core-v2) library.**
+**EML AdminTool is a Web software to manage a Minecraft Launcher built with the [EML Lib](https://github.com/Electron-Minecraft-Launcher/EML-Lib-v2) library.**
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
@@ -34,7 +34,7 @@ You can choose your Linux distribution, but Debian or Ubuntu is highly recommend
 |--------------|---------------|---------------|
 | CPU          | 1 core 2 GHz  | 4 cores 2 GHz |
 | RAM          | 1 GB          | 4 GB          |
-| Storage      | 2 GB          | 50 GB SSD     |
+| Storage      | 5 GB          | 50 GB SSD     |
 
 > [!NOTE]
 > The Launcher can make many requests to the EML AdminTool. If your Minecraft serveur doesn't have a lot of players, you can use a VPS with low requirements. However, if you have a lot of players, you should use a VPS with high requirements, to avoid any performance issues or crashes.

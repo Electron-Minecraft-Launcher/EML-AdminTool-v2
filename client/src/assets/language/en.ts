@@ -37,7 +37,8 @@ export default {
     step3: {
       title: `Then, choose your server name and a password:`,
       subtitle: `This server name and password will be your admin account login.`
-    }
+    },
+    finally: 'You can now use the EML&nbsp;AdminTool!',
   },
   auth: {
     login: `Log in`,
@@ -45,6 +46,11 @@ export default {
     confirmPassword: `Confirm password`,
     createAccount: `Create an account here.`,
     alreadyAnAccount: `Log in here.`
+  },
+  leftPanel: {
+    settings: `Settings`,
+    features: `Features`,
+    logout: `Log out`
   },
   dashboard: {
     welcome: `Welcome`,
@@ -56,9 +62,21 @@ export default {
       newName: `New name`,
       nbUsers: `Number of users`,
       users: `Users`,
+      waitingUsers: `Waiting users`,
+      wrongPinUsers: `Wrong-PIN users`,
+      deletedUsers: `Deleted users`,
+      permissionsOf: `Permissions of`,
+      update: `Update`,
+      currentVersion: `Current version`,
+      latestVersion: `Latest version`,
+      releasedOn: `Released on`,
+      runUpdate: `Update`,
+      seeOnGithub: `See on GitHub...`,
       vpsAndDocker: `VPS & Docker`,
       dockerInfo: `Docker information`,
       storage: `Storage`,
+      dangerZone: `Danger zone`,
+      reset: `Reset`,
       emlAdminToolName: `EML AdminTool name`
     },
     account: {

@@ -56,7 +56,7 @@
     await utils.sleep(1000)
     sliderVisible = false
     await utils.sleep(500)
-    h1 = 'You can now use the EML&nbsp;AdminTool!'
+    h1 = $l.configuration.finally
     h1Visible = true
     await utils.sleep(2000)
     h1Visible = false

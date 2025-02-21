@@ -11,6 +11,8 @@
   import cookiesService from '../../../../services/cookies.service'
   import { fade } from 'svelte/transition'
   import notificationsService from '../../../../services/notifications.service'
+  import apiEnvService from '../../../../services/api/api-env.service'
+  import { onMount } from 'svelte'
 
   interface Props {
     data: PageData
@@ -18,15 +20,24 @@
 
   let { data = $bindable() }: Props = $props()
 
-  data.users = data.users.sort((a, b) => {
+  let data_: PageData = $state(data)
+  data_.users = data_.users.sort((a, b) => {
     return a.id! - b.id!
   })
 
   let splash: boolean = $state(false)
 
   let showEditAdminToolModal = $state(false)
-  let selectedAccount: User = $state(data.users[0])
+  let selectedAccount: User = $state(data_.users[0])
   let updateMessage: undefined | string = $state(undefined)
+
+  onMount(() => {
+    if (window.location.search.includes('updated=true')) {
+      notificationsService.update({ type: 'SUCCESS', code: `updating_success` })
+      // remove the query string from the URL with no reload
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  })
 
   async function editAdminToolModal() {
     showEditAdminToolModal = true
@@ -43,8 +54,14 @@ Please note that the EML AdminTool, and therefore the Launchers too, will be una
       document.body.style.overflow = 'hidden'
 
       socket.on('updating', (message: string) => {
-        if (message == 'fetching' || message == 'downloading') updateMessage = 'Downloading the update...'
-        else if (message == 'extracting' || message == 'script' || message.startsWith('docker')) updateMessage = 'Installing the update...'
+        if (message == 'fetching' || message == 'downloading') {
+          updateMessage = 'Downloading the update...'
+        } else if (message == 'extracting' || message == 'script' || message == 'docker_load') {
+          updateMessage = 'Installing the update...'
+        } else if (message == 'docker_run') {
+          updateMessage = 'Installing the update...'
+          checkUpdateEnded()
+        }
       })
 
       socket.on('updating_success', (message: string, args: any) => {
@@ -80,6 +97,19 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       }
     }
   }
+
+  async function checkUpdateEnded() {
+    ;(await apiEnvService.getEnv()).subscribe({
+      next: async (resp) => {
+        if (resp.body.data.version != data.update.latestVersion) {
+          await utils.sleep(5000)
+          checkUpdateEnded()
+        } else {
+          window.location.href = '/dashboard/emlat-settings?updated=true'
+        }
+      }
+    })
+  }
 </script>
 
 <svelte:head>
@@ -107,7 +137,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   <div class="container">
     <div>
       <p class="label">{$l.main.name}</p>
-      <p>{data.emlat.name}</p>
+      <p>{data_.emlat.name}</p>
     </div>
 
     <div>
@@ -117,12 +147,12 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 
     <div>
       <p class="label">{$l.main.pin}</p>
-      <p><span class="pin">{data.emlat.pin}</span></p>
+      <p><span class="pin">{data_.emlat.pin}</span></p>
     </div>
 
     <div>
       <p class="label">{$l.dashboard.emlatSettings.nbUsers}</p>
-      <p>{data.emlat.nbUsers}</p>
+      <p>{data_.emlat.nbUsers}</p>
     </div>
   </div>
 </section>
@@ -132,8 +162,8 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 
   <div class="list-container">
     <div class="list">
-      <p class="label">Users</p>
-      {#each data.users as account}
+      <p class="label">{$l.dashboard.emlatSettings.users}</p>
+      {#each data_.users as account}
         {#if account.status == 1}
           <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
@@ -141,8 +171,8 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {/if}
       {/each}
 
-      <p class="label">Waiting users</p>
-      {#each data.users as account}
+      <p class="label">{$l.dashboard.emlatSettings.waitingUsers}</p>
+      {#each data_.users as account}
         {#if account.status == 0}
           <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
@@ -150,8 +180,8 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {/if}
       {/each}
 
-      <p class="label">Wrong-PIN users</p>
-      {#each data.users as account}
+      <p class="label">{$l.dashboard.emlatSettings.wrongPinUsers}</p>
+      {#each data_.users as account}
         {#if account.status == -1}
           <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
@@ -159,8 +189,8 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
         {/if}
       {/each}
 
-      <p class="label">Deleted users</p>
-      {#each data.users as account}
+      <p class="label">{$l.dashboard.emlatSettings.deletedUsers}</p>
+      {#each data_.users as account}
         {#if account.status == -2}
           <button class="list" class:active={selectedAccount.id == account.id} onclick={() => (selectedAccount = account)}>
             {account.name}
@@ -170,15 +200,15 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
     </div>
 
     <div class="content-list">
-      <UserManagement bind:selectedAccount accounts={data.users} />
+      <UserManagement bind:selectedAccount accounts={data_.users} />
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h3>Update</h3>
+  <h3>{$l.dashboard.emlatSettings.update}</h3>
 
-  <!-- {#if data.update.currentVersion.includes('beta') || data.update.latestVersion.includes('alpha')} -->
+  <!-- {#if data_.update.currentVersion.includes('beta') || data_.update.latestVersion.includes('alpha')} -->
   <!-- <div class="no-update">
       <p><i class="fa-solid fa-times-circle"></i></p>
       <p>
@@ -189,36 +219,36 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   <!-- {:else} -->
   <div class="container">
     <div>
-      <p class="label">Current version</p>
-      <p>EML AdminTool {data.update.currentVersion}</p>
+      <p class="label">{$l.dashboard.emlatSettings.currentVersion}</p>
+      <p>EML AdminTool {data_.update.currentVersion}</p>
     </div>
 
     <div>
-      <p class="label">Latest version</p>
-      <p>EML AdminTool {data.update.latestVersion}</p>
+      <p class="label">{$l.dashboard.emlatSettings.latestVersion}</p>
+      <p>EML AdminTool {data_.update.latestVersion}</p>
     </div>
   </div>
 
-  {#if data.update.currentVersion != data.update.latestVersion}
+  {#if data_.update.currentVersion != data_.update.latestVersion}
     <div class="updater">
       <div style="line-height: 1;">
-        <img src={data.update.logoUrl} alt="Version logo" />
+        <img src={data_.update.logoUrl} alt="Version logo" />
       </div>
       <div>
-        <p class="release-name"><b>EML AdminTool {data.update.latestVersion}</b></p>
-        <p class="release-date">Released on {new Date(data.update.releaseDate).toLocaleDateString()}</p>
+        <p class="release-name"><b>EML AdminTool {data_.update.latestVersion}</b></p>
+        <p class="release-date">{$l.dashboard.emlatSettings.releasedOn} {new Date(data_.update.releaseDate).toLocaleDateString()}</p>
       </div>
       <div class="actions">
-        <button class="secondary" onclick={update}>Update</button>
+        <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.runUpdate}</button>
         <p>
-          <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data.update.latestVersion}" target="_blank">
-            See on GitHub...&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data_.update.latestVersion}" target="_blank">
+            {$l.dashboard.emlatSettings.seeOnGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i>
           </a>
         </p>
       </div>
     </div>
     <div class="changelogs">
-      {@html utils.markdownToHtml(data.update.changelogs, false, { h1: 18, h2: 16, h3: 15, p: 14 })}
+      {@html utils.markdownToHtml(data_.update.changelogs, false, { h1: 18, h2: 16, h3: 15, p: 14 })}
     </div>
   {/if}
   <!-- {/if} -->
@@ -230,25 +260,25 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   <div class="container">
     <div>
       <p class="label">{$l.dashboard.emlatSettings.dockerInfo}</p>
-      <p>{data.vps.os}</p>
+      <p>{data_.vps.os}</p>
     </div>
 
     <div>
       <p class="label">{$l.dashboard.emlatSettings.storage}</p>
       <span class="storage">
-        <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'}></span>
+        <span class="storage-progress" style={'width: ' + (data_.vps.storage[0] / data_.vps.storage[1]) * 200 + 'px'}></span>
       </span>
-      {Math.round((data.vps.storage[0] / data.vps.storage[1]) * 100)} %
+      {Math.round((data_.vps.storage[0] / data_.vps.storage[1]) * 100)} %
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h3>Danger zone</h3>
+  <h3>{$l.dashboard.emlatSettings.dangerZone}</h3>
 
   <div class="container">
     <div>
-      <button class="primary danger" onclick={reset}>Reset</button>
+      <button class="primary danger" onclick={reset}>{$l.dashboard.emlatSettings.reset}</button>
     </div>
   </div>
 </section>

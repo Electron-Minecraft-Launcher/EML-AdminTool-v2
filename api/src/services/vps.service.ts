@@ -12,8 +12,8 @@ class VPSService {
     let unit: 'GB' | 'KB' | 'B'
 
     if (os.platform() === 'linux') {
-      totalSpaceCommand = "df -k --output=size / | sed '1d'"
-      freeSpaceCommand = "df -k --output=avail / | sed '1d'"
+      totalSpaceCommand = "df -k / | sed '1d' | awk '{print $2}'"
+      freeSpaceCommand = "df / | sed '1d' | awk '{print $4}'"
       unit = 'GB'
     } else if (os.platform() === 'win32') {
       totalSpaceCommand = 'wmic logicaldisk get Size /value | findstr /r /c:"[0-9]"'

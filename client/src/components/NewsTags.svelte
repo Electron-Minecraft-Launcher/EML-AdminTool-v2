@@ -50,7 +50,7 @@
 </div>
 
 {#if data.tags.length === 0}
-  <p class="nothing">No tags</p>
+  <p class="nothing">No tag</p>
 {/if}
 
 <AddEditNewsTagModal bind:data bind:show={showAddEditTagModal} bind:action={addEditTagAction} />

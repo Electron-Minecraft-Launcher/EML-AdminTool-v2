@@ -18,7 +18,7 @@ services:
       PORT: 4000
     volumes:
       - files:/app/files
-      - env:/app/api/.env
+      - env:/app/api/env
       - loader:/app/loader
       - /var/run/docker.sock:/var/run/docker.sock
     ports:

@@ -64,8 +64,10 @@ All the user's actions and data will be deleted, including published news. This 
     onclick={() => {
       showEditUserModal = true
       action = 'edit'
-    }}><i class="fa-solid fa-pen"></i></button
+    }}
   >
+    <i class="fa-solid fa-pen"></i>
+  </button>
 {:else if selectedAccount.status == 0}
   <!-- svelte-ignore a11y_consider_explicit_label -->
   <button class="secondary right refuse" onclick={deleteUser}><i class="fa-solid fa-times"></i></button>
@@ -75,15 +77,17 @@ All the user's actions and data will be deleted, including published news. This 
     onclick={() => {
       showEditUserModal = true
       action = 'accept'
-    }}><i class="fa-solid fa-check"></i></button
+    }}
   >
+    <i class="fa-solid fa-check"></i>
+  </button>
 {:else if selectedAccount.status && selectedAccount.status < 0}
   <!-- svelte-ignore a11y_consider_explicit_label -->
   <button class="secondary right refuse" onclick={deleteUserForever}><i class="fa-solid fa-trash"></i></button>
 {/if}
 
 <div class="perms">
-  <h4>Permissions of {selectedAccount.name}</h4>
+  <h4>{$l.dashboard.emlatSettings.permissionsOf} {selectedAccount.name}</h4>
 
   <p class="label">{$l.main.username}</p>
   <p>{selectedAccount.name}</p>

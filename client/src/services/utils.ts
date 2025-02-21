@@ -1,4 +1,7 @@
 class Utils {
+  /**
+   * @param duration Sleep duration in ms.
+   */
   sleep(duration: number) {
     return new Promise((resolve) => setTimeout(resolve, duration))
   }

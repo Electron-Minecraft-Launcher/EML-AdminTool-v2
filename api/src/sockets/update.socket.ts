@@ -157,7 +157,7 @@ export default class UpdateSocket implements Socket {
     }
 
     io.emit('updating', 'docker_volume')
-    console.log(`[DOCKER VOLUME] Running command: docker volume ls | grep eml_admintool | grep loader | awk '{print $2}`)
+    console.log(`[DOCKER VOLUME] Running command: docker volume ls | grep eml_admintool | grep loader | awk '{print $2}'`)
 
     try {
       loaderVolumeName = await new Promise<string>((resolve, reject) => {
@@ -165,7 +165,7 @@ export default class UpdateSocket implements Socket {
           if (error) {
             reject(error)
           } else if (process.env.NODE_ENV === 'development') {
-            // Note: Update should be performed in development environment.
+            // Note: Update should not be performed in development environment.
             const vol = stdout.split('\n').find((line) => line.includes('dev'))
             if (vol) resolve(vol)
             else reject('Volume not found')
@@ -202,7 +202,6 @@ export default class UpdateSocket implements Socket {
           'sh',
           '-c',
           `docker-compose -f /app/loader/${composeFile} up -d`
-          // 'tail -f /dev/null'
         ])
         run.stdout.on('data', (data) => console.log(`[DOCKER RUN] ${data}`))
         run.stderr.on('data', (data) => console.error(`[DOCKER RUN] ${data}`))

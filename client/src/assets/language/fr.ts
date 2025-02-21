@@ -37,7 +37,8 @@ export default {
     step3: {
       title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
       subtitle: `Ce nom de serveur et mot de passe seront les identifiants de votre compte administrateur.`
-    }
+    },
+    finally: `Vous pouvez maintenant utiliser l'EML&nbsp;AdminTool&nbsp;!`
   },
   auth: {
     login: `Connexion`,
@@ -45,6 +46,11 @@ export default {
     confirmPassword: `Confirmation du mot de passe`,
     createAccount: `Créer un compte ici.`,
     alreadyAnAccount: `Se connecter ici.`
+  },
+  leftPanel: {
+    settings: `Paramètres`,
+    features: `Options`,
+    logout: `Déconnexion`
   },
   dashboard: {
     welcome: `Bienvenue`,
@@ -56,9 +62,21 @@ export default {
       language: `Langue`,
       nbUsers: `Nombre d'utilisateurs`,
       users: `Utilisateurs`,
+      waitingUsers: `Utilisateurs en attente`,
+      wrongPinUsers: `Utilisateurs indésirables`,
+      deletedUsers: `Utilisateurs supprimés`,
+      permissionsOf: `Permissions de`,
+      update: 'Mise à jour',
+      currentVersion: `Version actuelle`,
+      latestVersion: `Dernière version`,
+      releasedOn: `Publiée le`,
+      runUpdate: `Mettre à jour`,
+      seeOnGithub: `Voir sur GitHub...`,
       vpsAndDocker: `VPS & Docker`,
       dockerInfo: `Informations Docker`,
       storage: `Stockage`,
+      dangerZone: `Zone de danger`,
+      reset: `Réinitialiser`,
       emlAdminToolName: `Nom de l'EML AdminTool`
     },
     account: {
