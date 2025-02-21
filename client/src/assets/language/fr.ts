@@ -76,15 +76,25 @@ export default {
       dockerInfo: `Informations Docker`,
       storage: `Stockage`,
       dangerZone: `Zone de danger`,
-      reset: `Réinitialiser`,
-      emlAdminToolName: `Nom de l'EML AdminTool`
+      reset: `Réinitialiser l'EML AdminTool`,
+      emlAdminToolName: `Nom de l'EML AdminTool`,
+      editEmlat: `Paramétrer l'EML AdminTool`,
+      leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
+      nameWarn: `Changer le nom de l'EML AdminTool change également votre nom d'utilisateur !`,
+      regeneratePin: `Régénérer le code de sécurité`,
+      acceptUser: `Accepter l'utilisateur`,
+      editUser: `Modifier l'utilisateur`
     },
     account: {
       accountSettings: `Paramètres du compte`,
       nameOrPseudo: `Nom ou Pseudo`,
       accountType: `Type de compte`,
+      editAccount: `Paramétrer le compte`,
+      leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
       newNameOrPseudo: `Nouveau nom ou pseudo`,
-      newPassword: `Nouveau mot de passe`
+      newPassword: `Nouveau mot de passe`,
+      dangerZone: `Zone de danger`,
+      deleteAccount: `Supprimer le compte`
     },
     filesUpdater: {
       size: 'Taille',
@@ -101,3 +111,4 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
     }
   }
 }
+

@@ -40,14 +40,14 @@
     <LoadingSplash transparent={true} />
   {/if}
 
-  <h2>Edit EML AdminTool information</h2>
+  <h2>{$l.dashboard.emlatSettings.editEmlat}</h2>
 
   <form onsubmit={submit}>
-    <p>Leave blank if you don't want to change.</p>
+    <p>{$l.dashboard.emlatSettings.leaveBlank}</p>
 
     <label for="name">{$l.dashboard.emlatSettings.emlAdminToolName}</label>
     <input type="text" id="name" placeholder={$l.dashboard.emlatSettings.newName} bind:value={name} />
-    <p class="warn">Changing the EML AdminTool name will change your username/pseudo too!</p>
+    <p class="warn">{$l.dashboard.emlatSettings.nameWarn}</p>
 
     <p class="label">{$l.dashboard.emlatSettings.language}</p>
     <button type="button" class="secondary language" class:selected={language == 'en'} id="en-button" onclick={() => (language = 'en')}>
@@ -64,7 +64,10 @@
     </button>
 
     <p class="label">{$l.main.pin}</p>
-    <label class="p" for="regenerate-pin"><input type="checkbox" bind:checked={pin} id="regenerate-pin" /> Regenerate PIN</label>
+    <label class="p" for="regenerate-pin">
+      <input type="checkbox" bind:checked={pin} id="regenerate-pin" />
+      {$l.dashboard.emlatSettings.regeneratePin}
+    </label>
 
     <div class="actions">
       <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>

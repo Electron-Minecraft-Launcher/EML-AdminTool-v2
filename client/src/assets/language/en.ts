@@ -38,7 +38,7 @@ export default {
       title: `Then, choose your server name and a password:`,
       subtitle: `This server name and password will be your admin account login.`
     },
-    finally: 'You can now use the EML&nbsp;AdminTool!',
+    finally: 'You can now use the EML&nbsp;AdminTool!'
   },
   auth: {
     login: `Log in`,
@@ -76,15 +76,25 @@ export default {
       dockerInfo: `Docker information`,
       storage: `Storage`,
       dangerZone: `Danger zone`,
-      reset: `Reset`,
-      emlAdminToolName: `EML AdminTool name`
+      reset: `Reset EML AdminTool`,
+      emlAdminToolName: `EML AdminTool name`,
+      editEmlat: `Edit EML AdminTool information`,
+      leaveBlank: `Leave blank if you don't want to change.`,
+      nameWarn: `Changing the EML AdminTool name also changes your username!`,
+      regeneratePin: `Regenerate PIN`,
+      acceptUser: `Accept user`,
+      editUser: `Edit user`
     },
     account: {
       accountSettings: `Account settings`,
       nameOrPseudo: `Name or Pseudo`,
       accountType: `Account type`,
+      editAccount: `Edit account information`,
+      leaveBlank: `Leave blank if you don't want to change.`,
       newNameOrPseudo: `New name or pseudo`,
-      newPassword: `New password`
+      newPassword: `New password`,
+      dangerZone: `Danger zone`,
+      deleteAccount: `Delete account`
     },
     filesUpdater: {
       size: 'Size',
@@ -101,3 +111,4 @@ Therefore, if you would like to help us translate the EML AdminTool, you can fin
     }
   }
 }
+

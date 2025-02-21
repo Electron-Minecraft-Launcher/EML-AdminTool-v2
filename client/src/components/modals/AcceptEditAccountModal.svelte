@@ -74,7 +74,7 @@
 
 <ModalTemplate size={'s'} bind:show>
   <form onsubmit={submit}>
-    <h2>{action === 'accept' ? 'Accept' : 'Edit'} user</h2>
+    <h2>{action === 'accept' ? $l.dashboard.emlatSettings.acceptUser : $l.dashboard.emlatSettings.editUser}</h2>
 
     <div class="overflow">
       <label for="name" style="margin-top: 0">{$l.dashboard.account.nameOrPseudo}</label>
