@@ -1,19 +1,13 @@
 import { Request } from 'express'
 import { DataSuccess } from '../responses/success/data-success.response'
 import { ResponseType } from '../../../shared/types/types'
-import { DefaultSuccess } from '../responses/success/default-success.response'
 import { IncomingHttpHeaders } from 'http'
 import authService from '../services/auth.service'
 import nexter from '../utils/nexter'
 import { ServiceException } from '../responses/types'
-import { ServerException } from '../responses/exceptions/server-exception.response'
-import filesService from '../services/files.service'
-import fs from 'fs'
 import fetch from 'node-fetch'
-import { exec, spawn } from 'child_process'
 import { Update as Update_ } from '../../../shared/types/data/update'
 import pkg from '../../../package.json'
-import { extract } from 'tar'
 
 class Update {
   async getUpdate(req: Request, headers: IncomingHttpHeaders): Promise<DataSuccess<Update_>> {
