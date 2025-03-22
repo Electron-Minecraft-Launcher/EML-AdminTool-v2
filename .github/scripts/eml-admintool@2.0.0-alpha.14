@@ -61,9 +61,11 @@ echo -e "• \e[1mChecking Docker...\e[0m"
 
 if ! [ -x "$(command -v docker)" ]; then
   echo -e "\e[31mDocker is not installed. Exiting.\e[0m"
+  exit 1
 fi
-if ! [ -x "$(command -v docker-compose)" ] && ! [ -x "$(command -v docker compose)" ]; then
+if ! [ -x "$(command -v docker compose)" ]; then
   echo -e "\e[31mDocker Compose is not installed. Exiting.\e[0m"
+  exit 1
 fi
 
 # Check wget or curl
