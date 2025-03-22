@@ -144,7 +144,7 @@
     try {
       const file = selectedItems[0]
       const response = await fetch(file.url)
-      if (!response.ok) throw new Error('Réponse réseau non ok.')
+      if (!response.ok) throw new Error()
 
       const blob = await response.blob()
       const downloadUrl = window.URL.createObjectURL(blob)

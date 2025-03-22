@@ -17,6 +17,7 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
         )
       }
     }
+    res.statusCode = res.statusCode || 500
     return send.call(res, body)
   }
 

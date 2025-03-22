@@ -30,7 +30,7 @@ export interface File {
    *
    * `'NATIVE'`: Minecraft native
    *
-   * `'MOD'`: Mod from the modpack (hosted on the EML AdminTool)
+   * `'MOD'`: Mod from the modpack (hosted on EML AdminTool)
    *
    * `'CONFIG'`: Configuration file
    *

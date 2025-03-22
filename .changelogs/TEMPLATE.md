@@ -22,15 +22,15 @@
 
 ### First-time setup
 
-Please follow [this guide](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki) to install the EML AdminTool for the first time.
+Please follow [this guide](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki) to install EML AdminTool for the first time.
 
 ### Upgrading from a previous version
 
 Make sure that Docker is installed on your server, and the default Docker socket is available at `/var/run/docker.sock`.
 
-1. Log in to the EML AdminTool as administrator.
+1. Log in to EML AdminTool as administrator.
 2. Click on the "Settings" tab.
 3. Scroll down to the "Update" section.
 4. Click on the "Update" button and wait for the update to complete.
 
-Please note that the EML AdminTool will not be available during the update process. We recommend that you perform the update during off-peak hours to minimize disruption to your users.
+Please note that EML AdminTool will not be available during the update process. We recommend that you perform the update during off-peak hours to minimize disruption to your users.

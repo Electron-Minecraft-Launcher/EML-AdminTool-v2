@@ -7,6 +7,7 @@
   import cookiesService from '../../services/cookies.service'
   import { slide } from 'svelte/transition'
   import { goto } from '$app/navigation'
+  import { l } from '../../services/store'
 
   interface Props {
     leftPanelOpen?: boolean
@@ -20,10 +21,6 @@
 
   let ready = true
   let accountDropdownOpen = $state(false)
-
-  // onMount(async () => {
-  //   ready = await userService.reload()
-  // })
 
   document.addEventListener('click', async () => {
     if (accountDropdownOpen) {
@@ -71,16 +68,16 @@
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '50px 15px 20px 15px' }]} />
     <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '30px 15px 40px 15px' }]} />
   {:else}
-    <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>Home</a>
+    <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>{$l.main.home}</a>
     {#if $user.admin}
       <a href="/dashboard/emlat-settings" class:active={page.url.pathname == '/dashboard/emlat-settings'}>
-        <i class="fa-solid fa-gear"></i>Settings
+        <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}
       </a>
     {/if}
   {/if}
 
   {#if leftPanelOpen}
-    <h4>Features</h4>
+    <h4>{$l.leftPanel.features}</h4>
   {:else}
     <!-- svelte-ignore a11y_missing_content -->
     <h4 style="height: 21px;"><hr style="border-color: #505050; border-top: 0; position: relative; top: 5px;" /></h4>
@@ -148,12 +145,12 @@
   {#if accountDropdownOpen}
     <div class="account-dropdown" id="account-dropdown" transition:slide={{ duration: 200 }}>
       <a href="/dashboard/account" class="account-settings" class:active={page.url.pathname == '/dashboard/account'}>
-        <i class="fa-solid fa-gear"></i>Settings
+        <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}
       </a>
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_missing_attribute -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <a class="account-logout" onclick={logoutClick}><i class="fa-solid fa-right-from-bracket"></i>Log out</a>
+      <a class="account-logout" onclick={logoutClick}><i class="fa-solid fa-right-from-bracket"></i>{$l.leftPanel.logout}</a>
     </div>
   {/if}
 </nav>

@@ -1,10 +1,10 @@
 # EML AdminTool
 
-**EML AdminTool is a Web software to manage a Minecraft Launcher built with the [EML Core](https://github.com/Electron-Minecraft-Launcher/EML-Core-v2) library.**
+**EML AdminTool is a Web software to manage a Minecraft Launcher built with the [EML Lib](https://github.com/Electron-Minecraft-Launcher/EML-Lib-v2) library.**
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
-[<img src="https://img.shields.io/badge/version-2.0.0--alpha.13-orangered?style=for-the-badge&color=orangered">](package.json)</p>
+[<img src="https://img.shields.io/badge/version-2.0.0--alpha.14-orangered?style=for-the-badge&color=orangered">](package.json)</p>
 
 ---
 
@@ -33,10 +33,10 @@ You can choose your Linux distribution, but Debian or Ubuntu is highly recommend
 |--------------|---------------|---------------|
 | CPU          | 1 core 2 GHz  | 4 cores 2 GHz |
 | RAM          | 1 GB          | 4 GB          |
-| Storage      | 2 GB          | 50 GB SSD     |
+| Storage      | 5 GB          | 50 GB SSD     |
 
 > [!NOTE]
-> The Launcher can make many requests to the EML AdminTool. If your Minecraft serveur doesn't have a lot of players, you can use a VPS with low requirements. However, if you have a lot of players, you should use a VPS with high requirements, to avoid any performance issues or crashes.
+> The Launcher can make many requests to EML AdminTool. If your Minecraft serveur doesn't have a lot of players, you can use a VPS with low requirements. However, if you have a lot of players, you should use a VPS with high requirements, to avoid any performance issues or crashes.
 
 ### Software requirements
 
@@ -44,20 +44,23 @@ You have to install the following software on your VPS:
 - [Docker](https://docs.docker.com/engine/install) and [Docker Compose](https://docs.docker.com/compose/install) [^1]
 - [NGINX](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/) or [Apache](https://httpd.apache.org/docs/2.4/install.html) (optional, but NGINX is recommended) [^2]
 
-Node.js is not required, because it is already included in the Docker image of the EML AdminTool.
+Node.js is not required, because it is already included in the Docker image of EML AdminTool.
 
 ### EML AdminTool installation
 
 Then, in a terminal, execute the following command:
 ```bash
-[command to install the EML AdminTool]
+# with wget
+wget -qO- https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-alpha.14 | bash
+# with curl
+curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-alpha.14 | bash
 ```
 
 ### Web server configuration
 
-We assume that you have a domain name and a subdomain already configured from your registrar for the EML AdminTool, and an SSL certificate. For exemple, [emlat.my-minecraft-server.com](https://emlat.my-minecraft-server.com).
+We assume that you have a domain name and a subdomain already configured from your registrar for EML AdminTool, and an SSL certificate. For exemple, [emlat.my-minecraft-server.com](https://emlat.my-minecraft-server.com).
 
-You have to configure your web server to use the EML AdminTool.
+You have to configure your web server to use EML AdminTool.
 
 <details>
 <summary>NGINX configuration example</summary>
@@ -113,14 +116,14 @@ For more information, you can read the [NGINX documentation](https://nginx.org/e
 
 ### EML AdminTool start
 
-You can now start the EML AdminTool with the following command:
+You can now start EML AdminTool with the following command:
 ```bash
 cd EML-AdminTool-v2/docker
 docker-compose -f docker-compose.prod.yml up
 ```
 
 > [!TIP]
-> You can use the `-d` option to start the EML AdminTool in the background. You can also use a process manager like PM2, or even create a systemd service, to start the EML AdminTool automatically when your VPS starts.
+> You can use the `-d` option to start EML AdminTool in the background. You can also use a process manager like PM2, or even create a systemd service, to start EML AdminTool automatically when your VPS starts.
 
 ### If you won't use a VPS
 
@@ -131,11 +134,11 @@ You can download the previous major version of the [EML AdminTool](https://githu
 
 ### Translation
 
-You can help to translate the EML AdminTool!
+You can help to translate EML AdminTool!
 
 The languages files are [here](./client/src/assets/language/). You can create another file with your translation. Please make sure to provide a correct translation!
 
-Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
+Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues/new?template=translation.md), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
 
 ### Development
 
@@ -163,7 +166,7 @@ You can now make pull requests!
 
 ## Important information
 
-* This repository contains a `.env` file. All the information in this file is fake (random strings), and will be replaced by the real information when you install the EML AdminTool.
+* This repository contains a `.env` file. All the information in this file is fake (random strings), and will be replaced by the real information when you install EML AdminTool.
 * This Web software is under the `GNU GPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
 * If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
 
@@ -171,6 +174,6 @@ You can now make pull requests!
 
 [^1]: The Docker Engine installation tutorial from the official Docker documentation includes the installation of Docker Compose.
 
-[^2]: NGINX (or Apache) is recommended to use the EML AdminTool in production. It allows you to use a domain name and an SSL certificate. If you don't use NGINX (or Apache), you can use the EML AdminTool with the IP address of your VPS. However, it is not recommended to use the EML AdminTool without a domain name and an SSL certificate.
+[^2]: NGINX (or Apache) is recommended to use EML AdminTool in production. It allows you to use a domain name and an SSL certificate. If you don't use NGINX (or Apache), you can use EML AdminTool with the IP address of your VPS. However, it is not recommended to use EML AdminTool without a domain name and an SSL certificate.
 
 [^3]: On desktop (Windows, macOS and Linux), you can use Docker Desktop, which includes Docker and Docker Compose. On a server (Linux), you should install Docker and Docker Compose separately.

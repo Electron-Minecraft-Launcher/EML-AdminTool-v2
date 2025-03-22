@@ -37,7 +37,8 @@ export default {
     step3: {
       title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
       subtitle: `Ce nom de serveur et mot de passe seront les identifiants de votre compte administrateur.`
-    }
+    },
+    finally: `Vous pouvez maintenant utiliser l'EML&nbsp;AdminTool&nbsp;!`
   },
   auth: {
     login: `Connexion`,
@@ -45,6 +46,11 @@ export default {
     confirmPassword: `Confirmation du mot de passe`,
     createAccount: `Créer un compte ici.`,
     alreadyAnAccount: `Se connecter ici.`
+  },
+  leftPanel: {
+    settings: `Paramètres`,
+    features: `Options`,
+    logout: `Déconnexion`
   },
   dashboard: {
     welcome: `Bienvenue`,
@@ -56,17 +62,39 @@ export default {
       language: `Langue`,
       nbUsers: `Nombre d'utilisateurs`,
       users: `Utilisateurs`,
+      waitingUsers: `Utilisateurs en attente`,
+      wrongPinUsers: `Utilisateurs indésirables`,
+      deletedUsers: `Utilisateurs supprimés`,
+      permissionsOf: `Permissions de`,
+      update: 'Mise à jour',
+      currentVersion: `Version actuelle`,
+      latestVersion: `Dernière version`,
+      releasedOn: `Publiée le`,
+      runUpdate: `Mettre à jour`,
+      seeOnGithub: `Voir sur GitHub...`,
       vpsAndDocker: `VPS & Docker`,
       dockerInfo: `Informations Docker`,
       storage: `Stockage`,
-      emlAdminToolName: `Nom de l'EML AdminTool`
+      dangerZone: `Zone de danger`,
+      reset: `Réinitialiser l'EML AdminTool`,
+      emlAdminToolName: `Nom de l'EML AdminTool`,
+      editEmlat: `Paramétrer l'EML AdminTool`,
+      leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
+      nameWarn: `Changer le nom de l'EML AdminTool change également votre nom d'utilisateur !`,
+      regeneratePin: `Régénérer le code de sécurité`,
+      acceptUser: `Accepter l'utilisateur`,
+      editUser: `Modifier l'utilisateur`
     },
     account: {
       accountSettings: `Paramètres du compte`,
       nameOrPseudo: `Nom ou Pseudo`,
       accountType: `Type de compte`,
+      editAccount: `Paramétrer le compte`,
+      leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
       newNameOrPseudo: `Nouveau nom ou pseudo`,
-      newPassword: `Nouveau mot de passe`
+      newPassword: `Nouveau mot de passe`,
+      dangerZone: `Zone de danger`,
+      deleteAccount: `Supprimer le compte`
     },
     filesUpdater: {
       size: 'Taille',
@@ -83,3 +111,4 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
     }
   }
 }
+

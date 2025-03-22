@@ -3,7 +3,6 @@ import type { DefaultHttpResponse } from '../../../shared/types/responses/http/d
 import { redirect } from '@sveltejs/kit'
 import cookiesService from './cookies.service'
 import notificationsService from './notifications.service'
-import router from './router'
 import { goto } from '$app/navigation'
 
 class Http {

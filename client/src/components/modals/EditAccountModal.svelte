@@ -26,9 +26,9 @@
 
 <ModalTemplate size={'s'} bind:show>
   <form onsubmit={submit}>
-    <h2>Edit account information</h2>
+    <h2>{$l.dashboard.account.editAccount}</h2>
 
-    <p>Leave blank if you don't want to change.</p>
+    <p>{$l.dashboard.account.leaveBlank}</p>
 
     <label for="name">{$l.dashboard.account.newNameOrPseudo}</label>
     <input type="text" id="name" placeholder={$l.dashboard.account.newNameOrPseudo} bind:value={name} />

@@ -12,6 +12,7 @@
 
   let { data }: Props = $props()
 
+  let data_: PageData = $state(data)
   const today = new Date(new Date().setMinutes(0, 0, 0))
 
   let datesLauncher: { date: Date; startups: number; launches: number; connections: number }[] = $state([])
@@ -21,29 +22,29 @@
   let dateSelector: HTMLSelectElement | undefined = $state()
 
   onMount(() => {
-    if (data.stats.startups.length > 0) {
-      datesLauncher.push({ date: new Date(data.stats.startups[0].date), startups: 0, launches: 0, connections: 0 })
+    if (data_.stats.startups.length > 0) {
+      datesLauncher.push({ date: new Date(data_.stats.startups[0].date), startups: 0, launches: 0, connections: 0 })
     }
-    if (data.stats.launches.length > 0) {
-      datesLauncher.push({ date: new Date(data.stats.launches[0].date), startups: 0, launches: 0, connections: 0 })
+    if (data_.stats.launches.length > 0) {
+      datesLauncher.push({ date: new Date(data_.stats.launches[0].date), startups: 0, launches: 0, connections: 0 })
     }
-    if (data.stats.connections.length > 0) {
-      datesLauncher.push({ date: new Date(data.stats.connections[0].date), startups: 0, launches: 0, connections: 0 })
+    if (data_.stats.connections.length > 0) {
+      datesLauncher.push({ date: new Date(data_.stats.connections[0].date), startups: 0, launches: 0, connections: 0 })
     }
     if (datesLauncher.length > 0) {
       datesLauncher = datesLauncher.sort((a, b) => a.date.getTime() - b.date.getTime()).slice(0, 1)
       datesLauncher[0].date.setMinutes(0, 0, 0)
     }
 
-    if (data.stats.devtools.length > 0) {
-      datesDevTools.push({ date: new Date(data.stats.devtools[0].date), devtools: 0 })
+    if (data_.stats.devtools.length > 0) {
+      datesDevTools.push({ date: new Date(data_.stats.devtools[0].date), devtools: 0 })
     }
     if (datesDevTools.length > 0) {
       datesDevTools[0].date.setMinutes(0, 0, 0)
     }
 
-    if (data.stats.launches.length > 0) {
-      datesOS.push({ date: new Date(data.stats.launches[0].date), os: { windows: 0, mac: 0, linux: 0 } })
+    if (data_.stats.launches.length > 0) {
+      datesOS.push({ date: new Date(data_.stats.launches[0].date), os: { windows: 0, mac: 0, linux: 0 } })
     }
     if (datesOS.length > 0) {
       datesOS[0].date.setMinutes(0, 0, 0)
@@ -65,21 +66,21 @@
       }
     }
 
-    data.stats.startups.forEach(({ date }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
+    data_.stats.startups.forEach(({ date }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
       date = new Date(date)
       const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
       if (index !== -1) {
         datesLauncher[index].startups++
       }
     })
-    data.stats.connections.forEach(({ date }: { date: Date }) => {
+    data_.stats.connections.forEach(({ date }: { date: Date }) => {
       date = new Date(date)
       const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
       if (index !== -1) {
         datesLauncher[index].connections++
       }
     })
-    data.stats.launches.forEach(({ date, os }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
+    data_.stats.launches.forEach(({ date, os }: { date: Date; os: 'windows' | 'mac' | 'linux' }) => {
       date = new Date(date)
       const index = datesLauncher.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())
       const index2 = datesOS.findIndex((d) => d.date.getTime() <= date.getTime() && d.date.getTime() + 3600000 > date.getTime())

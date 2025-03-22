@@ -31,7 +31,7 @@
     // await utils.sleep(2000)
     // h1Visible = false
     // await utils.sleep(1000)
-    // h1 = 'You can now configure the EML&nbsp;Admintool.'
+    // h1 = 'You can now configure EML&nbsp;Admintool.'
     // h1Visible = true
     // await utils.sleep(3000)
     h1Visible = false
@@ -56,7 +56,7 @@
     await utils.sleep(1000)
     sliderVisible = false
     await utils.sleep(500)
-    h1 = 'You can now use the EML&nbsp;AdminTool!'
+    h1 = $l.configuration.finally
     h1Visible = true
     await utils.sleep(2000)
     h1Visible = false

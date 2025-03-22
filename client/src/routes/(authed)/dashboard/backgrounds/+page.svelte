@@ -11,13 +11,14 @@
 
   let { data = $bindable() }: Props = $props()
 
+  let data_: PageData = $state(data)
   let showUploadEditBackgroundModal: boolean = $state(false)
   let uploadEditBackgroundAction: { action: 'upload' } | { action: 'edit'; background: BackgroundsRes } = $state({ action: 'upload' })
 
   async function activate(background: BackgroundsRes) {
     ;(await apiBackgroundsService.putActiveBackground(background.id!)).subscribe({
       next: (res) => {
-        data.backgrounds = res.body.data!
+        data_.backgrounds = res.body.data!
       }
     })
   }
@@ -26,7 +27,7 @@
     if (!confirm('Are you sure you want to delete this image? It will not be available in the news anymore.')) return
     ;(await apiBackgroundsService.deleteBackground(background.id!)).subscribe({
       next: (res) => {
-        data.backgrounds = res.body.data!
+        data_.backgrounds = res.body.data!
       }
     })
   }
@@ -51,7 +52,7 @@
   <h3>Backgrounds list</h3>
 
   <div class="container">
-    {#each data.backgrounds as background}
+    {#each data_.backgrounds as background}
       <div style="background-image: url('{background.url}'" class="img" class:active={background.status == 1}>
         <div>
           {#if background.status != 1}
@@ -74,13 +75,15 @@
         </div>
         <p class="title">{background.title}</p>
       </div>
-    {:else}
-      <p class="nothing">No background</p>
     {/each}
   </div>
+
+  {#if data_.backgrounds.length === 0}
+    <p class="nothing">No background</p>
+  {/if}
 </section>
 
-<UploadEditBackgroundModal bind:data bind:action={uploadEditBackgroundAction} bind:show={showUploadEditBackgroundModal}></UploadEditBackgroundModal>
+<UploadEditBackgroundModal bind:data={data_} bind:action={uploadEditBackgroundAction} bind:show={showUploadEditBackgroundModal}></UploadEditBackgroundModal>
 
 <style lang="scss">
   @use '../../../../assets/scss/dashboard.scss';
@@ -97,6 +100,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: bottom;
+  }
+
+  p.nothing {
+    text-align: center;
+    margin-top: 15px;
+    color: #606060;
   }
 
   div.img {

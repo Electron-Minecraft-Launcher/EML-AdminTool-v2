@@ -126,12 +126,11 @@
 
 {#if !$user.admin}
   <section class="section">
-    <h3>Danger zone</h3>
-    <!-- ! Translation -->
+    <h3>{$l.dashboard.account.dangerZone}</h3>
 
     <div class="container">
       <div>
-        <button class="primary danger" onclick={deleteAccount}>Delete account</button>
+        <button class="primary danger" onclick={deleteAccount}>{$l.dashboard.account.deleteAccount}</button>
       </div>
     </div>
   </section>

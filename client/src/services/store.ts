@@ -6,7 +6,6 @@ import en from '../assets/language/en'
 import type fr from '../assets/language/fr'
 
 export let notification$ = writable<Notification | null>(null)
-export let redirect$ = writable<string | null>(null)
 
 export const test = writable<string>('Bonjour')
 

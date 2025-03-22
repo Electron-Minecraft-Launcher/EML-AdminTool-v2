@@ -69,7 +69,7 @@ export default class AuthRouter implements Route {
      *   post:
      *     tags:
      *      - Auth
-     *     summary: Register to the EML AdminTool
+     *     summary: Register to EML AdminTool
      *     requestBody:
      *       required: true
      *       content:

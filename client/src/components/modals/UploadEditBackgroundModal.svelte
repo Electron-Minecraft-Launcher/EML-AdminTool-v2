@@ -18,17 +18,12 @@
   let status: boolean = $state(false)
   let disableStatus: boolean = $state(false)
   let file: File | null = $state(null)
-  let backgroundUpload: HTMLInputElement | null = $state(null)
 
   function update() {
     if (action.action === 'upload') {
       title = ''
       status = false
       disableStatus = false
-      if (backgroundUpload) {
-        backgroundUpload.value = ''
-        backgroundUpload.files = null
-      }
     } else {
       title = action.background.title!
       status = action.background.status == 1
@@ -37,7 +32,7 @@
   }
 
   async function uploadFile() {
-    if (!backgroundUpload) return
+    const backgroundUpload = document.getElementById('background') as HTMLInputElement
 
     backgroundUpload.click()
 
@@ -49,6 +44,8 @@
   }
 
   function reset() {
+    const backgroundUpload = document.getElementById('background') as HTMLInputElement
+
     if (backgroundUpload) {
       backgroundUpload.value = ''
       backgroundUpload.files = null
@@ -57,10 +54,12 @@
 
   async function submit(e: SubmitEvent) {
     e.preventDefault()
+    console.log('submit')
+    const backgroundUpload = document.getElementById('images') as HTMLInputElement
 
-    if (!title || title === '' || !backgroundUpload?.files) return
+    if (!title || title === '' || !file) return
     if (action.action === 'upload') {
-      ;(await apiBackgroundsService.uploadBackground(title, status === true ? 1 : 0, backgroundUpload!.files!.item(0)!)).subscribe({
+      ;(await apiBackgroundsService.uploadBackground(title, status === true ? 1 : 0, file!)).subscribe({
         next: (res) => {
           data.backgrounds = res.body.data!
           show = false
@@ -81,13 +80,18 @@
         })
       }
     }
+
+    if (backgroundUpload) {
+      backgroundUpload.value = ''
+      backgroundUpload.files = null
+      file = null
+    }
   }
 
   $effect(() => {
     if (show) update()
 
     file = null as File | null
-    backgroundUpload = null as HTMLInputElement | null
   })
 </script>
 
@@ -105,7 +109,7 @@
           <i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Select a file...
         </button>
       {:else}
-        <p class="no-link">{backgroundUpload?.files?.item(0)?.name}</p>
+        <p class="no-link">{file.name}</p>
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button class="remove" onclick={reset} type="button"><i class="fa-solid fa-circle-xmark"></i></button>
       {/if}
@@ -119,7 +123,7 @@
       <button class="primary" disabled={!title || title == '' || (!file && action.action === 'upload')}>{$l.main.save}</button>
     </div>
 
-    <input type="file" bind:this={backgroundUpload} accept="image/*" style="display: none" />
+    <input type="file" id="background" accept="image/*" style="display: none" />
   </form>
 </ModalTemplate>
 
