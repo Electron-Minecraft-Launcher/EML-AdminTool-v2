@@ -271,7 +271,7 @@ export default class Admin {
 
   async deleteUser(req: Request<any>, headers: IncomingHttpHeaders, userId: number | 'me'): Promise<DefaultSuccess> {
     try {
-      var auth = nexter.serviceToException(await authService.checkAuth(req.headers['authorization'] + ''))
+      var auth = nexter.serviceToException(await authService.checkAuth(headers['authorization'] + ''))
     } catch (error: unknown) {
       throw error as ServiceException
     }

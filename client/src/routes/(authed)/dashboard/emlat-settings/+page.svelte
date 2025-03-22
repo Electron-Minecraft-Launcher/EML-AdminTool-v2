@@ -34,7 +34,6 @@
   onMount(() => {
     if (window.location.search.includes('updated=true')) {
       notificationsService.update({ type: 'SUCCESS', code: `updating_success` })
-      // remove the query string from the URL with no reload
       window.history.replaceState({}, document.title, window.location.pathname)
     }
   })
@@ -45,8 +44,8 @@
 
   async function update() {
     if (
-      confirm(`Are you sure you want to update the EML AdminTool?
-Please note that the EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 1 minutes downtime).`)
+      confirm(`Are you sure you want to update EML AdminTool?
+Please note that EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 1 minutes downtime).`)
     ) {
       const socket = io({ auth: { token: cookiesService.get('JWT') } })
       socket.emit('update')
@@ -83,8 +82,8 @@ Please note that the EML AdminTool, and therefore the Launchers too, will be una
 
   async function reset() {
     if (
-      confirm(`Are you sure you want to reset the EML AdminTool? All the data will be lost and the EML AdminTool will be reset to its initial state. This action is irreversible.
-Moreover, be sure that nobody can access the EML AdminTool during the reset: the EML AdminTool is not protected during the setup!`)
+      confirm(`Are you sure you want to reset EML AdminTool? All the data will be lost and EML AdminTool will be reset to its initial state. This action is irreversible.
+Moreover, be sure that nobody can access EML AdminTool during the reset: EML AdminTool is not protected during the setup!`)
     ) {
       if (confirm('Are you really sure?')) {
         splash = true
@@ -208,50 +207,53 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
 <section class="section">
   <h3>{$l.dashboard.emlatSettings.update}</h3>
 
-  <!-- {#if data_.update.currentVersion.includes('beta') || data_.update.latestVersion.includes('alpha')} -->
-  <!-- <div class="no-update">
+  <!-- TODO Uncomment this for stable release -->
+  {#if data_.update.currentVersion.includes('beta') || data_.update.latestVersion.includes('alpha')}
+    <div class="no-update">
       <p><i class="fa-solid fa-times-circle"></i></p>
       <p>
-        You are using a alpha/beta version of the EML AdminTool. This version is not linked to the update system, so you have to update manually.
-        Please see <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/" target="_blank">GitHub</a> to get the latest version.
+        You are using a alpha/beta version of EML AdminTool. This version is not linked to the update system, so you have to update manually.
+        <br /> Please see <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/" target="_blank">GitHub</a> to get the latest version.
       </p>
-    </div> -->
-  <!-- {:else} -->
-  <div class="container">
-    <div>
-      <p class="label">{$l.dashboard.emlatSettings.currentVersion}</p>
-      <p>EML AdminTool {data_.update.currentVersion}</p>
     </div>
-
-    <div>
-      <p class="label">{$l.dashboard.emlatSettings.latestVersion}</p>
-      <p>EML AdminTool {data_.update.latestVersion}</p>
-    </div>
-  </div>
-
-  {#if data_.update.currentVersion != data_.update.latestVersion}
-    <div class="updater">
-      <div style="line-height: 1;">
-        <img src={data_.update.logoUrl} alt="Version logo" />
-      </div>
+  {:else}
+    <div class="container">
       <div>
-        <p class="release-name"><b>EML AdminTool {data_.update.latestVersion}</b></p>
-        <p class="release-date">{$l.dashboard.emlatSettings.releasedOn} {new Date(data_.update.releaseDate).toLocaleDateString()}</p>
+        <p class="label">{$l.dashboard.emlatSettings.currentVersion}</p>
+        <p>EML AdminTool {data_.update.currentVersion}</p>
       </div>
-      <div class="actions">
-        <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.runUpdate}</button>
-        <p>
-          <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data_.update.latestVersion}" target="_blank">
-            {$l.dashboard.emlatSettings.seeOnGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        </p>
+
+      <div>
+        <p class="label">{$l.dashboard.emlatSettings.latestVersion}</p>
+        <p>EML AdminTool {data_.update.latestVersion}</p>
       </div>
     </div>
-    <div class="changelogs">
-      {@html utils.markdownToHtml(data_.update.changelogs, false, { h1: 18, h2: 16, h3: 15, p: 14 })}
-    </div>
+
+    {#if data_.update.currentVersion != data_.update.latestVersion}
+      <div class="updater">
+        <div style="line-height: 1;">
+          <img src={data_.update.logoUrl} alt="Version logo" />
+        </div>
+        <div>
+          <p class="release-name"><b>EML AdminTool {data_.update.latestVersion}</b></p>
+          <p class="release-date">{$l.dashboard.emlatSettings.releasedOn} {new Date(data_.update.releaseDate).toLocaleDateString()}</p>
+        </div>
+        <div class="actions">
+          <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.runUpdate}</button>
+          <p>
+            <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data_.update.latestVersion}" target="_blank">
+              {$l.dashboard.emlatSettings.seeOnGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="changelogs">
+        <div class="changelogs-in">
+          {@html utils.markdownToHtml(data_.update.changelogs, { h1: 18, h2: 16.5, h3: 15.5, p: 14 })}
+        </div>
+      </div>
+    {/if}
   {/if}
-  <!-- {/if} -->
 </section>
 
 <section class="section">
@@ -332,7 +334,7 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
   div.no-update {
     display: flex;
     align-items: center;
-    justify-content: center;
+    // justify-content: center;
     gap: 20px;
     margin-top: 30px;
 
@@ -385,14 +387,20 @@ Moreover, be sure that nobody can access the EML AdminTool during the reset: the
       border-radius: 12px;
     }
   }
+
   div.changelogs {
     margin-top: 20px;
     padding: 20px;
     border-radius: 5px;
-    background: rgb(252, 252, 252);
+    background: rgb(253, 253, 253);
     border: 1px solid rgb(240, 240, 240);
-    height: 200px;
+    height: 400px;
     overflow-y: auto;
+
+    div.changelogs-in {
+      max-width: 900px;
+      margin: 0 auto;
+    }
   }
 
   span.storage {

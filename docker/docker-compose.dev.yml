@@ -34,7 +34,6 @@ services:
       - '5173:5173'
     depends_on:
       - db
-
   db:
     image: mysql:8.4
     environment:

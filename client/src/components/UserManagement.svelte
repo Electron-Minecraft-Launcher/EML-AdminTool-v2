@@ -18,7 +18,7 @@
   async function deleteUser() {
     if (
       confirm(`Are you sure you want to delete this user?
-The user will not be able to access the EML AdminTool anymore. However, the user's actions and data will not be deleted.`)
+The user will not be able to access EML AdminTool anymore. However, the user's actions and data will not be deleted.`)
     ) {
       selectedAccount.status = -2
       selectedAccount.p_files_updater_add_del = 0

@@ -1,4 +1,3 @@
-import type { User } from '../../../shared/types/features/user'
 import apiAdminService from './api/api-admin.service'
 import cookiesService from './cookies.service'
 import { user } from './store'

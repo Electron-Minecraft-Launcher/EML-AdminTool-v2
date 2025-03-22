@@ -38,7 +38,7 @@ export default {
       title: `Then, choose your server name and a password:`,
       subtitle: `This server name and password will be your admin account login.`
     },
-    finally: 'You can now use the EML&nbsp;AdminTool!'
+    finally: 'You can now use EML&nbsp;AdminTool!'
   },
   auth: {
     login: `Log in`,
@@ -80,7 +80,7 @@ export default {
       emlAdminToolName: `EML AdminTool name`,
       editEmlat: `Edit EML AdminTool information`,
       leaveBlank: `Leave blank if you don't want to change.`,
-      nameWarn: `Changing the EML AdminTool name also changes your username!`,
+      nameWarn: `Changing EML AdminTool name also changes your username!`,
       regeneratePin: `Regenerate PIN`,
       acceptUser: `Accept user`,
       editUser: `Edit user`
@@ -104,10 +104,10 @@ export default {
   modals: {
     language: {
       title: `You speak another language?`,
-      content: `The EML AdminTool is currently available only in French and English.<br>
+      content: `EML AdminTool is currently available only in French and English.<br>
 However, we are thrilled to see that this project is reaching more and more people in different countries!<br>
 <br>
-Therefore, if you would like to help us translate the EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of the EML AdminTool!`
+Therefore, if you would like to help us translate EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of EML AdminTool!`
     }
   }
 }

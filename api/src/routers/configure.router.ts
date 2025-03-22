@@ -145,7 +145,7 @@ export default class ConfigureRouter implements Route {
      *      - Configuration
      *     security:
      *       - bearer: []
-     *     summary: Reset the EML AdminTool
+     *     summary: Reset EML AdminTool
      *     responses:
      *       200:
      *         description: Reset

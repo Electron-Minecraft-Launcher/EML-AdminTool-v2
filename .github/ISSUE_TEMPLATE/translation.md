@@ -1,6 +1,6 @@
 ---
 name: Translation
-about: Suggest a translation of the EML AdminTool
+about: Suggest a translation of EML AdminTool
 title: "[TRANSLATION]"
 labels: Translation
 assignees: ''

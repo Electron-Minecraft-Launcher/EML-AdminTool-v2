@@ -1,7 +1,7 @@
 <script lang="ts">
   import '../assets/scss/styles.scss'
   import Notification from '../components/layouts/Notification.svelte'
-  import fav from '../assets/images/favico.png'
+  import fav from '../assets/images/favicon.png'
 
   interface Props {
     children?: import('svelte').Snippet

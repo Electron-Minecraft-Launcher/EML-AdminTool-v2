@@ -1,18 +1,23 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #              PRODUCTION CONFIGURATION               #
 #                                                     #
-# This file is used to run the application in a       #
+# This file is used to setup the application in a     #
 # production environment.                             #
-# Please use it with an existing Docker image. You    #
-# can download an image from GitHub or build your     #
-# own image using the Dockerfile.build file.          #
+#                                                     #
+# You should only use this once, to deploy the        #
+# application to a server. Please DO NOT use this     #
+# file to restart the application: if the application #
+# has been updated, using this file may downgrade     #
+# the application to an older version.                #
+# You can use `docker start <container_name>` to      #
+# start or restart the application.                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 name: eml_admintool
 
 services:
   web:
-    image: eml-admintool:2.0.0-alpha.13
+    image: eml-admintool:2.0.0-alpha.14
     environment:
       NODE_ENV: 'production'
       PORT: 4000
@@ -25,9 +30,8 @@ services:
       - '3000:3000'
     depends_on:
       - db
-
   db:
-    image: mysql:8.0
+    image: mysql:8.4
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       MYSQL_DATABASE: 'eml_admintool'

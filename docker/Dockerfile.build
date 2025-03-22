@@ -20,11 +20,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-20.10.8.tgz | tar -xz && \
+RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-27.5.1.tgz | tar -xz && \
   mv docker/docker /usr/local/bin/ && \
   rm -rf docker
 
-RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v2.33.0/docker-compose-linux-x86_64 && \
+RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v2.33.1/docker-compose-linux-x86_64 && \
   chmod +x /usr/local/bin/docker-compose
 
 COPY --from=build /app/dist/api ./api
