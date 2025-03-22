@@ -95,8 +95,8 @@ else
   curl -sSL https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-alpha.14/eml-admintool-2.0.0-alpha.14.tar.gz | tar -xz
 fi
 
-docker load -i eml-admintool-2.0.0-.tar
-docker-compose -f docker-compose.prod.yml up -d
+docker load -i eml-admintool-2.0.0-alpha.14.tar
+docker compose -f docker-compose.prod.yml up -d
 
 echo ""
 echo -e "\e[32mEML AdminTool is installed.\e[0m"
