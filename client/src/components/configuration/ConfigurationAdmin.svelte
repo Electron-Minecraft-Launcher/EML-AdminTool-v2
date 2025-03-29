@@ -23,28 +23,21 @@
   function inputChange() {
     if (!data.value.password) {
       rel = $l.configuration.step2.veryWeak
+      relN = 0 + ''
       return
     }
 
     var len = 0
-    if (data.value.password.length >= 12) {
-      len = 1
-    }
+    if (data.value.password.length >= 12) len = 1
 
     var upp = 0
-    if (data.value.password.match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)) {
-      upp = 1
-    }
+    if (data.value.password.match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)) upp = 1
 
     var num = 0
-    if (data.value.password.match(/^(?=.*\d).+$/)) {
-      num = 1
-    }
+    if (data.value.password.match(/^(?=.*\d).+$/)) num = 1
 
     var spe = 0
-    if (data.value.password.match(/^(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).+$/)) {
-      spe = 1
-    }
+    if (data.value.password.match(/^(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).+$/)) spe = 1
 
     switch (len + upp + num + spe) {
       case 0:
@@ -108,6 +101,12 @@
 
     inputChange()
   }
+
+  $effect(() => {
+    // if (data.value || data.value == '') {
+      inputChange()
+    // }
+  })
 </script>
 
 <ConfigurationFormTemplate step={2} cond={+relN >= 3 && data.value.name.length > 2} {data} {nextStep} {prevStep}>

@@ -24,28 +24,21 @@
   function inputChange() {
     if (!data.value) {
       rel = $l.configuration.step2.veryWeak
+      relN = 0 + ''
       return
     }
 
     var len = 0
-    if (data.value.length >= 12) {
-      len = 1
-    }
+    if (data.value.length >= 12) len = 1
 
     var upp = 0
-    if (data.value.match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)) {
-      upp = 1
-    }
+    if (data.value.match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)) upp = 1
 
     var num = 0
-    if (data.value.match(/^(?=.*\d).+$/)) {
-      num = 1
-    }
+    if (data.value.match(/^(?=.*\d).+$/)) num = 1
 
     var spe = 0
-    if (data.value.match(/^(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).+$/)) {
-      spe = 1
-    }
+    if (data.value.match(/^(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).+$/)) spe = 1
 
     switch (len + upp + num + spe) {
       case 0:
@@ -109,6 +102,12 @@
 
     inputChange()
   }
+
+  $effect(() => {
+    // if (data.value || data.value == '') {
+      inputChange()
+    // }
+  })
 </script>
 
 <ConfigurationFormTemplate step={2} cond={+relN >= 3} {data} {nextStep} {prevStep}>
@@ -116,7 +115,7 @@
   <p><b>{$l.configuration.step2.subtitle}</b></p>
   <div class="actions">
     <div class="flex">
-      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={data.value} onkeyup={inputChange} />
+      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={data.value} />
 
       <button class="secondary" onclick={generatePassword} type="button">
         <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.configuration.step2.generate}
