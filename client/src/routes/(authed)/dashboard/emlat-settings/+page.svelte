@@ -208,7 +208,7 @@ Moreover, be sure that nobody can access EML AdminTool during the reset: EML Adm
   <h3>{$l.dashboard.emlatSettings.update}</h3>
 
   <!-- TODO Uncomment this for stable release -->
-  {#if data_.update.currentVersion.includes('beta') || data_.update.latestVersion.includes('alpha')}
+  <!-- {#if data_.update.currentVersion.includes('beta') || data_.update.latestVersion.includes('alpha')}
     <div class="no-update">
       <p><i class="fa-solid fa-times-circle"></i></p>
       <p>
@@ -216,7 +216,7 @@ Moreover, be sure that nobody can access EML AdminTool during the reset: EML Adm
         <br /> Please see <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/" target="_blank">GitHub</a> to get the latest version.
       </p>
     </div>
-  {:else}
+  {:else} -->
     <div class="container">
       <div>
         <p class="label">{$l.dashboard.emlatSettings.currentVersion}</p>
@@ -253,7 +253,7 @@ Moreover, be sure that nobody can access EML AdminTool during the reset: EML Adm
         </div>
       </div>
     {/if}
-  {/if}
+  <!-- {/if} -->
 </section>
 
 <section class="section">
