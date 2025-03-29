@@ -1,3 +1,8 @@
+/**
+ * Translated by GoldFrite
+ * EML AdminTool v2.0.0-alpha.15
+ */
+
 export default {
   l: 'fr',
   language: `Français`,
@@ -111,4 +116,3 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
     }
   }
 }
-

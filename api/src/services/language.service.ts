@@ -14,9 +14,9 @@ class LanguageService {
 
   /**
    * Check if language is in DB. If not, add it.
-   * @param language `'en'` or `'fr'` to force setting the language (if not given, the function will juste check if the language is in DB)
+   * @param language `'en'`, `'fr'` or `'da'` to force setting the language (if not given, the function will juste check if the language is in DB)
    */
-  async check(language?: 'en' | 'fr') {
+  async check(language?: 'en' | 'fr'| 'da') {
     var data: Config[] = []
 
     try {
@@ -26,7 +26,7 @@ class LanguageService {
     }
 
     if (data.find((language) => language.data == 'language')) {
-      if (language === 'en' || language === 'fr') {
+      if (language === 'en' || language === 'fr' || language === 'da') {
         try {
           await db.query("UPDATE config SET value = ? WHERE data = 'language'", [language])
         } catch (error: any) {

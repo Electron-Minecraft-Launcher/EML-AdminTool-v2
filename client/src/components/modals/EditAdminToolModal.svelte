@@ -4,6 +4,7 @@
   import apiAdminService from '../../services/api/api-admin.service'
   import enFlag from '../../assets/images/en.png'
   import frFlag from '../../assets/images/fr.png'
+  import daFlag from '../../assets/images/da.png'
   import LoadingSplash from '../../components/layouts/LoadingSplash.svelte'
 
   interface Props {
@@ -62,6 +63,12 @@
         Français
       </p>
     </button>
+    <button type="button" class="secondary language" class:selected={language == 'da'} id="fr-button" onclick={() => (language = 'da')}>
+      <p>
+        <img src={daFlag} alt="Danish flag" />
+        Danish
+      </p>
+    </button>
 
     <p class="label">{$l.main.pin}</p>
     <label class="p" for="regenerate-pin">
@@ -90,13 +97,14 @@
     padding: 0;
     margin-top: 0px;
     margin-bottom: 0;
+    margin-right: 25px;
 
     &:hover img {
       filter: brightness(115%);
     }
 
-    &:nth-of-type(1) {
-      margin-right: 31px;
+    &:last-of-type {
+      margin-right: 0;
     }
 
     &.selected {
@@ -107,7 +115,7 @@
       }
     }
 
-    width: calc(50% - 18px);
+    width: calc(33% - 17.5px);
     text-align: left;
 
     img {

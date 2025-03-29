@@ -102,7 +102,7 @@ export default class Admin {
     }
 
     if (body.language) {
-      const language = body.language == 'fr' ? 'fr' : 'en'
+      const language = body.language == 'fr' ? 'fr' : body.language == 'da' ? 'da' : 'en'
 
       try {
         await languageService.check(language)

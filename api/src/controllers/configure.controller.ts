@@ -44,7 +44,7 @@ export default class Configure {
   }
 
   async language(req: Request<any>, body: any): Promise<DefaultSuccess> {
-    const language = body.language == 'fr' ? 'fr' : 'en'
+    const language = body.language == 'fr' ? 'fr' : body.language == 'da' ? 'da' : 'en'
 
     try {
       await languageService.check(language)

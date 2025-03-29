@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http'
 import authService from '../services/auth.service'
 import nexter from '../utils/nexter'
 import { ServiceException } from '../responses/types'
-import fetch, { FetchError, Response } from 'node-fetch'
+import fetch from 'node-fetch'
 import { Update as Update_ } from '../../../shared/types/data/update'
 import pkg from '../../../package.json'
 

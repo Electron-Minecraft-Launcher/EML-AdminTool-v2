@@ -3,6 +3,7 @@ import { env, l } from '../services/store'
 import apiEnvService from '../services/api/api-env.service'
 import en from '../assets/language/en'
 import fr from '../assets/language/fr'
+import da from '../assets/language/da'
 
 export const prerender = true
 export const ssr = false
@@ -33,6 +34,8 @@ export const load: LayoutLoad = async () => {
     finally: () => {
       if (env_.language == 'fr') {
         env_.language = fr
+      } else if (env_.language == 'da') {
+        env_.language = da
       } else {
         env_.language = en
       }
