@@ -1,6 +1,6 @@
 /**
  * Translated by Quacksometi
- * EML AdminTool v2.0.0-alpha.16
+ * EML AdminTool v2.0.0-beta.1
  */
 
 export default {
