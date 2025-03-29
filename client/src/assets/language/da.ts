@@ -1,3 +1,8 @@
+/**
+ * Translated by Quacksometi
+ * EML AdminTool v2.0.0-alpha.15
+ */
+
 export default {
   l: 'da',
   language: 'Dansk',
