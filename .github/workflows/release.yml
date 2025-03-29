@@ -27,6 +27,15 @@ jobs:
             echo "Tag $TAG is not on the main branch. Stopping workflow."
             exit 1
           fi
+      
+      - name: Verify file existence
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          FILE_NAME=".changelogs/${TAG}.md"
+          if [ ! -f "$FILE_NAME" ]; then
+            echo "File $FILE_NAME does not exist. Stopping workflow."
+            exit 1
+          fi
 
       - name: Build Docker image
         run: |
