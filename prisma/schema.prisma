@@ -1,0 +1,162 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../node_modules/.prisma/client"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+enum UserStatus {
+  ACTIVE // User is active and can log in
+  PENDING // User is pending activation by an admin
+  SPAM // User is flagged as spam (wrong PIN)
+  DELETED // User is deleted and cannot log in
+}
+
+enum PermissionType {
+  FILES_UPDATER_W
+  LOADER_W
+  BOOTSTRAPS_W
+  MAINTENANCE_W
+  NEWS_W
+  NEWS_A // News Admin can also delete news they did not create
+  NEWS_CATEGORIES_W
+  NEWS_TAGS_W
+  BACKGROUNDS_W
+  STATS_R
+  STATS_W
+}
+
+enum LoaderType {
+  VANILLA
+  FORGE
+  FABRIC
+}
+
+enum LoaderFormat {
+  INSTALLER
+  UNIVERSAL
+  CLIENT
+}
+
+enum BackgroundStatus {
+  ACTIVE
+  INACTIVE
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Configuration {
+  id        String   @id @default(cuid(2))
+  data      String
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id          String       @id @default(cuid(2))
+  username    String       @unique
+  password    String
+  status      UserStatus   @default(PENDING)
+  isAdmin     Boolean      @default(false)
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  logs        Log[]
+  news        News[]
+}
+
+model Permission {
+  id     String         @id @default(cuid(2))
+  type   PermissionType
+  userId String?
+  user   User?          @relation(fields: [userId], references: [id])
+
+  @@unique([type, userId])
+}
+
+model Log {
+  id        String   @id @default(cuid(2))
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  details   String?
+  timestamp DateTime @default(now())
+}
+
+model Loader {
+  id               String       @id @default(cuid(2))
+  type             LoaderType
+  minecraftVersion String
+  loaderVersion    String
+  format           LoaderFormat
+  fileUrl          String
+  updatedAt        DateTime     @updatedAt
+}
+
+model Bootstrap {
+  id         String   @id @default(cuid(2))
+  winFileUrl String
+  macFileUrl String
+  linFileUrl String
+  version    String
+  updatedAt  DateTime @updatedAt
+}
+
+model Maintenance {
+  id        String    @id @default(cuid(2))
+  startTime DateTime?
+  endTime   DateTime?
+  message   String
+}
+
+model News {
+  id         String          @id @default(cuid(2))
+  title      String
+  content    String
+  authorId   String
+  author     User            @relation(fields: [authorId], references: [id])
+  categories NewsCategorie[]
+  tags       NewsTag[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model NewsCategorie {
+  id        String   @id @default(cuid(2))
+  name      String   @unique
+  news      News?    @relation(fields: [newsId], references: [id])
+  newsId    String?
+  createdAt DateTime @default(now())
+}
+
+model NewsTag {
+  id     String  @id @default(cuid(2))
+  name   String  @unique
+  color  String?
+  news   News?   @relation(fields: [newsId], references: [id])
+  newsId String?
+}
+
+model Background {
+  id        String           @id @default(cuid(2))
+  name      String           @unique
+  fileUrl   String
+  status    BackgroundStatus @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Stat {
+  id        String   @id @default(cuid(2))
+  type      String
+  value     Int
+  createdAt DateTime @default(now())
+}
+
+model ExpiredToken {
+  id        String   @id @default(cuid(2))
+  token     String   @unique
+  expiredAt DateTime @default(now())
+}

@@ -1,33 +1,42 @@
 {
   "name": "eml-admintool",
   "version": "2.0.0-beta.1",
-  "description": "Manage your Minecraft Launcher (working with EML Core) from the Web.",
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
   "private": true,
-  "workspaces": [
-    "client",
-    "api",
-    "shared"
-  ],
+  "type": "module",
   "scripts": {
-    "dev:client": "npm run dev --workspace=client",
-    "dev:api": "npm run dev --workspace=api",
-    "dev": "concurrently \"npm run dev --workspace=client\" \"npm run dev --workspace=api\"",
-    "serve": "concurrently \"node ./client\" \"node ./api/src\""
-  },
-  "homepage": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues"
+    "dev": "vite dev --host",
+    "build": "vite build --emptyOutDir",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "@prisma/client": "^6.11.0",
+    "@sveltejs/adapter-node": "^5.2.12",
+    "buffer": "^6.0.3",
+    "chart.js": "^4.4.8",
+    "dotenv": "^17.0.1",
+    "luxon": "^3.6.1",
+    "monaco-editor": "^0.52.2",
+    "prisma": "^6.11.0",
+    "socket.io-client": "^4.8.1",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
-    "prettier-plugin-svelte": "^3.2.7"
+    "@sveltejs/kit": "^2.17.2",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@types/chart.js": "^2.9.41",
+    "@types/luxon": "^3.6.2",
+    "@types/node": "^24.0.10",
+    "prettier": "^3.5.2",
+    "prettier-plugin-svelte": "^3.3.3",
+    "sass": "^1.86.0",
+    "svelte": "^5.20.2",
+    "svelte-check": "^4.1.4",
+    "svelte-preprocess": "^6.0.3",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.1"
   }
 }

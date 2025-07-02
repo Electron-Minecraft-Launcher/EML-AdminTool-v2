@@ -21,34 +21,40 @@ services:
     environment:
       NODE_ENV: 'development'
     volumes:
-      - ../api:/app/api
-      - ../api/env:/app/api/env
-      - ../client:/app/client
-      - ../shared:/app/shared
+      - ../.svelte-kit:/app/.svelte-kit
+      - ../assets:/app/assets
+      - ../env:/app/env
+      - ../node_modules/.prisma:/app/node_modules/.prisma
+      - ../prisma:/app/prisma
+      - ../src:/app/src
+      - ../LICENSE:/app/LICENSE
       - ../package.json:/app/package.json
+      - ../svelte.config.js:/app/svelte.config.js
+      - ../tsconfig.json:/app/tsconfig.json
+      - ../vite.config.ts:/app/vite.config.ts
       - files:/app/files
       - loader:/app/loader
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - '3000:3000'
       - '5173:5173'
     depends_on:
       - db
   db:
-    image: mysql:8.4
+    image: postgres:latest
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      MYSQL_DATABASE: 'eml_admintool'
-      MYSQL_USER: 'eml'
-      MYSQL_PASSWORD: 'eml'
+      POSTGRES_USER: eml
+      POSTGRES_PASSWORD: eml
+      POSTGRES_DB: eml_admintool
     volumes:
-      - db-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
   
-  pma:
-    image: phpmyadmin/phpmyadmin
+  pga:
+    image: dpage/pgadmin4
     environment:
-      PMA_HOST: db
+      PGADMIN_DEFAULT_EMAIL: admintool@eml.com
+      PGADMIN_DEFAULT_PASSWORD: eml
     ports:
       - '8080:80'
     depends_on:
