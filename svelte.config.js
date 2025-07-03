@@ -5,7 +5,7 @@ import { sveltePreprocess } from 'svelte-preprocess'
 const config = {
   preprocess: sveltePreprocess({
     scss: {
-      includePaths: ['src/assets/scss/']
+      includePaths: ['assets/scss/']
     }
   }),
   compilerOptions: {

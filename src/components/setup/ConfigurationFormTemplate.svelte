@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { l } from '../../services/store'
+  import { l } from '../../lib/store/language'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
-  import apiConfigureService from '../../services/api/api-configure.service'
-  import { createEventDispatcher } from 'svelte'
-  import utils from '../../services/utils'
+  import { sleep } from '../../lib/utils/utils'
 
   interface Props {
     step: number
@@ -21,37 +19,37 @@
   let splash = $state(false)
 
   async function submit(e: SubmitEvent) {
-    e.preventDefault()
-    if (data.data == 'LANGUAGE') {
-      splash = true
-      ;(await apiConfigureService.putLanguage(data.value)).subscribe({
-        next: async (res) => {
-          nextStep({ step: step + 1 })
-          await utils.sleep(500)
-          splash = false
-        }
-      })
-    }
-    if (data.data == 'DATABASE') {
-      splash = true
-      ;(await apiConfigureService.putDbPassword(data.value)).subscribe({
-        next: async (res) => {
-          nextStep({ step: step + 1 })
-          await utils.sleep(500)
-          splash = false
-        }
-      })
-    }
-    if (data.data == 'ADMIN') {
-      splash = true
-      ;(await apiConfigureService.putAdmin(data.value.name + '', data.value.password + '')).subscribe({
-        next: async (res) => {
-          nextStep({ step: step + 1 })
-          await utils.sleep(500)
-          splash = false
-        }
-      })
-    }
+    // e.preventDefault()
+    // if (data.data == 'LANGUAGE') {
+    //   splash = true
+    //   ;(await apiConfigureService.putLanguage(data.value)).subscribe({
+    //     next: async (res) => {
+    //       nextStep({ step: step + 1 })
+    //       await utils.sleep(500)
+    //       splash = false
+    //     }
+    //   })
+    // }
+    // if (data.data == 'DATABASE') {
+    //   splash = true
+    //   ;(await apiConfigureService.putDbPassword(data.value)).subscribe({
+    //     next: async (res) => {
+    //       nextStep({ step: step + 1 })
+    //       await utils.sleep(500)
+    //       splash = false
+    //     }
+    //   })
+    // }
+    // if (data.data == 'ADMIN') {
+    //   splash = true
+    //   ;(await apiConfigureService.putAdmin(data.value.name + '', data.value.password + '')).subscribe({
+    //     next: async (res) => {
+    //       nextStep({ step: step + 1 })
+    //       await utils.sleep(500)
+    //       splash = false
+    //     }
+    //   })
+    // }
   }
 </script>
 

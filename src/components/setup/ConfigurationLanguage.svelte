@@ -1,19 +1,23 @@
 <script lang="ts">
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import LanguageModal from '../modals/LanguageModal.svelte'
-  import en from '../../assets/language/en'
-  import fr from '../../assets/language/fr'
-  import da from '../../assets/language/da'
-  import enFlag from '../../assets/images/en.png'
-  import frFlag from '../../assets/images/fr.png'
-  import daFlag from '../../assets/images/da.png'
-  import { env, l } from '../../services/store'
+  import LanguageModal from '../modals/Language.svelte'
+  import en from '../../../assets/locales/en'
+  import fr from '../../../assets/locales/fr'
+  import da from '../../../assets/locales/da'
+  import enFlag from '../../../assets/images/en.png'
+  import frFlag from '../../../assets/images/fr.png'
+  import daFlag from '../../../assets/images/da.png'
+  import { l } from '$lib/store/language'
+  import { getContext } from 'svelte'
+  import type { Env } from '$lib/utils/types'
 
   interface Props {
     nextStep: (arg: { step: number }) => void
   }
 
   let { nextStep }: Props = $props()
+
+  const env = getContext<Env>('env')
 
   let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
     data: 'LANGUAGE',
@@ -23,52 +27,52 @@
   let showLanguageModal = $state(false)
 
   async function toEn() {
-    if (data.value != 'en') {
-      if (data.value == 'fr' || data.value == 'da') {
-        data.value = undefined
-      }
-      data.value = 'en'
-      let env_ = $env
-      env_.language = en
-      env.set(env_)
-      l.set(en)
-    } else {
-      data.value = undefined
-    }
+    // if (data.value != 'en') {
+    //   if (data.value == 'fr' || data.value == 'da') {
+    //     data.value = undefined
+    //   }
+    //   data.value = 'en'
+    //   let env_ = $env
+    //   env_.language = en
+    //   env.set(env_)
+    //   l.set(en)
+    // } else {
+    //   data.value = undefined
+    // }
   }
 
   async function toFr() {
-    if (data.value != 'fr') {
-      if (data.value == 'en' || data.value == 'da') {
-        data.value = undefined
-      }
-      data.value = 'fr'
-      let env_ = $env
-      env_.language = fr
-      env.set(env_)
-      l.set(fr)
-    } else {
-      data.value = undefined
-      let env_ = $env
-      env_.language = en
-      env.set(env_)
-      l.set(en)
-    }
+    // if (data.value != 'fr') {
+    //   if (data.value == 'en' || data.value == 'da') {
+    //     data.value = undefined
+    //   }
+    //   data.value = 'fr'
+    //   let env_ = $env
+    //   env_.language = fr
+    //   env.set(env_)
+    //   l.set(fr)
+    // } else {
+    //   data.value = undefined
+    //   let env_ = $env
+    //   env_.language = en
+    //   env.set(env_)
+    //   l.set(en)
+    // }
   }
 
   async function toDa() {
-    if (data.value != 'da') {
-      if (data.value == 'en' || data.value == 'fr') {
-        data.value = undefined
-      }
-      data.value = 'da'
-      let env_ = $env
-      env_.language = da
-      env.set(env_)
-      l.set(da)
-    } else {
-      data.value = undefined
-    }
+    // if (data.value != 'da') {
+    //   if (data.value == 'en' || data.value == 'fr') {
+    //     data.value = undefined
+    //   }
+    //   data.value = 'da'
+    //   let env_ = $env
+    //   env_.language = da
+    //   env.set(env_)
+    //   l.set(da)
+    // } else {
+    //   data.value = undefined
+    // }
   }
 
   async function languageModal() {

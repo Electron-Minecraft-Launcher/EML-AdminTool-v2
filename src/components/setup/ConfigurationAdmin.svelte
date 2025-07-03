@@ -1,6 +1,6 @@
 <script lang="ts">
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import { l } from '../../services/store'
+  import { l } from '../../lib/store/language'
 
   interface Props {
     nextStep: (arg: { step: number }) => void

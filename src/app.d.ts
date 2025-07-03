@@ -1,9 +1,19 @@
+import type { LanguageCode } from "$lib/store/language"
+
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
   namespace App {
     // interface Error {}
-    // interface Locals {}
+    interface Locals {
+      isConfigured: boolean
+      env: {
+        language: LanguageCode
+        name: string
+        theme: string
+        version: string
+      }
+    }
     // interface PageData {}
     // interface PageState {}
     // interface Platform {}
@@ -11,3 +21,4 @@ declare global {
 }
 
 export {}
+

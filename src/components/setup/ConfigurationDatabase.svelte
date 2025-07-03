@@ -1,6 +1,6 @@
 <script lang="ts">
   import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import { env, l } from '../../services/store'
+  import { l } from '$lib/store/language'
 
   interface Props {
     nextStep: (arg: { step: number }) => void
@@ -17,9 +17,9 @@
     value: undefined
   })
 
-  env.subscribe((value) => {
-    if (value && value.language && typeof value.language !== 'string') inputChange()
-  })
+  // env.subscribe((value) => {
+  //   if (value && value.language && typeof value.language !== 'string') inputChange()
+  // })
 
   function inputChange() {
     if (!data.value) {
