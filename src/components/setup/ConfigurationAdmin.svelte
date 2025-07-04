@@ -132,7 +132,7 @@
 </ConfigurationFormTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/configure.scss';
+  @use '../../assets/scss/setup.scss';
 
   // div.flex {
   //   display: flex;

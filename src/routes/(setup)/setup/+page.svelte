@@ -2,41 +2,30 @@
   import ConfigurationAdmin from '../../../components/setup/ConfigurationAdmin.svelte'
   import ConfigurationDatabase from '../../../components/setup/ConfigurationDatabase.svelte'
   import ConfigurationLanguage from '../../../components/setup/ConfigurationLanguage.svelte'
-  import { l } from '../../../lib/store/language'
+  import { l, type LanguageCode } from '$lib/store/language'
   import { goto } from '$app/navigation'
-  import type { PageData, PageProps } from './$types'
-  import { sleep } from '../../../lib/utils/utils'
+  import type { PageProps } from './$types'
+  import { sleep } from '$lib/utils/utils'
   import { fade } from 'svelte/transition'
-  import { getContext } from 'svelte'
+  import { getContext, onMount } from 'svelte'
   import type { Env } from '$lib/utils/types'
 
   let { data }: PageProps = $props()
 
   const env = getContext<Env>('env')
 
+  let setupData = $state({
+    language: '' as LanguageCode | '',
+    dbPassword: '',
+    adminUsername: '',
+    adminPassword: ''
+  })
+
   let h1Visible: boolean = $state(false)
   let sliderVisible: boolean = $state(false)
   let h1: string = $state('')
 
   let step = $state(0)
-
-  start()
-  async function start() {
-    await sleep(1000)
-    // h1 = 'Welcome!'
-    // h1Visible = true
-    // await sleep(2000)
-    // h1Visible = false
-    // await sleep(1000)
-    // h1 = 'You can now configure EML&nbsp;Admintool.'
-    // h1Visible = true
-    // await sleep(3000)
-    h1Visible = false
-    await sleep(500)
-
-    sliderVisible = true
-    step = 1
-  }
 
   function nextStep() {
     step++
@@ -60,6 +49,23 @@
     await sleep(1000)
     goto('/')
   }
+
+  onMount(async () => {
+    await sleep(1000)
+    // h1 = 'Welcome!'
+    // h1Visible = true
+    // await sleep(2000)
+    // h1Visible = false
+    // await sleep(1000)
+    // h1 = 'You can now configure EML&nbsp;Admintool.'
+    // h1Visible = true
+    // await sleep(3000)
+    h1Visible = false
+    await sleep(500)
+
+    sliderVisible = true
+    step = 1
+  })
 </script>
 
 <svelte:head>
@@ -77,19 +83,19 @@
 {#if sliderVisible}
   <div
     class="config-slider"
-    class:step-0={step == 0}
-    class:step-1={step == 1}
-    class:step-2={step == 2}
-    class:step-3={step == 3}
-    class:step-4={step == 4}
+    class:step-0={step === 0}
+    class:step-1={step === 1}
+    class:step-2={step === 2}
+    class:step-3={step === 3}
+    class:step-4={step === 4}
     id="config-slider"
     transition:fade
   >
     <div class="config-1">
-      <ConfigurationLanguage {nextStep} />
+      <ConfigurationLanguage bind:step bind:setupData />
     </div>
     <div class="config-2">
-      <ConfigurationDatabase {nextStep} {prevStep} />
+      <ConfigurationDatabase bind:step bind:setupData />
     </div>
     <div class="config-3">
       <ConfigurationAdmin {nextStep} {prevStep} />

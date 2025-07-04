@@ -17,7 +17,7 @@ export default {
     actions: `Actions`
   },
   configuration: {
-    configuration: `Configuration`,
+    configuration: `Setup`,
     step1: {
       title: `Firstly, choose the language of your EML&nbsp;AdminTool:`,
       subtitle: `This language will be applied for all users.`,
@@ -30,7 +30,7 @@ export default {
       generate: `Generate`,
       veryWeak: `Very weak`,
       weak: `Weak`,
-      ok: `Ok`,
+      medium: `Medium`,
       strong: `Strong`,
       veryStrong: `Very strong`
     },

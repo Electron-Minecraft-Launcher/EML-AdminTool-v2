@@ -73,13 +73,17 @@ label.p {
   color: black;
 }
 
-a:not(.not-a) {
+a:not(.not-a), button.a {
   color: var(--primary-color);
   text-decoration: none;
+  border: none;
   border-bottom: 1px solid var(--primary-color);
   transition: all 0.2s ease;
   display: inline-block;
   cursor: pointer;
+  background: none;
+  font-size: 1em;
+  padding: 0;
 
   &.small-link {
     font-size: 14px;
@@ -170,7 +174,7 @@ select {
 
 }
 
-button {
+button:not(.a) {
   display: block;
   border: 0;
   border-radius: 5px;
@@ -303,7 +307,8 @@ section.section {
   }
 }
 
-div.monaco-editor, div.monaco-editor>div {
+div.monaco-editor,
+div.monaco-editor>div {
   border-radius: 5px;
 
   * {

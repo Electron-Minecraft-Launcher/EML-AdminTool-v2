@@ -35,7 +35,7 @@ export default {
       generate: `Generer`,
       veryWeak: `Meget svag`,
       weak: `Svag`,
-      ok: `Ok`,
+      medium: `Medium`,
       strong: `Stærk`,
       veryStrong: `Meget stærk`
     },

@@ -26,18 +26,8 @@ button.primary {
   width: auto !important;
 }
 
-div.steps-actions {
-  div.prev,
-  div.next {
-    display: inline-block;
-    width: 50%;
-  }
-
-  div.next {
-    text-align: right;
-
-    button {
-      display: inline-block;
-    }
-  }
+div.actions {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
 }

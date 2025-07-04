@@ -83,5 +83,5 @@
 </form>
 
 <style lang="scss">
-  @use '../../assets/scss/configure.scss';
+  @use '../../assets/scss/setup.scss';
 </style>

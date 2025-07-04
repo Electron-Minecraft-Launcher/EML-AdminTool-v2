@@ -1,121 +1,49 @@
 <script lang="ts">
-  import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import { l } from '$lib/store/language'
+  import { passwordStrength, type Options } from 'check-password-strength'
+  import generator from 'generate-password-browser'
+  import { l, type LanguageCode } from '$lib/store/language'
 
   interface Props {
-    nextStep: (arg: { step: number }) => void
-    prevStep: (arg: { step: number }) => void
+    step: number
+    setupData: { language: LanguageCode | ''; dbPassword: string; adminUsername: string; adminPassword: string }
   }
 
-  let { nextStep, prevStep }: Props = $props()
+  let { step = $bindable(), setupData = $bindable() }: Props = $props()
 
-  let relN: string = $state('')
-  let rel: string = $state('   ')
+  const passwordStrengthOptions: Options<string> = [
+    { id: 0, value: 'veryWeak', minDiversity: 0, minLength: 0 },
+    { id: 1, value: 'weak', minDiversity: 1, minLength: 6 },
+    { id: 2, value: 'medium', minDiversity: 2, minLength: 10 },
+    { id: 3, value: 'strong', minDiversity: 3, minLength: 12 },
+    { id: 4, value: 'veryStrong', minDiversity: 4, minLength: 16 }
+  ]
 
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
-    data: 'DATABASE',
-    value: undefined
+  let pwdStrength: [number, string] = $derived.by(() => {
+    const strength = passwordStrength(setupData.dbPassword, passwordStrengthOptions)
+    console.log('Password strength:', strength)
+    return [strength.id, strength.value]
   })
-
-  // env.subscribe((value) => {
-  //   if (value && value.language && typeof value.language !== 'string') inputChange()
-  // })
-
-  function inputChange() {
-    if (!data.value) {
-      rel = $l.configuration.step2.veryWeak
-      relN = 0 + ''
-      return
-    }
-
-    var len = 0
-    if (data.value.length >= 12) len = 1
-
-    var upp = 0
-    if (data.value.match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)) upp = 1
-
-    var num = 0
-    if (data.value.match(/^(?=.*\d).+$/)) num = 1
-
-    var spe = 0
-    if (data.value.match(/^(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).+$/)) spe = 1
-
-    switch (len + upp + num + spe) {
-      case 0:
-        rel = $l.configuration.step2.veryWeak
-        relN = 0 + ''
-        break
-      case 1:
-        if (data.value.length >= 5) {
-          rel = $l.configuration.step2.weak
-          relN = 1 + ''
-        }
-        break
-      case 2:
-        if (data.value.length >= 8) {
-          rel = $l.configuration.step2.ok
-          relN = 2 + ''
-        }
-        break
-      case 3:
-        if (data.value.length >= 8) {
-          rel = $l.configuration.step2.strong
-          relN = 3 + ''
-        }
-        break
-      case 4:
-        if (data.value.length >= 12) {
-          rel = $l.configuration.step2.veryStrong
-          relN = 4 + ''
-        }
-        break
-      default:
-        break
-    }
-  }
 
   function generatePassword() {
-    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
-    const numericChars = '0123456789'
-    const specialChars = '!@#$%^&*()_+-=[]{};\': "\\|,.<>/?'
-    let password = ''
+    const password = generator.generate({
+      length: 24,
+      numbers: true,
+      symbols: true,
+      uppercase: true,
+      strict: true
+    })
 
-    password += uppercaseChars.charAt(Math.floor(Math.random() * uppercaseChars.length))
-    password += lowercaseChars.charAt(Math.floor(Math.random() * lowercaseChars.length))
-    password += numericChars.charAt(Math.floor(Math.random() * numericChars.length))
-    password += specialChars.charAt(Math.floor(Math.random() * specialChars.length))
-
-    while (password.length < 16) {
-      const charSet = uppercaseChars + lowercaseChars + numericChars + specialChars
-      password += charSet.charAt(Math.floor(Math.random() * charSet.length))
-    }
-
-    let chars = password.split('')
-    for (let i = chars.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[chars[i], chars[j]] = [chars[j], chars[i]]
-    }
-    password = chars.join('')
-
-    data.value = password
-
-    inputChange()
+    setupData.dbPassword = password
   }
-
-  $effect(() => {
-    // if (data.value || data.value == '') {
-      inputChange()
-    // }
-  })
 </script>
 
-<ConfigurationFormTemplate step={2} cond={+relN >= 3} {data} {nextStep} {prevStep}>
+<form>
   <h2>{@html $l.configuration.step2.title}</h2>
   <p><b>{$l.configuration.step2.subtitle}</b></p>
-  <div class="actions">
+
+  <div>
     <div class="flex">
-      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={data.value} />
+      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={setupData.dbPassword} />
 
       <button class="secondary" onclick={generatePassword} type="button">
         <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.configuration.step2.generate}
@@ -125,20 +53,25 @@
     <div class="rel-progress">
       <div
         class="rel-progress-in"
-        class:progress-0={relN == '0'}
-        class:progress-1={relN == '1'}
-        class:progress-2={relN == '2'}
-        class:progress-3={relN == '3'}
-        class:progress-4={relN == '4'}
+        class:progress-0={pwdStrength[0] === 0}
+        class:progress-1={pwdStrength[0] === 1}
+        class:progress-2={pwdStrength[0] === 2}
+        class:progress-3={pwdStrength[0] === 3}
+        class:progress-4={pwdStrength[0] === 4}
       ></div>
     </div>
 
-    <span class="rel">{rel}</span>
+    <span class="rel">{$l.configuration.step2[pwdStrength[1]]}</span>
   </div>
-</ConfigurationFormTemplate>
+
+  <div class="actions">
+    <button type="submit" class="primary" disabled={pwdStrength[0] < 3}>{$l.main.next}&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></button>
+    <button type="button" class="secondary" onclick={() => step--}><i class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;{$l.main.prev}</button>
+  </div>
+</form>
 
 <style lang="scss">
-  @use '../../assets/scss/configure.scss';
+  @use '../../assets/scss/setup.scss';
 
   div.flex {
     display: flex;

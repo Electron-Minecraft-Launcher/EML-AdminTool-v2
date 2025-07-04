@@ -10,21 +10,36 @@ export const currentLanguage = writable<LanguageCode>('en')
 
 export const l = derived(currentLanguage, ($currentLanguage) => {
   const selected = languages[$currentLanguage] ?? en
+  return createTranslationProxy(selected, languages.en)
+})
 
+function createTranslationProxy(selected: any, fallback: any): any {
   return new Proxy(
     {},
     {
-      get(_, key: string) {
+      get(_, key) {
+        if (typeof key !== 'string') return undefined
+
         if (key in selected) {
-          return selected[key as keyof typeof en]
+          const value = selected[key]
+          if (typeof value === 'object' && value !== null) {
+            return createTranslationProxy(value, fallback?.[key] ?? {})
+          }
+          return value
         }
-        if (key in en) {
-          console.warn(`Missing translation for '${key}' in '${$currentLanguage}', using fallback.`)
-          return en[key as keyof typeof en]
+
+        if (key in fallback) {
+          const value = fallback[key]
+          if (typeof value === 'object' && value !== null) {
+            return createTranslationProxy(value, fallback[key])
+          }
+          console.warn(`Missing translation for '${key}', using fallback.`)
+          return value
         }
-        console.error(`Missing translation for '${key}' in '${$currentLanguage}' AND in fallback.`)
+
+        console.error(`Missing translation for '${key}' in both selected and fallback.`)
         return key
       }
     }
-  ) as typeof en
-})
+  )
+}
