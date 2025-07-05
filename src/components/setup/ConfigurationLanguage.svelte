@@ -1,8 +1,10 @@
 <script lang="ts">
   import LanguageModal from '../modals/Language.svelte'
-  import enFlag from '../../../assets/images/en.png'
-  import frFlag from '../../../assets/images/fr.png'
-  import daFlag from '../../../assets/images/da.png'
+  import enFlag from '../../../assets/images/flags/en.png'
+  import frFlag from '../../../assets/images/flags/fr.png'
+  import deFlag from '../../../assets/images/flags/de.png'
+  import itFlag from '../../../assets/images/flags/it.png'
+  import daFlag from '../../../assets/images/flags/da.png'
   import { currentLanguage, l, type LanguageCode } from '$lib/store/language'
 
   interface Props {
@@ -31,25 +33,39 @@
   <h2>{@html $l.configuration.step1.title}</h2>
   <p><b>{$l.configuration.step1.subtitle}</b></p>
 
-  <div class="language">
-    <button type="button" class="secondary" class:selected={setupData.language === 'en'} id="en-button" onclick={() => switchLanguage('en')}>
-      <p>
-        <img src={enFlag} alt="English flag" />
-        English
-      </p>
-    </button>
-    <button type="button" class="secondary" class:selected={setupData.language === 'fr'} id="fr-button" onclick={() => switchLanguage('fr')}>
-      <p>
-        <img src={frFlag} alt="French flag" />
-        Français
-      </p>
-    </button>
-    <button type="button" class="secondary" class:selected={setupData.language === 'da'} id="da-button" onclick={() => switchLanguage('da')}>
-      <p>
-        <img src={daFlag} alt="Danish flag" />
-        Dansk
-      </p>
-    </button>
+  <div>
+    <div class="language">
+      <button type="button" class="secondary" class:selected={setupData.language === 'en'} id="en-button" onclick={() => switchLanguage('en')}>
+        <p>
+          <img src={enFlag} alt="English flag" />
+          English
+        </p>
+      </button>
+      <button type="button" class="secondary" class:selected={setupData.language === 'fr'} id="fr-button" onclick={() => switchLanguage('fr')}>
+        <p>
+          <img src={frFlag} alt="French flag" />
+          Français
+        </p>
+      </button>
+      <button type="button" class="secondary" class:selected={setupData.language === 'de'} id="de-button" onclick={() => switchLanguage('de')}>
+        <p>
+          <img src={deFlag} alt="German flag" />
+          Deutsch
+        </p>
+      </button>
+      <button type="button" class="secondary" class:selected={setupData.language === 'it'} id="it-button" onclick={() => switchLanguage('it')}>
+        <p>
+          <img src={itFlag} alt="Italian flag" />
+          Italiano
+        </p>
+      </button>
+      <button type="button" class="secondary" class:selected={setupData.language === 'da'} id="da-button" onclick={() => switchLanguage('da')}>
+        <p>
+          <img src={daFlag} alt="Danish flag" />
+          Dansk
+        </p>
+      </button>
+    </div>
 
     <p class="center">
       <button class="a small-link" type="button" onclick={() => (showLanguageModal = true)}>{$l.configuration.step1.other}</button>
@@ -69,12 +85,18 @@
   div.language {
     width: 650px;
     margin: 0 auto;
+    display: flex;
+    margin-bottom: 30px;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
 
     button:not(.a) {
       display: inline-block !important;
       padding: 0;
-      margin-bottom: 15px;
-      margin-right: 25px;
+      margin: 0;
+      text-align: left;
+      width: 200px;
 
       &:hover img {
         filter: brightness(115%);
@@ -92,11 +114,8 @@
         }
       }
 
-      width: calc(33% - 17.5px);
-      text-align: left;
-
       img {
-        width: 80px;
+        width: 70px;
         height: 40px;
         display: inline-block;
         vertical-align: middle;
@@ -113,13 +132,9 @@
       }
     }
 
-    p.center {
-      margin-bottom: 0;
-    }
   }
 
-  // app-language-modal {
-  //   position: absolute;
-  //   top: -5px;
-  // }
+  p.center {
+    margin-bottom: 0;
+  }
 </style>

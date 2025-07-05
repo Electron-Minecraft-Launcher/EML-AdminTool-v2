@@ -18,10 +18,9 @@
     { id: 4, value: 'veryStrong', minDiversity: 4, minLength: 16 }
   ]
 
-  let pwdStrength: [number, string] = $derived.by(() => {
+  let pwdStrength: [number, 'veryWeak' | 'weak' | 'medium' | 'strong' | 'veryStrong'] = $derived.by(() => {
     const strength = passwordStrength(setupData.dbPassword, passwordStrengthOptions)
-    console.log('Password strength:', strength)
-    return [strength.id, strength.value]
+    return [strength.id, strength.value as 'veryWeak' | 'weak' | 'medium' | 'strong' | 'veryStrong']
   })
 
   function generatePassword() {
@@ -35,15 +34,22 @@
 
     setupData.dbPassword = password
   }
+
+  function submit(e: SubmitEvent) {
+    e.preventDefault()
+    if (!setupData.dbPassword) return
+    step++
+  }
 </script>
 
-<form>
+<form onsubmit={submit}>
   <h2>{@html $l.configuration.step2.title}</h2>
   <p><b>{$l.configuration.step2.subtitle}</b></p>
 
   <div>
+    <label for="db-password" style="margin-bottom: 0;">{$l.configuration.step2.placeholder}</label>
     <div class="flex">
-      <input type="text" name="db-password" placeholder={$l.configuration.step2.placeholder} bind:value={setupData.dbPassword} />
+      <input type="text" name="db-password" id="db-password" bind:value={setupData.dbPassword} />
 
       <button class="secondary" onclick={generatePassword} type="button">
         <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.configuration.step2.generate}

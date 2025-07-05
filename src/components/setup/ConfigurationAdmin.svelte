@@ -1,135 +1,89 @@
 <script lang="ts">
-  import ConfigurationFormTemplate from './ConfigurationFormTemplate.svelte'
-  import { l } from '../../lib/store/language'
+  import type { SubmitFunction } from '@sveltejs/kit'
+  import { l, type LanguageCode } from '../../lib/store/language'
+  import { passwordStrength, type Options } from 'check-password-strength'
+  import LoadingSplash from '../layouts/LoadingSplash.svelte'
+  import { applyAction, enhance } from '$app/forms'
 
   interface Props {
-    nextStep: (arg: { step: number }) => void
-    prevStep: (arg: { step: number }) => void
+    step: number
+    setupData: { language: LanguageCode | ''; dbPassword: string; adminUsername: string; adminPassword: string }
   }
 
-  let { nextStep, prevStep }: Props = $props()
+  let showLoader: boolean = $state(false)
+  let passwordCfr = $state('')
 
-  let relN: string = $state('')
-  let rel: string = $state('   ')
+  const passwordStrengthOptions: Options<string> = [
+    { id: 0, value: 'veryWeak', minDiversity: 0, minLength: 0 },
+    { id: 1, value: 'weak', minDiversity: 1, minLength: 6 },
+    { id: 2, value: 'medium', minDiversity: 2, minLength: 10 },
+    { id: 3, value: 'strong', minDiversity: 3, minLength: 12 },
+    { id: 4, value: 'veryStrong', minDiversity: 4, minLength: 16 }
+  ]
 
-  let data: { data: 'LANGUAGE' | 'DATABASE' | 'ADMIN'; value: any } = $state({
-    data: 'ADMIN',
-    value: {
-      name: '',
-      password: ''
-    }
+  let pwdStrength: [number, 'veryWeak' | 'weak' | 'medium' | 'strong' | 'veryStrong'] = $derived.by(() => {
+    const strength = passwordStrength(setupData.adminPassword, passwordStrengthOptions)
+    return [strength.id, strength.value as 'veryWeak' | 'weak' | 'medium' | 'strong' | 'veryStrong']
   })
 
-  function inputChange() {
-    if (!data.value.password) {
-      rel = $l.configuration.step2.veryWeak
-      relN = 0 + ''
-      return
-    }
+  let { step = $bindable(), setupData = $bindable() }: Props = $props()
 
-    var len = 0
-    if (data.value.password.length >= 12) len = 1
+  const enhanceForm: SubmitFunction = ({ formData }) => {
+    showLoader = true
 
-    var upp = 0
-    if (data.value.password.match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)) upp = 1
+    return async ({ result, update }) => {
+      update({ reset: false })
+      showLoader = false
 
-    var num = 0
-    if (data.value.password.match(/^(?=.*\d).+$/)) num = 1
+      if (result.type === 'failure') {
+        // TODO
+      } else if (result.type === 'success') {
+        step++
+      }
 
-    var spe = 0
-    if (data.value.password.match(/^(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).+$/)) spe = 1
-
-    switch (len + upp + num + spe) {
-      case 0:
-        rel = $l.configuration.step2.veryWeak
-        relN = 0 + ''
-        break
-      case 1:
-        if (data.value.password.length >= 5) {
-          rel = $l.configuration.step2.weak
-          relN = 1 + ''
-        }
-        break
-      case 2:
-        if (data.value.password.length >= 8) {
-          rel = $l.configuration.step2.ok
-          relN = 2 + ''
-        }
-        break
-      case 3:
-        if (data.value.password.length >= 8) {
-          rel = $l.configuration.step2.strong
-          relN = 3 + ''
-        }
-        break
-      case 4:
-        if (data.value.password.length >= 12) {
-          rel = $l.configuration.step2.veryStrong
-          relN = 4 + ''
-        }
-        break
-      default:
-        break
+      await applyAction(result)
     }
   }
-
-  function generatePassword() {
-    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
-    const numericChars = '0123456789'
-    const specialChars = '!@#$%^&*()_+-=[]{};\': "\\|,.<>/?'
-    let password = ''
-
-    password += uppercaseChars.charAt(Math.floor(Math.random() * uppercaseChars.length))
-    password += lowercaseChars.charAt(Math.floor(Math.random() * lowercaseChars.length))
-    password += numericChars.charAt(Math.floor(Math.random() * numericChars.length))
-    password += specialChars.charAt(Math.floor(Math.random() * specialChars.length))
-
-    while (password.length < 16) {
-      const charSet = uppercaseChars + lowercaseChars + numericChars + specialChars
-      password += charSet.charAt(Math.floor(Math.random() * charSet.length))
-    }
-
-    let chars = password.split('')
-    for (let i = chars.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[chars[i], chars[j]] = [chars[j], chars[i]]
-    }
-    password = chars.join('')
-
-    data.value = password
-
-    inputChange()
-  }
-
-  $effect(() => {
-    // if (data.value || data.value == '') {
-      inputChange()
-    // }
-  })
 </script>
 
-<ConfigurationFormTemplate step={2} cond={+relN >= 3 && data.value.name.length > 2} {data} {nextStep} {prevStep}>
+<form method="POST" action="?/setup" use:enhance={enhanceForm}>
+  {#if showLoader}
+    <LoadingSplash transparent={true}></LoadingSplash>
+  {/if}
+
   <h2>{@html $l.configuration.step3.title}</h2>
   <p><b>{@html $l.configuration.step3.subtitle}</b></p>
-  <div class="actions">
-    <input type="text" name="name" placeholder={$l.main.serverName} bind:value={data.value.name} />
-    <input type="password" name="password" placeholder={$l.main.password} bind:value={data.value.password} onkeyup={inputChange} />
+
+  <div>
+    <label for="admin-username">{$l.main.username}</label>
+    <input type="text" name="admin-username" id="admin-username" bind:value={setupData.adminUsername} />
+
+    <label for="admin-password">{$l.main.password}</label>
+    <input type="password" name="admin-password" id="admin-password" bind:value={setupData.adminPassword} />
 
     <div class="rel-progress">
       <div
         class="rel-progress-in"
-        class:progress-0={relN == '0'}
-        class:progress-1={relN == '1'}
-        class:progress-2={relN == '2'}
-        class:progress-3={relN == '3'}
-        class:progress-4={relN == '4'}
+        class:progress-0={pwdStrength[0] === 0}
+        class:progress-1={pwdStrength[0] === 1}
+        class:progress-2={pwdStrength[0] === 2}
+        class:progress-3={pwdStrength[0] === 3}
+        class:progress-4={pwdStrength[0] === 4}
       ></div>
     </div>
+    <span class="rel">{$l.configuration.step2[pwdStrength[1]]}</span>
 
-    <span class="rel">{rel}</span>
+    <label for="admin-password-cfr">{$l.configuration.step3.confirmPassword}</label>
+    <input type="password" name="admin-password-cfr" id="admin-password-cfr" bind:value={passwordCfr} />
   </div>
-</ConfigurationFormTemplate>
+
+  <div class="actions">
+    <button type="submit" class="primary" disabled={pwdStrength[0] < 2 || !setupData.adminUsername || passwordCfr !== setupData.adminPassword}
+      >{$l.main.finish}&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></button
+    >
+    <button type="button" class="secondary" onclick={() => step--}><i class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;{$l.main.prev}</button>
+  </div>
+</form>
 
 <style lang="scss">
   @use '../../assets/scss/setup.scss';

@@ -21,8 +21,8 @@
     adminPassword: ''
   })
 
-  let h1Visible: boolean = $state(false)
-  let sliderVisible: boolean = $state(false)
+  let showH1: boolean = $state(false)
+  let showSlider: boolean = $state(false)
   let h1: string = $state('')
 
   let step = $state(0)
@@ -40,12 +40,12 @@
 
   async function finish() {
     await sleep(1000)
-    sliderVisible = false
+    showSlider = false
     await sleep(500)
     h1 = $l.configuration.finally
-    h1Visible = true
+    showH1 = true
     await sleep(2000)
-    h1Visible = false
+    showH1 = false
     await sleep(1000)
     goto('/')
   }
@@ -60,10 +60,10 @@
     // h1 = 'You can now configure EML&nbsp;Admintool.'
     // h1Visible = true
     // await sleep(3000)
-    h1Visible = false
+    showH1 = false
     await sleep(500)
 
-    sliderVisible = true
+    showSlider = true
     step = 1
   })
 </script>
@@ -76,11 +76,11 @@
   <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4}></span>
 </div>
 
-{#if h1Visible}
+{#if showH1}
   <h1 transition:fade>{@html h1}</h1>
 {/if}
 
-{#if sliderVisible}
+{#if showSlider}
   <div
     class="config-slider"
     class:step-0={step === 0}
@@ -98,7 +98,7 @@
       <ConfigurationDatabase bind:step bind:setupData />
     </div>
     <div class="config-3">
-      <ConfigurationAdmin {nextStep} {prevStep} />
+      <ConfigurationAdmin bind:step bind:setupData />
     </div>
   </div>
 {/if}
@@ -116,31 +116,30 @@
   div.config-slider {
     width: 400vw;
     overflow-x: hidden;
-    position: relative;
-    transition: left 0.5s ease;
+    transition: transform 0.5s ease;
+    display: flex;
 
     &.step-1,
     &.step-0 {
-      left: 0;
+      transform: translateX(0);
     }
 
     &.step-2 {
-      left: -100vw;
+      transform: translateX(-100vw);
     }
 
     &.step-3 {
-      left: -200vw;
+      transform: translateX(-200vw);
     }
 
     &.step-4 {
-      left: -300vw;
+      transform: translateX(-300vw);
     }
 
     div.config-1,
     div.config-2,
     div.config-3 {
       width: 100vw;
-      display: inline-block;
       vertical-align: top;
       height: calc(100vh - 5px);
     }

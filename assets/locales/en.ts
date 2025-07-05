@@ -36,7 +36,8 @@ export default {
     },
     step3: {
       title: `Then, choose your server name and a password:`,
-      subtitle: `This server name and password will be your admin account login.`
+      subtitle: `This server name and password will be your admin account login.`,
+      confirmPassword: `Confirm password`
     },
     finally: 'You can now use EML&nbsp;AdminTool!'
   },
@@ -104,7 +105,7 @@ export default {
   modals: {
     language: {
       title: `You speak another language?`,
-      content: `EML AdminTool is currently available only in French and English.<br>
+      content: `EML AdminTool is currently available in only five languages.<br>
 However, we are thrilled to see that this project is reaching more and more people in different countries!<br>
 <br>
 Therefore, if you would like to help us translate EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of EML AdminTool!`

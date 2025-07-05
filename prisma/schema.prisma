@@ -11,20 +11,6 @@ enum UserStatus {
   DELETED // User is deleted and cannot log in
 }
 
-enum PermissionType {
-  FILES_UPDATER_W
-  LOADER_W
-  BOOTSTRAPS_W
-  MAINTENANCE_W
-  NEWS_W
-  NEWS_A // News Admin can also delete news they did not create
-  NEWS_CATEGORIES_W
-  NEWS_TAGS_W
-  BACKGROUNDS_W
-  STATS_R
-  STATS_W
-}
-
 enum LoaderType {
   VANILLA
   FORGE
@@ -47,33 +33,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Configuration {
+model Environment {
   id        String   @id @default(cuid(2))
-  data      String
-  value     String
+  language  String   @default("en")
+  name      String   @default("EML")
+  theme     String   @default("default")
+  version   String   @default("1.0.0")
   updatedAt DateTime @updatedAt
 }
 
 model User {
-  id          String       @id @default(cuid(2))
-  username    String       @unique
-  password    String
-  status      UserStatus   @default(PENDING)
-  isAdmin     Boolean      @default(false)
-  permissions Permission[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  logs        Log[]
-  news        News[]
-}
-
-model Permission {
-  id     String         @id @default(cuid(2))
-  type   PermissionType
-  userId String?
-  user   User?          @relation(fields: [userId], references: [id])
-
-  @@unique([type, userId])
+  id               String     @id @default(cuid(2))
+  username         String     @unique
+  password         String
+  status           UserStatus @default(PENDING)
+  isAdmin          Boolean    @default(false)
+  p_filesUpdater   Int        @default(0) // 0 = no access, 1 = read and write
+  p_loader         Int        @default(0) // 0 = no access, 1 = read and write
+  p_bootstraps     Int        @default(0) // 0 = no access, 1 = read and write
+  p_maintenance    Int        @default(0) // 0 = no access, 1 = read and write
+  p_news           Int        @default(0) // 0 = no access, 1 = read and write, 2 = admin (can delete news they did not create)
+  p_newsCategories Int        @default(0) // 0 = no access, 1 = read and write
+  p_newsTags       Int        @default(0) // 0 = no access, 1 = read and write
+  p_backgrounds    Int        @default(0) // 0 = no access, 1 = read and write
+  p_stats          Int        @default(0) // 0 = no access, 1 = read, 2 = read and reset
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  logs             Log[]
+  news             News[]
 }
 
 model Log {

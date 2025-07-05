@@ -22,6 +22,7 @@
     "generate-password-browser": "^1.1.0",
     "luxon": "^3.6.1",
     "monaco-editor": "^0.52.2",
+    "pg": "^8.16.3",
     "prisma": "^6.11.0",
     "socket.io-client": "^4.8.1",
     "zod": "^3.25.67"
@@ -32,6 +33,7 @@
     "@types/chart.js": "^2.9.41",
     "@types/luxon": "^3.6.2",
     "@types/node": "^24.0.10",
+    "@types/pg": "^8.15.4",
     "prettier": "^3.5.2",
     "prettier-plugin-svelte": "^3.3.3",
     "sass": "^1.86.0",

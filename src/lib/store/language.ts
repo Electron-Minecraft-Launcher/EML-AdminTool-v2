@@ -1,14 +1,16 @@
-import { writable, derived } from 'svelte/store'
+import { writable, derived, type Readable } from 'svelte/store'
 import en from '../../../assets/locales/en'
 import fr from '../../../assets/locales/fr'
 import da from '../../../assets/locales/da'
+import de from '../../../assets/locales/de'
+import it from '../../../assets/locales/it'
 
-const languages = { en, fr, da }
+const languages = { en, fr, da, de, it }
 
 export type LanguageCode = keyof typeof languages
 export const currentLanguage = writable<LanguageCode>('en')
 
-export const l = derived(currentLanguage, ($currentLanguage) => {
+export const l: Readable<typeof en> = derived(currentLanguage, ($currentLanguage) => {
   const selected = languages[$currentLanguage] ?? en
   return createTranslationProxy(selected, languages.en)
 })

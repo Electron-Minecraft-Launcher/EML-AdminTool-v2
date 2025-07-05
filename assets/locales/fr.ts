@@ -41,7 +41,8 @@ export default {
     },
     step3: {
       title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
-      subtitle: `Ce nom de serveur et mot de passe seront les identifiants de votre compte administrateur.`
+      subtitle: `Ce nom de serveur et mot de passe seront les identifiants de votre compte administrateur.`,
+      confirmPassword: `Confirmation du mot de passe`,
     },
     finally: `Vous pouvez maintenant utiliser l'EML&nbsp;AdminTool&nbsp;!`
   },
@@ -109,7 +110,7 @@ export default {
   modals: {
     language: {
       title: `Vous parlez une autre langue ?`,
-      content: `L'EML AdminTool est n'actuellement disponible qu'en français et en anglais.<br>
+      content: `L'EML AdminTool est n'actuellement disponible qu'en cinq langues.<br>
 Cependant, nous sommes ravis de voir que ce projet atteint de plus en plus de personnes dans différents pays !<br>
 <br>
 Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez trouver les fichiers JSON sur notre GitHub et un guide vous expliquant comment soumettre votre traduction. Si elle est acceptée, elle sera incluse comme une option par défaut de l'EML AdminTool !`

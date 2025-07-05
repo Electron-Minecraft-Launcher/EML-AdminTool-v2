@@ -41,7 +41,8 @@ export default {
     },
     step3: {
       title: `Vælg derefter dit servernavn og en adgangskode:`,
-      subtitle: `Dette servernavn og adgangskode vil være din admin-konto login.`
+      subtitle: `Dette servernavn og adgangskode vil være din admin-konto login.`,
+      confirmPassword: `Bekræft adgangskode`
     },
     finally: 'Du kan nu bruge EML&nbsp;AdminTool!'
   },
@@ -109,7 +110,7 @@ export default {
   modals: {
     language: {
       title: `Taler du et andet sprog?`,
-      content: `EML AdminTool er i øjeblikket kun tilgængelig på Fransk, Engelsk og Dansk.<br>
+      content: `EML AdminTool er i øjeblikket kun tilgængelig på fem sprog.<br>
 Vi er dog glade for at se, at dette projekt når ud til flere og flere mennesker i forskellige lande!<br>
 <br>
 Hvis du vil hjælpe med at oversætte EML AdminTool, kan du finde JSON-filerne på vores GitHub og en vejledning om, hvordan du indsender din oversættelse. Hvis den bliver accepteret, vil den blive inkluderet som en standardmulighed i en fremtidig version af EML AdminTool!`
