@@ -27,17 +27,6 @@
 
   let step = $state(0)
 
-  function nextStep() {
-    step++
-    if (step == 4) {
-      finish()
-    }
-  }
-
-  function prevStep() {
-    step--
-  }
-
   async function finish() {
     await sleep(1000)
     showSlider = false
@@ -47,7 +36,16 @@
     await sleep(2000)
     showH1 = false
     await sleep(1000)
-    goto('/')
+    await fetch('/api/setup/mark-as-configured', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(() => {
+      goto('/')
+    }).catch((err) => {
+      // TODO
+    })
   }
 
   onMount(async () => {
@@ -65,6 +63,10 @@
 
     showSlider = true
     step = 1
+  })
+
+  $effect(() => {
+    if (step >= 4) finish()
   })
 </script>
 

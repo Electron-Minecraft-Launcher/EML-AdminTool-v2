@@ -4,6 +4,7 @@
   import { passwordStrength, type Options } from 'check-password-strength'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { applyAction, enhance } from '$app/forms'
+  import { sleep } from '$lib/utils/utils'
 
   interface Props {
     step: number
@@ -30,6 +31,10 @@
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
+    formData.append('language', setupData.language)
+    formData.append('db-password', setupData.dbPassword)
+    formData.append('admin-username', setupData.adminUsername)
+    formData.append('admin-password', setupData.adminPassword)
 
     return async ({ result, update }) => {
       update({ reset: false })

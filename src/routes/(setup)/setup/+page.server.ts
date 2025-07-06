@@ -16,17 +16,18 @@ export const actions: Actions = {
 
     const ip = event.getClientAddress()
     const form = await event.request.formData()
-
+    
     const raw = {
       language: form.get('language')?.toString(),
       dbPassword: form.get('db-password')?.toString(),
       adminUsername: form.get('admin-username')?.toString(),
       adminPassword: form.get('admin-password')?.toString()
     }
-
+    
     const result = setupSchema.safeParse(raw)
-
+    
     if (!result.success) {
+      console.log(raw)
       return fail(400, { failure: result.error.message })
     }
 
@@ -37,12 +38,12 @@ export const actions: Actions = {
       await initDatabase()
       await setAdminUser(adminUsername, adminPassword)
       await setLanguage(language)
-      await markAsConfigured()
 
       return { success: true }
     } catch (err) {
       if (err instanceof DatabaseError) throw error(500)
       
+      console.error('Setup error:', err)
       throw error(500)
     }
   }
