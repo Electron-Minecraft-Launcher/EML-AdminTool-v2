@@ -39,6 +39,7 @@ services:
       - '5173:5173'
     depends_on:
       - db
+    restart: always
   db:
     image: postgres:latest
     environment:

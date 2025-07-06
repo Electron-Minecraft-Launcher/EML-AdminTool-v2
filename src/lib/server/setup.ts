@@ -194,7 +194,7 @@ JWT_SECRET_KEY="${newJwtSecretKey}"`
   resetProcessEnv()
 }
 
-function resetProcessEnv() {
+export function resetProcessEnv() {
   if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
   if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
   if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY

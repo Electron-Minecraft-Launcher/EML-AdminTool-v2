@@ -9,6 +9,7 @@
   import { fade } from 'svelte/transition'
   import { getContext, onMount } from 'svelte'
   import type { Env } from '$lib/utils/types'
+  import LoadingSplash from '../../../components/layouts/LoadingSplash.svelte'
 
   let { data }: PageProps = $props()
 
@@ -21,9 +22,10 @@
     adminPassword: ''
   })
 
-  let showH1: boolean = $state(false)
-  let showSlider: boolean = $state(false)
-  let h1: string = $state('')
+  let showLoader = $state(false)
+  let showH1 = $state(false)
+  let showSlider = $state(false)
+  let h1 = $state('')
 
   let step = $state(0)
 
@@ -41,11 +43,30 @@
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(() => {
-      goto('/')
-    }).catch((err) => {
-      // TODO
     })
+      .then(() => {
+        pingServerAndReload()
+      })
+      .catch((err) => {
+        // TODO
+      })
+  }
+
+  async function pingServerAndReload() {
+    showLoader = true
+    for (let i = 0; i < 5; i++) {
+      try {
+        const response = await fetch('/api/ping')
+        if (response.ok) {
+          goto('/')
+          return
+        }
+      } catch (error) {
+        console.error('Ping failed, retrying...', error)
+      }
+      await sleep(1500)
+    }
+    throw new Error('Failed to ping server after multiple attempts.')
   }
 
   onMount(async () => {
@@ -74,6 +95,14 @@
   <title>{$l.configuration.configuration} • {env.name} AdminTool</title>
 </svelte:head>
 
+{#if showLoader}
+  <div class="splash" transition:fade>
+    <div>
+      <LoadingSplash transparent={false} />
+    </div>
+    <p transition:fade>Restarting...</p>
+  </div>
+{/if}
 <div class="progress">
   <span class:step-0={step == 0} class:step-1={step == 1} class:step-2={step == 2} class:step-3={step == 3} class:step-4={step == 4}></span>
 </div>
@@ -106,6 +135,37 @@
 {/if}
 
 <style lang="scss">
+  div.splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    background-color: white;
+
+    div {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 100px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      background-color: white;
+    }
+
+    p {
+      padding-top: 20px;
+      z-index: 1100;
+    }
+  }
+
   h1 {
     text-align: center;
     font-size: 56px;

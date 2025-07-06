@@ -12,6 +12,11 @@ declare global {
         name: string
         theme: string
         version: string
+      },
+      user?: {
+        id: string
+        isAdmin: boolean
+        
       }
     }
     // interface PageData {}
