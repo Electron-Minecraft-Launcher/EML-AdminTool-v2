@@ -1,8 +1,8 @@
 <script lang="ts">
-  import ConfigurationAdmin from '../../../components/setup/ConfigurationAdmin.svelte'
-  import ConfigurationDatabase from '../../../components/setup/ConfigurationDatabase.svelte'
-  import ConfigurationLanguage from '../../../components/setup/ConfigurationLanguage.svelte'
-  import { l, type LanguageCode } from '$lib/store/language'
+  import ConfigurationAdmin from '../../../components/setup/AdminSetup.svelte'
+  import ConfigurationDatabase from '../../../components/setup/DatabaseSetup.svelte'
+  import ConfigurationLanguage from '../../../components/setup/LanguageSetup.svelte'
+  import { l, type LanguageCode } from '$lib/stores/language'
   import { goto } from '$app/navigation'
   import type { PageProps } from './$types'
   import { sleep } from '$lib/utils/utils'
@@ -33,7 +33,7 @@
     await sleep(1000)
     showSlider = false
     await sleep(500)
-    h1 = $l.configuration.finally
+    h1 = $l.setup.finally
     showH1 = true
     await sleep(2000)
     showH1 = false
@@ -92,7 +92,7 @@
 </script>
 
 <svelte:head>
-  <title>{$l.configuration.configuration} • {env.name} AdminTool</title>
+  <title>{$l.setup.setup} • {env.name} AdminTool</title>
 </svelte:head>
 
 {#if showLoader}

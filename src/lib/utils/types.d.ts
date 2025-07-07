@@ -1,4 +1,4 @@
-import type { LanguageCode } from '../store/language'
+import type { LanguageCode } from '../stores/language'
 
 export type Env = {
   language: LanguageCode

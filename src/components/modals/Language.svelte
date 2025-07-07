@@ -1,6 +1,6 @@
 <script lang="ts">
   import ModalTemplate from './__ModalTemplate.svelte'
-  import { l } from '$lib/store/language'
+  import { l } from '$lib/stores/language'
 
   interface Props {
     show: boolean

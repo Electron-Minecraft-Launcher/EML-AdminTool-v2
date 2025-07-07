@@ -1,7 +1,7 @@
 <script lang="ts">
   import { passwordStrength, type Options } from 'check-password-strength'
   import generator from 'generate-password-browser'
-  import { l, type LanguageCode } from '$lib/store/language'
+  import { l, type LanguageCode } from '$lib/stores/language'
 
   interface Props {
     step: number
@@ -30,7 +30,7 @@
       symbols: true,
       uppercase: true,
       strict: true,
-      exclude: '/\\+&#%?='
+      exclude: '/\\+&#%?=:'
     })
 
     setupData.dbPassword = password
@@ -44,16 +44,16 @@
 </script>
 
 <form onsubmit={submit}>
-  <h2>{@html $l.configuration.step2.title}</h2>
-  <p><b>{$l.configuration.step2.subtitle}</b></p>
+  <h2>{@html $l.setup.step2.title}</h2>
+  <p><b>{$l.setup.step2.subtitle}</b></p>
 
   <div>
-    <label for="db-password" style="margin-bottom: 0;">{$l.configuration.step2.placeholder}</label>
+    <label for="db-password" style="margin-bottom: 0;">{$l.setup.step2.placeholder}</label>
     <div class="flex">
       <input type="text" name="db-password" id="db-password" bind:value={setupData.dbPassword} />
 
       <button class="secondary" onclick={generatePassword} type="button">
-        <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.configuration.step2.generate}
+        <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{$l.setup.step2.generate}
       </button>
     </div>
 
@@ -68,7 +68,7 @@
       ></div>
     </div>
 
-    <span class="rel">{$l.configuration.step2[pwdStrength[1]]}</span>
+    <span class="rel">{$l.setup.step2[pwdStrength[1]]}</span>
   </div>
 
   <div class="actions">

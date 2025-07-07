@@ -21,12 +21,21 @@ export default {
     pin: `Code de sécurité`,
     actions: `Actions`
   },
-  configuration: {
-    configuration: `Configuration`,
+  setup: {
+    setup: `Configuration`,
     step1: {
       title: `D'abord, choisissez la langue de votre EML&nbsp;AdminTool&nbsp;:`,
       subtitle: `Cette langue sera appliquée pour tous les utilisateurs.`,
-      other: `Je parle une autre langue.`
+      other: `Je parle une autre langue.`,
+      modals: {
+        language: {
+          title: `Vous parlez une autre langue ?`,
+          content: `L'EML AdminTool est n'actuellement disponible qu'en cinq langues.<br>
+Cependant, nous sommes ravis de voir que ce projet atteint de plus en plus de personnes dans différents pays !<br>
+<br>
+Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez trouver les fichiers JSON sur notre GitHub et un guide vous expliquant comment soumettre votre traduction. Si elle est acceptée, elle sera incluse comme une option par défaut de l'EML AdminTool !`
+        }
+      }
     },
     step2: {
       title: `Maintenant, choisissez un mot de passe pour votre Base&nbsp;de&nbsp;données&nbsp;:`,
@@ -42,7 +51,7 @@ export default {
     step3: {
       title: `Enfin, indiquer le nom de votre serveur et un mot de passe :`,
       subtitle: `Ce nom de serveur et mot de passe seront les identifiants de votre compte administrateur.`,
-      confirmPassword: `Confirmation du mot de passe`,
+      confirmPassword: `Confirmation du mot de passe`
     },
     finally: `Vous pouvez maintenant utiliser l'EML&nbsp;AdminTool&nbsp;!`
   },
@@ -106,14 +115,6 @@ export default {
       size: 'Taille',
       b: 'o'
     }
-  },
-  modals: {
-    language: {
-      title: `Vous parlez une autre langue ?`,
-      content: `L'EML AdminTool est n'actuellement disponible qu'en cinq langues.<br>
-Cependant, nous sommes ravis de voir que ce projet atteint de plus en plus de personnes dans différents pays !<br>
-<br>
-Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez trouver les fichiers JSON sur notre GitHub et un guide vous expliquant comment soumettre votre traduction. Si elle est acceptée, elle sera incluse comme une option par défaut de l'EML AdminTool !`
-    }
   }
 }
+

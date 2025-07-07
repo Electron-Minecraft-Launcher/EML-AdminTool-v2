@@ -39,6 +39,7 @@ model Environment {
   name      String   @default("EML")
   theme     String   @default("default")
   version   String   @default("1.0.0")
+  pin       String   @default("000")
   updatedAt DateTime @updatedAt
 }
 

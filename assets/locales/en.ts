@@ -1,3 +1,5 @@
+import { NotificationMessage } from '$lib/utils/notifications'
+
 export default {
   l: 'en',
   language: 'English',
@@ -16,12 +18,36 @@ export default {
     pin: `PIN`,
     actions: `Actions`
   },
-  configuration: {
-    configuration: `Setup`,
+  notifications: {
+    [NotificationMessage.INVALID_INPUT]: `Invalid input.`,
+    [NotificationMessage.MISSING_INPUT]: `Missing input.`,
+    [NotificationMessage.DATABASE_ERROR]: `Database error.`,
+    [NotificationMessage.UNEXPECTED_ERROR]: `Unexpected error.`,
+    [NotificationMessage.NOT_FOUND]: `Not found.`,
+    [NotificationMessage.INVALID_REQUEST]: `Invalid request.`,
+    [NotificationMessage.UNAUTHORIZED]: `Unauthorized.`,
+    [NotificationMessage.FORBIDDEN]: `Forbidden.`,
+    [NotificationMessage.SETUP_LANGUAGE_LENGTH]: `Language must be at least 2 characters long.`,
+    [NotificationMessage.SETUP_DB_PASSWORD_MIN_LENGTH]: `Database password must be at least 12 characters long.`,
+    [NotificationMessage.SETUP_ADMIN_USERNAME_MIN_LENGTH]: `Admin username must be at least 3 characters long.`,
+    [NotificationMessage.SETUP_ADMIN_PASSWORD_MIN_LENGTH]: `Admin password must be at least 12 characters long.`,
+    [NotificationMessage.LOGIN_BAD_CREDENTIALS]: `Bad credentials.`
+  },
+  setup: {
+    setup: `Setup`,
     step1: {
       title: `Firstly, choose the language of your EML&nbsp;AdminTool:`,
       subtitle: `This language will be applied for all users.`,
-      other: `I speak another language.`
+      other: `I speak another language.`,
+      modals: {
+        language: {
+          title: `You speak another language?`,
+          content: `EML AdminTool is currently available in only five languages.<br>
+However, we are thrilled to see that this project is reaching more and more people in different countries!<br>
+<br>
+Therefore, if you would like to help us translate EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of EML AdminTool!`
+        }
+      }
     },
     step2: {
       title: `Now, choose a password for your Database:`,
@@ -100,15 +126,6 @@ export default {
     filesUpdater: {
       size: 'Size',
       b: 'B'
-    }
-  },
-  modals: {
-    language: {
-      title: `You speak another language?`,
-      content: `EML AdminTool is currently available in only five languages.<br>
-However, we are thrilled to see that this project is reaching more and more people in different countries!<br>
-<br>
-Therefore, if you would like to help us translate EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of EML AdminTool!`
     }
   }
 }

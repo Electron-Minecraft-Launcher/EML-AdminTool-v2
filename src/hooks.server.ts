@@ -2,7 +2,7 @@ import type { Handle } from '@sveltejs/kit'
 import pkg from '../package.json'
 import { resetProcessEnv } from '$lib/server/setup'
 import { db } from '$lib/server/db'
-import type { LanguageCode } from '$lib/store/language'
+import type { LanguageCode } from '$lib/stores/language'
 
 export const handle: Handle = async ({ event, resolve }) => {
   resetProcessEnv()

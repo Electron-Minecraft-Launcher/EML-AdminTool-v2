@@ -1,7 +1,7 @@
 import { error, fail, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { setupSchema } from '$lib/utils/validation'
-import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, markAsConfigured } from '$lib/server/setup'
+import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin } from '$lib/server/setup'
 import { DatabaseError } from '$lib/utils/errors'
 
 export const load = (async () => {
@@ -37,6 +37,7 @@ export const actions: Actions = {
       await changeDatabasePassword(dbPassword)
       await initDatabase()
       await setAdminUser(adminUsername, adminPassword)
+      await setPin()
       await setLanguage(language)
 
       return { success: true }

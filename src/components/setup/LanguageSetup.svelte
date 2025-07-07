@@ -5,7 +5,7 @@
   import deFlag from '../../../assets/images/flags/de.png'
   import itFlag from '../../../assets/images/flags/it.png'
   import daFlag from '../../../assets/images/flags/da.png'
-  import { currentLanguage, l, type LanguageCode } from '$lib/store/language'
+  import { currentLanguage, l, type LanguageCode } from '$lib/stores/language'
 
   interface Props {
     step: number
@@ -30,8 +30,8 @@
 </script>
 
 <form onsubmit={submit}>
-  <h2>{@html $l.configuration.step1.title}</h2>
-  <p><b>{$l.configuration.step1.subtitle}</b></p>
+  <h2>{@html $l.setup.step1.title}</h2>
+  <p><b>{$l.setup.step1.subtitle}</b></p>
 
   <div>
     <div class="language">
@@ -68,7 +68,7 @@
     </div>
 
     <p class="center">
-      <button class="a small-link" type="button" onclick={() => (showLanguageModal = true)}>{$l.configuration.step1.other}</button>
+      <button class="a small-link" type="button" onclick={() => (showLanguageModal = true)}>{$l.setup.step1.other}</button>
     </p>
   </div>
 

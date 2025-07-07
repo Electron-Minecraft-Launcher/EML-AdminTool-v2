@@ -1,39 +1,55 @@
 <script lang="ts">
-  import { currentLanguage, l } from '$lib/store/language'
-  import { getContext } from 'svelte'
+  import { l } from '$lib/stores/language'
   import type { PageProps } from './$types'
-  import type { Env } from '$lib/utils/types'
   import LoadingSplash from '../../../components/layouts/LoadingSplash.svelte'
+  import getEnv from '$lib/utils/env'
+  import { applyAction, enhance } from '$app/forms'
+  import type { SubmitFunction } from '@sveltejs/kit'
 
   let { data }: PageProps = $props()
 
-  const env = getContext<Env>('env')
+  const env = getEnv()
 
-  let showSplash = $state(false)
+  let showLoader = $state(false)
 
   let password = $state('')
   let username = $state('')
 
-  currentLanguage.set(env.language || 'en')
+  const enhanceForm: SubmitFunction = ({ formData }) => {
+    showLoader = true
+
+    return async ({ result, update }) => {
+      update({ reset: false })
+      showLoader = false
+
+      if (result.type === 'failure') {
+        // TODO
+      } else if (result.type === 'success') {
+        // TODO
+      }
+
+      await applyAction(result)
+    }
+  }
 </script>
 
 <svelte:head>
   <title>{$l.auth.login} • {env.name} AdminTool</title>
 </svelte:head>
 
-<form>
-  {#if showSplash}
+<form method="POST" action="?/login" use:enhance={enhanceForm}>
+  {#if showLoader}
     <LoadingSplash transparent={true} />
   {/if}
 
   <h2>{$l.auth.login}</h2>
   <p>{env.name} AdminTool</p>
 
-  <label for="name">{$l.main.username}</label>
-  <input type="text" id="name" bind:value={username} />
+  <label for="username">{$l.main.username}</label>
+  <input type="text" id="username" name="username" bind:value={username} />
 
-  <label for="username">{$l.main.password}</label>
-  <input type="password" id="username" bind:value={password} />
+  <label for="password">{$l.main.password}</label>
+  <input type="password" id="password" name="password" bind:value={password} />
 
   <button class="primary">{$l.auth.login}</button>
   <p class="center">

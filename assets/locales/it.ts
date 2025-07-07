@@ -21,12 +21,21 @@ export default {
     pin: 'PIN',
     actions: 'Azioni'
   },
-  configuration: {
-    configuration: 'Configurazione',
+  setup: {
+    setup: 'Configurazione',
     step1: {
       title: 'Per prima cosa, scegli la lingua per il tuo EML&nbsp;AdminTool:',
       subtitle: 'Questa lingua verrà utilizzata per tutti gli utenti.',
-      other: "Parlo un'altra lingua."
+      other: "Parlo un'altra lingua.",
+      modals: {
+        language: {
+          title: "Parli un'altra lingua?",
+          content: `EML AdminTool è attualmente disponibile disponibile solo in cinque lingue.<br>
+Tuttavia, siamo entusiasti di vedere che questo progetto sta raggiungendo sempre più persone in tutto il mondo!<br>
+<br>
+Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nostro GitHub e una guida su come inviare la tua traduzione. Se sarà accettata, verrà inclusa come opzione predefinita in una versione futura dell'EML AdminTool!`
+        }
+      }
     },
     step2: {
       title: 'Ora, scegli una password per il tuo database:',
@@ -106,14 +115,6 @@ export default {
       size: 'Dimensione',
       b: 'B'
     }
-  },
-  modals: {
-    language: {
-      title: "Parli un'altra lingua?",
-      content: `EML AdminTool è attualmente disponibile disponibile solo in cinque lingue.<br>
-Tuttavia, siamo entusiasti di vedere che questo progetto sta raggiungendo sempre più persone in tutto il mondo!<br>
-<br>
-Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nostro GitHub e una guida su come inviare la tua traduzione. Se sarà accettata, verrà inclusa come opzione predefinita in una versione futura dell'EML AdminTool!`
-    }
   }
 }
+

@@ -12,7 +12,7 @@ import bcrypt from 'bcrypt'
 const execAsync = promisify(exec)
 const envFilePath = './env/.env'
 
-export async function changeDatabasePassword(newPassword: string): Promise<void> {
+export async function changeDatabasePassword(newPassword: string) {
   console.log('\n---------- CHANGING DATABASE PASSWORD ----------\n')
   resetProcessEnv()
   
@@ -33,7 +33,7 @@ export async function changeDatabasePassword(newPassword: string): Promise<void>
   console.log('Database password changed successfully.')
 }
 
-export async function initDatabase(): Promise<void> {
+export async function initDatabase() {
   console.log('\n------------ INITIALIZING DATABASE -------------\n')
   resetProcessEnv()
   
@@ -79,7 +79,7 @@ export async function initDatabase(): Promise<void> {
   console.log('Database initialized successfully.')
 }
 
-export async function setAdminUser(username: string, password: string): Promise<void> {
+export async function setAdminUser(username: string, password: string) {
   console.log('\n------------- CREATING ADMIN USER --------------\n')
   resetProcessEnv()
   
@@ -107,7 +107,30 @@ export async function setAdminUser(username: string, password: string): Promise<
   console.log('Admin user created successfully.')
 }
 
-export async function setLanguage(language: string): Promise<void> {
+export async function setPin() {
+  console.log('\n----------------- SETTING PIN ------------------\n')
+  resetProcessEnv()
+  
+  const client = new Client({ connectionString: process.env.DATABASE_URL })
+  await client.connect()
+  
+  // 3 random numbers as pin, but in a string format
+  const pin = (randomBytes(2).readUInt16BE(0) % 1000).toString().padStart(3, '0')
+  
+  try {
+    await client.query(`UPDATE "Environment" SET "pin" = $1 WHERE "id" = $2`, [pin, 1])
+  } catch (err) {
+    console.error('Error setting pin:', err)
+    await client.end()
+    throw new DatabaseError('Failed to set pin')
+  }
+  
+  await client.end()
+  
+  console.log('Pin set successfully')
+}
+
+export async function setLanguage(language: string) {
   console.log('\n--------------- SETTING LANGUAGE ---------------\n')
   resetProcessEnv()
   
@@ -127,7 +150,7 @@ export async function setLanguage(language: string): Promise<void> {
   console.log('Language set successfully to:', language)
 }
 
-export async function markAsConfigured(): Promise<void> {
+export async function markAsConfigured() {
   console.log('\n-------------- UPDATING ENV FILE ---------------\n')
   resetProcessEnv()
   const databaseUrl = process.env.DATABASE_URL || 'postgresql://eml:eml@db:5432/eml_admintool'

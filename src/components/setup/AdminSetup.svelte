@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { SubmitFunction } from '@sveltejs/kit'
-  import { l, type LanguageCode } from '../../lib/store/language'
+  import { l, type LanguageCode } from '../../lib/stores/language'
   import { passwordStrength, type Options } from 'check-password-strength'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { applyAction, enhance } from '$app/forms'
-  import { sleep } from '$lib/utils/utils'
+  import type { NotificationMessage } from '$lib/utils/notifications'
+  import { addNotification } from '$lib/stores/notifications'
 
   interface Props {
     step: number
@@ -41,7 +42,8 @@
       showLoader = false
 
       if (result.type === 'failure') {
-        // TODO
+        const message = $l.notifications[result.data?.failure as NotificationMessage] ?? $l.notifications.UNEXPECTED_ERROR
+        addNotification('ERROR', message)
       } else if (result.type === 'success') {
         step++
       }
@@ -56,8 +58,8 @@
     <LoadingSplash transparent={true}></LoadingSplash>
   {/if}
 
-  <h2>{@html $l.configuration.step3.title}</h2>
-  <p><b>{@html $l.configuration.step3.subtitle}</b></p>
+  <h2>{@html $l.setup.step3.title}</h2>
+  <p><b>{@html $l.setup.step3.subtitle}</b></p>
 
   <div>
     <label for="admin-username">{$l.main.username}</label>
@@ -76,9 +78,9 @@
         class:progress-4={pwdStrength[0] === 4}
       ></div>
     </div>
-    <span class="rel">{$l.configuration.step2[pwdStrength[1]]}</span>
+    <span class="rel">{$l.setup.step2[pwdStrength[1]]}</span>
 
-    <label for="admin-password-cfr">{$l.configuration.step3.confirmPassword}</label>
+    <label for="admin-password-cfr">{$l.setup.step3.confirmPassword}</label>
     <input type="password" name="admin-password-cfr" id="admin-password-cfr" bind:value={passwordCfr} />
   </div>
 

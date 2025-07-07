@@ -1,4 +1,4 @@
-import type { LanguageCode } from "$lib/store/language"
+import type { LanguageCode } from "$lib/stores/language"
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
