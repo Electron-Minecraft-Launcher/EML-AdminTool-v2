@@ -21,6 +21,7 @@
     "check-password-strength": "^3.0.0",
     "dotenv": "^17.0.1",
     "generate-password-browser": "^1.1.0",
+    "jose": "^6.0.11",
     "luxon": "^3.6.1",
     "monaco-editor": "^0.52.2",
     "pg": "^8.16.3",

@@ -1,4 +1,7 @@
-import { writable } from 'svelte/store'
+import type { NotificationCode } from '$lib/utils/notifications'
+import { writable, type Readable } from 'svelte/store'
+import type en from '../../../assets/locales/en'
+import {l} from '$lib/stores/language'
 
 export type NotificationType = 'SUCCESS' | 'ERROR' | 'WARNING' | 'INFO'
 

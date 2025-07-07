@@ -1,9 +1,21 @@
 import { z } from 'zod/v4'
-import { NotificationMessage } from './notifications'
+import { NotificationCode } from './notifications'
 
 export const setupSchema = z.object({
-  language: z.string().length(2, NotificationMessage.setup.LANGUAGE_LENGTH),
-  dbPassword: z.string().min(10, NotificationMessage.setup.DB_PASSWORD_MIN_LENGTH),
-  adminUsername: z.string().min(2, NotificationMessage.setup.ADMIN_USERNAME_MIN_LENGTH).transform((val) => val.trim()),
-  adminPassword: z.string().min(8, NotificationMessage.setup.ADMIN_PASSWORD_MIN_LENGTH)
+  language: z.string().length(2, NotificationCode.SETUP_INVALID_LANGUAGE),
+  dbPassword: z.string().min(10, NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT),
+  adminUsername: z
+    .string()
+    .min(2, NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT)
+    .transform((val) => val.trim()),
+  adminPassword: z.string().min(8, NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT)
+})
+
+export const loginSchema = z.object({
+  username: z
+    .string()
+    .min(2, NotificationCode.LOGIN_USERNAME_TOO_SHORT)
+    .max(64, NotificationCode.LOGIN_USERNAME_TOO_LONG)
+    .transform((val) => val.trim()),
+  password: z.string()
 })

@@ -5,8 +5,6 @@ import { db } from '$lib/server/db'
 import type { LanguageCode } from '$lib/stores/language'
 
 export const handle: Handle = async ({ event, resolve }) => {
-  resetProcessEnv()
-
   const isConfigured =
     process.env.IS_CONFIGURED === 'true' &&
     process.env.DATABASE_URL !== 'postgresql://eml:eml@db:5432/eml_admintool' &&
@@ -14,6 +12,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   event.locals.isConfigured = isConfigured
 
+  console.log('fails', process.env.DATABASE_URL)
   if (isConfigured) {
     try {
       const env = await db.environment.findFirst()

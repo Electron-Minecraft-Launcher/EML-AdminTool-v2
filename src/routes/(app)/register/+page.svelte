@@ -59,10 +59,10 @@
   <input type="text" id="name" bind:value={username} />
 
   <label for="password">{$l.main.password}</label>
-  <input type="password" id="password" bind:value={password} />
+  <input type="password" id="password" bind:value={password} autocomplete="new-password" />
 
   <label for="password-cfr">{$l.auth.confirmPassword}</label>
-  <input type="password" id="password-cfr" bind:value={passwordCfr} />
+  <input type="password" id="password-cfr" bind:value={passwordCfr} autocomplete="new-password" />
 
   <div class="pin-inputs">
     <label for="pin-1" style="display: inline-block">{@html $l.main.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>

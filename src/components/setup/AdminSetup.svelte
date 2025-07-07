@@ -4,7 +4,7 @@
   import { passwordStrength, type Options } from 'check-password-strength'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { applyAction, enhance } from '$app/forms'
-  import type { NotificationMessage } from '$lib/utils/notifications'
+  import type { NotificationCode } from '$lib/utils/notifications'
   import { addNotification } from '$lib/stores/notifications'
 
   interface Props {
@@ -42,7 +42,7 @@
       showLoader = false
 
       if (result.type === 'failure') {
-        const message = $l.notifications[result.data?.failure as NotificationMessage] ?? $l.notifications.UNEXPECTED_ERROR
+        const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
         addNotification('ERROR', message)
       } else if (result.type === 'success') {
         step++

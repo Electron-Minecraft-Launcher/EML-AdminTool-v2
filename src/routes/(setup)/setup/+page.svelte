@@ -38,22 +38,18 @@
     await sleep(2000)
     showH1 = false
     await sleep(1000)
-    await fetch('/api/setup/mark-as-configured', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(() => {
-        pingServerAndReload()
-      })
-      .catch((err) => {
-        // TODO
-      })
+    try {
+      await fetch('/api/setup/mark-as-configured', { method: 'POST' })
+      showLoader = true
+      pingServerAndReload()
+    } catch (err) {
+      console.error('Failed to mark as configured:', err)
+      // TODO
+    }
   }
 
   async function pingServerAndReload() {
-    showLoader = true
+    await sleep(2000)
     for (let i = 0; i < 5; i++) {
       try {
         const response = await fetch('/api/ping')
@@ -61,10 +57,9 @@
           goto('/')
           return
         }
-      } catch (error) {
-        console.error('Ping failed, retrying...', error)
+      } catch (err) {
+        console.error('Ping failed, retrying...', err)
       }
-      await sleep(1500)
     }
     throw new Error('Failed to ping server after multiple attempts.')
   }

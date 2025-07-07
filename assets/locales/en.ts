@@ -1,4 +1,4 @@
-import { NotificationMessage } from '$lib/utils/notifications'
+import { NotificationCode } from '$lib/utils/notifications'
 
 export default {
   l: 'en',
@@ -19,19 +19,24 @@ export default {
     actions: `Actions`
   },
   notifications: {
-    [NotificationMessage.INVALID_INPUT]: `Invalid input.`,
-    [NotificationMessage.MISSING_INPUT]: `Missing input.`,
-    [NotificationMessage.DATABASE_ERROR]: `Database error.`,
-    [NotificationMessage.UNEXPECTED_ERROR]: `Unexpected error.`,
-    [NotificationMessage.NOT_FOUND]: `Not found.`,
-    [NotificationMessage.INVALID_REQUEST]: `Invalid request.`,
-    [NotificationMessage.UNAUTHORIZED]: `Unauthorized.`,
-    [NotificationMessage.FORBIDDEN]: `Forbidden.`,
-    [NotificationMessage.SETUP_LANGUAGE_LENGTH]: `Language must be at least 2 characters long.`,
-    [NotificationMessage.SETUP_DB_PASSWORD_MIN_LENGTH]: `Database password must be at least 12 characters long.`,
-    [NotificationMessage.SETUP_ADMIN_USERNAME_MIN_LENGTH]: `Admin username must be at least 3 characters long.`,
-    [NotificationMessage.SETUP_ADMIN_PASSWORD_MIN_LENGTH]: `Admin password must be at least 12 characters long.`,
-    [NotificationMessage.LOGIN_BAD_CREDENTIALS]: `Bad credentials.`
+    [NotificationCode.INVALID_INPUT]: `Invalid input.`,
+    [NotificationCode.MISSING_INPUT]: `Missing input.`,
+    [NotificationCode.UNAUTHORIZED]: `Unauthorized.`,
+    [NotificationCode.FORBIDDEN]: `Forbidden.`,
+    [NotificationCode.INVALID_REQUEST]: `Invalid request.`,
+
+    [NotificationCode.SETUP_INVALID_LANGUAGE]: `Language must be at least 2 characters long.`,
+    [NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT]: `Database password must be at least 12 characters long.`,
+    [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 3 characters long.`,
+    [NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT]: `Admin password must be at least 12 characters long.`,
+
+    [NotificationCode.LOGIN_BAD_CREDENTIALS]: `Bad credentials.`,
+    [NotificationCode.LOGIN_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
+    [NotificationCode.LOGIN_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
+
+    [NotificationCode.DATABASE_ERROR]: `Database error.`,
+    [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
+    [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
   },
   setup: {
     setup: `Setup`,

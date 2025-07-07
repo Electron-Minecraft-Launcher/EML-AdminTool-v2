@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from '../$types'
-import { markAsConfigured } from '$lib/server/setup'
+import { markAsConfigured, resetProcessEnv } from '$lib/server/setup'
 import { sleep } from '$lib/utils/utils'
 
 export const POST: RequestHandler = async (event) => {
@@ -17,6 +17,7 @@ export const POST: RequestHandler = async (event) => {
     error(500)
   }
 
+  resetProcessEnv()
   restartServer()
 
   return new Response(null, { status: 204 })

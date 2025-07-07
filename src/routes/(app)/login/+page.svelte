@@ -5,6 +5,9 @@
   import getEnv from '$lib/utils/env'
   import { applyAction, enhance } from '$app/forms'
   import type { SubmitFunction } from '@sveltejs/kit'
+  import { addNotification } from '$lib/stores/notifications'
+  import type { NotificationCode } from '$lib/utils/notifications'
+  import { goto } from '$app/navigation'
 
   let { data }: PageProps = $props()
 
@@ -23,9 +26,11 @@
       showLoader = false
 
       if (result.type === 'failure') {
-        // TODO
+        const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
       } else if (result.type === 'success') {
-        // TODO
+        showLoader = false
+        goto('/dashboard')
       }
 
       await applyAction(result)
