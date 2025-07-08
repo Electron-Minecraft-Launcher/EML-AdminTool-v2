@@ -32,8 +32,16 @@ export async function checkSession(session: string) {
       console.warn('Invalid session:', session)
       throw new BusinessError('Invalid session', NotificationCode.AUTH_INVALID_SESSION, 401)
     }
-
-    console.error('Failed to verify session:', err)
+    if (err instanceof errors.JWSSignatureVerificationFailed) {
+      console.error('Failed to verify JWS signature:', err)
+      throw new BusinessError('Failed to verify JWS signature', NotificationCode.INTERNAL_SERVER_ERROR, 401)
+    }
+    if (err instanceof errors.JWSInvalid) {
+      console.error('Invalid JWS:', err)
+      throw new BusinessError('Invalid JWS', NotificationCode.INTERNAL_SERVER_ERROR, 401)
+    }
+      
+      console.error('Failed to verify session:', err)
     throw new ServerError('Failed to verify session', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
   }
 

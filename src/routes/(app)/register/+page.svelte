@@ -20,26 +20,31 @@
   let passwordCfr = $state('')
   let pin = $state(['', '', ''])
 
+  let disabled = $derived.by(() => {
+    return !username || !password || password !== passwordCfr || pin.some((p) => p === '')
+  })
+  
+  $inspect(username, password, passwordCfr, pin)
+
   /**
    * @link From https://codepen.io/oxcakmak/pen/QWeBKWj
    */
   function handlePinInput(e: KeyboardEvent) {
     const input = e.target as HTMLInputElement
-    const key = e.keyCode
+    const key = e.key
 
-    if ((key < 48 || key > 57) && ![8, 46, 37, 39].includes(key)) {
+    if (isNaN(Number(key)) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(key)) {
       e.preventDefault()
-      return false
+      console.log(key)
+      return
     }
 
-    if (key >= 48 && key <= 57) {
-      // Numeric keys
-      input.value = String.fromCharCode(key)
+    if (key.length === 1 && !isNaN(Number(key))) {
+      input.value = key
       const nextInput = input.nextElementSibling as HTMLInputElement | null
       if (nextInput) nextInput.focus()
       e.preventDefault()
-    } else if (key === 8) {
-      // Backspace
+    } else if (key === 'Backspace') {
       if (input.value === '') {
         const previousInput = input.previousElementSibling as HTMLInputElement | null
         if (previousInput) {
@@ -50,8 +55,7 @@
         input.value = ''
       }
       e.preventDefault()
-    } else if (key === 46) {
-      // Delete
+    } else if (key === 'Delete') {
       let nextInput = input as HTMLInputElement | null
 
       while (nextInput) {
@@ -69,21 +73,26 @@
       }
 
       e.preventDefault()
-    } else if (key === 37) {
+    } else if (key === 'ArrowLeft') {
       const previousInput = input.previousElementSibling as HTMLInputElement | null
       if (previousInput) previousInput.focus()
       e.preventDefault()
-    } else if (key === 39) {
-      // Right arrow key
+    } else if (key === 'ArrowRight') {
       const nextInput = input.nextElementSibling as HTMLInputElement | null
       if (nextInput) nextInput.focus()
       e.preventDefault()
     }
 
-    const pinInputs = Array.from(document.querySelectorAll<HTMLInputElement>('div.pin-inputs input[type="text"]'))
-    if (pinInputs.every((input) => input.value !== '')) {
-      pinInputs.forEach((input) => input.blur())
-    }
+    // const pinInputs = Array.from(document.querySelectorAll<HTMLInputElement>('div.pin-inputs input[type="text"]'))
+    // if (pinInputs.every((input) => input.value !== '') && input.id === 'pin-3') {
+    //   pinInputs.forEach((input) => input.blur())
+    // }
+
+    pin = [
+      (document.getElementById('pin-1') as HTMLInputElement)?.value || '',
+      (document.getElementById('pin-2') as HTMLInputElement)?.value || '',
+      (document.getElementById('pin-3') as HTMLInputElement)?.value || '',
+    ]
   }
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
@@ -117,8 +126,6 @@
   <h2>{$l.auth.register}</h2>
   <p>{env.name} AdminTool</p>
 
-  <input type="hidden" name="form-token" value={data.formToken} style="display: none" />
-
   <label for="name">{$l.main.username}</label>
   <input type="text" id="name" bind:value={username} />
 
@@ -130,14 +137,12 @@
 
   <div class="pin-inputs">
     <label for="pin-1" style="display: inline-block">{@html $l.main.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
-    <input type="text" maxlength="1" size="1" id="pin-1" name="pin-1" onkeydown={handlePinInput} bind:value={pin[0]} />
-    <input type="text" maxlength="1" size="1" id="pin-2" name="pin-2" onkeydown={handlePinInput} bind:value={pin[1]} />
-    <input type="text" maxlength="1" size="1" id="pin-3" name="pin-3" onkeydown={handlePinInput} bind:value={pin[2]} />
+    <input type="text" maxlength="1" size="1" id="pin-1" name="pin-1" onkeydown={handlePinInput} />
+    <input type="text" maxlength="1" size="1" id="pin-2" name="pin-2" onkeydown={handlePinInput} />
+    <input type="text" maxlength="1" size="1" id="pin-3" name="pin-3" onkeydown={handlePinInput} />
   </div>
 
-  <button class="primary" disabled={!username || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}>
-    {$l.auth.register}
-  </button>
+  <button type="submit" class="primary" {disabled}>{$l.auth.register}</button>
   <p class="center">
     <a class="small-link" href="/login">{$l.auth.alreadyAnAccount}</a>
   </p>
