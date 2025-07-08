@@ -15,9 +15,9 @@
 
 <div class="notification-container">
   {#each items as notif}
-    <div class="notification {notif.type.toLocaleLowerCase()}" in:fly={{ y: 20, duration: 300 }} out:fade={{ duration: 200 }}>
+    <div class="notification {notif.type.toLocaleLowerCase()}" in:fly={{ y: -20, duration: 300 }}>
       <p class="message">
-        {notif.message}
+        {notif.message} {notif.id}
       </p>
     </div>
   {/each}
@@ -26,38 +26,37 @@
 <style lang="scss">
   div.notification-container {
     position: fixed;
-    top: auto;
     right: 1rem;
-    left: 1rem;
-    bottom: 1rem;
+    top: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 1rem;
     z-index: 9999;
-    max-width: 400px;
+    width: 400px;
 
     div.notification {
       padding: 15px 17px;
       border-radius: 10px;
+      border: 1px solid var(--border-color);
       backdrop-filter: blur(3px);
       box-shadow: 0 0 30px #00000030;
       font-size: 14px;
       position: relative;
 
       &.info {
-        background: #5094d040;
+        background: #6aaae2a0;
       }
 
       &.warning {
-        background: #d0bd5040;
+        background: #e9d876a0;
       }
 
       &.success {
-        background: #50805040;
+        background: #86c786a0;
       }
 
       &.error {
-        background: #d0505040;
+        background: #eb7575a0;
       }
     }
   }

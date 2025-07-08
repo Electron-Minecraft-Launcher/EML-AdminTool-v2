@@ -7,7 +7,6 @@
   import type { SubmitFunction } from '@sveltejs/kit'
   import { addNotification } from '$lib/stores/notifications'
   import type { NotificationCode } from '$lib/utils/notifications'
-  import { goto } from '$app/navigation'
 
   let { data }: PageProps = $props()
 
@@ -30,7 +29,6 @@
         addNotification('ERROR', message)
       } else if (result.type === 'success') {
         showLoader = false
-        goto('/dashboard')
       }
 
       await applyAction(result)

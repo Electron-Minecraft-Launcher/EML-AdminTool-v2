@@ -9,9 +9,10 @@ import fs from 'fs'
 import pkg from '../../../package.json'
 import bcrypt from 'bcrypt'
 import { NotificationCode } from '$lib/utils/notifications'
+import { dev } from '$app/environment'
 
 const execAsync = promisify(exec)
-const envFilePath = './env/.env'
+const envFilePath = './.env'
 
 export async function changeDatabasePassword(newPassword: string) {
   console.log('\n---------- CHANGING DATABASE PASSWORD ----------\n')
@@ -158,8 +159,17 @@ export async function markAsConfigured() {
   resetProcessEnv()
   const databaseUrl = process.env.DATABASE_URL || 'postgresql://eml:eml@db:5432/eml_admintool'
   const jwtSecretKey = process.env.JWT_SECRET_KEY || randomBytes(64).toString('base64url')
+  const registerTokenSecretKey = process.env.REGISTER_TOKEN_SECRET_KEY || randomBytes(64).toString('base64url')
 
   const envFile = envFilePath
+
+  const devWarning = dev
+    ? `
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#       FAKE ENVIRONMENT VARIABLES FOR TESTING        #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+`
+    : ''
 
   const newEnv = `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #          DO NOT MODIFY OR DELETE THIS FILE          #
@@ -175,10 +185,11 @@ export async function markAsConfigured() {
 # than modifying this file directly.                  #
 # Consult the documentation for more information.     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+${devWarning}
 IS_CONFIGURED="true"
 DATABASE_URL="${databaseUrl}"
-JWT_SECRET_KEY="${jwtSecretKey}"`
+JWT_SECRET_KEY="${jwtSecretKey}"
+REGISTER_TOKEN_SECRET_KEY="${registerTokenSecretKey}"`
 
   try {
     if (!fs.existsSync('./env')) fs.mkdirSync('./env')
@@ -207,6 +218,15 @@ function updateEnv(dbPassword: string) {
 
   const newDatabaseUrl = `postgresql://eml:${dbPassword}@db:5432/eml_admintool`
   const newJwtSecretKey = randomBytes(64).toString('base64url')
+  const newRegisterTokenSecretKey = randomBytes(64).toString('base64url')
+
+  const devWarning = dev
+    ? `
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#       FAKE ENVIRONMENT VARIABLES FOR TESTING        #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+`
+    : ''
 
   const newEnv = `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #          DO NOT MODIFY OR DELETE THIS FILE          #
@@ -222,10 +242,11 @@ function updateEnv(dbPassword: string) {
 # than modifying this file directly.                  #
 # Consult the documentation for more information.     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+${devWarning}
 IS_CONFIGURED="${isConfigured}"
 DATABASE_URL="${newDatabaseUrl}"
-JWT_SECRET_KEY="${newJwtSecretKey}"`
+JWT_SECRET_KEY="${newJwtSecretKey}"
+REGISTER_TOKEN_SECRET_KEY="${newRegisterTokenSecretKey}"`
 
   try {
     if (!fs.existsSync('./env')) fs.mkdirSync('./env')
@@ -248,5 +269,6 @@ export function resetProcessEnv() {
   if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
   if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
   if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY
-  config({ path: envFilePath })
+  config()
 }
+

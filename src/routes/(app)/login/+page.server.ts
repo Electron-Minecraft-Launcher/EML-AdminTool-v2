@@ -3,11 +3,15 @@ import type { PageServerLoad } from './$types'
 import { loginSchema } from '$lib/utils/validation'
 import { login } from '$lib/server/auth'
 import { BusinessError, ServerError } from '$lib/utils/errors'
-import { error, fail } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 import { NotificationCode } from '$lib/utils/notifications'
 import { dev } from '$app/environment'
+import { createSessionToken } from '$lib/server/jwt'
 
-export const load = (async () => {
+export const load = (async (event) => {
+  if (event.locals.user) {
+    throw redirect(303, '/dashboard')
+  }
   return {}
 }) satisfies PageServerLoad
 
@@ -30,17 +34,12 @@ export const actions: Actions = {
     const { username, password } = result.data
 
     try {
-      console.log(process.env.DATABASE_URL)
-      const { sessionToken, user } = await login(username, password)
+      const user = await login(username, password)
+      const sessionToken = await createSessionToken(user)
 
       event.cookies.set('session', sessionToken, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), path: '/', secure: !dev })
 
-      event.locals.user = {
-        id: user.id,
-        isAdmin: user.isAdmin
-      }
-
-      return
+      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -50,3 +49,4 @@ export const actions: Actions = {
     }
   }
 }
+

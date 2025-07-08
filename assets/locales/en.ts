@@ -30,6 +30,9 @@ export default {
     [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 3 characters long.`,
     [NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT]: `Admin password must be at least 12 characters long.`,
 
+    [NotificationCode.AUTH_SESSION_EXPIRED]: `Session expired, please log in again.`,
+    [NotificationCode.AUTH_INVALID_SESSION]: `Invalid session, please log in again.`,
+
     [NotificationCode.LOGIN_BAD_CREDENTIALS]: `Bad credentials.`,
     [NotificationCode.LOGIN_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
     [NotificationCode.LOGIN_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,

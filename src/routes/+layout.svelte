@@ -1,10 +1,10 @@
 <script lang="ts">
   import '../../assets/scss/styles.scss'
-  // import Notification from '../components/layouts/Notification.svelte'
   import fav from '../../assets/images/favicon.png'
   import type { LayoutData } from './$types'
   import { setContext } from 'svelte'
   import type { Env } from '$lib/utils/types'
+  import Notifications from '../components/layouts/Notifications.svelte'
 
   interface Props {
     data: LayoutData
@@ -20,7 +20,5 @@
   <link rel="icon" type="image/png" href={fav} />
 </svelte:head>
 
-<div class="app">
-  <!-- <Notification /> -->
-  {@render children?.()}
-</div>
+<Notifications />
+{@render children?.()}

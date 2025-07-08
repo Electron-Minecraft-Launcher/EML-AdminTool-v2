@@ -4,6 +4,10 @@
   import type { PageProps } from './$types'
   import getEnv from '$lib/utils/env'
   import Footer from '../../../components/layouts/Footer.svelte'
+  import { applyAction, enhance } from '$app/forms'
+  import type { SubmitFunction } from '@sveltejs/kit'
+  import type { NotificationCode } from '$lib/utils/notifications'
+  import { addNotification } from '$lib/stores/notifications'
 
   let { data }: PageProps = $props()
 
@@ -16,29 +20,87 @@
   let passwordCfr = $state('')
   let pin = $state(['', '', ''])
 
-  function focusNext(e: KeyboardEvent) {
+  /**
+   * @link From https://codepen.io/oxcakmak/pen/QWeBKWj
+   */
+  function handlePinInput(e: KeyboardEvent) {
     const input = e.target as HTMLInputElement
-    const n = +input.id.split('-')[1]
+    const key = e.keyCode
 
-    if (!/^[0-9]+$/.test(input.value) && input.value != '') {
-      input.value = ''
-      return
+    if ((key < 48 || key > 57) && ![8, 46, 37, 39].includes(key)) {
+      e.preventDefault()
+      return false
     }
-    if (input.value.length == 1) {
-      var nextInput = document.querySelector<HTMLInputElement>('input#pin-' + (n + 1))
-      if (nextInput) {
-        nextInput.focus()
-      }
-      return
-    }
-    if (e.keyCode == 8 || e.keyCode == 46) {
-      if (input.value == '') {
-        var previousInput = document.querySelector<HTMLInputElement>('input#pin-' + (n - 1))
+
+    if (key >= 48 && key <= 57) {
+      // Numeric keys
+      input.value = String.fromCharCode(key)
+      const nextInput = input.nextElementSibling as HTMLInputElement | null
+      if (nextInput) nextInput.focus()
+      e.preventDefault()
+    } else if (key === 8) {
+      // Backspace
+      if (input.value === '') {
+        const previousInput = input.previousElementSibling as HTMLInputElement | null
         if (previousInput) {
           previousInput.focus()
+          previousInput.value = ''
+        }
+      } else {
+        input.value = ''
+      }
+      e.preventDefault()
+    } else if (key === 46) {
+      // Delete
+      let nextInput = input as HTMLInputElement | null
+
+      while (nextInput) {
+        const followingInput = nextInput.nextElementSibling as HTMLInputElement | null
+        nextInput.value = followingInput ? followingInput.value : ''
+        nextInput = followingInput
+      }
+
+      if (input.value === '') {
+        let prevInput = input.previousElementSibling as HTMLInputElement | null
+        if (prevInput) {
+          prevInput.focus()
+          prevInput.value = ''
         }
       }
-      return
+
+      e.preventDefault()
+    } else if (key === 37) {
+      const previousInput = input.previousElementSibling as HTMLInputElement | null
+      if (previousInput) previousInput.focus()
+      e.preventDefault()
+    } else if (key === 39) {
+      // Right arrow key
+      const nextInput = input.nextElementSibling as HTMLInputElement | null
+      if (nextInput) nextInput.focus()
+      e.preventDefault()
+    }
+
+    const pinInputs = Array.from(document.querySelectorAll<HTMLInputElement>('div.pin-inputs input[type="text"]'))
+    if (pinInputs.every((input) => input.value !== '')) {
+      pinInputs.forEach((input) => input.blur())
+    }
+  }
+
+  const enhanceForm: SubmitFunction = ({ formData }) => {
+    showLoader = true
+
+    return async ({ result, update }) => {
+      update({ reset: false })
+      showLoader = false
+
+      if (result.type === 'failure') {
+        const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+      } else if (result.type === 'success') {
+        showLoader = false
+      }
+
+      await applyAction(result)
     }
   }
 </script>
@@ -47,7 +109,7 @@
   <title>{$l.auth.register} • {env.name} AdminTool</title>
 </svelte:head>
 
-<form>
+<form method="POST" action="?/register" use:enhance={enhanceForm}>
   {#if showLoader}
     <LoadingSplash transparent={true} />
   {/if}
@@ -55,20 +117,22 @@
   <h2>{$l.auth.register}</h2>
   <p>{env.name} AdminTool</p>
 
+  <input type="hidden" name="form-token" value={data.formToken} style="display: none" />
+
   <label for="name">{$l.main.username}</label>
   <input type="text" id="name" bind:value={username} />
 
   <label for="password">{$l.main.password}</label>
-  <input type="password" id="password" bind:value={password} autocomplete="new-password" />
+  <input type="password" id="password" name="password" bind:value={password} autocomplete="new-password" />
 
   <label for="password-cfr">{$l.auth.confirmPassword}</label>
-  <input type="password" id="password-cfr" bind:value={passwordCfr} autocomplete="new-password" />
+  <input type="password" id="password-cfr" name="password-cfr" bind:value={passwordCfr} autocomplete="new-password" />
 
   <div class="pin-inputs">
     <label for="pin-1" style="display: inline-block">{@html $l.main.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
-    <input type="text" maxlength="1" size="1" id="pin-1" onkeyup={focusNext} bind:value={pin[0]} />
-    <input type="text" maxlength="1" size="1" id="pin-2" onkeyup={focusNext} bind:value={pin[1]} />
-    <input type="text" maxlength="1" size="1" id="pin-3" onkeyup={focusNext} bind:value={pin[2]} />
+    <input type="text" maxlength="1" size="1" id="pin-1" name="pin-1" onkeydown={handlePinInput} bind:value={pin[0]} />
+    <input type="text" maxlength="1" size="1" id="pin-2" name="pin-2" onkeydown={handlePinInput} bind:value={pin[1]} />
+    <input type="text" maxlength="1" size="1" id="pin-3" name="pin-3" onkeydown={handlePinInput} bind:value={pin[2]} />
   </div>
 
   <button class="primary" disabled={!username || !password || password != passwordCfr || !pin[0] || !pin[1] || !pin[2]}>

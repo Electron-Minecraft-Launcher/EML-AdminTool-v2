@@ -10,3 +10,4 @@
 /update
 
 .DS_Store
+env/.env_bkp

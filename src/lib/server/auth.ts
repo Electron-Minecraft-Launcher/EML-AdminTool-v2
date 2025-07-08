@@ -1,9 +1,9 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { UserStatus } from '@prisma/client'
+import { UserStatus, type User } from '@prisma/client'
 import { db } from './db'
 import bcrypt from 'bcrypt'
-import { createSessionToken } from './jwt'
+import { checkSession, createSessionToken } from './jwt'
 
 export async function login(username: string, password: string) {
   let user
@@ -15,15 +15,34 @@ export async function login(username: string, password: string) {
   }
 
   if (!user || user.status == UserStatus.DELETED) {
+    console.warn('User not found or deleted:', username)
     throw new BusinessError('User not found', NotificationCode.LOGIN_BAD_CREDENTIALS, 401)
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password)
   if (!isPasswordValid) {
+    console.warn('Invalid password for user:', username)
     throw new BusinessError('Invalid password', NotificationCode.LOGIN_BAD_CREDENTIALS, 401)
   }
 
-  const sessionToken = await createSessionToken(user)
+  return user
+}
 
-  return {sessionToken, user}
+export async function verify(session: string) {
+  const payload = await checkSession(session)
+
+  let existing
+  try {
+    existing = await db.user.findUnique({ where: { id: payload.id as string } })
+  } catch (err) {
+    console.error('Error verifying user:', err)
+    throw new ServerError('Failed to verify user', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+
+  if (!existing) {
+    console.warn('User not found for session:', session)
+    throw new BusinessError('User not found', NotificationCode.UNAUTHORIZED, 401)
+  }
+
+  return existing
 }
