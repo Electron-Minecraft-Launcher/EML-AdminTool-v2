@@ -1,6 +1,6 @@
 import type { Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { loginSchema } from '$lib/utils/validation'
+import { loginSchema } from '$lib/utils/validations'
 import { login } from '$lib/server/auth'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { error, fail, redirect } from '@sveltejs/kit'

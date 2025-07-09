@@ -1,12 +1,9 @@
 <script lang="ts">
   import { page } from '$app/state'
   import { l } from '$lib/stores/language'
-  import type { IUser } from '$lib/utils/types'
   import { sleep } from '$lib/utils/utils'
-  import { UserStatus } from '@prisma/client'
   import Skeleton from './Skeleton.svelte'
   import { slide } from 'svelte/transition'
-  import getEnv from '$lib/utils/env'
   import getUser from '$lib/utils/user'
 
   interface Props {

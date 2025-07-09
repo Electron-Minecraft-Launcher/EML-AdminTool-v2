@@ -30,7 +30,7 @@
       symbols: true,
       uppercase: true,
       strict: true,
-      exclude: '/\\+&#%?=:'
+      exclude: '/\\+&#%?=:@'
     })
 
     setupData.dbPassword = password

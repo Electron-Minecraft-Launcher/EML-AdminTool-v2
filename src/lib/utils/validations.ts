@@ -19,3 +19,13 @@ export const loginSchema = z.object({
     .transform((val) => val.trim()),
   password: z.string()
 })
+
+export const registerSchema = z.object({
+  username: z
+    .string()
+    .min(2, NotificationCode.REGISTER_USERNAME_TOO_SHORT)
+    .max(64, NotificationCode.REGISTER_USERNAME_TOO_LONG)
+    .transform((val) => val.trim()),
+  password: z.string().min(8, NotificationCode.REGISTER_PASSWORD_TOO_SHORT),
+  pin: z.string().length(3, NotificationCode.REGISTER_PIN_INVALID)
+})

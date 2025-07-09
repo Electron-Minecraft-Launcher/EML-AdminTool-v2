@@ -29,6 +29,8 @@ export default {
     [NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT]: `Database password must be at least 12 characters long.`,
     [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 3 characters long.`,
     [NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT]: `Admin password must be at least 12 characters long.`,
+    
+    [NotificationCode.EMLAT_UPDATED]: `EML AdminTool has been updated successfully.`,
 
     [NotificationCode.AUTH_SESSION_EXPIRED]: `Session expired, please log in again.`,
     [NotificationCode.AUTH_INVALID_SESSION]: `Invalid session, please log in again.`,
@@ -37,9 +39,16 @@ export default {
     [NotificationCode.LOGIN_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
     [NotificationCode.LOGIN_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
 
+    [NotificationCode.REGISTER_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
+    [NotificationCode.REGISTER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
+    [NotificationCode.REGISTER_PASSWORD_TOO_SHORT]: `Password must be at least 12 characters long.`,
+    [NotificationCode.REGISTER_PIN_INVALID]: `PIN must be exactly 3 characters long.`,
+    [NotificationCode.REGISTER_USERNAME_EXISTS]: `Username already exists.`,
+
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
+    [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`
   },
   setup: {
     setup: `Setup`,
@@ -97,10 +106,10 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
       newName: `New name`,
       nbUsers: `Number of users`,
       users: `Users`,
-      waitingUsers: `Waiting users`,
+      pendingUsers: `Pending users`,
       wrongPinUsers: `Wrong-PIN users`,
       deletedUsers: `Deleted users`,
-      permissionsOf: `Permissions of`,
+      infoOf: `Info of`,
       update: `Update`,
       currentVersion: `Current version`,
       latestVersion: `Latest version`,

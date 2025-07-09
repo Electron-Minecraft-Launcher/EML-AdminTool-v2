@@ -1,6 +1,6 @@
 import { error, fail, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { setupSchema } from '$lib/utils/validation'
+import { setupSchema } from '$lib/utils/validations'
 import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin } from '$lib/server/setup'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'

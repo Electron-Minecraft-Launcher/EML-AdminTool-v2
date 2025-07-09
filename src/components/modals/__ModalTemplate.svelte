@@ -11,16 +11,14 @@
   let { size = 'm', show = $bindable(), translateX = '0', children }: Props = $props()
 </script>
 
-{#if show}
-  <div class="modal-background" transition:scale={{ start: 1.5 }}>
-    <div class={'modal size-' + size} style="transform: translateX({translateX})">
-      <section class="close">
-        <button class="close" onclick={() => (show = false)}>Close&nbsp;&nbsp;<i class="fa-solid fa-times"></i></button>
-      </section>
-      {@render children?.()}
-    </div>
+<div class="modal-background" transition:scale={{ start: 1.5 }}>
+  <div class={'modal size-' + size} style="transform: translateX({translateX})">
+    <section class="close">
+      <button class="close" onclick={() => (show = false)}>Close&nbsp;&nbsp;<i class="fa-solid fa-times"></i></button>
+    </section>
+    {@render children?.()}
   </div>
-{/if}
+</div>
 
 <style lang="scss">
   @use '../../assets/scss/modals.scss';
