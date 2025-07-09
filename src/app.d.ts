@@ -1,4 +1,5 @@
 import type { LanguageCode } from "$lib/stores/language"
+import type { IUser } from "$lib/utils/types"
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -13,11 +14,7 @@ declare global {
         theme: string
         version: string
       },
-      user?: {
-        id: string
-        isAdmin: boolean
-        
-      }
+      user?: IUser
     }
     // interface PageData {}
     // interface PageState {}
