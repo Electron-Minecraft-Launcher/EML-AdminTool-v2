@@ -3,6 +3,11 @@
   import type { PageData } from '../../routes/(app)/dashboard/emlat-settings/$types'
   import { emptyUser } from '$lib/stores/user'
   import { l } from '$lib/stores/language'
+  import { enhance } from '$app/forms'
+  import type { SubmitFunction } from '@sveltejs/kit'
+  import { addNotification } from '$lib/stores/notifications'
+  import type { NotificationCode } from '$lib/utils/notifications'
+  import { applyAction } from '$app/forms'
 
   interface Props {
     selectedUserId: string
@@ -15,27 +20,39 @@
   let selectedUser = $derived.by(() => data.users.find((user) => user.id === selectedUserId) ?? emptyUser)
   let action: 'ACCEPT' | 'EDIT' = $state('ACCEPT')
 
-  async function deleteUser() {
-    if (
-      confirm(`Are you sure you want to delete this user?
-The user will not be able to access EML AdminTool anymore. However, the user's actions and data will not be deleted.`)
-    ) {
-      // TODO
+  const enhanceForm: SubmitFunction = ({ action, formData, cancel }) => {
+    const warning =
+      action.search === '?/refuseUser'
+        ? $l.dashboard.emlatSettings.refuseUserWarning
+        : action.search === '?/deleteUser'
+          ? $l.dashboard.emlatSettings.deleteUserWarning
+          : $l.dashboard.emlatSettings.deleteUserForeverWarning
+    if (!confirm(warning)) {
+      cancel()
+      return
     }
-  }
 
-  async function deleteUserForever() {
-    if (
-      confirm(`Are you sure you want to delete this user forever?
-All the user's actions and data will be deleted, including published news. This action is irreversible.`)
-    ) {
-      // TODO
+    formData.set('user-id', selectedUserId)
+    return async ({ result, update }) => {
+      update({ reset: false })
+      if (result.type === 'failure') {
+        const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+      } else if (result.type === 'success') {
+        if (action.search === '?/deleteUserForever') {
+          selectedUserId = data.users[0]?.id ?? ''
+        }
+      }
+      
+      await applyAction(result)
     }
   }
 </script>
 
 {#if !selectedUser.isAdmin && selectedUser.status === UserStatus.ACTIVE}
-  <button class="secondary right refuse" onclick={deleteUser} aria-label="Delete user"><i class="fa-solid fa-trash"></i></button>
+  <form method="POST" action="?/deleteUser" use:enhance={enhanceForm}>
+    <button class="secondary right refuse" aria-label="Delete user"><i class="fa-solid fa-trash"></i></button>
+  </form>
   <button
     class="secondary right"
     onclick={() => {
@@ -47,7 +64,9 @@ All the user's actions and data will be deleted, including published news. This 
     <i class="fa-solid fa-pen"></i>
   </button>
 {:else if selectedUser.status === UserStatus.PENDING}
-  <button class="secondary right refuse" onclick={deleteUser} aria-label="Delete user"><i class="fa-solid fa-times"></i></button>
+  <form method="POST" action="?/refuseUser" use:enhance={enhanceForm}>
+    <button class="secondary right refuse" aria-label="Refuse user"><i class="fa-solid fa-times"></i></button>
+  </form>
   <button
     class="secondary right accept"
     onclick={() => {
@@ -59,7 +78,9 @@ All the user's actions and data will be deleted, including published news. This 
     <i class="fa-solid fa-check"></i>
   </button>
 {:else if selectedUser.status && (selectedUser.status === UserStatus.DELETED || selectedUser.status === UserStatus.SPAM)}
-  <button class="secondary right delete" onclick={deleteUserForever} aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
+  <form method="POST" action="?/deleteUserForever" use:enhance={enhanceForm}>
+    <button class="secondary right delete" aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
+  </form>
 {/if}
 
 <div class="perms">

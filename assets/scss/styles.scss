@@ -143,6 +143,7 @@ input:not([type=checkbox]) {
 
 input[type=checkbox] {
   margin-top: 5px;
+  accent-color: var(--primary-color);
 }
 
 select {

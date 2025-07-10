@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LanguageModal from '../modals/Language.svelte'
+  import LanguageModal from '../modals/LanguageModal.svelte'
   import enFlag from '../../../assets/images/flags/en.png'
   import frFlag from '../../../assets/images/flags/fr.png'
   import deFlag from '../../../assets/images/flags/de.png'

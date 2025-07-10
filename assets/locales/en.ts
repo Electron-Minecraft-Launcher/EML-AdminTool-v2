@@ -24,6 +24,7 @@ export default {
     [NotificationCode.UNAUTHORIZED]: `Unauthorized.`,
     [NotificationCode.FORBIDDEN]: `Forbidden.`,
     [NotificationCode.INVALID_REQUEST]: `Invalid request.`,
+    [NotificationCode.NOT_FOUND]: `Not found.`,
 
     [NotificationCode.SETUP_INVALID_LANGUAGE]: `Language must be at least 2 characters long.`,
     [NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT]: `Database password must be at least 12 characters long.`,
@@ -111,7 +112,6 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
       users: `Users`,
       pendingUsers: `Pending users`,
       wrongPinUsers: `Wrong-PIN users`,
-      deletedUsers: `Deleted users`,
       infoOf: `Info of`,
       update: `Update`,
       currentVersion: `Current version`,
@@ -130,6 +130,13 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
       nameWarn: `Changing EML AdminTool name also changes your username!`,
       regeneratePin: `Regenerate PIN`,
       acceptUser: `Accept user`,
+      refuseUser: `Refuse user`,
+      refuseUserWarning: `Are you sure you want to refuse this user? The user will not be able to access EML AdminTool anymore.`,
+      deletedUsers: `Deleted users`,
+      deleteUserWarning: `Are you sure you want to delete this user?
+The user will not be able to access EML AdminTool anymore. However, the user's actions and data will not be deleted.`,
+      deleteUserForeverWarning: `Are you sure you want to delete this user forever?
+All the user's actions and data will be deleted, including published news. This action is irreversible.`,
       editUser: `Edit user`
     },
     account: {
@@ -149,5 +156,3 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
     }
   }
 }
-
-

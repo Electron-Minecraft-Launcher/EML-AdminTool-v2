@@ -1,10 +1,10 @@
 import type { VPS } from '$lib/utils/types'
 import type { Update } from 'vite'
 import type { PageServerLoad } from './$types'
-import type { Environment, User } from '@prisma/client'
+import { UserStatus, type Environment, type User } from '@prisma/client'
 import { db } from '$lib/server/db'
-import { error, redirect, type Actions } from '@sveltejs/kit'
-import { ServerError } from '$lib/utils/errors'
+import { error, fail, redirect, type Actions, type RequestEvent } from '@sveltejs/kit'
+import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { getOS, getStorage } from '$lib/server/vps'
 import { getUpdate } from '$lib/server/update'
@@ -12,6 +12,7 @@ import { editEMLATSchema } from '$lib/utils/validations'
 import { editEMLAT } from '$lib/server/emlat'
 import { generateRandomPin, getPin } from '$lib/server/pin'
 import type { LanguageCode } from '$lib/stores/language'
+import { deleteUser, updateUser } from '$lib/server/user'
 
 export const load = (async (event) => {
   const ip = event.getClientAddress()
@@ -35,7 +36,7 @@ export const load = (async (event) => {
     }
 
     try {
-      users = await db.user.findMany({ omit: { password: true } })
+      users = await db.user.findMany({ omit: { password: true }, orderBy: { isAdmin: 'asc', username: 'asc' } })
     } catch (err) {
       console.error('Failed to load users:', err)
       throw new ServerError('Failed to load users', err, NotificationCode.DATABASE_ERROR, 500)
@@ -91,6 +92,53 @@ export const actions: Actions = {
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
     }
+  },
+
+  refuseUser: refuseDeleteUser,
+
+  deleteUser: refuseDeleteUser,
+
+  deleteUserForever: async (event) => {
+    const ip = event.getClientAddress()
+    const form = await event.request.formData()
+
+    const userId = form.get('user-id')?.toString()
+
+    if (!userId) {
+      return { failure: 'User ID is required' }
+    }
+
+    try {
+      await deleteUser(userId)
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
   }
 }
 
+async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, string>>, string | null>) {
+  const ip = event.getClientAddress()
+  const form = await event.request.formData()
+
+  const userId = form.get('user-id')?.toString()
+
+  if (!userId) {
+    return { failure: 'User ID is required' }
+  }
+
+  try {
+    await updateUser(userId, { status: UserStatus.DELETED })
+
+    return { success: true }
+  } catch (err) {
+    if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+    if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+    console.error('Unknown error:', err)
+    throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+  }
+}
