@@ -36,7 +36,7 @@ export const load = (async (event) => {
     }
 
     try {
-      users = await db.user.findMany({ omit: { password: true }, orderBy: { isAdmin: 'asc', username: 'asc' } })
+      users = await db.user.findMany({ omit: { password: true }, orderBy: { username: 'asc' } })
     } catch (err) {
       console.error('Failed to load users:', err)
       throw new ServerError('Failed to load users', err, NotificationCode.DATABASE_ERROR, 500)

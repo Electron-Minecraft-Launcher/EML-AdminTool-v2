@@ -128,16 +128,18 @@
     {/if}
   {/if}
 
-  {#if !ready}
-    <Skeleton
-      {randomWidth}
-      {height}
-      customStyle={[{ display: 'block' }, { margin: '30px 15px 20px 15px' }, { position: 'absolute' }, { bottom: '90px' }, { width: '170px' }]}
-    />
-  {:else}
-    <button class="account" onclick={accountClick}>
-      <i class="fa-solid fa-circle-user"></i>{user.username}<i class="fa-solid fa-caret-up"></i>
-    </button>
+  {#if leftPanelOpen}
+    {#if !ready}
+      <Skeleton
+        {randomWidth}
+        {height}
+        customStyle={[{ display: 'block' }, { margin: '30px 15px 20px 15px' }, { position: 'absolute' }, { bottom: '90px' }, { width: '170px' }]}
+      />
+    {:else}
+      <button class="account" onclick={accountClick}>
+        <i class="fa-solid fa-circle-user"></i>{user.username}<i class="fa-solid fa-caret-up"></i>
+      </button>
+    {/if}
   {/if}
 
   {#if accountDropdownOpen}
