@@ -78,6 +78,10 @@ export async function logout(session: string) {
     throw new BusinessError('Invalid session', NotificationCode.AUTH_INVALID_SESSION, 401)
   }
 
-  // Invalidate the session by not returning a valid token
-  return null
+  try {
+    await db.expiredToken.create({ data: { token: session } })
+  } catch (err) {
+    console.error('Error logging out user:', err)
+    throw new ServerError('Failed to log out user', err, NotificationCode.DATABASE_ERROR, 500)
+  }
 }

@@ -10,6 +10,7 @@ import pkg from '../../../package.json'
 import bcrypt from 'bcrypt'
 import { NotificationCode } from '$lib/utils/notifications'
 import { dev } from '$app/environment'
+import { generateRandomPin } from './pin'
 
 const execAsync = promisify(exec)
 const envFilePath = './.env'
@@ -121,7 +122,7 @@ export async function setPin() {
   const client = new Client({ connectionString: process.env.DATABASE_URL })
   await client.connect()
 
-  const pin = (randomBytes(2).readUInt16BE(0) % 1000).toString().padStart(3, '0')
+  const pin = generateRandomPin()
 
   try {
     await client.query(`UPDATE "Environment" SET "pin" = $1 WHERE "id" = $2`, [pin, 1])
@@ -190,8 +191,7 @@ export async function markAsConfigured() {
 ${devWarning}
 IS_CONFIGURED="true"
 DATABASE_URL="${databaseUrl}"
-JWT_SECRET_KEY="${jwtSecretKey}"
-REGISTER_TOKEN_SECRET_KEY="${registerTokenSecretKey}"`
+JWT_SECRET_KEY="${jwtSecretKey}"`
 
   try {
     if (!fs.existsSync('./env')) fs.mkdirSync('./env')
@@ -247,8 +247,7 @@ function updateEnv(dbPassword: string) {
 ${devWarning}
 IS_CONFIGURED="${isConfigured}"
 DATABASE_URL="${newDatabaseUrl}"
-JWT_SECRET_KEY="${newJwtSecretKey}"
-REGISTER_TOKEN_SECRET_KEY="${newRegisterTokenSecretKey}"`
+JWT_SECRET_KEY="${newJwtSecretKey}"`
 
   try {
     if (!fs.existsSync('./env')) fs.mkdirSync('./env')

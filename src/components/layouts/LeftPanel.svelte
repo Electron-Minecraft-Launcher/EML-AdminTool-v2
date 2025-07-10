@@ -5,6 +5,10 @@
   import Skeleton from './Skeleton.svelte'
   import { slide } from 'svelte/transition'
   import getUser from '$lib/utils/user'
+  import { applyAction, enhance } from '$app/forms'
+  import type { SubmitFunction } from '@sveltejs/kit'
+  import { addNotification } from '$lib/stores/notifications'
+  import type { NotificationCode } from '$lib/utils/notifications'
 
   interface Props {
     leftPanelOpen?: boolean
@@ -28,8 +32,16 @@
     }
   }
 
-  async function logoutClick() {
-    // TODO
+  const enhanceForm: SubmitFunction = ({ formData }) => {
+    return async ({ result, update }) => {
+      update({ reset: false })
+      if (result.type === 'failure') {
+        const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+      }
+
+      await applyAction(result)
+    }
   }
 </script>
 
@@ -133,7 +145,9 @@
       <a href="/dashboard/account" class="account-settings" class:active={page.url.pathname == '/dashboard/account'}>
         <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}
       </a>
-      <button class="account-logout" onclick={logoutClick}><i class="fa-solid fa-right-from-bracket"></i>{$l.leftPanel.logout}</button>
+      <form method="POST" action="/dashboard?/logout" use:enhance={enhanceForm}>
+        <button class="account-logout"><i class="fa-solid fa-right-from-bracket"></i>{$l.leftPanel.logout}</button>
+      </form>
     </div>
   {/if}
 </nav>

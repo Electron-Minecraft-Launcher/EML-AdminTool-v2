@@ -93,7 +93,7 @@ Wenn du uns bei der Übersetzung des EML AdminTools helfen möchtest, findest du
       dangerZone: 'Gefahrenzone',
       reset: 'EML AdminTool zurücksetzen',
       emlAdminToolName: 'Name des EML AdminTools',
-      editEmlat: 'EML AdminTool-Informationen bearbeiten',
+      editEMLAT: 'EML AdminTool-Informationen bearbeiten',
       leaveBlank: 'Leer lassen, wenn du nichts ändern möchtest.',
       nameWarn: 'Das Ändern des Namens ändert auch deinen Benutzernamen!',
       regeneratePin: 'PIN neu generieren',

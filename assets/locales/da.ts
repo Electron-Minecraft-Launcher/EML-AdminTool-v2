@@ -93,7 +93,7 @@ Hvis du vil hjælpe med at oversætte EML AdminTool, kan du finde JSON-filerne p
       dangerZone: `Farezone`,
       reset: `Nulstil EML AdminTool`,
       emlAdminToolName: `EML AdminTool navn`,
-      editEmlat: `Rediger EML AdminTool information`,
+      editEMLAT: `Rediger EML AdminTool information`,
       leaveBlank: `Lad den være blankt, hvis du ikke ønsker at ændre det.`,
       nameWarn: `Ændring af EML AdminTool navn ændrer også dit brugernavn!`,
       regeneratePin: `Generer PIN igen`,

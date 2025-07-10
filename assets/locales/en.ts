@@ -29,7 +29,10 @@ export default {
     [NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT]: `Database password must be at least 12 characters long.`,
     [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 3 characters long.`,
     [NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT]: `Admin password must be at least 12 characters long.`,
-    
+
+    [NotificationCode.EMLAT_NAME_TOO_SHORT]: `EML AdminTool name must be at least 2 characters long.`,
+    [NotificationCode.EMLAT_NAME_TOO_LONG]: `EML AdminTool name must be at most 64 characters long.`,
+    [NotificationCode.EMLAT_INVALID_LANGUAGE]: `EML AdminTool language must be exactly 2 characters long.`,
     [NotificationCode.EMLAT_UPDATED]: `EML AdminTool has been updated successfully.`,
 
     [NotificationCode.AUTH_SESSION_EXPIRED]: `Session expired, please log in again.`,
@@ -122,7 +125,7 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
       dangerZone: `Danger zone`,
       reset: `Reset EML AdminTool`,
       emlAdminToolName: `EML AdminTool name`,
-      editEmlat: `Edit EML AdminTool information`,
+      editEMLAT: `Edit EML AdminTool information`,
       leaveBlank: `Leave blank if you don't want to change.`,
       nameWarn: `Changing EML AdminTool name also changes your username!`,
       regeneratePin: `Regenerate PIN`,
@@ -146,4 +149,5 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
     }
   }
 }
+
 

@@ -3,11 +3,15 @@ import type { Update } from 'vite'
 import type { PageServerLoad } from './$types'
 import type { Environment, User } from '@prisma/client'
 import { db } from '$lib/server/db'
-import { error, redirect } from '@sveltejs/kit'
+import { error, redirect, type Actions } from '@sveltejs/kit'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { getOS, getStorage } from '$lib/server/vps'
 import { getUpdate } from '$lib/server/update'
+import { editEMLATSchema } from '$lib/utils/validations'
+import { editEMLAT } from '$lib/server/emlat'
+import { generateRandomPin, getPin } from '$lib/server/pin'
+import type { LanguageCode } from '$lib/stores/language'
 
 export const load = (async (event) => {
   const ip = event.getClientAddress()
@@ -58,3 +62,35 @@ export const load = (async (event) => {
     throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
   }
 }) satisfies PageServerLoad
+
+export const actions: Actions = {
+  editEMLAT: async (event) => {
+    const ip = event.getClientAddress()
+    const form = await event.request.formData()
+
+    const raw = {
+      name: form.get('name')?.toString(),
+      language: form.get('language')?.toString(),
+      regeneratePin: form.get('regenerate-pin')?.toString() === 'on'
+    }
+
+    const result = editEMLATSchema.safeParse(raw)
+
+    if (!result.success) {
+      return { failure: result.error.message }
+    }
+
+    const { name, language, regeneratePin } = result.data
+
+    try {
+      const newPin = regeneratePin ? generateRandomPin() : await getPin()
+      await editEMLAT(name, language as LanguageCode, newPin)
+    } catch (err) {
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  }
+}
+

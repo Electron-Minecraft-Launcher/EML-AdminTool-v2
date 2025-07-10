@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit'
-import type { RequestHandler } from '../$types'
+import type { RequestHandler } from './$types'
 import { markAsConfigured, resetProcessEnv } from '$lib/server/setup'
 import { sleep } from '$lib/utils/utils'
 

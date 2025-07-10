@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { UserStatus } from "@prisma/client"
-  import type { PageData } from "../../routes/(app)/dashboard/emlat-settings/$types"
-  import { emptyUser } from "$lib/stores/user"
-  import { l } from "$lib/stores/language"
+  import { UserStatus } from '@prisma/client'
+  import type { PageData } from '../../routes/(app)/dashboard/emlat-settings/$types'
+  import { emptyUser } from '$lib/stores/user'
+  import { l } from '$lib/stores/language'
 
   interface Props {
     selectedUserId: string
@@ -11,11 +11,9 @@
 
   let { selectedUserId = $bindable(), data }: Props = $props()
 
-  const selectedUser = data.users.find(user => user.id === selectedUserId) ?? emptyUser
-
   let showEditUserModal = $state(false)
+  let selectedUser = $derived.by(() => data.users.find((user) => user.id === selectedUserId) ?? emptyUser)
   let action: 'ACCEPT' | 'EDIT' = $state('ACCEPT')
-
 
   async function deleteUser() {
     if (
@@ -60,8 +58,8 @@ All the user's actions and data will be deleted, including published news. This 
   >
     <i class="fa-solid fa-check"></i>
   </button>
-{:else if selectedUser.status && (selectedUser.status === UserStatus.DELETED  || selectedUser.status === UserStatus.SPAM)}
-  <button class="secondary right refuse" onclick={deleteUserForever} aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
+{:else if selectedUser.status && (selectedUser.status === UserStatus.DELETED || selectedUser.status === UserStatus.SPAM)}
+  <button class="secondary right delete" onclick={deleteUserForever} aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
 {/if}
 
 <div class="perms">
@@ -144,6 +142,10 @@ All the user's actions and data will be deleted, including published news. This 
 
   button.refuse {
     right: 58px;
+    color: #6e2626;
+  }
+
+  button.delete {
     color: #6e2626;
   }
 </style>

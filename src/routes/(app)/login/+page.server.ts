@@ -7,6 +7,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import { NotificationCode } from '$lib/utils/notifications'
 import { dev } from '$app/environment'
 import { createSessionToken } from '$lib/server/jwt'
+import { sleep } from '$lib/utils/utils'
 
 export const load = (async (event) => {
   if (event.locals.user) {
@@ -17,6 +18,8 @@ export const load = (async (event) => {
 
 export const actions: Actions = {
   login: async (event) => {
+    await sleep(1000) // Prevent brute-force attacks by adding a delay
+
     const ip = event.getClientAddress()
     const form = await event.request.formData()
 

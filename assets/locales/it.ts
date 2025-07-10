@@ -93,7 +93,7 @@ Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nost
       dangerZone: 'Zona pericolosa',
       reset: 'Reimposta EML AdminTool',
       emlAdminToolName: 'Nome di EML AdminTool',
-      editEmlat: 'Modifica informazioni di EML AdminTool',
+      editEMLAT: 'Modifica informazioni di EML AdminTool',
       leaveBlank: 'Lascia vuoto se non vuoi cambiare.',
       nameWarn: "Cambiare il nome dell'AdminTool cambia anche il tuo nome utente!",
       regeneratePin: 'Rigenera PIN',
@@ -117,4 +117,5 @@ Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nost
     }
   }
 }
+
 

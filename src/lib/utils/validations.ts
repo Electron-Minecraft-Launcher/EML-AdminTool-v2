@@ -11,6 +11,12 @@ export const setupSchema = z.object({
   adminPassword: z.string().min(8, NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT)
 })
 
+export const editEMLATSchema = z.object({
+  name: z.string().min(2, NotificationCode.EMLAT_NAME_TOO_SHORT).max(64, NotificationCode.EMLAT_NAME_TOO_LONG),
+  language: z.string().length(2, NotificationCode.EMLAT_INVALID_LANGUAGE),
+  regeneratePin: z.boolean()
+})
+
 export const loginSchema = z.object({
   username: z
     .string()

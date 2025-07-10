@@ -24,8 +24,6 @@
     return !username || !password || password !== passwordCfr || pin.some((p) => p === '')
   })
   
-  $inspect(username, password, passwordCfr, pin)
-
   /**
    * @link From https://codepen.io/oxcakmak/pen/QWeBKWj
    */
@@ -126,8 +124,8 @@
   <h2>{$l.auth.register}</h2>
   <p>{env.name} AdminTool</p>
 
-  <label for="name">{$l.main.username}</label>
-  <input type="text" id="name" bind:value={username} />
+  <label for="username">{$l.main.username}</label>
+  <input type="text" id="username" name="username" bind:value={username} />
 
   <label for="password">{$l.main.password}</label>
   <input type="password" id="password" name="password" bind:value={password} autocomplete="new-password" />

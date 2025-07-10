@@ -93,7 +93,7 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
       dangerZone: `Zone de danger`,
       reset: `Réinitialiser l'EML AdminTool`,
       emlAdminToolName: `Nom de l'EML AdminTool`,
-      editEmlat: `Paramétrer l'EML AdminTool`,
+      editEMLAT: `Paramétrer l'EML AdminTool`,
       leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
       nameWarn: `Changer le nom de l'EML AdminTool change également votre nom d'utilisateur !`,
       regeneratePin: `Régénérer le code de sécurité`,
@@ -117,4 +117,5 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
     }
   }
 }
+
 

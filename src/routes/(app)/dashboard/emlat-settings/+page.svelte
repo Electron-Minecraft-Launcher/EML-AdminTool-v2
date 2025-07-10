@@ -11,6 +11,7 @@
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import { UserStatus } from '@prisma/client'
   import UserManagement from '../../../../components/contents/UserManagement.svelte'
+  import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
 
   let { data = $bindable() }: PageProps = $props()
 
@@ -116,7 +117,7 @@
 {/if}
 
 {#if showEditAdminToolModal}
-  <!-- <EditAdminToolModal bind:show={showEditAdminToolModal} /> -->
+  <EditEMLAdminToolModal bind:show={showEditAdminToolModal} />
 {/if}
 
 <h2>{$l.dashboard.emlatSettings.emlatSettings}</h2>
