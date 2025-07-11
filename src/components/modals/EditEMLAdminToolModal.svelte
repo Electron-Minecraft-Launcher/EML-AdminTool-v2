@@ -13,7 +13,6 @@
   import { applyAction } from '$app/forms'
   import { addNotification } from '$lib/stores/notifications'
   import type { NotificationCode } from '$lib/utils/notifications'
-  import { invalidateAll } from '$app/navigation'
 
   interface Props {
     show: boolean
@@ -45,7 +44,6 @@
         const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
         addNotification('ERROR', message)
       } else if (result.type === 'success') {
-        showLoader = false
         show = false
         window.location.reload()
       }

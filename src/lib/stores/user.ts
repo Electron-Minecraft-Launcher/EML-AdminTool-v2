@@ -6,7 +6,6 @@ interface User {
   username: string
   isAdmin: boolean
   p_filesUpdater: 0 | 1
-  p_loader: 0 | 1
   p_bootstraps: 0 | 1
   p_maintenance: 0 | 1
   p_news: 0 | 1 | 2
@@ -28,7 +27,6 @@ export const emptyUser = {
   isAdmin: false,
   status: UserStatus.ACTIVE,
   p_filesUpdater: 0,
-  p_loader: 0,
   p_bootstraps: 0,
   p_maintenance: 0,
   p_news: 0,

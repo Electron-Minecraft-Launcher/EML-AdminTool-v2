@@ -8,6 +8,7 @@
   import { addNotification } from '$lib/stores/notifications'
   import type { NotificationCode } from '$lib/utils/notifications'
   import { applyAction } from '$app/forms'
+  import EditUserModal from '../modals/EditUserModal.svelte'
 
   interface Props {
     selectedUserId: string
@@ -43,11 +44,15 @@
           selectedUserId = data.users[0]?.id ?? ''
         }
       }
-      
+
       await applyAction(result)
     }
   }
 </script>
+
+{#if showEditUserModal}
+  <EditUserModal bind:show={showEditUserModal} bind:selectedUserId {action} {data} />
+{/if}
 
 {#if !selectedUser.isAdmin && selectedUser.status === UserStatus.ACTIVE}
   <form method="POST" action="?/deleteUser" use:enhance={enhanceForm}>
@@ -94,11 +99,11 @@
     {#if selectedUser.isAdmin}
       <p>Admin (all permissions)</p>
     {:else}
-      {#if selectedUser.p_filesUpdater || selectedUser.p_loader}
-        {#if selectedUser.p_filesUpdater}
+      {#if selectedUser.p_filesUpdater}
+        {#if selectedUser.p_filesUpdater >= 1}
           <p>Add and Delete files</p>
         {/if}
-        {#if selectedUser.p_loader}
+        {#if selectedUser.p_filesUpdater === 2}
           <p>Change Minecraft loader</p>
         {/if}
       {/if}
@@ -135,14 +140,12 @@
         <p>View and Delete stats</p>
       {/if}
 
-      {#if !selectedUser.p_filesUpdater && !selectedUser.p_loader && !selectedUser.p_bootstraps && !selectedUser.p_maintenance && !selectedUser.p_news && !selectedUser.p_newsCategories && !selectedUser.p_newsTags && !selectedUser.p_backgrounds && !selectedUser.p_stats}
+      {#if !selectedUser.p_filesUpdater && !selectedUser.p_bootstraps && !selectedUser.p_maintenance && !selectedUser.p_news && !selectedUser.p_newsCategories && !selectedUser.p_newsTags && !selectedUser.p_backgrounds && !selectedUser.p_stats}
         <p>No permissions</p>
       {/if}
     {/if}
   {/if}
 </div>
-
-<!-- <AcceptEditAccountModal bind:show={showEditUserModal} bind:selectedUser bind:action /> -->
 
 <style lang="scss">
   div.perms {

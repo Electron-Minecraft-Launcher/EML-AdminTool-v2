@@ -49,8 +49,7 @@ model User {
   password         String
   status           UserStatus @default(PENDING)
   isAdmin          Boolean    @default(false)
-  p_filesUpdater   Int        @default(0) // 0 = no access, 1 = read and write
-  p_loader         Int        @default(0) // 0 = no access, 1 = read and write
+  p_filesUpdater   Int        @default(0) // 0 = no access, 1 = read and write, 2 = read, write and change loader
   p_bootstraps     Int        @default(0) // 0 = no access, 1 = read and write
   p_maintenance    Int        @default(0) // 0 = no access, 1 = read and write
   p_news           Int        @default(0) // 0 = no access, 1 = read and write, 2 = admin (can delete news they did not create)

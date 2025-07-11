@@ -94,6 +94,13 @@ export const actions: Actions = {
     }
   },
 
+  editUser: async (event) => {
+    const ip = event.getClientAddress()
+    const form = await event.request.formData()
+
+    // TODO
+  },
+
   refuseUser: refuseDeleteUser,
 
   deleteUser: refuseDeleteUser,
@@ -131,7 +138,17 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
   }
 
   try {
-    await updateUser(userId, { status: UserStatus.DELETED })
+    await updateUser(userId, {
+      status: UserStatus.DELETED,
+      p_filesUpdater: 0,
+      p_bootstraps: 0,
+      p_maintenance: 0,
+      p_news: 0,
+      p_newsCategories: 0,
+      p_newsTags: 0,
+      p_backgrounds: 0,
+      p_stats: 0
+    })
 
     return { success: true }
   } catch (err) {
@@ -142,3 +159,4 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
     throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
   }
 }
+

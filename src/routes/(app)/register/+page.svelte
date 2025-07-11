@@ -103,8 +103,6 @@
       if (result.type === 'failure') {
         const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
         addNotification('ERROR', message)
-      } else if (result.type === 'success') {
-        showLoader = false
       }
 
       await applyAction(result)
