@@ -13,6 +13,11 @@ import { editEMLAT } from '$lib/server/emlat'
 import { generateRandomPin, getPin } from '$lib/server/pin'
 import type { LanguageCode } from '$lib/stores/language'
 import { deleteUser, updateUser } from '$lib/server/user'
+import { markAsUnconfigured, resetDatabase } from '$lib/server/reset'
+import { restartServer } from '$lib/server/setup'
+import { deleteFiles } from '$lib/server/files'
+import { checkSession } from '$lib/server/jwt'
+import { verify } from '$lib/server/auth'
 
 export const load = (async (event) => {
   const ip = event.getClientAddress()
@@ -68,9 +73,15 @@ export const actions: Actions = {
   editEMLAT: async (event) => {
     const ip = event.getClientAddress()
     const user = event.locals.user
+    const session = event.cookies.get('session') ?? ''
 
     if (!user?.isAdmin) {
-      return error(403, { message: NotificationCode.FORBIDDEN })
+      throw error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    const user_ = await verify(session) // Oversecurity measure to ensure the user is still valid
+    if (!user_?.isAdmin) {
+      throw error(403, { message: NotificationCode.FORBIDDEN })
     }
 
     const form = await event.request.formData()
@@ -92,6 +103,7 @@ export const actions: Actions = {
       const newPin = regeneratePin ? generateRandomPin() : await getPin()
       await editEMLAT(name, language as LanguageCode, newPin)
     } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -104,7 +116,7 @@ export const actions: Actions = {
     const user = event.locals.user
 
     if (!user?.isAdmin) {
-      return error(403, { message: NotificationCode.FORBIDDEN })
+      throw error(403, { message: NotificationCode.FORBIDDEN })
     }
 
     const form = await event.request.formData()
@@ -176,7 +188,7 @@ export const actions: Actions = {
     const user = event.locals.user
 
     if (!user?.isAdmin) {
-      return error(403, { message: NotificationCode.FORBIDDEN })
+      throw error(403, { message: NotificationCode.FORBIDDEN })
     }
 
     const form = await event.request.formData()
@@ -204,7 +216,7 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
   const user = event.locals.user
 
   if (!user?.isAdmin) {
-    return error(403, { message: NotificationCode.FORBIDDEN })
+    throw error(403, { message: NotificationCode.FORBIDDEN })
   }
 
   const form = await event.request.formData()

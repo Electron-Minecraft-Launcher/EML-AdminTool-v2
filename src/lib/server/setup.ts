@@ -11,9 +11,10 @@ import bcrypt from 'bcrypt'
 import { NotificationCode } from '$lib/utils/notifications'
 import { dev } from '$app/environment'
 import { generateRandomPin } from './pin'
+import { sleep } from '$lib/utils/utils'
 
 const execAsync = promisify(exec)
-const envFilePath = './.env'
+export const envFilePath = './.env'
 
 export async function changeDatabasePassword(newPassword: string) {
   console.log('\n---------- CHANGING DATABASE PASSWORD ----------\n')
@@ -162,7 +163,6 @@ export async function markAsConfigured() {
   resetProcessEnv()
   const databaseUrl = process.env.DATABASE_URL || 'postgresql://eml:eml@db:5432/eml_admintool'
   const jwtSecretKey = process.env.JWT_SECRET_KEY || randomBytes(64).toString('base64url')
-  const registerTokenSecretKey = process.env.REGISTER_TOKEN_SECRET_KEY || randomBytes(64).toString('base64url')
 
   const envFile = envFilePath
 
@@ -212,6 +212,13 @@ JWT_SECRET_KEY="${jwtSecretKey}"`
   console.log('Environment file updated successfully.')
 }
 
+export function resetProcessEnv() {
+  if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
+  if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
+  if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY
+  config()
+}
+
 function updateEnv(dbPassword: string) {
   resetProcessEnv()
   const isConfigured = process.env.IS_CONFIGURED === 'true'
@@ -220,7 +227,6 @@ function updateEnv(dbPassword: string) {
 
   const newDatabaseUrl = `postgresql://eml:${dbPassword}@db:5432/eml_admintool`
   const newJwtSecretKey = randomBytes(64).toString('base64url')
-  const newRegisterTokenSecretKey = randomBytes(64).toString('base64url')
 
   const devWarning = dev
     ? `
@@ -266,10 +272,7 @@ JWT_SECRET_KEY="${newJwtSecretKey}"`
   resetProcessEnv()
 }
 
-export function resetProcessEnv() {
-  if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
-  if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
-  if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY
-  config()
+export async function restartServer() {
+  await sleep(100)
+  process.exit(0)
 }
-

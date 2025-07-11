@@ -9,11 +9,7 @@
   const user = getUser()
 </script>
 
-{#if !user}
-  <Skeleton randomWidth={{ times: 100, min: 200 }} />
-{:else}
-  <h3>{$l.dashboard.welcome}, {user.username + ($l.l == 'fr' ? ' ' : '')}!</h3>
-{/if}
+<h3>{$l.dashboard.welcome}, {user.username + ($l.l == 'fr' ? ' ' : '')}!</h3>
 
 <div class="wip">
   <p class="wip">We are still building this area!</p>

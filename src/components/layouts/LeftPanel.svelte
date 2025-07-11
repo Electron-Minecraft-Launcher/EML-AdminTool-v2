@@ -22,7 +22,6 @@
   const height = '21px'
   const customStyle: { [key: string]: string }[] = [{ display: 'block' }, { margin: '30px 15px 20px 15px' }]
 
-  let ready = true
   let accountDropdownOpen = $state(false)
 
   async function accountClick() {
@@ -66,16 +65,11 @@
     <h1><span>EML</span>AT</h1>
   {/if}
 
-  {#if !ready}
-    <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '50px 15px 20px 15px' }]} />
-    <Skeleton {randomWidth} {height} customStyle={[{ display: 'block' }, { margin: '30px 15px 40px 15px' }]} />
-  {:else}
-    <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>{$l.main.home}</a>
-    {#if user.isAdmin}
-      <a href="/dashboard/emlat-settings" class:active={page.url.pathname == '/dashboard/emlat-settings'}>
-        <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}
-      </a>
-    {/if}
+  <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>{$l.main.home}</a>
+  {#if user.isAdmin}
+    <a href="/dashboard/emlat-settings" class:active={page.url.pathname == '/dashboard/emlat-settings'}>
+      <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}
+    </a>
   {/if}
 
   {#if leftPanelOpen}
@@ -84,62 +78,46 @@
     <div class="h4"><hr style="border-color: #505050; border-top: 0; position: relative; top: 5px;" /></div>
   {/if}
 
-  {#if !ready}
-    <Skeleton {randomWidth} {height} {customStyle} />
-    <Skeleton {randomWidth} {height} {customStyle} />
-    <Skeleton {randomWidth} {height} {customStyle} />
-    <Skeleton {randomWidth} {height} {customStyle} />
-    <Skeleton {randomWidth} {height} {customStyle} />
-  {:else}
-    {#if user.p_filesUpdater}
-      <a href="/dashboard/files-updater" class:active={page.url.pathname == '/dashboard/files-updater'}>
-        <i class="fa-solid fa-folder-open"></i>Files Updater
-      </a>
-    {/if}
+  {#if user.p_filesUpdater}
+    <a href="/dashboard/files-updater" class:active={page.url.pathname == '/dashboard/files-updater'}>
+      <i class="fa-solid fa-folder-open"></i>Files Updater
+    </a>
+  {/if}
 
-    {#if user.p_bootstraps}
-      <a href="/dashboard/bootstraps" class:active={page.url.pathname == '/dashboard/bootstraps'}>
-        <i class="fa-solid fa-arrows-rotate"></i>Bootstraps
-      </a>
-    {/if}
+  {#if user.p_bootstraps}
+    <a href="/dashboard/bootstraps" class:active={page.url.pathname == '/dashboard/bootstraps'}>
+      <i class="fa-solid fa-arrows-rotate"></i>Bootstraps
+    </a>
+  {/if}
 
-    {#if user.p_maintenance}
-      <a href="/dashboard/maintenance" class:active={page.url.pathname == '/dashboard/maintenance'}>
-        <i class="fa-solid fa-screwdriver-wrench"></i>Maintenance
-      </a>
-    {/if}
+  {#if user.p_maintenance}
+    <a href="/dashboard/maintenance" class:active={page.url.pathname == '/dashboard/maintenance'}>
+      <i class="fa-solid fa-screwdriver-wrench"></i>Maintenance
+    </a>
+  {/if}
 
-    {#if user.p_news}
-      <a href="/dashboard/news" class:active={page.url.pathname == '/dashboard/news'}>
-        <i class="fa-solid fa-newspaper"></i>News
-      </a>
-    {/if}
+  {#if user.p_news}
+    <a href="/dashboard/news" class:active={page.url.pathname == '/dashboard/news'}>
+      <i class="fa-solid fa-newspaper"></i>News
+    </a>
+  {/if}
 
-    {#if user.p_backgrounds}
-      <a href="/dashboard/backgrounds" class:active={page.url.pathname == '/dashboard/backgrounds'}>
-        <i class="fa-solid fa-image"></i>Backgrounds
-      </a>
-    {/if}
+  {#if user.p_backgrounds}
+    <a href="/dashboard/backgrounds" class:active={page.url.pathname == '/dashboard/backgrounds'}>
+      <i class="fa-solid fa-image"></i>Backgrounds
+    </a>
+  {/if}
 
-    {#if user.p_stats}
-      <a href="/dashboard/stats" class:active={page.url.pathname == '/dashboard/stats'}>
-        <i class="fa-solid fa-chart-simple"></i>Stats
-      </a>
-    {/if}
+  {#if user.p_stats}
+    <a href="/dashboard/stats" class:active={page.url.pathname == '/dashboard/stats'}>
+      <i class="fa-solid fa-chart-simple"></i>Stats
+    </a>
   {/if}
 
   {#if leftPanelOpen}
-    {#if !ready}
-      <Skeleton
-        {randomWidth}
-        {height}
-        customStyle={[{ display: 'block' }, { margin: '30px 15px 20px 15px' }, { position: 'absolute' }, { bottom: '90px' }, { width: '170px' }]}
-      />
-    {:else}
-      <button class="account" onclick={accountClick}>
-        <i class="fa-solid fa-circle-user"></i>{user.username}<i class="fa-solid fa-caret-up"></i>
-      </button>
-    {/if}
+    <button class="account" onclick={accountClick}>
+      <i class="fa-solid fa-circle-user"></i>{user.username}<i class="fa-solid fa-caret-up"></i>
+    </button>
   {/if}
 
   {#if accountDropdownOpen}

@@ -77,7 +77,9 @@
   </div>
 </form>
 
-<LanguageModal bind:show={showLanguageModal} />
+{#if showLanguageModal}
+  <LanguageModal bind:show={showLanguageModal} />
+{/if}
 
 <style lang="scss">
   @use '../../assets/scss/setup.scss';
@@ -131,7 +133,6 @@
         font-weight: 600;
       }
     }
-
   }
 
   p.center {

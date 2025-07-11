@@ -140,7 +140,10 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
 The user will not be able to access EML AdminTool anymore. However, the user's actions and data will not be deleted.`,
       deleteUserForeverWarning: `Are you sure you want to delete this user forever?
 All the user's actions and data will be deleted, including published news. This action is irreversible.`,
-      editUser: `Edit user`
+      editUser: `Edit user`,
+      resetEMLATWarning: `Are you sure you want to reset EML AdminTool? All the data will be lost and EML AdminTool will be reset to its initial state. This action is irreversible.
+Moreover, be sure that nobody can access EML AdminTool during the reset: EML AdminTool is not protected during the setup!`,
+      areYouSure: `Are you sure?`
     },
     account: {
       accountSettings: `Account settings`,

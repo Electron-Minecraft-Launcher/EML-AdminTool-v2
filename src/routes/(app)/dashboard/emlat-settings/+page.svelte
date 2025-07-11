@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageProps } from './$types'
+  import type { PageProps, SubmitFunction } from './$types'
   import { io } from 'socket.io-client'
   import { fade } from 'svelte/transition'
   import { onMount } from 'svelte'
@@ -12,6 +12,9 @@
   import { UserStatus } from '@prisma/client'
   import UserManagement from '../../../../components/contents/UserManagement.svelte'
   import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
+  import { applyAction, enhance } from '$app/forms'
+  import { pingServerAndReload, sleep } from '$lib/utils/utils'
+  import { goto } from '$app/navigation'
 
   let { data = $bindable() }: PageProps = $props()
 
@@ -71,20 +74,17 @@
   }
 
   async function reset() {
-    //     if (
-    //       confirm(`Are you sure you want to reset EML AdminTool? All the data will be lost and EML AdminTool will be reset to its initial state. This action is irreversible.
-    // Moreover, be sure that nobody can access EML AdminTool during the reset: EML AdminTool is not protected during the setup!`)
-    //     ) {
-    //       if (confirm('Are you really sure?')) {
-    //         showLoader = true
-    //         ;(await apiConfigureService.deleteReset()).subscribe({
-    //           finally: () => {
-    //             showLoader = false
-    //             window.location.href = '/'
-    //           }
-    //         })
-    //       }
-    //     }
+    if (!confirm($l.dashboard.emlatSettings.resetEMLATWarning)) return
+    if (!confirm($l.dashboard.emlatSettings.areYouSure)) return
+
+    try {
+      await fetch('/api/reset', { method: 'POST' })
+      showLoader = true
+      pingServerAndReload()
+    } catch (err) {
+      console.error('Failed to reset:', err)
+      // TODO
+    }
   }
 
   // async function checkUpdateEnded() {

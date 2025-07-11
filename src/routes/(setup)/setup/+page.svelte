@@ -5,7 +5,7 @@
   import { l, type LanguageCode } from '$lib/stores/language'
   import { goto } from '$app/navigation'
   import type { PageProps } from './$types'
-  import { sleep } from '$lib/utils/utils'
+  import { pingServerAndReload, sleep } from '$lib/utils/utils'
   import { fade } from 'svelte/transition'
   import { getContext, onMount } from 'svelte'
   import type { Env } from '$lib/utils/types'
@@ -46,22 +46,6 @@
       console.error('Failed to mark as configured:', err)
       // TODO
     }
-  }
-
-  async function pingServerAndReload() {
-    await sleep(2000)
-    for (let i = 0; i < 5; i++) {
-      try {
-        const response = await fetch('/api/ping')
-        if (response.ok) {
-          goto('/')
-          return
-        }
-      } catch (err) {
-        console.error('Ping failed, retrying...', err)
-      }
-    }
-    throw new Error('Failed to ping server after multiple attempts.')
   }
 
   onMount(async () => {
