@@ -102,11 +102,10 @@ Wenn du uns bei der Übersetzung des EML AdminTools helfen möchtest, findest du
     },
     account: {
       accountSettings: 'Kontoeinstellungen',
-      nameOrPseudo: 'Name oder Pseudonym',
       accountType: 'Kontotyp',
       editAccount: 'Kontoinformationen bearbeiten',
       leaveBlank: 'Leer lassen, wenn du nichts ändern möchtest.',
-      newNameOrPseudo: 'Neuer Name oder Pseudonym',
+      newUsername: 'Neuer Benutzername',
       newPassword: 'Neues Passwort',
       dangerZone: 'Gefahrenzone',
       deleteAccount: 'Konto löschen'

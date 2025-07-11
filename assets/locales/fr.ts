@@ -102,11 +102,10 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
     },
     account: {
       accountSettings: `Paramètres du compte`,
-      nameOrPseudo: `Nom ou Pseudo`,
       accountType: `Type de compte`,
       editAccount: `Paramétrer le compte`,
       leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
-      newNameOrPseudo: `Nouveau nom ou pseudo`,
+      newUsername: `Nouveau nom d'utilisateur`,
       newPassword: `Nouveau mot de passe`,
       dangerZone: `Zone de danger`,
       deleteAccount: `Supprimer le compte`

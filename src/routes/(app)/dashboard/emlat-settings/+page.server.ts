@@ -8,7 +8,7 @@ import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { getOS, getStorage } from '$lib/server/vps'
 import { getUpdate } from '$lib/server/update'
-import { editEMLATSchema } from '$lib/utils/validations'
+import { editEMLATSchema, editUserSchema } from '$lib/utils/validations'
 import { editEMLAT } from '$lib/server/emlat'
 import { generateRandomPin, getPin } from '$lib/server/pin'
 import type { LanguageCode } from '$lib/stores/language'
@@ -67,8 +67,13 @@ export const load = (async (event) => {
 export const actions: Actions = {
   editEMLAT: async (event) => {
     const ip = event.getClientAddress()
-    const form = await event.request.formData()
+    const user = event.locals.user
 
+    if (!user?.isAdmin) {
+      return error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    const form = await event.request.formData()
     const raw = {
       name: form.get('name')?.toString(),
       language: form.get('language')?.toString(),
@@ -96,9 +101,70 @@ export const actions: Actions = {
 
   editUser: async (event) => {
     const ip = event.getClientAddress()
+    const user = event.locals.user
+
+    if (!user?.isAdmin) {
+      return error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
     const form = await event.request.formData()
 
-    // TODO
+    const raw = {
+      userId: form.get('user-id')?.toString(),
+      username: form.get('username')?.toString(),
+      p_filesUpdater_1: form.get('p_files-updater_1')?.toString() === 'on',
+      p_filesUpdater_2: form.get('p_files-updater_2')?.toString() === 'on',
+      p_bootstraps: form.get('p_bootstraps')?.toString() === 'on',
+      p_maintenance: form.get('p_maintenance')?.toString() === 'on',
+      p_news_1: form.get('p_news_1')?.toString() === 'on',
+      p_news_2: form.get('p_news_2')?.toString() === 'on',
+      p_newsCategories: form.get('p_news-categories')?.toString() === 'on',
+      p_newsTags: form.get('p_news-tags')?.toString() === 'on',
+      p_backgrounds: form.get('p_backgrounds')?.toString() === 'on',
+      p_stats_1: form.get('p_stats_1')?.toString() === 'on',
+      p_stats_2: form.get('p_stats_2')?.toString() === 'on'
+    }
+
+    const result = editUserSchema.safeParse(raw)
+
+    if (!result.success) {
+      return fail(400, { failure: result.error.message })
+    }
+
+    const userId = result.data.userId
+    const username = result.data.username
+    const status = UserStatus.ACTIVE
+    const p_filesUpdater = result.data.p_filesUpdater_2 ? 2 : result.data.p_filesUpdater_1 ? 1 : 0
+    const p_bootstraps = result.data.p_bootstraps ? 1 : 0
+    const p_maintenance = result.data.p_maintenance ? 1 : 0
+    const p_news = result.data.p_news_2 ? 2 : result.data.p_news_1 || result.data.p_newsCategories || result.data.p_newsTags ? 1 : 0
+    const p_newsCategories = result.data.p_newsCategories ? 1 : 0
+    const p_newsTags = result.data.p_newsTags ? 1 : 0
+    const p_backgrounds = result.data.p_backgrounds ? 1 : 0
+    const p_stats = result.data.p_stats_2 ? 2 : result.data.p_stats_1 ? 1 : 0
+
+    try {
+      await updateUser(userId, {
+        username,
+        status,
+        p_filesUpdater,
+        p_bootstraps,
+        p_maintenance,
+        p_news,
+        p_newsCategories,
+        p_newsTags,
+        p_backgrounds,
+        p_stats
+      })
+
+      return { success: true }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
   },
 
   refuseUser: refuseDeleteUser,
@@ -107,6 +173,12 @@ export const actions: Actions = {
 
   deleteUserForever: async (event) => {
     const ip = event.getClientAddress()
+    const user = event.locals.user
+
+    if (!user?.isAdmin) {
+      return error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
     const form = await event.request.formData()
 
     const userId = form.get('user-id')?.toString()
@@ -129,12 +201,18 @@ export const actions: Actions = {
 
 async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, string>>, string | null>) {
   const ip = event.getClientAddress()
+  const user = event.locals.user
+
+  if (!user?.isAdmin) {
+    return error(403, { message: NotificationCode.FORBIDDEN })
+  }
+
   const form = await event.request.formData()
 
   const userId = form.get('user-id')?.toString()
 
   if (!userId) {
-    return { failure: 'User ID is required' }
+    return { failure: NotificationCode.MISSING_INPUT }
   }
 
   try {
@@ -159,4 +237,3 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
     throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
   }
 }
-

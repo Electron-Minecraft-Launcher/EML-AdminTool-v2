@@ -102,11 +102,10 @@ Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nost
     },
     account: {
       accountSettings: 'Impostazioni account',
-      nameOrPseudo: 'Nome o pseudonimo',
       accountType: 'Tipo di account',
       editAccount: 'Modifica informazioni account',
       leaveBlank: 'Lascia vuoto se non vuoi cambiare.',
-      newNameOrPseudo: 'Nuovo nome o pseudonimo',
+      newUsername: 'Nuovo nome utente',
       newPassword: 'Nuova password',
       dangerZone: 'Zona pericolosa',
       deleteAccount: 'Elimina account'

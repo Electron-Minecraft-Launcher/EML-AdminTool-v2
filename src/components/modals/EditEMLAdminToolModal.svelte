@@ -25,12 +25,6 @@
   let showLoader = $state(false)
   let name = $state(env.name)
   let language = $state(env.language)
-  let regeneratePin = $state(false)
-
-  function switchLanguage(lang: LanguageCode) {
-    currentLanguage.set(lang)
-    language = lang
-  }
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
@@ -69,31 +63,31 @@
 
     <p class="label">{$l.dashboard.emlatSettings.language}</p>
     <div class="language">
-      <button type="button" class="secondary" class:selected={language === 'en'} id="en-button" onclick={() => switchLanguage('en')}>
+      <button type="button" class="secondary" class:selected={language === 'en'} id="en-button" onclick={() => language = 'en'}>
         <p>
           <img src={enFlag} alt="English flag" />
           English
         </p>
       </button>
-      <button type="button" class="secondary" class:selected={language === 'fr'} id="fr-button" onclick={() => switchLanguage('fr')}>
+      <button type="button" class="secondary" class:selected={language === 'fr'} id="fr-button" onclick={() => language = 'fr'}>
         <p>
           <img src={frFlag} alt="French flag" />
           Français
         </p>
       </button>
-      <button type="button" class="secondary" class:selected={language === 'de'} id="de-button" onclick={() => switchLanguage('de')}>
+      <button type="button" class="secondary" class:selected={language === 'de'} id="de-button" onclick={() => language = 'de'}>
         <p>
           <img src={deFlag} alt="German flag" />
           Deutsch
         </p>
       </button>
-      <button type="button" class="secondary" class:selected={language === 'it'} id="it-button" onclick={() => switchLanguage('it')}>
+      <button type="button" class="secondary" class:selected={language === 'it'} id="it-button" onclick={() => language = 'it'}>
         <p>
           <img src={itFlag} alt="Italian flag" />
           Italiano
         </p>
       </button>
-      <button type="button" class="secondary" class:selected={language === 'da'} id="da-button" onclick={() => switchLanguage('da')}>
+      <button type="button" class="secondary" class:selected={language === 'da'} id="da-button" onclick={() => language = 'da'}>
         <p>
           <img src={daFlag} alt="Danish flag" />
           Dansk
@@ -103,7 +97,7 @@
 
     <p class="label">{$l.main.pin}</p>
     <label class="p" for="regenerate-pin">
-      <input type="checkbox" id="regenerate-pin" name="regenerate-pin" bind:checked={regeneratePin} />
+      <input type="checkbox" id="regenerate-pin" name="regenerate-pin" />
       {$l.dashboard.emlatSettings.regeneratePin}
     </label>
 

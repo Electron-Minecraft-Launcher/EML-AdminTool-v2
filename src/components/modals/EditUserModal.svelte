@@ -33,16 +33,6 @@
   let p_stats_2 = $state(selectedUser.p_stats === 2)
 
   let showLoader = $state(false)
-  let notAtTop = $state(false)
-  let notAtBottom = $state(false)
-
-  onMount(handleScroll)
-
-  function handleScroll() {
-    if (!scroll) return
-    notAtTop = scroll.scrollTop > 5
-    notAtBottom = scroll.scrollHeight - scroll.scrollTop > scroll.clientHeight + 6
-  }
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
@@ -64,7 +54,7 @@
   }
 </script>
 
-<ModalTemplate size={'s'} bind:show>
+<ModalTemplate size={'m'} bind:show>
   {#if showLoader}
     <LoadingSplash transparent={true} />
   {/if}
@@ -72,12 +62,13 @@
   <form method="POST" action="?/editUser" use:enhance={enhanceForm}>
     <h2>{action === 'ACCEPT' ? $l.dashboard.emlatSettings.acceptUser : $l.dashboard.emlatSettings.editUser}</h2>
 
-    <div class="overflow-container">
-      <div bind:this={scroll} class="overflow" onscroll={handleScroll} class:not-at-top={notAtTop} class:not-at-bottom={notAtBottom}>
-        <label for="name" style="margin-top: 0">{$l.dashboard.account.nameOrPseudo}</label>
-        <input type="text" id="name" bind:value={selectedUser.username} />
+    <label for="username" style="margin-top: 0">{$l.main.username}</label>
+    <input type="text" id="username" name="username" bind:value={selectedUser.username} />
 
-        <p class="label" style="margin-top: 20px">Files Updater</p>
+    <p class="label" style="margin-top: 20px">{$l.dashboard.permissions}</p>
+    <div class="permission">
+      <p>Files Updater</p>
+      <div class="right">
         <label class="p" for="p_files-updater_1">
           <input
             type="checkbox"
@@ -87,7 +78,7 @@
             onchange={() => {
               if (!p_filesUpdater_1) p_filesUpdater_2 = false
             }}
-          /> Add and delete files
+          /> Add, edit and delete files
         </label>
         <label class="p" for="p_files-updater_2">
           <input
@@ -98,20 +89,32 @@
             onchange={() => {
               if (p_filesUpdater_2) p_filesUpdater_1 = true
             }}
-          /> Change and delete Minecraft loader
+          /> Change Minecraft loader
         </label>
+      </div>
+    </div>
 
-        <p class="label">Bootstraps</p>
+    <div class="permission">
+      <p>Bootstraps</p>
+      <div class="right">
         <label class="p" for="p_bootstraps_1">
-          <input type="checkbox" id="p_bootstraps_1" name="p_bootstraps_1" bind:checked={p_bootstraps} /> Change bootstrap files
+          <input type="checkbox" id="p_bootstraps_1" name="p_bootstraps_1" bind:checked={p_bootstraps} /> Change bootstraps files
         </label>
+      </div>
+    </div>
 
-        <p class="label">Maintenance</p>
+    <div class="permission">
+      <p>Maintenance</p>
+      <div class="right">
         <label class="p" for="p_maintenance_1">
           <input type="checkbox" id="p_maintenance_1" name="p_maintenance_1" bind:checked={p_maintenance} /> Change maintenance status
         </label>
+      </div>
+    </div>
 
-        <p class="label">News</p>
+    <div class="permission">
+      <p>News</p>
+      <div class="right">
         <label class="p" for="p_news_1">
           <input
             type="checkbox"
@@ -125,7 +128,7 @@
                 p_newsTags = false
               }
             }}
-          /> Add news
+          /> Add news, edit and delete news they created
         </label>
         <label class="p" for="p_news_2">
           <input
@@ -136,7 +139,7 @@
             onchange={() => {
               if (p_news_2) p_news_1 = true
             }}
-          /> Edit and Delete every news
+          /> Delete any news
         </label>
         <label class="p" for="p_news-categories_1">
           <input
@@ -147,7 +150,7 @@
             onchange={() => {
               if (p_newsCategories) p_news_1 = true
             }}
-          /> Add, Edit and Delete news categories
+          /> Add, edit and delete news categories
         </label>
         <label class="p" for="p_news_tags_1">
           <input
@@ -158,15 +161,23 @@
             onchange={() => {
               if (p_newsTags) p_news_1 = true
             }}
-          /> Add, Edit and Delete news tags
+          /> Add, edit and delete news tags
         </label>
+      </div>
+    </div>
 
-        <p class="label">Background</p>
-        <label class="p" for="p_background_1">
-          <input type="checkbox" id="p_background_1" name="p_background_1" bind:checked={p_backgrounds} /> Change background
+    <div class="permission">
+      <p>Backgrounds</p>
+      <div class="right">
+        <label class="p" for="p_backgrounds_1">
+          <input type="checkbox" id="p_backgrounds_1" name="p_backgrounds_1" bind:checked={p_backgrounds} /> Change backgrounds
         </label>
+      </div>
+    </div>
 
-        <p class="label">Stats</p>
+    <div class="permission">
+      <p>Stats</p>
+      <div class="right">
         <label class="p" for="p_stats_1">
           <input
             type="checkbox"
@@ -213,32 +224,19 @@
     color: black;
   }
 
-  div.overflow-container {
-    position: relative;
-  }
+  div.permission {
+    display: flex;
+    gap: 20px;
+    margin-top: 5px;
 
-  div.overflow {
-    max-height: 350px;
-    overflow-y: auto;
-    overflow-x: visible;
-
-    &.not-at-top::before {
-      content: '';
-      width: 100%;
-      position: absolute;
-      height: 15px;
-      background: linear-gradient(to bottom, #6464642b, transparent);
-      z-index: 1;
+    p {
+      width: 200px;
+      text-align: right;
+      font-weight: 500;
     }
 
-    &.not-at-bottom::after {
-      content: '';
-      width: 100%;
-      position: absolute;
-      height: 15px;
-      bottom: 0;
-      background: linear-gradient(to top, #6464642b, transparent);
-      z-index: 1;
+    label {
+      margin-top: 0;
     }
   }
 </style>

@@ -36,6 +36,9 @@ export default {
     [NotificationCode.EMLAT_INVALID_LANGUAGE]: `EML AdminTool language must be exactly 2 characters long.`,
     [NotificationCode.EMLAT_UPDATED]: `EML AdminTool has been updated successfully.`,
 
+    [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
+    [NotificationCode.EDIT_USER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
+
     [NotificationCode.AUTH_SESSION_EXPIRED]: `Session expired, please log in again.`,
     [NotificationCode.AUTH_INVALID_SESSION]: `Invalid session, please log in again.`,
 
@@ -141,11 +144,10 @@ All the user's actions and data will be deleted, including published news. This 
     },
     account: {
       accountSettings: `Account settings`,
-      nameOrPseudo: `Name or Pseudo`,
       accountType: `Account type`,
       editAccount: `Edit account information`,
       leaveBlank: `Leave blank if you don't want to change.`,
-      newNameOrPseudo: `New name or pseudo`,
+      newUsername: `New username`,
       newPassword: `New password`,
       dangerZone: `Danger zone`,
       deleteAccount: `Delete account`

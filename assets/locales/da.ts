@@ -102,11 +102,10 @@ Hvis du vil hjælpe med at oversætte EML AdminTool, kan du finde JSON-filerne p
     },
     account: {
       accountSettings: `Kontoindstillinger`,
-      nameOrPseudo: `Navn eller Pseudonym`,
       accountType: `Kontotype`,
       editAccount: `Rediger konto information`,
       leaveBlank: `Lad være blankt, hvis du ikke ønsker at ændre det.`,
-      newNameOrPseudo: `Nyt navn eller pseudonym`,
+      newUsername: `Nyt brugernavn`,
       newPassword: `Ny adgangskode`,
       dangerZone: `Farezone`,
       deleteAccount: `Slet konto`

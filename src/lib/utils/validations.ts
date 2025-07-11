@@ -17,6 +17,26 @@ export const editEMLATSchema = z.object({
   regeneratePin: z.boolean()
 })
 
+export const editUserSchema = z.object({
+  userId: z.string(),
+  username: z
+    .string()
+    .min(2, NotificationCode.EDIT_USER_USERNAME_TOO_SHORT)
+    .max(64, NotificationCode.EDIT_USER_USERNAME_TOO_LONG)
+    .transform((val) => val.trim()),
+  p_filesUpdater_1: z.boolean(),
+  p_filesUpdater_2: z.boolean(),
+  p_bootstraps: z.boolean(),
+  p_maintenance: z.boolean(),
+  p_news_1: z.boolean(),
+  p_news_2: z.boolean(),
+  p_newsCategories: z.boolean(),
+  p_newsTags: z.boolean(),
+  p_backgrounds: z.boolean(),
+  p_stats_1: z.boolean(),
+  p_stats_2: z.boolean()
+})
+
 export const loginSchema = z.object({
   username: z
     .string()

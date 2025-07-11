@@ -11,6 +11,12 @@
   let { size = 'm', show = $bindable(), translateX = '0', children }: Props = $props()
 </script>
 
+<svelte:body
+  onkeydown={(e) => {
+    if (e.key === 'Escape') show = false
+  }}
+/>
+
 <div class="modal-background" transition:scale={{ start: 1.5 }}>
   <div class={'modal size-' + size} style="transform: translateX({translateX})">
     <section class="close">
