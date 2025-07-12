@@ -57,9 +57,12 @@
 
     <label for="username">{$l.main.username}</label>
     <input type="text" id="username" name="username" bind:value={username} autocomplete="username" />
+    {#if user.isAdmin}
+      <p class="warn">{$l.dashboard.account.usernameWarn}</p>
+    {/if}
 
     <label for="password">{$l.dashboard.account.newPassword}</label>
-    <input type="password" id="password" bind:value={password} autocomplete="new-password" />
+    <input type="password" id="password" name="password" bind:value={password} autocomplete="new-password" />
 
     <label for="password-cfr">{$l.auth.confirmPassword}</label>
     <input type="password" id="password-cfr" bind:value={passwordCfr} autocomplete="new-password" />
@@ -73,6 +76,12 @@
 
 <style lang="scss">
   @use '../../assets/scss/modals.scss';
+
+  p.warn {
+    margin: 5px 0 0 0;
+    color: #fa5650;
+    font-size: 12px;
+  }
 
   p.label {
     margin-top: 15px;

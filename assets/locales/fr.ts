@@ -106,6 +106,7 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
       editAccount: `Paramétrer le compte`,
       leaveBlank: `Laissez vide si vous ne souhaitez pas changer.`,
       newUsername: `Nouveau nom d'utilisateur`,
+      usernameWarn: `Changer votre nom d'utilisateur changera également le nom de l'EML AdminTool !`,
       newPassword: `Nouveau mot de passe`,
       dangerZone: `Zone de danger`,
       deleteAccount: `Supprimer le compte`

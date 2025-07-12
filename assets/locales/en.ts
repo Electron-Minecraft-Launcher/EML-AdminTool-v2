@@ -39,6 +39,10 @@ export default {
     [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.EDIT_USER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
 
+    [NotificationCode.EDIT_ACCOUNT_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
+    [NotificationCode.EDIT_ACCOUNT_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
+    [NotificationCode.EDIT_ACCOUNT_PASSWORD_TOO_SHORT]: `Password must be at least 8 characters long.`,
+
     [NotificationCode.AUTH_SESSION_EXPIRED]: `Session expired, please log in again.`,
     [NotificationCode.AUTH_INVALID_SESSION]: `Invalid session, please log in again.`,
 
@@ -151,6 +155,7 @@ Moreover, be sure that nobody can access EML AdminTool during the reset: EML Adm
       editAccount: `Edit account information`,
       leaveBlank: `Leave blank if you don't want to change.`,
       newUsername: `New username`,
+      usernameWarn: `Changing your username will also change the EML AdminTool name!`,
       newPassword: `New password`,
       dangerZone: `Danger zone`,
       deleteAccount: `Delete account`,

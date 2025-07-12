@@ -24,3 +24,18 @@ export async function editEMLAT(name: string, language: LanguageCode, pin: strin
     throw new ServerError('Failed to update admin user', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
+
+/**
+ * This function **does not** update the admin username.
+ */
+export async function editEMLATName(name: string) {
+  try {
+    await db.environment.update({
+      where: { id: '1' },
+      data: { name }
+    })
+  } catch (err) {
+    console.error('Error updating EMLAT name:', err)
+    throw new ServerError('Failed to update EMLAT name', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+}

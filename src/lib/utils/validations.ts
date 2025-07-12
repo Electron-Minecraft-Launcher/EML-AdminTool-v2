@@ -37,6 +37,20 @@ export const editUserSchema = z.object({
   p_stats_2: z.boolean()
 })
 
+export const editAccountSchema = z
+  .object({
+    username: z
+      .string()
+      .min(2, NotificationCode.EDIT_ACCOUNT_USERNAME_TOO_SHORT)
+      .max(64, NotificationCode.EDIT_ACCOUNT_USERNAME_TOO_LONG)
+      .transform((val) => val.trim()),
+    password: z.string().optional()
+  })
+  .refine((schema) => !(schema.password && schema.password != '' && schema.password.length < 8), {
+    error: NotificationCode.EDIT_ACCOUNT_PASSWORD_TOO_SHORT,
+    path: ['password']
+  })
+
 export const loginSchema = z.object({
   username: z
     .string()

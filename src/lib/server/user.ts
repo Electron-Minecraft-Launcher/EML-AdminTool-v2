@@ -19,6 +19,9 @@ export async function getUserById(userId: string) {
   return user
 }
 
+/**
+ * @param user.password Must already be **encrypted** if provided.
+ */
 export async function updateUser(userId: string, user: Partial<User>) {
   if (user.id) delete user.id // Ensure we don't update the ID
   if (user.isAdmin != undefined) delete user.isAdmin // Ensure we don't update the admin status
