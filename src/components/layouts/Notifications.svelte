@@ -17,7 +17,7 @@
   {#each items as notif}
     <div class="notification {notif.type.toLocaleLowerCase()}" in:fly={{ y: -20, duration: 300 }}>
       <p class="message">
-        {notif.message} {notif.id}
+        {notif.message}
       </p>
     </div>
   {/each}

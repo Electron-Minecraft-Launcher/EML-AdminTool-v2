@@ -26,29 +26,29 @@ export default {
     [NotificationCode.INVALID_REQUEST]: `Invalid request.`,
     [NotificationCode.NOT_FOUND]: `Not found.`,
 
-    [NotificationCode.SETUP_INVALID_LANGUAGE]: `Language must be at least 2 characters long.`,
+    [NotificationCode.SETUP_INVALID_LANGUAGE]: `Language must be exactly 2 characters long.`,
     [NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT]: `Database password must be at least 12 characters long.`,
-    [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 3 characters long.`,
+    [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 2 characters long.`,
     [NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT]: `Admin password must be at least 12 characters long.`,
 
     [NotificationCode.EMLAT_NAME_TOO_SHORT]: `EML AdminTool name must be at least 2 characters long.`,
     [NotificationCode.EMLAT_NAME_TOO_LONG]: `EML AdminTool name must be at most 64 characters long.`,
-    [NotificationCode.EMLAT_INVALID_LANGUAGE]: `EML AdminTool language must be exactly 2 characters long.`,
+    [NotificationCode.EMLAT_INVALID_LANGUAGE]: `Language must be exactly 2 characters long.`,
     [NotificationCode.EMLAT_UPDATED]: `EML AdminTool has been updated successfully.`,
 
-    [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
+    [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.EDIT_USER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
 
     [NotificationCode.AUTH_SESSION_EXPIRED]: `Session expired, please log in again.`,
     [NotificationCode.AUTH_INVALID_SESSION]: `Invalid session, please log in again.`,
 
     [NotificationCode.LOGIN_BAD_CREDENTIALS]: `Bad credentials.`,
-    [NotificationCode.LOGIN_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
+    [NotificationCode.LOGIN_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.LOGIN_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
 
-    [NotificationCode.REGISTER_USERNAME_TOO_SHORT]: `Username must be at least 3 characters long.`,
+    [NotificationCode.REGISTER_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.REGISTER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
-    [NotificationCode.REGISTER_PASSWORD_TOO_SHORT]: `Password must be at least 12 characters long.`,
+    [NotificationCode.REGISTER_PASSWORD_TOO_SHORT]: `Password must be at least 8 characters long.`,
     [NotificationCode.REGISTER_PIN_INVALID]: `PIN must be exactly 3 characters long.`,
     [NotificationCode.REGISTER_USERNAME_EXISTS]: `Username already exists.`,
 
@@ -153,7 +153,8 @@ Moreover, be sure that nobody can access EML AdminTool during the reset: EML Adm
       newUsername: `New username`,
       newPassword: `New password`,
       dangerZone: `Danger zone`,
-      deleteAccount: `Delete account`
+      deleteAccount: `Delete account`,
+      deleteAccountWarning: `Are you sure you want to delete your account? You will not be able to access EML AdminTool anymore. However, your actions and data will not be deleted.`
     },
     filesUpdater: {
       size: 'Size',

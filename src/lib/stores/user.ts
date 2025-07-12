@@ -5,7 +5,7 @@ interface User {
   id: string
   username: string
   isAdmin: boolean
-  p_filesUpdater: 0 | 1
+  p_filesUpdater: 0 | 1 | 2
   p_bootstraps: 0 | 1
   p_maintenance: 0 | 1
   p_news: 0 | 1 | 2

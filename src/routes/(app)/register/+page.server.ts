@@ -33,7 +33,7 @@ export const actions: Actions = {
     const result = registerSchema.safeParse(raw)
 
     if (!result.success) {
-      return { failure: result.error.message }
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { username, password, pin } = result.data

@@ -33,7 +33,6 @@
 
     if (isNaN(Number(key)) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(key)) {
       e.preventDefault()
-      console.log(key)
       return
     }
 

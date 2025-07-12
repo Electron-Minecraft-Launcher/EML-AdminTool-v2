@@ -53,7 +53,7 @@
   <label for="password">{$l.main.password}</label>
   <input type="password" id="password" name="password" autocomplete="current-password" bind:value={password} />
 
-  <button class="primary">{$l.auth.login}</button>
+  <button type="submit" class="primary">{$l.auth.login}</button>
   <p class="center">
     <a class="small-link" href="/register">{$l.auth.createAccount}</a>
   </p>

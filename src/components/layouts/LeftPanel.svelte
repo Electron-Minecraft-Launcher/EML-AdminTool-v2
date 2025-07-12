@@ -126,7 +126,7 @@
         <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}
       </a>
       <form method="POST" action="/dashboard?/logout" use:enhance={enhanceForm}>
-        <button class="account-logout"><i class="fa-solid fa-right-from-bracket"></i>{$l.leftPanel.logout}</button>
+        <button type="submit" class="account-logout"><i class="fa-solid fa-right-from-bracket"></i>{$l.leftPanel.logout}</button>
       </form>
     </div>
   {/if}

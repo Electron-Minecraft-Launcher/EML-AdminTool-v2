@@ -204,8 +204,8 @@
     </div>
 
     <div class="actions">
-      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary">{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
+      <button type="submit" class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>

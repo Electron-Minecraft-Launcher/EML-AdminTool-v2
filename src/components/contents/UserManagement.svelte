@@ -56,7 +56,7 @@
 
 {#if !selectedUser.isAdmin && selectedUser.status === UserStatus.ACTIVE}
   <form method="POST" action="?/deleteUser" use:enhance={enhanceForm}>
-    <button class="secondary right refuse" aria-label="Delete user"><i class="fa-solid fa-trash"></i></button>
+    <button type="submit" class="secondary right refuse" aria-label="Delete user"><i class="fa-solid fa-trash"></i></button>
   </form>
   <button
     class="secondary right"
@@ -70,7 +70,7 @@
   </button>
 {:else if selectedUser.status === UserStatus.PENDING}
   <form method="POST" action="?/refuseUser" use:enhance={enhanceForm}>
-    <button class="secondary right refuse" aria-label="Refuse user"><i class="fa-solid fa-times"></i></button>
+    <button type="submit" class="secondary right refuse" aria-label="Refuse user"><i class="fa-solid fa-times"></i></button>
   </form>
   <button
     class="secondary right accept"
@@ -84,7 +84,7 @@
   </button>
 {:else if selectedUser.status && (selectedUser.status === UserStatus.DELETED || selectedUser.status === UserStatus.SPAM)}
   <form method="POST" action="?/deleteUserForever" use:enhance={enhanceForm}>
-    <button class="secondary right delete" aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
+    <button type="submit" class="secondary right delete" aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
   </form>
 {/if}
 
@@ -99,17 +99,15 @@
     {#if selectedUser.isAdmin}
       <p>Admin (all permissions)</p>
     {:else}
-      {#if selectedUser.p_filesUpdater}
-        {#if selectedUser.p_filesUpdater >= 1}
-          <p>Add and Delete files</p>
-        {/if}
-        {#if selectedUser.p_filesUpdater === 2}
-          <p>Change Minecraft loader</p>
-        {/if}
+      {#if selectedUser.p_filesUpdater >= 1}
+        <p>Add, edit and delete files</p>
+      {/if}
+      {#if selectedUser.p_filesUpdater === 2}
+        <p>Change Minecraft loader</p>
       {/if}
 
       {#if selectedUser.p_bootstraps}
-        <p>Change bootstrap files</p>
+        <p>Change bootstraps files</p>
       {/if}
 
       {#if selectedUser.p_maintenance}
@@ -117,16 +115,17 @@
       {/if}
 
       {#if selectedUser.p_news || selectedUser.p_newsCategories || selectedUser.p_newsTags}
-        {#if selectedUser.p_news === 1}
-          <p>Add news</p>
-        {:else if selectedUser.p_news === 2}
-          <p>Add, Edit and Delete news</p>
+        {#if selectedUser.p_news >= 1}
+          <p>Add news, edit and delete news they created</p>
+        {/if}
+        {#if selectedUser.p_news === 2}
+          <p>Delete any news</p>
         {/if}
         {#if selectedUser.p_newsCategories}
-          <p>Add, Edit and Delete news categories</p>
+          <p>Add, edit and delete news categories</p>
         {/if}
         {#if selectedUser.p_newsTags}
-          <p>Add, Edit and Delete news tags</p>
+          <p>Add, edit and delete news tags</p>
         {/if}
       {/if}
 
@@ -137,7 +136,7 @@
       {#if selectedUser.p_stats === 1}
         <p>View stats</p>
       {:else if selectedUser.p_stats === 2}
-        <p>View and Delete stats</p>
+        <p>View and delete stats</p>
       {/if}
 
       {#if !selectedUser.p_filesUpdater && !selectedUser.p_bootstraps && !selectedUser.p_maintenance && !selectedUser.p_news && !selectedUser.p_newsCategories && !selectedUser.p_newsTags && !selectedUser.p_backgrounds && !selectedUser.p_stats}

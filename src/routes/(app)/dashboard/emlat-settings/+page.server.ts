@@ -94,7 +94,7 @@ export const actions: Actions = {
     const result = editEMLATSchema.safeParse(raw)
 
     if (!result.success) {
-      return { failure: result.error.message }
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { name, language, regeneratePin } = result.data
@@ -140,7 +140,7 @@ export const actions: Actions = {
     const result = editUserSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: result.error.message })
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const userId = result.data.userId

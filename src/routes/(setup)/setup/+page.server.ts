@@ -28,7 +28,7 @@ export const actions: Actions = {
     const result = setupSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: result.error.message })
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { language, dbPassword, adminUsername, adminPassword } = result.data
