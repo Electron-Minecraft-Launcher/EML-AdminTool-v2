@@ -1,13 +1,21 @@
 <script lang="ts">
   import { l } from '$lib/stores/language'
+  import getEnv from '$lib/utils/env'
   import getUser from '$lib/utils/user'
   import Skeleton from '../../../components/layouts/Skeleton.svelte'
   import type { PageProps } from './$types'
 
   let { data }: PageProps = $props()
 
+  const env = getEnv()
   const user = getUser()
 </script>
+
+<svelte:head>
+  <title>{env.name} AdminTool</title>
+</svelte:head>
+
+<h2>{$l.main.home}</h2>
 
 <h3>{$l.dashboard.welcome}, {user.username + ($l.l == 'fr' ? ' ' : '')}!</h3>
 
@@ -22,7 +30,6 @@
   div.wip {
     border-radius: 10px;
     width: 100%;
-    // box-shadow: 0 0 0 5px #090909;
     position: relative;
     margin-top: 50px;
     padding: 100px 0;

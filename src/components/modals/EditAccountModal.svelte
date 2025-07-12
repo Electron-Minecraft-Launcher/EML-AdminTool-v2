@@ -56,7 +56,7 @@
     <p>{$l.dashboard.account.leaveBlank}</p>
 
     <label for="username">{$l.main.username}</label>
-    <input type="text" id="username" name="username" bind:value={username} />
+    <input type="text" id="username" name="username" bind:value={username} autocomplete="username" />
 
     <label for="password">{$l.dashboard.account.newPassword}</label>
     <input type="password" id="password" bind:value={password} autocomplete="new-password" />
