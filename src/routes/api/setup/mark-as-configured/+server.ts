@@ -1,7 +1,6 @@
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { markAsConfigured, resetProcessEnv, restartServer } from '$lib/server/setup'
-import { sleep } from '$lib/utils/utils'
+import { markAsConfigured, restartServer } from '$lib/server/setup'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 
@@ -9,8 +8,6 @@ export const POST: RequestHandler = async (event) => {
   if (event.locals.isConfigured) {
     throw error(400, { message: 'Already configured' })
   }
-
-  const ip = event.getClientAddress()
 
   try {
     await markAsConfigured()

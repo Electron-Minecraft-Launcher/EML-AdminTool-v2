@@ -69,3 +69,8 @@ export const registerSchema = z.object({
   password: z.string().min(8, NotificationCode.REGISTER_PASSWORD_TOO_SHORT),
   pin: z.string().length(3, NotificationCode.REGISTER_PIN_INVALID)
 })
+
+export const uploadFilesSchema = z.object({
+  currentPath: z.string(),
+  files: z.array(z.instanceof(File))
+})

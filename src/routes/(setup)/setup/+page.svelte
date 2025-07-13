@@ -77,7 +77,7 @@
 {#if showLoader}
   <div class="splash" transition:fade>
     <div>
-      <LoadingSplash transparent={false} />
+      <LoadingSplash />
     </div>
     <p transition:fade>Restarting...</p>
   </div>

@@ -1,6 +1,6 @@
 import { dev } from '$app/environment'
 import { randomBytes } from 'crypto'
-import { envFilePath, resetProcessEnv } from './setup'
+import { defaultPgURL, envFilePath, resetProcessEnv } from './setup'
 import fs from 'fs'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
@@ -55,8 +55,8 @@ export function deleteAllFiles() {
 export async function markAsUnconfigured() {
   console.log('\n-------------- UPDATING ENV FILE ---------------\n')
   resetProcessEnv()
-  const databaseUrl = process.env.DATABASE_URL || 'postgresql://eml:eml@db:5432/eml_admintool'
-  const jwtSecretKey = process.env.JWT_SECRET_KEY || randomBytes(64).toString('base64url')
+  const databaseUrl = process.env.DATABASE_URL ?? defaultPgURL
+  const jwtSecretKey = process.env.JWT_SECRET_KEY ?? randomBytes(64).toString('base64url')
 
   const envFile = envFilePath
 

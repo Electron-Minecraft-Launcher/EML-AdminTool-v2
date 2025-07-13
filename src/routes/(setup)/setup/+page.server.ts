@@ -15,14 +15,13 @@ export const actions: Actions = {
       return fail(400, { failure: 'Already configured' })
     }
 
-    const ip = event.getClientAddress()
     const form = await event.request.formData()
 
     const raw = {
-      language: form.get('language')?.toString(),
-      dbPassword: form.get('db-password')?.toString(),
-      adminUsername: form.get('admin-username')?.toString(),
-      adminPassword: form.get('admin-password')?.toString()
+      language: form.get('language'),
+      dbPassword: form.get('db-password'),
+      adminUsername: form.get('admin-username'),
+      adminPassword: form.get('admin-password')
     }
 
     const result = setupSchema.safeParse(raw)

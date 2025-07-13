@@ -1,0 +1,20 @@
+export const readableFiles = [
+  'txt',
+  'md',
+  'json',
+  'yaml',
+  'yml',
+  'xml',
+  'html',
+  'css',
+  'js',
+  'ts',
+  'sql',
+  'sh',
+  'py',
+  'config',
+  'ini',
+  'conf',
+  'options',
+  'properties'
+]

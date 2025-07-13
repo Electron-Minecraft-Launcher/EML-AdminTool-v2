@@ -47,7 +47,7 @@
 
 <ModalTemplate size={'s'} bind:show>
   {#if showLoader}
-    <LoadingSplash transparent={true} />
+    <LoadingSplash transparent />
   {/if}
 
   <form method="POST" action="?/edit" use:enhance={enhanceForm}>

@@ -20,12 +20,11 @@ export const actions: Actions = {
   login: async (event) => {
     await sleep(1000) // Prevent brute-force attacks by adding a delay
 
-    const ip = event.getClientAddress()
     const form = await event.request.formData()
 
     const raw = {
-      username: form.get('username')?.toString(),
-      password: form.get('password')?.toString()
+      username: form.get('username'),
+      password: form.get('password')
     }
 
     const result = loginSchema.safeParse(raw)

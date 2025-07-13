@@ -9,13 +9,13 @@ export const load = (async (event) => {
 
 export const actions: Actions = {
   logout: async (event) => {
-    const ip = event.getClientAddress()
     const session = event.cookies.get('session') ?? ''
 
     try {
       await logout(session)
       deleteSession(event)
     } catch (err) {
+      console.error('Failed to logout:', err)
       event.cookies.delete('session', { path: '/' })
     }
 

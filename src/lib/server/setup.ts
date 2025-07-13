@@ -1,5 +1,4 @@
-import { Client } from 'pg'
-import { escapeLiteral } from 'pg'
+import { Client, escapeLiteral } from 'pg'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import { config } from 'dotenv'
@@ -15,6 +14,7 @@ import { sleep } from '$lib/utils/utils'
 
 const execAsync = promisify(exec)
 export const envFilePath = './.env'
+export const defaultPgURL = 'postgresql://eml:eml@db:5432/eml_admintool'
 
 export async function changeDatabasePassword(newPassword: string) {
   console.log('\n---------- CHANGING DATABASE PASSWORD ----------\n')
@@ -161,8 +161,8 @@ export async function setLanguage(language: string) {
 export async function markAsConfigured() {
   console.log('\n-------------- UPDATING ENV FILE ---------------\n')
   resetProcessEnv()
-  const databaseUrl = process.env.DATABASE_URL || 'postgresql://eml:eml@db:5432/eml_admintool'
-  const jwtSecretKey = process.env.JWT_SECRET_KEY || randomBytes(64).toString('base64url')
+  const databaseUrl = process.env.DATABASE_URL ?? defaultPgURL
+  const jwtSecretKey = process.env.JWT_SECRET_KEY ?? randomBytes(64).toString('base64url')
 
   const envFile = envFilePath
 

@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-// @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200300;400;500;600;700;800;900&display=swap');
 
 :root {
   --primary-color: rgb(194, 81, 5);
@@ -41,7 +40,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
-  // height: 100vh;
   overflow-x: hidden;
 }
 
@@ -118,7 +116,6 @@ input:not([type=checkbox]) {
   padding: 12px 15px;
   border: 1px solid var(--border-color2);
   border-radius: 5px;
-  outline: none;
   background-color: var(--background-light-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   outline: 0px solid var(--primary-tr-color-hover);
@@ -152,7 +149,6 @@ select {
   padding: 9px 12px;
   border: 1px solid var(--border-color2);
   border-radius: 5px;
-  outline: none;
   background-color: var(--background-light-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   outline: 0px solid var(--primary-tr-color-hover);
@@ -255,7 +251,6 @@ section.section {
   padding: 50px;
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  // box-shadow: 0 5px 50px rgba(0, 0, 0, 0.1);
 
   &:hover button.right {
     opacity: 1

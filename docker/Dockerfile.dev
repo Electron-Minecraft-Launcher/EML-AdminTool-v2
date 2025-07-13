@@ -13,7 +13,7 @@ RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/rele
 
 COPY package.json ./
 
-RUN npm i
+RUN npm i --ignore-scripts
 
 EXPOSE 5173
 

@@ -1,12 +1,12 @@
 # BUILD STAGE
 
-FROM node:20 AS build
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm i
+RUN npm i --ignore-scripts
 
 WORKDIR /app/api
 RUN npm run build
@@ -16,7 +16,7 @@ RUN npm run build
 
 # PRODUCTION STAGE
 
-FROM node:20-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -39,7 +39,7 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/package-lock.json ./package-lock.json
 COPY --from=build /app/LICENSE ./LICENSE
 
-RUN npm ci --omit=dev
+RUN npm ci --ignore-scripts --omit=dev
 
 EXPOSE 3000
 

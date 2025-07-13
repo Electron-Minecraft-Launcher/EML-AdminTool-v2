@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon'
-
 export {}
 
 declare global {
@@ -8,6 +6,10 @@ declare global {
      * Convert a markdown string to HTML.
      */
     markdownToHTML(sizes: { h1?: number; h2?: number; h3?: number; h4?: number; p?: number }): string
+    /**
+     * Replace all `\` with `/` and remove leading slashes.
+     */
+    formatPath(): string
   }
 }
 
@@ -173,57 +175,62 @@ String.prototype.markdownToHTML = function (
     .map((p) => p.replaceAll(/_(.+?)_/g, '<i>$1</i>'))
     .map((p) => p.replaceAll(/__(.+?)__/g, '<u>$1</u>'))
     .map((p) => p.replaceAll(/~~(.+?)~~/g, '<s>$1</s>'))
-    .map((p) => p.replaceAll(/<p>```([a-zA-Z1-9])*((.|\n)*)```<\/p>$/gm, '<pre>$2</pre>'))
+    .map((p) => p.replaceAll(/<p>```([a-zA-Z0-9]*)\n([\s\S]*?)```<\/p>/gm, '<pre>$2</pre>')) //! Need to be checked
     .map((p) => p.replaceAll(/`(.+?)`/g, '<code>$1</code>'))
-    .map((p) => p.replaceAll(/\!\[(.+?)\]\((.+?)\)/g, '<figure><img src="$2" alt="$1" /></figure>'))
-    .map((p) => p.replaceAll(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="blank_">$1</a>'))
+    .map((p) => p.replaceAll(/!\[(.+?)\]\((.+?)\)/g, '<figure><img src="$2" alt="$1" /></figure>'))
+    .map((p) => p.replaceAll(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="blank_">$1</a>')) //! Need to be checked
     .map((p) => p.replaceAll(/^<p><figure(.*?|\n*)/gm, '<figure$1'))
     .map((p) => p.replaceAll(/<\/figure><\/p>$/gm, '</figure>'))
     .map((p) =>
       p.replaceAll(
-        /<p>> \[\!NOTE\]\n> (.*)<\/p>/gm,
+        /<p>> \[!NOTE\]\n> (.*)<\/p>/gm,
         '<blockquote class="note"><b><i class="fa-solid fa-circle-info"></i>&nbsp;&nbsp;Note</b>$1</blockquote>'
       )
     )
     .map((p) =>
       p.replaceAll(
-        /<p>> \[\!TIP\]\n> (.*)<\/p>/gm,
+        /<p>> \[!TIP\]\n> (.*)<\/p>/gm,
         '<blockquote class="tip"><b><i class="fa-solid fa-lightbulb"></i>&nbsp;&nbsp;Tip</b>$1</blockquote>'
       )
     )
     .map((p) =>
       p.replaceAll(
-        /<p>> \[\!IMPORTANT\]\n> (.*)<\/p>/gm,
+        /<p>> \[!IMPORTANT\]\n> (.*)<\/p>/gm,
         '<blockquote class="important"><b><i class="fa-solid fa-bolt"></i>&nbsp;&nbsp;Important</b>$1</blockquote>'
       )
     )
     .map((p) =>
       p.replaceAll(
-        /<p>> \[\!WARNING\]\n> (.*)<\/p>/gm,
+        /<p>> \[!WARNING\]\n> (.*)<\/p>/gm,
         '<blockquote class="warning"><b><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Warning</b>$1</blockquote>'
       )
     )
     .map((p) =>
       p.replaceAll(
-        /<p>> \[\!CAUTION\]\n> (.*)<\/p>/gm,
+        /<p>> \[!CAUTION\]\n> (.*)<\/p>/gm,
         '<blockquote class="caution"><b><i class="fa-solid fa-circle-exclamation"></i></i>&nbsp;&nbsp;Caution</b>$1</blockquote>'
       )
     )
     .map((p) => p.replaceAll(/<p>> ((.|\n)+)<\/p>$/gm, '<blockquote>$1</blockquote>').replaceAll('\n>', ''))
-    .map((p) =>
-      p
-        .replaceAll(/<p>\* (.+)$/gm, '<p><li_dot>$1</li_dot>')
-        .replaceAll(/\* (.+)/gm, '<li_dot>$1</li_dot>')
-        .replaceAll(/((?:\s*<li_dot>.*?<\/li_dot>)+)/gm, '<ul>$1</ul>')
+    .map(
+      (p) =>
+        p
+          .replaceAll(/<p>\* (.+)$/gm, '<p><li_dot>$1</li_dot>')
+          .replaceAll(/\* (.+)/gm, '<li_dot>$1</li_dot>')
+          .replaceAll(/((?:\s*<li_dot>(?:[^<]|<(?!\/li_dot>))*<\/li_dot>)+)/gm, '<ul>$1</ul>') //! Need to be checked
     )
     .map((p) =>
       p
         .replaceAll(/<p>(\d+)\. (.+)$/gm, '<p><li_num>$2</li_num>')
         .replaceAll(/^(\d+)\. (.+)$/gm, '<li_num>$2</li_num>')
-        .replaceAll(/((?:\s*<li_num>.*?<\/li_num>)+)/gm, '<ol>$1</ol>')
+        .replaceAll(/((?:\s*<li_num>(?:[^<]|<(?!\/li_num>))*<\/li_num>)+)/gm, '<ol>$1</ol>') //! Need to be checked
     )
     .map((p) => p.replaceAll('<li_dot>', '<li>').replaceAll('</li_dot>', '</li>').replaceAll('<li_num>', '<li>').replaceAll('</li_num>', '</li>'))
     .join('\n')
 
   return css + '<div class="md">' + html + '</div>'
+}
+
+String.prototype.formatPath = function (): string {
+  return this.split('\\').join('/').replace(/^\/+/, '')
 }

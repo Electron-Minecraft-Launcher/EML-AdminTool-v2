@@ -115,7 +115,7 @@
 
 <form method="POST" action="?/register" use:enhance={enhanceForm}>
   {#if showLoader}
-    <LoadingSplash transparent={true} />
+    <LoadingSplash transparent />
   {/if}
 
   <h2>{$l.auth.register}</h2>

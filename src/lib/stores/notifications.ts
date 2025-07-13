@@ -1,7 +1,4 @@
-import type { NotificationCode } from '$lib/utils/notifications'
-import { writable, type Readable } from 'svelte/store'
-import type en from '../../../assets/locales/en'
-import {l} from '$lib/stores/language'
+import { writable } from 'svelte/store'
 
 export type NotificationType = 'SUCCESS' | 'ERROR' | 'WARNING' | 'INFO'
 
@@ -18,7 +15,7 @@ export const notifications = writable<Notification[]>([])
 
 export function addNotification(type: NotificationType, message: string, duration?: number) {
   const id = counter++
-  duration = duration || 3000 + message.length * 100
+  duration = duration ?? 3000 + message.length * 100
 
   notifications.update((currentNotifications) => [...currentNotifications, { id, message, type, duration }])
 

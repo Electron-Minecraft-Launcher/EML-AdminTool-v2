@@ -1,9 +1,9 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { Prisma, UserStatus, type User } from '@prisma/client'
+import { Prisma, UserStatus } from '@prisma/client'
 import { db } from './db'
 import bcrypt from 'bcrypt'
-import { checkSession, createSessionToken } from './jwt'
+import { checkSession } from './jwt'
 import { checkPin } from './pin'
 
 export async function login(username: string, password: string) {

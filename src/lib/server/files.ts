@@ -1,14 +1,48 @@
-import { BusinessError } from '$lib/utils/errors'
+import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import fs from 'fs'
 import path_ from 'path'
+import type { Dir, File as File_ } from '$lib/utils/types'
+import crypto from 'crypto'
 
-export function deleteFiles(dir: 'files-updater' | 'bootstraps' | 'backgrounds' | 'images', paths: string[]) {
+const root = path_.join(process.cwd())
+
+export function getFiles(domain: string, dir: Dir) {
+  const filesArray: File_[] = []
+  browse(filesArray, dir, '', domain)
+  console.log(root)
+  return filesArray
+}
+
+/**
+ * @param dir Directory to upload the file to.
+ * @param path Path to the file, relative to the directory, without the file name.
+ * @param file File object to upload.
+ */
+export async function uploadFile(dir: Dir, path: string, file: File) {
+  if (!file) return
+
+  let buffer, target, filename
+  try {
+    buffer = Buffer.from(await file.arrayBuffer())
+    target = sanitizePath('files', dir, path)
+    filename = path_.basename(file.name)
+  } catch (err) {
+    console.error('Error uploading file:', err)
+    throw new ServerError('Failed to upload file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+
+  if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true })
+
+  fs.writeFileSync(path_.join(target, filename), buffer)
+}
+
+export function deleteFiles(dir: Dir, paths: string[]) {
   paths.forEach((path) => {
     try {
-      path = sanitize('files', dir, path)
+      path = sanitizePath('files', dir, path)
     } catch (err) {
-      console.warn('Invalid path:', path)
+      console.warn('Invalid path:', path, err)
       throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
     }
 
@@ -21,12 +55,52 @@ export function deleteFiles(dir: 'files-updater' | 'bootstraps' | 'backgrounds' 
   })
 }
 
-function sanitize(...path: string[]): string {
-  const root = path_.join(process.cwd())
+export function sanitizePath(...path: string[]): string {
   const p = path_.join(...path).replace(/^\\+/, '')
   const sanitizedPath = path_.resolve(root, p)
   if (!sanitizedPath.startsWith(root)) {
-    throw 'Invalid path'
+    throw Error('Invalid path')
   }
   return sanitizedPath
+}
+
+/**
+ * Browse files in a directory and add them to the filesArray.
+ * @param filesArray Array to store the files in.
+ * @param dir Directory to browse.
+ * @param subdir Subdirectory to browse.
+ * @param domain Domain to use for file URLs.
+ */
+function browse(filesArray: File_[], dir: Dir, subdir: string, domain: string) {
+  const fulldir = subdir === '' ? dir : `${dir}/${subdir}`
+  if (!fs.existsSync(`${root}/files/${fulldir}`)) return
+
+  const files = fs.readdirSync(`${root}/files/${fulldir}`)
+
+  files.forEach((name) => {
+    const path = `${subdir}/`.formatPath()
+    const url = `${domain}/files/${fulldir}/${name}`.formatPath()
+    const type = getType(`${root}/files/${fulldir}/${name}`)
+    if (type === 'FOLDER') {
+      browse(filesArray, dir, `${subdir}/${name}`.replace(/^\/+/, ''), domain)
+      filesArray.push({ name, path, url, type })
+    } else {
+      const fileHash = fs.readFileSync(`${root}/files/${fulldir}/${name}`)
+      const size = fs.statSync(`${root}/files/${fulldir}/${name}`).size
+      const sha1 = crypto.createHash('sha1').update(fileHash).digest('hex')
+      filesArray.push({ name, path, size, sha1, url, type })
+    }
+  })
+}
+
+function getType(path: string): 'FOLDER' | 'ASSET' | 'LIBRARY' | 'MOD' | 'CONFIG' | 'BOOTSTRAP' | 'BACKGROUND' | 'IMAGE' | 'OTHER' {
+  if (fs.statSync(path).isDirectory()) return 'FOLDER'
+  if (path.includes('assets')) return 'ASSET'
+  if (path.includes('lib')) return 'LIBRARY'
+  if (path.includes('mods')) return 'MOD'
+  if (path.includes('config')) return 'CONFIG'
+  if (path.includes('bootstraps')) return 'BOOTSTRAP'
+  if (path.includes('backgrounds')) return 'BACKGROUND'
+  if (path.includes('images')) return 'IMAGE'
+  return 'OTHER'
 }

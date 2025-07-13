@@ -41,7 +41,7 @@
 
 <form method="POST" action="?/login" use:enhance={enhanceForm}>
   {#if showLoader}
-    <LoadingSplash transparent={true} />
+    <LoadingSplash transparent />
   {/if}
 
   <h2>{$l.auth.login}</h2>

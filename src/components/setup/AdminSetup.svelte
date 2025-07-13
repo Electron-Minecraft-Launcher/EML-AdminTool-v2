@@ -55,7 +55,7 @@
 
 <form method="POST" action="?/setup" use:enhance={enhanceForm}>
   {#if showLoader}
-    <LoadingSplash transparent={true}></LoadingSplash>
+    <LoadingSplash transparent />
   {/if}
 
   <h2>{@html $l.setup.step3.title}</h2>

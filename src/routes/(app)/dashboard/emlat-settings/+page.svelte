@@ -108,7 +108,7 @@
 {#if showLoader}
   <div class="splash" transition:fade>
     <div>
-      <LoadingSplash transparent={false} />
+      <LoadingSplash />
     </div>
     {#if updateMessage}
       <p transition:fade>{updateMessage}</p>

@@ -1,7 +1,5 @@
-import type { VPS } from '$lib/utils/types'
-import type { Update } from 'vite'
 import type { PageServerLoad } from './$types'
-import { UserStatus, type Environment, type User } from '@prisma/client'
+import { UserStatus } from '@prisma/client'
 import { db } from '$lib/server/db'
 import { error, fail, redirect, type Actions, type RequestEvent } from '@sveltejs/kit'
 import { BusinessError, ServerError } from '$lib/utils/errors'
@@ -13,14 +11,9 @@ import { editEMLAT } from '$lib/server/emlat'
 import { generateRandomPin, getPin } from '$lib/server/pin'
 import type { LanguageCode } from '$lib/stores/language'
 import { deleteUser, updateUser } from '$lib/server/user'
-import { markAsUnconfigured, resetDatabase } from '$lib/server/reset'
-import { restartServer } from '$lib/server/setup'
-import { deleteFiles } from '$lib/server/files'
-import { checkSession } from '$lib/server/jwt'
 import { verify } from '$lib/server/auth'
 
 export const load = (async (event) => {
-  const ip = event.getClientAddress()
   const user = event.locals.user
 
   if (!user?.isAdmin) {
@@ -71,7 +64,6 @@ export const load = (async (event) => {
 
 export const actions: Actions = {
   editEMLAT: async (event) => {
-    const ip = event.getClientAddress()
     const user = event.locals.user
     const session = event.cookies.get('session') ?? ''
 
@@ -86,9 +78,9 @@ export const actions: Actions = {
 
     const form = await event.request.formData()
     const raw = {
-      name: form.get('name')?.toString(),
-      language: form.get('language')?.toString(),
-      regeneratePin: form.get('regenerate-pin')?.toString() === 'on'
+      name: form.get('name'),
+      language: form.get('language'),
+      regeneratePin: form.get('regenerate-pin') === 'on'
     }
 
     const result = editEMLATSchema.safeParse(raw)
@@ -112,7 +104,6 @@ export const actions: Actions = {
   },
 
   editUser: async (event) => {
-    const ip = event.getClientAddress()
     const user = event.locals.user
 
     if (!user?.isAdmin) {
@@ -122,19 +113,19 @@ export const actions: Actions = {
     const form = await event.request.formData()
 
     const raw = {
-      userId: form.get('user-id')?.toString(),
-      username: form.get('username')?.toString(),
-      p_filesUpdater_1: form.get('p_files-updater_1')?.toString() === 'on',
-      p_filesUpdater_2: form.get('p_files-updater_2')?.toString() === 'on',
-      p_bootstraps: form.get('p_bootstraps')?.toString() === 'on',
-      p_maintenance: form.get('p_maintenance')?.toString() === 'on',
-      p_news_1: form.get('p_news_1')?.toString() === 'on',
-      p_news_2: form.get('p_news_2')?.toString() === 'on',
-      p_newsCategories: form.get('p_news-categories')?.toString() === 'on',
-      p_newsTags: form.get('p_news-tags')?.toString() === 'on',
-      p_backgrounds: form.get('p_backgrounds')?.toString() === 'on',
-      p_stats_1: form.get('p_stats_1')?.toString() === 'on',
-      p_stats_2: form.get('p_stats_2')?.toString() === 'on'
+      userId: form.get('user-id'),
+      username: form.get('username'),
+      p_filesUpdater_1: form.get('p_files-updater_1') === 'on',
+      p_filesUpdater_2: form.get('p_files-updater_2') === 'on',
+      p_bootstraps: form.get('p_bootstraps') === 'on',
+      p_maintenance: form.get('p_maintenance') === 'on',
+      p_news_1: form.get('p_news_1') === 'on',
+      p_news_2: form.get('p_news_2') === 'on',
+      p_newsCategories: form.get('p_news-categories') === 'on',
+      p_newsTags: form.get('p_news-tags') === 'on',
+      p_backgrounds: form.get('p_backgrounds') === 'on',
+      p_stats_1: form.get('p_stats_1') === 'on',
+      p_stats_2: form.get('p_stats_2') === 'on'
     }
 
     const result = editUserSchema.safeParse(raw)
@@ -146,14 +137,14 @@ export const actions: Actions = {
     const userId = result.data.userId
     const username = result.data.username
     const status = UserStatus.ACTIVE
-    const p_filesUpdater = result.data.p_filesUpdater_2 ? 2 : result.data.p_filesUpdater_1 ? 1 : 0
+    const p_filesUpdater = getFilesUpdaterPermission(result)
     const p_bootstraps = result.data.p_bootstraps ? 1 : 0
     const p_maintenance = result.data.p_maintenance ? 1 : 0
-    const p_news = result.data.p_news_2 ? 2 : result.data.p_news_1 || result.data.p_newsCategories || result.data.p_newsTags ? 1 : 0
+    const p_news = getNewsPermissions(result)
     const p_newsCategories = result.data.p_newsCategories ? 1 : 0
     const p_newsTags = result.data.p_newsTags ? 1 : 0
     const p_backgrounds = result.data.p_backgrounds ? 1 : 0
-    const p_stats = result.data.p_stats_2 ? 2 : result.data.p_stats_1 ? 1 : 0
+    const p_stats = getStatsPermissions(result)
 
     try {
       await updateUser(userId, {
@@ -184,7 +175,6 @@ export const actions: Actions = {
   deleteUser: refuseDeleteUser,
 
   deleteUserForever: async (event) => {
-    const ip = event.getClientAddress()
     const user = event.locals.user
 
     if (!user?.isAdmin) {
@@ -193,10 +183,14 @@ export const actions: Actions = {
 
     const form = await event.request.formData()
 
-    const userId = form.get('user-id')?.toString()
+    const userId = form.get('user-id')
 
     if (!userId) {
-      return { failure: 'User ID is required' }
+      return { failure: NotificationCode.MISSING_INPUT }
+    }
+
+    if (typeof userId !== 'string') {
+      return { failure: NotificationCode.INVALID_INPUT }
     }
 
     try {
@@ -212,7 +206,6 @@ export const actions: Actions = {
 }
 
 async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, string>>, string | null>) {
-  const ip = event.getClientAddress()
   const user = event.locals.user
 
   if (!user?.isAdmin) {
@@ -221,10 +214,14 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
 
   const form = await event.request.formData()
 
-  const userId = form.get('user-id')?.toString()
+  const userId = form.get('user-id')
 
   if (!userId) {
     return { failure: NotificationCode.MISSING_INPUT }
+  }
+
+  if (typeof userId !== 'string') {
+    return { failure: NotificationCode.INVALID_INPUT }
   }
 
   try {
@@ -248,4 +245,22 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
     console.error('Unknown error:', err)
     throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
   }
+}
+
+function getFilesUpdaterPermission(result: any) {
+  if (result.data.p_filesUpdater_2) return 2
+  if (result.data.p_filesUpdater_1) return 1
+  return 0
+}
+
+function getNewsPermissions(result: any) {
+  if (result.data.p_news_2) return 2
+  if (result.data.p_news_1 || result.data.p_newsCategories || result.data.p_newsTags) return 1
+  return 0
+}
+
+function getStatsPermissions(result: any) {
+  if (result.data.p_stats_2) return 2
+  if (result.data.p_stats_1) return 1
+  return 0
 }

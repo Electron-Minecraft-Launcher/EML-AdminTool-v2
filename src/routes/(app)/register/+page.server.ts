@@ -1,6 +1,5 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { jwtVerify, type JWTPayload } from 'jose'
 import { NotificationCode } from '$lib/utils/notifications'
 import { registerSchema } from '$lib/utils/validations'
 import { register } from '$lib/server/auth'
@@ -21,13 +20,12 @@ export const actions: Actions = {
   register: async (event) => {
     await sleep(1000) // Prevent brute-force attacks by adding a delay
 
-    const ip = event.getClientAddress()
     const form = await event.request.formData()
 
     const raw = {
-      username: form.get('username')?.toString(),
-      password: form.get('password')?.toString(),
-      pin: (form.get('pin-1')?.toString() ?? '') + (form.get('pin-2')?.toString() ?? '') + (form.get('pin-3')?.toString() ?? '')
+      username: form.get('username'),
+      password: form.get('password'),
+      pin: String(form.get('pin-1') ?? '') + String(form.get('pin-2') ?? '') + String(form.get('pin-3') ?? '')
     }
 
     const result = registerSchema.safeParse(raw)

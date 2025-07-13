@@ -15,13 +15,12 @@ export const load = (async () => {
 
 export const actions: Actions = {
   edit: async (event) => {
-    const ip = event.getClientAddress()
     const user = event.locals.user
     const form = await event.request.formData()
 
     const raw = {
-      username: form.get('username')?.toString(),
-      password: form.get('password')?.toString()
+      username: form.get('username'),
+      password: form.get('password')
     }
 
     const result = editAccountSchema.safeParse(raw)
@@ -54,7 +53,6 @@ export const actions: Actions = {
   },
 
   delete: async (event) => {
-    const ip = event.getClientAddress()
     const user = event.locals.user
 
     if (user?.isAdmin) {

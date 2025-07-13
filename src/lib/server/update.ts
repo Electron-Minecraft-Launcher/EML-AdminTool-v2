@@ -1,5 +1,3 @@
-import { ServerError } from '$lib/utils/errors'
-import { NotificationCode } from '$lib/utils/notifications'
 import pkg from '../../../package.json'
 
 export async function getUpdate() {
@@ -17,8 +15,8 @@ export async function getUpdate() {
   }
 
   const currentVersion = pkg.version
-  const latestVersion = data.tag_name.replace('v', '') || currentVersion
-  const releaseDate = data.published_at.split('T')[0] || Date.now().toString().split('T')[0]
+  const latestVersion = data.tag_name.replace('v', '') ?? currentVersion
+  const releaseDate = data.published_at.split('T')[0] ?? Date.now().toString().split('T')[0]
   const shortLastVersion = latestVersion.split('.').slice(0, 2).join('.')
   const logoUrl = `https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/refs/heads/main/.changelogs/v${shortLastVersion}.png`
   const changelogs = data.body

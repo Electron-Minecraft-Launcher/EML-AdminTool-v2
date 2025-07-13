@@ -1,11 +1,11 @@
 import { NotificationCode } from './notifications'
 
 export class ServerError extends Error {
-  public readonly details: unknown | Error | string | null
+  public readonly details: unknown
   public readonly code: NotificationCode
   public readonly httpStatus: number
 
-  constructor(message: string, details: unknown | Error | string | null, code: NotificationCode = NotificationCode.INTERNAL_SERVER_ERROR, httpStatus: number = 500) {
+  constructor(message: string, details: unknown, code: NotificationCode = NotificationCode.INTERNAL_SERVER_ERROR, httpStatus: number = 500) {
     super(message)
     this.name = 'ServerError'
     this.details = details

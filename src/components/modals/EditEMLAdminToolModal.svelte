@@ -49,7 +49,7 @@
 
 <ModalTemplate size={'m'} bind:show>
   {#if showLoader}
-    <LoadingSplash transparent={true} />
+    <LoadingSplash transparent />
   {/if}
 
   <h2>{$l.dashboard.emlatSettings.editEMLAT}</h2>
