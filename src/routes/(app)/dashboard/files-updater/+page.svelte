@@ -59,32 +59,35 @@
     e.preventDefault()
     isDragOver = false
     filesReady = false
+
     if (!e.dataTransfer || e.dataTransfer.items.length === 0) return
     const items = await getAllEntries(e.dataTransfer.items)
 
-    let files: File[] = []
-    let filePromises: Promise<void>[] = []
+    let entries: File[] = []
 
-    for (let i = 0; i < items.length; i++) {
-      const filePromise = new Promise<void>((resolve) => {
-        items[i].file((file) => {
-          let newFile = new File([file.slice(0, file.size)], items[i].fullPath, { type: file.type })
-
-          files.push(newFile)
+    for (const item of items) {
+       await new Promise<void>((resolve) => {
+        item.file((file) => {
+          entries.push(new File([file.slice(0, file.size)], item.fullPath, { type: file.type }))
           resolve()
         })
       })
-
-      filePromises.push(filePromise)
     }
 
-    // await Promise.all(filePromises)
-    // ;(await apiFilesUpdaterService.uploadFiles(currentPath, files)).subscribe({
-    //   next: (res) => {
-    //     data_.files = res.body.data!
-    //     filesReady = true
-    //   }
-    // })
+    const formData = new FormData()
+    formData.append('current-path', currentPath)
+    for (const file of entries) {
+      formData.append('files', file)
+    }
+
+    try {
+      const response = await fetch('/api/files-updater', { method: 'POST', body: formData })
+      files = await response.json()
+    } catch (err) {
+      // TODO
+    }
+
+    filesReady = true
   }
 
   async function getAllEntries(items: DataTransferItemList) {
