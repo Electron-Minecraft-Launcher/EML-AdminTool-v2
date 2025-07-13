@@ -4,26 +4,27 @@
   import getEnv from '$lib/utils/env'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import FilesUpdater from '../../../../components/contents/FilesUpdater.svelte'
+  import type { File as File_ } from '$lib/utils/types'
 
   let { data }: PageProps = $props()
 
   const env = getEnv()
 
-  let files = $state(data.files)
+  let files: File_[] = $state([])
 
-  let filesReady: boolean = $state(false)
-  let isDragOver: boolean = $state(false)
+  let filesReady = $state(false)
+  let isDragOver = $state(false)
   let path: HTMLSpanElement | undefined = $state()
-  let oldPath: string = $state('')
-  let currentPath: string = $state('')
+  let oldPath = $state('')
+  let currentPath = $state('')
 
-  let loadersReady: boolean = $state(false)
-  let showChangeLoaderModal: boolean = $state(false)
+  let loadersReady = $state(false)
+  let showChangeLoaderModal = $state(false)
 
-  let currentPathSplit: string[] = $derived(currentPath.split('/'))
+  let currentPathSplit = $derived(currentPath.split('/'))
 
-  let sL: boolean = $state(false)
-  let sR: boolean = $state(false)
+  let sL = $state(false)
+  let sR = $state(false)
 
   onMount(() => {
     oldPath = path!.innerHTML
@@ -48,7 +49,7 @@
     try {
       const response = await fetch('/api/files-updater')
       if (!response.ok) throw new Error('Failed to fetch files')
-      files = await response.json()
+      files = (await response.json()).files as File_[]
       filesReady = true
     } catch (err) {
       // TODO
@@ -82,7 +83,8 @@
 
     try {
       const response = await fetch('/api/files-updater', { method: 'POST', body: formData })
-      files = await response.json()
+      if (!response.ok) throw new Error('Failed to upload files')
+      files = (await response.json()).files as File_[]
     } catch (err) {
       // TODO
     }
@@ -177,7 +179,7 @@
     </span>
   </h3>
 
-  <FilesUpdater bind:files bind:currentPath bind:ready={filesReady} {getData} />
+  <FilesUpdater bind:files bind:currentPath bind:ready={filesReady} />
 </section>
 
 <!-- <section class="section">

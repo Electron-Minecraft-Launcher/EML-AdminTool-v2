@@ -10,7 +10,6 @@ const root = path_.join(process.cwd())
 export function getFiles(domain: string, dir: Dir) {
   const filesArray: File_[] = []
   browse(filesArray, dir, '', domain)
-  console.log(root)
   return filesArray
 }
 
@@ -25,42 +24,76 @@ export async function uploadFile(dir: Dir, path: string, file: File) {
   let buffer, target, filename
   try {
     buffer = Buffer.from(await file.arrayBuffer())
-    target = sanitizePath('files', dir, path)
+    target = sanitizePath('files', dir, path).removeUnwantedFilenameChars()
     filename = path_.basename(file.name)
   } catch (err) {
     console.error('Error uploading file:', err)
     throw new ServerError('Failed to upload file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
   }
 
-  if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true })
-
-  fs.writeFileSync(path_.join(target, filename), buffer)
+  try {
+    if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true })
+    fs.writeFileSync(path_.join(target, filename), buffer)
+  } catch (err) {
+    console.error('Error writing file:', err)
+    throw new ServerError('Failed to write file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
 }
 
-export function deleteFiles(dir: Dir, paths: string[]) {
-  paths.forEach((path) => {
-    try {
-      path = sanitizePath('files', dir, path)
-    } catch (err) {
-      console.warn('Invalid path:', path, err)
-      throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
-    }
+/**
+ * @param dir Directory where the file to rename is.
+ * @param path Path to the file, relative to the directory, without the file name.
+ * @param name Current name of the file.
+ * @param newName New name of the file.
+ */
+export function renameFile(dir: Dir, path: string, name: string, newName: string) {
+  let fullPath
+  let newFullPath
+  try {
+    fullPath = sanitizePath('files', dir, path, name)
+    newFullPath = sanitizePath('files', dir, path, newName)
+  } catch (err) {
+    console.warn('Invalid path:', path, err)
+    throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
+  }
 
-    if (!fs.existsSync(path)) {
-      console.warn('Path does not exist:', path)
-      throw new BusinessError('Path does not exist', NotificationCode.NOT_FOUND, 404)
-    }
+  if (!fs.existsSync(fullPath)) {
+    console.warn('File does not exist:', fullPath)
+    throw new BusinessError('File does not exist', NotificationCode.NOT_FOUND, 404)
+  }
 
+  try {
+    fs.renameSync(fullPath, newFullPath)
+  } catch (err) {
+    console.error('Error renaming file:', err)
+    throw new ServerError('Failed to rename file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+}
+
+export function deleteFile(dir: Dir, path: string) {
+  try {
+    path = sanitizePath('files', dir, path)
+  } catch (err) {
+    console.warn('Invalid path:', path, err)
+    throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
+  }
+
+  if (!fs.existsSync(path)) {
+    console.warn('Path does not exist:', path)
+    throw new BusinessError('Path does not exist', NotificationCode.NOT_FOUND, 404)
+  }
+
+  try {
     fs.rmSync(path, { recursive: true })
-  })
+  } catch (err) {
+    console.error('Error deleting file:', err)
+    throw new ServerError('Failed to delete file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
 }
 
 export function sanitizePath(...path: string[]): string {
-  const p = path_.join(...path).replace(/^\\+/, '')
-  const sanitizedPath = path_.resolve(root, p)
-  if (!sanitizedPath.startsWith(root)) {
-    throw Error('Invalid path')
-  }
+  const sanitizedPath = path_.resolve(root, path_.join(...path).replace(/^\\+/, ''))
+  if (!sanitizedPath.startsWith(root)) throw Error('Invalid path')
   return sanitizedPath
 }
 
@@ -104,3 +137,5 @@ function getType(path: string): 'FOLDER' | 'ASSET' | 'LIBRARY' | 'MOD' | 'CONFIG
   if (path.includes('images')) return 'IMAGE'
   return 'OTHER'
 }
+
+

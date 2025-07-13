@@ -74,3 +74,17 @@ export const uploadFilesSchema = z.object({
   currentPath: z.string(),
   files: z.array(z.instanceof(File))
 })
+
+export const deleteFilesSchema = z.object({
+  paths: z.array(z.string())
+})
+
+export const renameFileSchema = z.object({
+  path: z.string(),
+  name: z.string().min(1, NotificationCode.MISSING_INPUT).max(255, NotificationCode.INVALID_INPUT),
+  newName: z
+    .string()
+    .min(1, NotificationCode.MISSING_INPUT)
+    .max(255, NotificationCode.INVALID_INPUT)
+    .transform((val) => val.removeUnwantedFilenameChars())
+})

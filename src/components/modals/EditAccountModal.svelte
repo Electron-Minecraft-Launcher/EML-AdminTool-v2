@@ -17,9 +17,9 @@
   const user = getUser()
 
   let showLoader = $state(false)
-  let username: string = $state(user.username)
-  let password: string = $state('')
-  let passwordCfr: string = $state('')
+  let username = $state(user.username)
+  let password = $state('')
+  let passwordCfr = $state('')
 
   let disabled = $derived.by(() => {
     return !username || (password != '' && password !== passwordCfr)

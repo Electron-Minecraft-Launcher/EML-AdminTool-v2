@@ -94,6 +94,8 @@ export const actions: Actions = {
     try {
       const newPin = regeneratePin ? generateRandomPin() : await getPin()
       await editEMLAT(name, language as LanguageCode, newPin)
+
+      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -195,6 +197,8 @@ export const actions: Actions = {
 
     try {
       await deleteUser(userId)
+
+      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })

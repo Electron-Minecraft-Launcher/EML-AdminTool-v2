@@ -1,22 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import type { PageData } from '../../routes/(app)/dashboard/files-updater/$types'
   import type { File as File_ } from '$lib/utils/types'
   import { l } from '$lib/stores/language'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { slide } from 'svelte/transition'
   import { getFileIcon } from '$lib/utils/utils'
   import { readableFiles } from '$lib/utils/files'
-  import path from 'path'
+  import RenameFileModal from '../modals/RenameFileModal.svelte'
 
   interface Props {
     currentPath: string
     files: File_[]
     ready: boolean
-    getData: () => void
   }
 
-  let { currentPath = $bindable(), files = $bindable(), ready = $bindable(), getData = $bindable() }: Props = $props()
+  let { currentPath = $bindable(), files = $bindable(), ready = $bindable() }: Props = $props()
 
   let showRenameModal = $state(false)
   let showCreateFolderModal = $state(false)
@@ -53,11 +51,12 @@
 
     try {
       const response = await fetch('/api/files-updater', { method: 'POST', body: formData })
-      files = await response.json()
+      if (!response.ok) throw new Error('Failed to upload files')
+      files = (await response.json()).files as File_[]
     } catch (err) {
       // TODO
     }
-    
+
     folderUpload.value = ''
     folderUpload.files = null
     filesUpload.value = ''
@@ -84,7 +83,7 @@
     try {
       const file = selectedItems[0]
       const response = await fetch(file.url)
-      if (!response.ok) throw new Error()
+      if (!response.ok) throw new Error('Failed to download file')
 
       const blob = await response.blob()
       const downloadUrl = window.URL.createObjectURL(blob)
@@ -98,7 +97,7 @@
       selectedItems = [file]
     } catch (error) {
       // TODO
-      getData()
+      // getData()
     }
   }
 
@@ -106,15 +105,20 @@
     if (selectedItems.length === 0) return
     if (!confirm('Are you sure you want to delete these files/folders? Folders may contains subfolders.')) return
     ready = false
-    const paths = selectedItems.map((file) => `${file.path}${file.name}`)
+
+    const formData = new FormData()
+    for (const file of selectedItems) {
+      formData.append('paths', `${file.path}${file.name}`)
+    }
 
     try {
-      const response = await fetch('/api/files-updater', { method: 'DELETE', body: JSON.stringify({ paths }) })
-      files = await response.json()
+      const response = await fetch('/api/files-updater', { method: 'DELETE', body: formData })
+      if (!response.ok) throw new Error('Failed to delete files')
+      files = (await response.json()).files as File_[]
     } catch (err) {
       // TODO
     }
-    
+
     selectedItems = []
     ready = true
   }
@@ -188,6 +192,10 @@
     }
   }}
 />
+
+{#if showRenameModal}
+  <RenameFileModal bind:files bind:selectedItems bind:show={showRenameModal} />
+{/if}
 
 <div class="explorer">
   {#if !ready}
@@ -278,7 +286,7 @@
 <input type="file" name="files" multiple bind:this={filesUpload} style="display: none" onchange={uploadItems} />
 <input type="file" name="files" multiple bind:this={folderUpload} style="display: none" onchange={uploadItems} />
 
-<!-- <RenameFileModal bind:data bind:selectedItems bind:show={showRenameModal} {getData}></RenameFileModal>
+<!-- 
 <CreateFolderModal bind:data bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
 <AddEditFileModal bind:data bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal> -->
 
@@ -444,7 +452,6 @@
       &.name {
         padding-left: 10px;
         padding-left: 10px;
-        width: calc(87% - 25px);
         max-width: 600px;
         overflow: hidden;
         white-space: nowrap;
@@ -456,6 +463,7 @@
         color: #606060;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
+        min-width: 90px;
       }
     }
   }

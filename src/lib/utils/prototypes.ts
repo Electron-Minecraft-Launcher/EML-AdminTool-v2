@@ -10,6 +10,10 @@ declare global {
      * Replace all `\` with `/` and remove leading slashes.
      */
     formatPath(): string
+    /**
+     * Remove all forbidden chars in a filename.
+     */
+    removeUnwantedFilenameChars(): string
   }
 }
 
@@ -233,4 +237,8 @@ String.prototype.markdownToHTML = function (
 
 String.prototype.formatPath = function (): string {
   return this.split('\\').join('/').replace(/^\/+/, '')
+}
+
+String.prototype.removeUnwantedFilenameChars = function (): string {
+  return this.replace(/[\x00-\x1F\x7F"*/:<>?\\|]/g, '').replace(/^\.{2,}/, '').replace(/\.+$/, '').trim()
 }

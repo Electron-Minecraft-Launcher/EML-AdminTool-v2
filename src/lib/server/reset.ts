@@ -6,7 +6,7 @@ import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { Client } from 'pg'
 import { Prisma } from '@prisma/client'
-import { deleteFiles } from './files'
+import { deleteFile } from './files'
 
 export async function resetDatabase() {
   console.log('\n-------------- RESETTING DATABASE --------------\n')
@@ -31,22 +31,22 @@ export async function resetDatabase() {
 export function deleteAllFiles() {
   console.log('\n---------------- DELETING FILES ----------------\n')
   try {
-    deleteFiles('files-updater', [''])
+    deleteFile('files-updater', '')
   } catch (err) {
     console.error('Failed to delete files in "files-updater":', err)
   }
   try {
-    deleteFiles('bootstraps', [''])
+    deleteFile('bootstraps', '')
   } catch (err) {
     console.error('Failed to delete files in "bootstraps":', err)
   }
   try {
-    deleteFiles('backgrounds', [''])
+    deleteFile('backgrounds', '')
   } catch (err) {
     console.error('Failed to delete files in "backgrounds":', err)
   }
   try {
-    deleteFiles('images', [''])
+    deleteFile('images', '')
   } catch (err) {
     console.error('Failed to delete files in "images":', err)
   }
