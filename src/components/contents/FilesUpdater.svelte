@@ -7,6 +7,8 @@
   import { getFileIcon } from '$lib/utils/utils'
   import { readableFiles } from '$lib/utils/files'
   import RenameFileModal from '../modals/RenameFileModal.svelte'
+  import CreateFileModal from '../modals/CreateFileModal.svelte'
+  import EditFileModal from '../modals/EditFileModal.svelte'
 
   interface Props {
     currentPath: string
@@ -17,9 +19,10 @@
   let { currentPath = $bindable(), files = $bindable(), ready = $bindable() }: Props = $props()
 
   let showRenameModal = $state(false)
-  let showCreateFolderModal = $state(false)
-  let showAddEditFileModal = $state(false)
-  let addEditFileAction: { action: 'add' } | { action: 'edit'; file: File_ } = $state({ action: 'add' })
+  let showCreateFileModal = $state(false)
+  let createFileAction: 'FOLDER' | 'FILE' = $state('FOLDER')
+  let showEditFileModal = $state(false)
+  let fileToEdit: File_ = $state({} as File_)
 
   let addElementDropdownOpen = $state(false)
 
@@ -44,7 +47,7 @@
     if (!target.files || target.files.length === 0) return
 
     const formData = new FormData()
-    formData.append('current-path', currentPath)
+    formData.set('current-path', currentPath)
     for (const file of target.files || []) {
       formData.append('files', file)
     }
@@ -71,8 +74,8 @@
       currentPath = `${file.path}${file.name}/`
       selectedItems = []
     } else if (file.name.split('.').length > 1 && readableFiles.includes(file.name.split('.').slice(-1)[0])) {
-      addEditFileAction = { action: 'edit', file }
-      showAddEditFileModal = true
+      fileToEdit = file
+      showEditFileModal = true
     } else {
       downloadItem()
     }
@@ -169,9 +172,9 @@
       !e.target.closest('.explorer tbody tr') &&
       // @ts-ignore
       !e.target.closest('button.small') &&
-      !showAddEditFileModal &&
+      !showEditFileModal &&
       !showRenameModal &&
-      !showCreateFolderModal
+      !showCreateFileModal
     ) {
       selectedItems = []
     }
@@ -181,13 +184,13 @@
     }
   }}
   onkeydown={(e) => {
-    if (e.key === 'Escape' && (showAddEditFileModal || showRenameModal || showCreateFolderModal)) {
+    if (e.key === 'Escape' && (showEditFileModal || showRenameModal || showCreateFileModal)) {
       selectedItems = []
     }
-    if (e.key === 'Delete' && !showAddEditFileModal && !showRenameModal && !showCreateFolderModal) {
+    if (e.key === 'Delete' && !showEditFileModal && !showRenameModal && !showCreateFileModal) {
       deleteItems()
     }
-    if (e.key === 'Enter' && !showAddEditFileModal && !showRenameModal && !showCreateFolderModal) {
+    if (e.key === 'Enter' && !showEditFileModal && !showRenameModal && !showCreateFileModal) {
       openItem(selectedItems[0])
     }
   }}
@@ -195,6 +198,14 @@
 
 {#if showRenameModal}
   <RenameFileModal bind:files bind:selectedItems bind:show={showRenameModal} />
+{/if}
+
+{#if showCreateFileModal}
+  <CreateFileModal bind:files {currentPath} bind:show={showCreateFileModal} bind:showEditFileModal type={createFileAction} bind:fileToEdit />
+{/if}
+
+{#if showEditFileModal}
+  <EditFileModal bind:files bind:show={showEditFileModal} bind:fileToEdit />
 {/if}
 
 <div class="explorer">
@@ -231,11 +242,18 @@
       <button onclick={() => folderUpload.click()}><i class="fap-fix fa-solid fap-folder-arrow-up"></i>&nbsp;&nbsp;Upload folder</button>
       <button onclick={() => filesUpload.click()}><i class="fap-fix fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload files</button>
       <hr />
-      <button onclick={() => (showCreateFolderModal = true)}><i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder</button>
       <button
         onclick={() => {
-          addEditFileAction = { action: 'add' }
-          showAddEditFileModal = true
+          createFileAction = 'FOLDER'
+          showCreateFileModal = true
+        }}
+      >
+        <i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder
+      </button>
+      <button
+        onclick={() => {
+          createFileAction = 'FILE'
+          showCreateFileModal = true
         }}
       >
         <i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file
@@ -286,9 +304,6 @@
 <input type="file" name="files" multiple bind:this={filesUpload} style="display: none" onchange={uploadItems} />
 <input type="file" name="files" multiple bind:this={folderUpload} style="display: none" onchange={uploadItems} />
 
-<!-- 
-<CreateFolderModal bind:data bind:currentPath bind:show={showCreateFolderModal}></CreateFolderModal>
-<AddEditFileModal bind:data bind:currentPath bind:action={addEditFileAction} bind:show={showAddEditFileModal}></AddEditFileModal> -->
 
 <style lang="scss">
   .fap-fix {

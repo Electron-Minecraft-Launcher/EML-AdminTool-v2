@@ -21,22 +21,84 @@ export function getFiles(domain: string, dir: Dir) {
 export async function uploadFile(dir: Dir, path: string, file: File) {
   if (!file) return
 
-  let buffer, target, filename
+  let target, name, buffer
   try {
+    target = sanitizePath('files', dir, path)
+    name = path_.basename(file.name).removeUnwantedFilenameChars()
     buffer = Buffer.from(await file.arrayBuffer())
-    target = sanitizePath('files', dir, path).removeUnwantedFilenameChars()
-    filename = path_.basename(file.name)
   } catch (err) {
-    console.error('Error uploading file:', err)
-    throw new ServerError('Failed to upload file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    console.warn('Invalid path:', path, err)
+    throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
   }
 
   try {
     if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true })
-    fs.writeFileSync(path_.join(target, filename), buffer)
+    fs.writeFileSync(path_.join(target, name), buffer)
   } catch (err) {
     console.error('Error writing file:', err)
     throw new ServerError('Failed to write file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+}
+
+/**
+ * Create an empty file.
+ * @param dir Directory where the file to create is.
+ * @param path Path to the file, relative to the directory, without the file name.
+ * @param name Name of the file to create.
+ */
+export function createFile(dir: Dir, path: string, name: string | undefined) {
+  let target
+  try {
+    target = sanitizePath('files', dir, path)
+  } catch (err) {
+    console.warn('Invalid path:', path, err)
+    throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
+  }
+
+  try {
+    if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true })
+  } catch (err) {
+    console.error('Error creating directory:', err)
+    throw new ServerError('Failed to create directory', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+
+  if (name) {
+    try {
+      name = name.removeUnwantedFilenameChars()
+      fs.writeFileSync(path_.join(target, name), '')
+    } catch (err) {
+      console.error('Error creating file:', err)
+      throw new ServerError('Failed to create file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    }
+  }
+}
+
+/**
+ * @param dir Directory where the file to edit is.
+ * @param path Path to the file, relative to the directory, without the file name.
+ * @param name Name of the file to edit.
+ * @param content New content for the file.
+ */
+export function editFile(dir: Dir, path: string, name: string, content: string) {
+  let fullPath
+  try {
+    name = name.removeUnwantedFilenameChars()
+    fullPath = sanitizePath('files', dir, path, name)
+  } catch (err) {
+    console.warn('Invalid path:', path, err)
+    throw new BusinessError('Invalid path', NotificationCode.INVALID_REQUEST, 400)
+  }
+
+  if (!fs.existsSync(fullPath)) {
+    console.warn('File does not exist:', fullPath)
+    throw new BusinessError('File does not exist', NotificationCode.NOT_FOUND, 404)
+  }
+
+  try {
+    fs.writeFileSync(fullPath, content)
+  } catch (err) {
+    console.error('Error editing file:', err)
+    throw new ServerError('Failed to edit file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
   }
 }
 
@@ -47,9 +109,9 @@ export async function uploadFile(dir: Dir, path: string, file: File) {
  * @param newName New name of the file.
  */
 export function renameFile(dir: Dir, path: string, name: string, newName: string) {
-  let fullPath
-  let newFullPath
+  let fullPath, newFullPath
   try {
+    name = name.removeUnwantedFilenameChars()
     fullPath = sanitizePath('files', dir, path, name)
     newFullPath = sanitizePath('files', dir, path, newName)
   } catch (err) {
@@ -70,6 +132,10 @@ export function renameFile(dir: Dir, path: string, name: string, newName: string
   }
 }
 
+/**
+ * @param dir Directory where the file to delete is.
+ * @param path Path to the file, relative to the directory, **including** the file name.
+ */
 export function deleteFile(dir: Dir, path: string) {
   try {
     path = sanitizePath('files', dir, path)
@@ -137,5 +203,8 @@ function getType(path: string): 'FOLDER' | 'ASSET' | 'LIBRARY' | 'MOD' | 'CONFIG
   if (path.includes('images')) return 'IMAGE'
   return 'OTHER'
 }
+
+
+
 
 

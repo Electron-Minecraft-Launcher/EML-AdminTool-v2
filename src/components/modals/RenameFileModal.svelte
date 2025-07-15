@@ -22,9 +22,11 @@
   let name = $state(selectedItems[0].name)
   let newName = $state(selectedItems[0].name)
   let type = $state(selectedItems[0].type)
+  let newNameInput: HTMLInputElement | undefined = $state()
 
   onMount(() => {
     if (selectedItems.length !== 1) show = false
+    newNameInput?.focus()
   })
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
@@ -58,11 +60,11 @@
     <h2>Rename {type === 'FOLDER' ? 'folder' : 'file'}</h2>
 
     <label for="new-name">Files Updater/{path}</label>
-    <input type="text" id="new-name" name="new-name" bind:value={newName} />
+    <input type="text" id="new-name" name="new-name" bind:value={newName} bind:this={newNameInput} />
 
     <div class="actions">
       <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={!newName}>{$l.main.save}</button>
+      <button class="primary" disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>

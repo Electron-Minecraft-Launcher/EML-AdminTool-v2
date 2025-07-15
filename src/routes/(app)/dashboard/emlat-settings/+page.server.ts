@@ -136,6 +136,8 @@ export const actions: Actions = {
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
+    console.log(raw, result.data)
+
     const userId = result.data.userId
     const username = result.data.username
     const status = UserStatus.ACTIVE

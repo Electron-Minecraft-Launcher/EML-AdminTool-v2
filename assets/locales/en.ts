@@ -29,6 +29,7 @@ export default {
     [NotificationCode.SETUP_INVALID_LANGUAGE]: `Language must be exactly 2 characters long.`,
     [NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT]: `Database password must be at least 12 characters long.`,
     [NotificationCode.SETUP_ADMIN_USERNAME_TOO_SHORT]: `Admin username must be at least 2 characters long.`,
+    [NotificationCode.SETUP_ADMIN_USERNAME_TOO_LONG]: `Admin username must be at most 64 characters long.`,
     [NotificationCode.SETUP_ADMIN_PASSWORD_TOO_SHORT]: `Admin password must be at least 12 characters long.`,
 
     [NotificationCode.EMLAT_NAME_TOO_SHORT]: `EML AdminTool name must be at least 2 characters long.`,

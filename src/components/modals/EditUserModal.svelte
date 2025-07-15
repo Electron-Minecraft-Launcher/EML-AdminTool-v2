@@ -97,8 +97,8 @@
     <div class="permission">
       <p>Bootstraps</p>
       <div class="right">
-        <label class="p" for="p_bootstraps_1">
-          <input type="checkbox" id="p_bootstraps_1" name="p_bootstraps_1" bind:checked={p_bootstraps} /> Change bootstraps files
+        <label class="p" for="p_bootstraps">
+          <input type="checkbox" id="p_bootstraps" name="p_bootstraps" bind:checked={p_bootstraps} /> Change bootstraps files
         </label>
       </div>
     </div>
@@ -106,8 +106,8 @@
     <div class="permission">
       <p>Maintenance</p>
       <div class="right">
-        <label class="p" for="p_maintenance_1">
-          <input type="checkbox" id="p_maintenance_1" name="p_maintenance_1" bind:checked={p_maintenance} /> Change maintenance status
+        <label class="p" for="p_maintenance">
+          <input type="checkbox" id="p_maintenance" name="p_maintenance" bind:checked={p_maintenance} /> Change maintenance status
         </label>
       </div>
     </div>
@@ -141,22 +141,22 @@
             }}
           /> Delete any news
         </label>
-        <label class="p" for="p_news-categories_1">
+        <label class="p" for="p_news-categories">
           <input
             type="checkbox"
-            id="p_news-categories_1"
-            name="p_news-categories_1"
+            id="p_news-categories"
+            name="p_news-categories"
             bind:checked={p_newsCategories}
             onchange={() => {
               if (p_newsCategories) p_news_1 = true
             }}
           /> Add, edit and delete news categories
         </label>
-        <label class="p" for="p_news_tags_1">
+        <label class="p" for="p_news_tags">
           <input
             type="checkbox"
-            id="p_news_tags_1"
-            name="p_news_tags_1"
+            id="p_news_tags"
+            name="p_news_tags"
             bind:checked={p_newsTags}
             onchange={() => {
               if (p_newsTags) p_news_1 = true
@@ -169,8 +169,8 @@
     <div class="permission">
       <p>Backgrounds</p>
       <div class="right">
-        <label class="p" for="p_backgrounds_1">
-          <input type="checkbox" id="p_backgrounds_1" name="p_backgrounds_1" bind:checked={p_backgrounds} /> Change backgrounds
+        <label class="p" for="p_backgrounds">
+          <input type="checkbox" id="p_backgrounds" name="p_backgrounds" bind:checked={p_backgrounds} /> Change backgrounds
         </label>
       </div>
     </div>

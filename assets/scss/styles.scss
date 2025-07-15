@@ -71,7 +71,8 @@ label.p {
   color: black;
 }
 
-a:not(.not-a), button.a {
+a:not(.not-a),
+button.a {
   color: var(--primary-color);
   text-decoration: none;
   border: none;
