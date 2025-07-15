@@ -1,6 +1,6 @@
 /**
  * Translated by GoldFrite
- * EML AdminTool v2.0.0-beta.1
+ * EML AdminTool v2.0.0-beta.2
  */
 
 export default {
