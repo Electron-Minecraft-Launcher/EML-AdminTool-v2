@@ -1,9 +1,9 @@
 import { writable, derived, type Readable } from 'svelte/store'
-import en from '../../../assets/locales/en'
-import fr from '../../../assets/locales/fr'
-import da from '../../../assets/locales/da'
-import de from '../../../assets/locales/de'
-import it from '../../../assets/locales/it'
+import en from '../locales/en'
+import fr from '../locales/fr'
+import da from '../locales/da'
+import de from '../locales/de'
+import it from '../locales/it'
 
 const languages = { en, fr, da, de, it }
 

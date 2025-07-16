@@ -24,7 +24,7 @@
 </div>
 
 <style lang="scss">
-  @use '../../../../assets/scss/dashboard.scss';
+  @use '../../../../static/scss/dashboard.scss';
 
   div.wip {
     border-radius: 10px;

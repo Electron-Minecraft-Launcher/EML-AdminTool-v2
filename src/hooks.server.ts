@@ -6,7 +6,8 @@ import { verify } from '$lib/server/auth'
 import { deleteSession } from '$lib/server/jwt'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import type { User } from '@prisma/client'
+import type { Environment, User } from '@prisma/client'
+import type { RequestEvent } from './routes/$types'
 
 export const handle: Handle = async ({ event, resolve }) => {
   const session = event.cookies.get('session')
@@ -20,7 +21,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         language: (env?.language as LanguageCode) ?? 'en',
         name: env?.name ?? 'EML',
         theme: env?.theme ?? 'default',
-        version: env?.version ?? pkg.version
+        version: pkg.version
       }
     } catch (err) {
       console.error('Failed to load environment:', err)
@@ -50,9 +51,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 }
 
 function isConfigured() {
-  return process.env.IS_CONFIGURED === 'true' &&
+  return (
+    process.env.IS_CONFIGURED === 'true' &&
     process.env.DATABASE_URL !== 'postgresql://eml:eml@db:5432/eml_admintool' &&
     process.env.DATABASE_URL !== undefined
+  )
 }
 
 function getDefaultEnv() {
@@ -77,5 +80,11 @@ function getUserInfo(user: User) {
     p_backgrounds: user.p_backgrounds as 0 | 1,
     p_stats: user.p_stats as 0 | 1 | 2,
     isAdmin: user.isAdmin
+  }
+}
+
+async function setEnv(env?: Environment) {
+  if (env) {
+    return {}
   }
 }

@@ -22,7 +22,7 @@ services:
       NODE_ENV: 'development'
     volumes:
       - ../.svelte-kit:/app/.svelte-kit
-      - ../assets:/app/assets
+      - ../static:/app/static
       - ../node_modules/.prisma:/app/node_modules/.prisma
       - ../prisma:/app/prisma
       - ../src:/app/src

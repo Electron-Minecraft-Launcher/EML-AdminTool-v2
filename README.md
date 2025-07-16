@@ -137,7 +137,7 @@ You can download the previous major version of the [EML AdminTool](https://githu
 
 You can help to translate EML AdminTool!
 
-The languages files are [here](./client/src/assets/language/). You can create another file with your translation. Please make sure to provide a correct translation!
+The languages files are [here](./client/src/lib/locales/). You can create another file with your translation. Please make sure to provide a correct translation!
 
 Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues/new?template=translation.md), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
 

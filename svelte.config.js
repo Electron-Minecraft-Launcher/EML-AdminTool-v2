@@ -3,11 +3,7 @@ import { sveltePreprocess } from 'svelte-preprocess'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: sveltePreprocess({
-    scss: {
-      includePaths: ['assets/scss/']
-    }
-  }),
+  preprocess: sveltePreprocess(),
   compilerOptions: {
     warningFilter: (warning) => !warning.code?.includes('unused')
   },

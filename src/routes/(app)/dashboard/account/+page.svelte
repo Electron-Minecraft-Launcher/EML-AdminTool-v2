@@ -159,5 +159,5 @@
 {/if}
 
 <style lang="scss">
-  @use '../../../../../assets/scss/dashboard.scss';
+  @use '../../../../../static/scss/dashboard.scss';
 </style>

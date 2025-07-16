@@ -279,8 +279,8 @@
 </section>
 
 <style lang="scss">
-  @use '../../../../../assets/scss/dashboard.scss';
-  @use '../../../../../assets/scss/list.scss';
+  @use '../../../../../static/scss/dashboard.scss';
+  @use '../../../../../static/scss/list.scss';
 
   div.splash {
     position: fixed;

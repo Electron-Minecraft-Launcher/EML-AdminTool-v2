@@ -81,11 +81,7 @@
       const downloadUrl = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = downloadUrl
-      a.download = name
-        .replace(/[\x00-\x1F\x7F"*/:<>?\\|]/g, '')
-        .replace(/^\.{2,}/, '')
-        .replace(/\.+$/, '')
-        .trim()
+      a.download = name.removeUnwantedFilenameChars()
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -177,7 +173,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 
   button.right {
     opacity: 1 !important;

@@ -14,7 +14,7 @@ enum UserStatus {
 enum LoaderType {
   VANILLA
   FORGE
-  FABRIC
+  // FABRIC
 }
 
 enum LoaderFormat {
@@ -38,7 +38,6 @@ model Environment {
   language  String   @default("en")
   name      String   @default("EML")
   theme     String   @default("default")
-  version   String   @default("1.0.0")
   pin       String   @default("000")
   updatedAt DateTime @updatedAt
 }
@@ -74,11 +73,11 @@ model Log {
 
 model Loader {
   id               String       @id @default(cuid(2))
-  type             LoaderType
-  minecraftVersion String
-  loaderVersion    String
-  format           LoaderFormat
-  fileUrl          String
+  type             LoaderType?
+  minecraftVersion String?
+  loaderVersion    String?
+  format           LoaderFormat?
+  file             Json?
   updatedAt        DateTime     @updatedAt
 }
 
@@ -99,15 +98,15 @@ model Maintenance {
 }
 
 model News {
-  id         String          @id @default(cuid(2))
+  id         String         @id @default(cuid(2))
   title      String
   content    String
   authorId   String
-  author     User            @relation(fields: [authorId], references: [id])
+  author     User           @relation(fields: [authorId], references: [id])
   categories NewsCategory[]
   tags       NewsTag[]
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
 }
 
 model NewsCategory {

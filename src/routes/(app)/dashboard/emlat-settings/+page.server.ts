@@ -20,10 +20,7 @@ export const load = (async (event) => {
     return redirect(303, '/dashboard')
   }
 
-  let environment
-  let users
-  let vps
-  let update
+  let environment, users, vps, update
 
   try {
     try {

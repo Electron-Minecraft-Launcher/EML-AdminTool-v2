@@ -62,3 +62,9 @@ export interface File {
 }
 
 export type Dir = 'files-updater' | 'bootstraps' | 'backgrounds' | 'images'
+
+export interface LoaderVersion {
+  minecraftVersion: string
+  loaderVersion: string
+  type: ('release' | 'snapshot' | 'latest' | 'recommended' | 'default')[]
+}

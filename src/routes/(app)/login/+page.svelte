@@ -7,6 +7,7 @@
   import type { SubmitFunction } from '@sveltejs/kit'
   import { addNotification } from '$lib/stores/notifications'
   import type { NotificationCode } from '$lib/utils/notifications'
+  import Footer from '../../../components/layouts/Footer.svelte'
 
   let { data }: PageProps = $props()
 
@@ -59,6 +60,10 @@
   </p>
 </form>
 
+<div class="footer-container">
+  <Footer />
+</div>
+
 <style lang="scss">
-  @use '../../../../assets/scss/login.scss';
+  @use '../../../../static/scss/login.scss';
 </style>

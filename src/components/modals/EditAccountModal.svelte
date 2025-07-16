@@ -75,7 +75,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 
   p.warn {
     margin: 5px 0 0 0;

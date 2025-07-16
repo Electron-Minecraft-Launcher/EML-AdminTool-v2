@@ -315,7 +315,7 @@
     width: 16px;
 
     &::before {
-      content: url('../assets/images/fa-solid fa-folder-arrow-up.svg');
+      content: url('../static/images/fa-solid fa-folder-arrow-up.svg');
       position: absolute;
       top: 12.5px;
       left: 15px;
@@ -328,7 +328,7 @@
     width: 16px;
 
     &::before {
-      content: url('../assets/images/fa-solid fa-file-plus.svg');
+      content: url('../static/images/fa-solid fa-file-plus.svg');
       position: absolute;
       top: 12px;
       left: 16px;

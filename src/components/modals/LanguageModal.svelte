@@ -20,5 +20,5 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 </style>

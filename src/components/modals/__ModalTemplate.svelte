@@ -27,7 +27,7 @@
 </div>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 
   div.modal-background {
     position: fixed;
@@ -42,7 +42,7 @@
       opacity 0.3s,
       transform 0.3s;
     overflow: hidden;
-    z-index: 1000;
+    z-index: 2000;
   }
 
   div.modal {

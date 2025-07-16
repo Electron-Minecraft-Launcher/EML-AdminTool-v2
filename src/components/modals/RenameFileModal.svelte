@@ -70,7 +70,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

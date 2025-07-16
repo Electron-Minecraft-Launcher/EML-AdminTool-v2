@@ -93,7 +93,7 @@
 </form>
 
 <style lang="scss">
-  @use '../../assets/scss/setup.scss';
+  @use '../../../static/scss/setup.scss';
 
   // div.flex {
   //   display: flex;

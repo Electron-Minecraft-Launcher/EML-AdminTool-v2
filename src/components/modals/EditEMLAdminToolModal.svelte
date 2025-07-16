@@ -2,11 +2,11 @@
   import { currentLanguage, l, type LanguageCode } from '$lib/stores/language'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import ModalTemplate from './__ModalTemplate.svelte'
-  import enFlag from '../../../assets/images/flags/en.png'
-  import frFlag from '../../../assets/images/flags/fr.png'
-  import deFlag from '../../../assets/images/flags/de.png'
-  import itFlag from '../../../assets/images/flags/it.png'
-  import daFlag from '../../../assets/images/flags/da.png'
+  import enFlag from '../../../static/images/flags/en.png'
+  import frFlag from '../../../static/images/flags/fr.png'
+  import deFlag from '../../../static/images/flags/de.png'
+  import itFlag from '../../../static/images/flags/it.png'
+  import daFlag from '../../../static/images/flags/da.png'
   import getEnv from '$lib/utils/env'
   import { enhance } from '$app/forms'
   import type { SubmitFunction } from '@sveltejs/kit'
@@ -109,7 +109,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 
   p.warn {
     margin: 5px 0 0 0;

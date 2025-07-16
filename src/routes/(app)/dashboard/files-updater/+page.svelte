@@ -5,10 +5,14 @@
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import FilesUpdater from '../../../../components/contents/FilesUpdater.svelte'
   import type { File as File_ } from '$lib/utils/types'
+  import { LoaderFormat, LoaderType } from '@prisma/client'
+  import ChangeLoaderModal from '../../../../components/modals/ChangeLoaderModal.svelte'
+  import getUser from '$lib/utils/user'
 
   let { data }: PageProps = $props()
 
   const env = getEnv()
+  const user = getUser()
 
   let files: File_[] = $state([])
 
@@ -18,7 +22,6 @@
   let oldPath = $state('')
   let currentPath = $state('')
 
-  let loadersReady = $state(false)
   let showChangeLoaderModal = $state(false)
 
   let currentPathSplit = $derived(currentPath.split('/'))
@@ -67,7 +70,7 @@
     let entries: File[] = []
 
     for (const item of items) {
-       await new Promise<void>((resolve) => {
+      await new Promise<void>((resolve) => {
         item.file((file) => {
           entries.push(new File([file.slice(0, file.size)], item.fullPath, { type: file.type }))
           resolve()
@@ -141,12 +144,20 @@
       oldPath = path!.innerHTML
       path!.scrollLeft = path!.scrollWidth
     }
+
+    if (!files.find((file) => `${file.path}${file.name}/` === currentPath)) {
+      currentPath = ''
+    }
   })
 </script>
 
 <svelte:head>
   <title>Files Updater • {env.name} AdminTool</title>
 </svelte:head>
+
+{#if showChangeLoaderModal}
+  <ChangeLoaderModal bind:show={showChangeLoaderModal} loader={data.loader} loaderList={data.loaderList} />
+{/if}
 
 <h2>Files Updater</h2>
 
@@ -182,62 +193,60 @@
   <FilesUpdater bind:files bind:currentPath bind:ready={filesReady} />
 </section>
 
-<!-- <section class="section">
-  {#if !loadersReady}
-    <LoadingSplash transparent />
-  {/if}
+{#if user.p_filesUpdater === 2}
+  <section class="section">
+    <button class="secondary right" onclick={() => (showChangeLoaderModal = true)} aria-label="Change Minecraft loader">
+      <i class="fa-solid fa-ellipsis"></i>
+    </button>
 
-  <button class="secondary right" onclick={() => (showChangeLoaderModal = true)}><i class="fa-solid fa-ellipsis"></i></button>
+    <h3>Minecraft loader</h3>
 
-  <h3>Minecraft loader</h3>
+    <div class="container">
+      <div>
+        <p class="label">Minecraft version</p>
+        <p>
+          {data.loader.minecraftVersion === 'latest_release'
+            ? 'Latest release'
+            : data.loader.minecraftVersion === 'latest_snapshot'
+              ? 'Latest snapshot'
+              : data.loader.minecraftVersion}
+        </p>
+      </div>
 
-  <div class="container">
-    <div>
-      <p class="label">Minecraft version</p>
-      <p>
-        {data_.loader.minecraft_version === 'latest_release'
-          ? 'Latest release'
-          : data_.loader.minecraft_version === 'latest_snapshot'
-            ? 'Latest snapshot'
-            : data_.loader.minecraft_version}
-      </p>
+      <div>
+        <p class="label">Loader</p>
+        <p>
+          {data.loader.type === LoaderType.FORGE ? 'Forge' : 'Vanilla'}
+        </p>
+      </div>
+
+      <div>
+        <p class="label">Loader version</p>
+        <p>
+          {data.loader.loaderVersion === 'latest_release'
+            ? 'Latest release'
+            : data.loader.loaderVersion === 'latest_snapshot'
+              ? 'Latest snapshot'
+              : data.loader.loaderVersion}
+        </p>
+      </div>
+
+      <div>
+        <p class="label">
+          Format (auto)&nbsp;&nbsp;<i
+            class="fa-solid fa-circle-question"
+            title="This field is automatically deduced from the loader version."
+            style="cursor: help"
+          ></i>
+        </p>
+        <p>{data.loader.format === LoaderFormat.INSTALLER ? 'Installer' : data.loader.format === LoaderFormat.UNIVERSAL ? 'Universal' : 'Client'}</p>
+      </div>
     </div>
-
-    <div>
-      <p class="label">Loader</p>
-      <p>
-        {data_.loader.loader === 'forge'
-          ? 'Forge'
-          : data_.loader.loader === 'fabric'
-            ? 'Fabric'
-            : data_.loader.loader === 'neoforge'
-              ? 'NeoForge'
-              : 'Vanilla'}
-      </p>
-    </div>
-
-    <div>
-      <p class="label">Loader version</p>
-      <p>{data_.loader.loader_version || '-'}</p>
-    </div>
-
-    <div>
-      <p class="label">
-        Loader type (auto)&nbsp;&nbsp;<i
-          class="fa-solid fa-circle-question"
-          title="This field is automatically deduced from the loader version."
-          style="cursor: help"
-        ></i>
-      </p>
-      <p>{data_.loader.loader_type === 'installer' ? 'Installer' : data_.loader.loader_type === 'universal' ? 'Universal' : 'Client'}</p>
-    </div>
-  </div>
-</section> -->
-
-<!-- <ChangeLoaderModal bind:show={showChangeLoaderModal} bind:data={data_} bind:ready={loadersReady} /> -->
+  </section>
+{/if}
 
 <style lang="scss">
-  @use '../../../../../assets/scss/dashboard.scss';
+  @use '../../../../../static/scss/dashboard.scss';
 
   section.section.explorer {
     &.drag::after {

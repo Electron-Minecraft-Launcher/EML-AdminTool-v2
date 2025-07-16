@@ -38,7 +38,7 @@
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
-    name = name.replace(/[\x00-\x1F\x7F"*/:<>?\\|]/g, '').replace(/^\.{2,}/, '').replace(/\.+$/, '').trim()
+    name = name.removeUnwantedFilenameChars()
     if (type === 'FOLDER') {
       formData.set('path', `${currentPath}${name}`)
     } else {
@@ -91,7 +91,7 @@
 </ModalTemplate>
 
 <style lang="scss">
-  @use '../../assets/scss/modals.scss';
+  @use '../../../static/scss/modals.scss';
 
   p.label {
     margin-top: 15px;

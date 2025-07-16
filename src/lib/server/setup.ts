@@ -71,11 +71,11 @@ export async function initDatabase() {
     res = await client.query(`SELECT 1 FROM "Environment" WHERE id = $1`, [1])
     if (res.rowCount === 0) {
       await client.query(
-        `INSERT INTO "Environment" ("id", "language", "name", "theme", "version", "updatedAt") VALUES ($1, 'en', 'EML', 'default', $2, NOW())`,
-        [1, pkg.version]
+        `INSERT INTO "Environment" ("id", "language", "name", "theme", "updatedAt") VALUES ($1, 'en', 'EML', 'default', NOW())`,
+        [1]
       )
     } else {
-      await client.query(`UPDATE "Environment" SET "version" = $1, "updatedAt" = NOW() WHERE "id" = $2`, [pkg.version, 1])
+      await client.query(`UPDATE "Environment" SET "updatedAt" = NOW() WHERE "id" = $1`, [1])
     }
   } catch (err) {
     console.error('Error initializing Environment table:', err)

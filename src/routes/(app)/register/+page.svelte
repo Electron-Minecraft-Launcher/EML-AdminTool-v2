@@ -23,7 +23,7 @@
   let disabled = $derived.by(() => {
     return !username || !password || password !== passwordCfr || pin.some((p) => p === '')
   })
-  
+
   /**
    * @link From https://codepen.io/oxcakmak/pen/QWeBKWj
    */
@@ -88,7 +88,7 @@
     pin = [
       (document.getElementById('pin-1') as HTMLInputElement)?.value || '',
       (document.getElementById('pin-2') as HTMLInputElement)?.value || '',
-      (document.getElementById('pin-3') as HTMLInputElement)?.value || '',
+      (document.getElementById('pin-3') as HTMLInputElement)?.value || ''
     ]
   }
 
@@ -143,8 +143,12 @@
   </p>
 </form>
 
+<div class="footer-container">
+  <Footer />
+</div>
+
 <style lang="scss">
-  @use '../../../../assets/scss/login.scss';
+  @use '../../../../static/scss/login.scss';
 
   div.pin-inputs {
     display: flex;
