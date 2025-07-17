@@ -57,6 +57,10 @@ export default {
     [NotificationCode.REGISTER_PIN_INVALID]: `PIN must be exactly 3 characters long.`,
     [NotificationCode.REGISTER_USERNAME_EXISTS]: `Username already exists.`,
 
+    [NotificationCode.FILESUPDATER_VERSIONS_MISMATCH]: `Versions mismatch.`,
+    [NotificationCode.FILESUPDATER_MINECRAFT_VERSION_NOT_FOUND]: `Minecraft version not found.`,
+    [NotificationCode.FILESUPDATER_FORGE_VERSION_NOT_FOUND]: `Forge version not found.`,
+
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,

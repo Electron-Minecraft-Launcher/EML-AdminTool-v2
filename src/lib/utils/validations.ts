@@ -1,5 +1,6 @@
 import { z } from 'zod/v4'
 import { NotificationCode } from './notifications'
+import { LoaderType } from '@prisma/client'
 
 export const setupSchema = z.object({
   language: z.string().length(2, NotificationCode.SETUP_INVALID_LANGUAGE),
@@ -111,4 +112,10 @@ export const editFileSchema = z.object({
   path: z.string(),
   name: z.string().min(1, NotificationCode.INVALID_INPUT).max(255, NotificationCode.INVALID_INPUT),
   content: z.string()
+})
+
+export const updateLoaderSchema = z.object({
+  type: z.enum(LoaderType),
+  minecraftVersion: z.string(),
+  loaderVersion: z.string()
 })

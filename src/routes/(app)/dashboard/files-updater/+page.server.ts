@@ -1,12 +1,12 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
-import { createFileSchema, editFileSchema, renameFileSchema } from '$lib/utils/validations'
+import { createFileSchema, editFileSchema, renameFileSchema, updateLoaderSchema } from '$lib/utils/validations'
 import { createFile, editFile, getFiles, renameFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
 import { type Loader, LoaderType, LoaderFormat } from '@prisma/client'
-import type { LoaderVersion } from '$lib/utils/types'
+import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
 
 export const load = (async (event) => {
   const user = event.locals.user
@@ -157,67 +157,51 @@ export const actions: Actions = {
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
     }
+  },
+
+  updateLoader: async (event) => {
+    const user = event.locals.user
+
+    if (user?.p_filesUpdater !== 2) {
+      throw error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    const form = await event.request.formData()
+    const raw = {
+      type: form.get('type'),
+      minecraftVersion: form.get('minecraft-version'),
+      loaderVersion: form.get('loader-version')
+    }
+
+    const result = updateLoaderSchema.safeParse(raw)
+    if (!result.success) {
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+    }
+
+    const { type, minecraftVersion, loaderVersion } = result.data
+
+    try {
+      let file: any = null
+      let format: LoaderFormat = LoaderFormat.CLIENT
+      if (type === LoaderType.VANILLA) {
+        checkVanillaLoader(minecraftVersion, loaderVersion)
+      } else if (type === LoaderType.FORGE) {
+        checkForgeLoader(minecraftVersion, loaderVersion)
+        const res = await getForgeFile(loaderVersion)
+        file = res.file
+        format = res.format
+      }
+
+      const loader = { type, minecraftVersion, loaderVersion, format, file }
+
+      await updateLoader(loader)
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
   }
-}
-
-async function getVanillaVersions() {
-  let response
-  try {
-    response = await (await fetch('https://piston-meta.mojang.com/mc/game/version_manifest.json')).json()
-  } catch (err) {
-    console.error('Failed to fetch Minecraft versions:', err)
-    throw new ServerError('Failed to fetch Minecraft versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
-  }
-
-  let versions = [
-    { minecraftVersion: 'Latest', loaderVersion: 'latest_release', type: ['release'] },
-    { minecraftVersion: 'Latest', loaderVersion: 'latest_snapshot', type: ['snapshot'] }
-  ]
-
-  let release = 'Latest'
-  for (const version of response.versions) {
-    if (version.type === 'release') release = version.id.split('.').slice(0, 2).join('.')
-    versions.push({
-      minecraftVersion: release,
-      loaderVersion: version.id,
-      type: [version.type]
-    })
-  }
-
-  return versions as LoaderVersion[]
-}
-
-async function getForgeVersions() {
-  let res1, res2
-  try {
-    res1 = await (await fetch('https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json')).json()
-    res2 = await (await fetch('https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json')).json()
-  } catch (err) {
-    console.error('Failed to fetch Forge versions:', err)
-    throw new ServerError('Failed to fetch Forge versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
-  }
-
-  let versions = []
-  for (const [version, data] of Object.entries(res1)) {
-    versions.push(
-      ...(data as any).map((v: any) => ({
-        minecraftVersion: version.split('.').slice(0, 2).join('.'),
-        loaderVersion: v,
-        type: ['default' as const]
-      }))
-    )
-  }
-
-  for (const [version, data] of Object.entries(res2.promos)) {
-    const minecraftVersion = version.split('-')[0]
-    const type = version.split('-')[1] as 'recommended' | 'latest'
-    const i = versions.findIndex((v) => v.loaderVersion.startsWith(`${minecraftVersion}-${data}`))
-    versions[i].type =
-      (versions[i].type.includes('recommended') || versions[i].type.includes('latest')) && !versions[i].type.includes(type)
-        ? ['latest', 'recommended']
-        : [type]
-  }
-
-  return versions.reverse() as LoaderVersion[]
 }
 
