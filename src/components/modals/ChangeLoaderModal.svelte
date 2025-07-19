@@ -88,7 +88,7 @@
   <form method="POST" action="?/changeLoader" use:enhance={enhanceForm}>
     <h2>Change loader</h2>
 
-    <div class="flex-container">
+    <div class="list-container">
       <div class="list loader-list">
         <p class="label" style="margin-top: 0; position: sticky; top: 0; background: white">Loaders</p>
         <button class="list" type="button" class:active={type === LoaderType.VANILLA} onclick={() => switchType(LoaderType.VANILLA)}>Vanilla</button>
@@ -182,29 +182,21 @@
   @use '../../../static/scss/modals.scss';
   @use '../../../static/scss/list.scss';
 
-  div.flex-container {
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-  }
-
   div.list {
     min-height: calc(100vh - 175px - 30px - 35px - 71px) !important;
     max-height: calc(100vh - 175px - 30px - 35px - 71px) !important;
     overflow-y: auto;
 
     &.loader-list {
-      width: 120px;
+      flex: 0.4 !important;
     }
 
     &.version-list {
-      width: 150px;
+      flex: 0.4 !important;
     }
 
     &.content-list {
-      flex: 1;
-      min-width: 300px;
-      max-width: 500px;
+      flex: 1 !important;
 
       h4 {
         margin-top: 0;
@@ -217,7 +209,7 @@
 
     button {
       display: block;
-      margin-top: 0;
+      // margin-top: 0;
       border-bottom: none;
       color: #1e1e1e;
       position: relative;
@@ -226,7 +218,7 @@
       text-overflow: ellipsis;
       font-family: 'Poppins';
       background: none;
-      width: 100%;
+      width: 100% !important;
       line-height: 15px;
       text-align: left;
 

@@ -2,7 +2,7 @@ import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
 import { createFileSchema, editFileSchema, renameFileSchema, updateLoaderSchema } from '$lib/utils/validations'
-import { createFile, editFile, getFiles, renameFile } from '$lib/server/files'
+import { cacheFiles, createFile, editFile, getFiles, renameFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
 import { type Loader, LoaderType, LoaderFormat } from '@prisma/client'
@@ -75,6 +75,7 @@ export const actions: Actions = {
 
     try {
       await renameFile('files-updater', path, name, newName)
+      await cacheFiles(domain, 'files-updater')
 
       const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
@@ -110,6 +111,7 @@ export const actions: Actions = {
 
     try {
       await createFile('files-updater', path, name)
+      await cacheFiles(domain, 'files-updater')
 
       const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
@@ -146,6 +148,7 @@ export const actions: Actions = {
 
     try {
       await editFile('files-updater', path, name, content)
+      await cacheFiles(domain, 'files-updater')
 
       const files = await getFiles(domain, 'files-updater')
       return { success: true, files }

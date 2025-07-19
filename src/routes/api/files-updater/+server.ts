@@ -1,4 +1,4 @@
-import { deleteFile, getCachedFiles, uploadFile } from '$lib/server/files'
+import { cacheFiles, deleteFile, getCachedFiles, uploadFile } from '$lib/server/files'
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
@@ -12,6 +12,7 @@ export const GET: RequestHandler = async (event) => {
 }
 
 export const POST: RequestHandler = async (event) => {
+  const domain = event.url.origin
   const user = event.locals.user
 
   if (!user?.p_filesUpdater) {
@@ -40,6 +41,7 @@ export const POST: RequestHandler = async (event) => {
 
     try {
       await uploadFile('files-updater', path, file)
+      await cacheFiles(domain, 'files-updater')
     } catch (err) {
       console.error('Error uploading file:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
@@ -50,6 +52,7 @@ export const POST: RequestHandler = async (event) => {
 }
 
 export const DELETE: RequestHandler = async (event) => {
+  const domain = event.url.origin
   const user = event.locals.user
 
   if (!user?.p_filesUpdater) {
@@ -72,6 +75,7 @@ export const DELETE: RequestHandler = async (event) => {
   for (const path of paths) {
     try {
       await deleteFile('files-updater', path)
+      await cacheFiles(domain, 'files-updater')
     } catch (err) {
       console.error('Error deleting file:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
@@ -80,4 +84,6 @@ export const DELETE: RequestHandler = async (event) => {
 
   return GET(event)
 }
+
+
 
