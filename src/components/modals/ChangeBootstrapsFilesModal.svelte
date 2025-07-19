@@ -1,8 +1,8 @@
 <script lang="ts">
   import { l } from '$lib/stores/language'
-  import type { Bootstrap } from '@prisma/client'
   import ModalTemplate from './__ModalTemplate.svelte'
   import type { File as File_ } from '$lib/utils/types'
+  import { SemVer } from 'semver'
 
   interface Props {
     show: boolean
@@ -10,6 +10,8 @@
   }
 
   let { show = $bindable(), bootstraps }: Props = $props()
+
+  const versionInfo = `The version must follow the format: x.y.z, x.y.z-beta.x, or x.y.z-alpha.x. The new version must be higher than the current version (${bootstraps.version}).`
 
   let version = $state(bootstraps.version ?? '')
   let win = $state('')
@@ -95,7 +97,7 @@
   <form onsubmit={submit}>
     <h2>Change bootstraps and version</h2>
 
-    <label for="version" style="margin-top: 0">Version</label>
+    <label for="version" style="margin-top: 0">New version&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={versionInfo} style="cursor: help"></i></label>
     <input type="text" id="version" placeholder="1.0.2, 2.4.0-beta.3" bind:value={version} />
 
     <p class="label" style="margin-top: 20px"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>

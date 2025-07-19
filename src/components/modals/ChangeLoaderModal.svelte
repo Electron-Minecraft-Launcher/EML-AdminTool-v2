@@ -116,7 +116,7 @@
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('release')) as version}
             {#if version.loaderVersion === 'latest_release'}
               <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
-                Latest Minecraft release&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={latestInfo} style="cursor: help"> </i>
+                Latest Minecraft release&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={latestInfo} style="cursor: help"></i>
               </button>
             {:else}
               <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
@@ -129,7 +129,7 @@
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('snapshot')) as version}
             {#if version.loaderVersion === 'latest_snapshot'}
               <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
-                Latest Minecraft snapshot&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={latestInfo} style="cursor: help"> </i>
+                Latest Minecraft snapshot&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={latestInfo} style="cursor: help"></i>
               </button>
             {:else}
               <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
@@ -209,7 +209,6 @@
 
     button {
       display: block;
-      // margin-top: 0;
       border-bottom: none;
       color: #1e1e1e;
       position: relative;

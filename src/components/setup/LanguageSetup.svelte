@@ -1,10 +1,5 @@
 <script lang="ts">
   import LanguageModal from '../modals/LanguageModal.svelte'
-  import enFlag from '../../../static/images/flags/en.png'
-  import frFlag from '../../../static/images/flags/fr.png'
-  import deFlag from '../../../static/images/flags/de.png'
-  import itFlag from '../../../static/images/flags/it.png'
-  import daFlag from '../../../static/images/flags/da.png'
   import { currentLanguage, l, type LanguageCode } from '$lib/stores/language'
 
   interface Props {
@@ -37,31 +32,31 @@
     <div class="language">
       <button type="button" class="secondary" class:selected={setupData.language === 'en'} id="en-button" onclick={() => switchLanguage('en')}>
         <p>
-          <img src={enFlag} alt="English flag" />
+          <img src="/images/flags/en.png" alt="English flag" />
           English
         </p>
       </button>
       <button type="button" class="secondary" class:selected={setupData.language === 'fr'} id="fr-button" onclick={() => switchLanguage('fr')}>
         <p>
-          <img src={frFlag} alt="French flag" />
+          <img src="/images/flags/fr.png" alt="French flag" />
           Français
         </p>
       </button>
       <button type="button" class="secondary" class:selected={setupData.language === 'de'} id="de-button" onclick={() => switchLanguage('de')}>
         <p>
-          <img src={deFlag} alt="German flag" />
+          <img src="/images/flags/de.png" alt="German flag" />
           Deutsch
         </p>
       </button>
       <button type="button" class="secondary" class:selected={setupData.language === 'it'} id="it-button" onclick={() => switchLanguage('it')}>
         <p>
-          <img src={itFlag} alt="Italian flag" />
+          <img src="/images/flags/it.png" alt="Italian flag" />
           Italiano
         </p>
       </button>
       <button type="button" class="secondary" class:selected={setupData.language === 'da'} id="da-button" onclick={() => switchLanguage('da')}>
         <p>
-          <img src={daFlag} alt="Danish flag" />
+          <img src="/images/flags/da.png" alt="Danish flag" />
           Dansk
         </p>
       </button>

@@ -1,12 +1,7 @@
 <script lang="ts">
-  import { currentLanguage, l, type LanguageCode } from '$lib/stores/language'
+  import { l } from '$lib/stores/language'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import ModalTemplate from './__ModalTemplate.svelte'
-  import enFlag from '../../../static/images/flags/en.png'
-  import frFlag from '../../../static/images/flags/fr.png'
-  import deFlag from '../../../static/images/flags/de.png'
-  import itFlag from '../../../static/images/flags/it.png'
-  import daFlag from '../../../static/images/flags/da.png'
   import getEnv from '$lib/utils/env'
   import { enhance } from '$app/forms'
   import type { SubmitFunction } from '@sveltejs/kit'
@@ -65,31 +60,31 @@
     <div class="language">
       <button type="button" class="secondary" class:selected={language === 'en'} id="en-button" onclick={() => language = 'en'}>
         <p>
-          <img src={enFlag} alt="English flag" />
+          <img src="/images/flags/en.png" alt="English flag" />
           English
         </p>
       </button>
       <button type="button" class="secondary" class:selected={language === 'fr'} id="fr-button" onclick={() => language = 'fr'}>
         <p>
-          <img src={frFlag} alt="French flag" />
+          <img src="/images/flags/fr.png" alt="French flag" />
           Français
         </p>
       </button>
       <button type="button" class="secondary" class:selected={language === 'de'} id="de-button" onclick={() => language = 'de'}>
         <p>
-          <img src={deFlag} alt="German flag" />
+          <img src="/images/flags/de.png" alt="German flag" />
           Deutsch
         </p>
       </button>
       <button type="button" class="secondary" class:selected={language === 'it'} id="it-button" onclick={() => language = 'it'}>
         <p>
-          <img src={itFlag} alt="Italian flag" />
+          <img src="/images/flags/it.png" alt="Italian flag" />
           Italiano
         </p>
       </button>
       <button type="button" class="secondary" class:selected={language === 'da'} id="da-button" onclick={() => language = 'da'}>
         <p>
-          <img src={daFlag} alt="Danish flag" />
+          <img src="/images/flags/da.png" alt="Danish flag" />
           Dansk
         </p>
       </button>
