@@ -74,9 +74,9 @@ export const actions: Actions = {
     const { path, name, newName } = result.data
 
     try {
-      renameFile('files-updater', path, name, newName)
+      await renameFile('files-updater', path, name, newName)
 
-      const files = getFiles(domain, 'files-updater')
+      const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
@@ -109,9 +109,9 @@ export const actions: Actions = {
     const { path, name } = result.data
 
     try {
-      createFile('files-updater', path, name)
+      await createFile('files-updater', path, name)
 
-      const files = getFiles(domain, 'files-updater')
+      const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
@@ -145,10 +145,9 @@ export const actions: Actions = {
     const { path, name, content } = result.data
 
     try {
-      console.log(path, name)
-      editFile('files-updater', path, name, content)
+      await editFile('files-updater', path, name, content)
 
-      const files = getFiles(domain, 'files-updater')
+      const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
@@ -159,7 +158,7 @@ export const actions: Actions = {
     }
   },
 
-  updateLoader: async (event) => {
+  changeLoader: async (event) => {
     const user = event.locals.user
 
     if (user?.p_filesUpdater !== 2) {

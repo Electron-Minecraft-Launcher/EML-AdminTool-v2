@@ -20,9 +20,9 @@ export const load = (async (event) => {
     return redirect(303, '/dashboard')
   }
 
-  let environment, users, vps, update
-
   try {
+    let environment, users, vps, update
+
     try {
       environment = (await db.environment.findFirst())!
     } catch (err) {
@@ -267,3 +267,4 @@ function getStatsPermissions(result: any) {
   if (result.data.p_stats_1) return 1
   return 0
 }
+

@@ -73,21 +73,21 @@ model Log {
 
 model Loader {
   id               String       @id @default(cuid(2))
-  type             LoaderType?
-  minecraftVersion String?
-  loaderVersion    String?
-  format           LoaderFormat?
+  type             LoaderType
+  minecraftVersion String
+  loaderVersion    String
+  format           LoaderFormat
   file             Json?
   updatedAt        DateTime     @updatedAt
 }
 
 model Bootstrap {
-  id         String   @id @default(cuid(2))
-  winFileUrl String
-  macFileUrl String
-  linFileUrl String
-  version    String
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(cuid(2))
+  winFile   Json
+  macFile   Json
+  linFile   Json
+  version   String
+  updatedAt DateTime @updatedAt
 }
 
 model Maintenance {

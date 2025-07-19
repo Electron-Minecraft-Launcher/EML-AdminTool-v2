@@ -28,25 +28,25 @@ export async function resetDatabase() {
   }
 }
 
-export function deleteAllFiles() {
+export async function deleteAllFiles() {
   console.log('\n---------------- DELETING FILES ----------------\n')
   try {
-    deleteFile('files-updater', '')
+    await deleteFile('files-updater', '')
   } catch (err) {
     console.error('Failed to delete files in "files-updater":', err)
   }
   try {
-    deleteFile('bootstraps', '')
+    await deleteFile('bootstraps', '')
   } catch (err) {
     console.error('Failed to delete files in "bootstraps":', err)
   }
   try {
-    deleteFile('backgrounds', '')
+    await deleteFile('backgrounds', '')
   } catch (err) {
     console.error('Failed to delete files in "backgrounds":', err)
   }
   try {
-    deleteFile('images', '')
+    await deleteFile('images', '')
   } catch (err) {
     console.error('Failed to delete files in "images":', err)
   }

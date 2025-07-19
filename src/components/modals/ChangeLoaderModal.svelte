@@ -85,7 +85,7 @@
     <LoadingSplash transparent />
   {/if}
 
-  <form method="POST" action="?/updateLoader" use:enhance={enhanceForm}>
+  <form method="POST" action="?/changeLoader" use:enhance={enhanceForm}>
     <h2>Change loader</h2>
 
     <div class="flex-container">

@@ -15,7 +15,7 @@ export const POST: RequestHandler = async (event) => {
   try {
     markAsUnconfigured()
     await resetDatabase()
-    deleteAllFiles()
+    await deleteAllFiles()
   } catch (err) {
     if (err instanceof BusinessError) throw fail(500, { failure: err.message })
     if (err instanceof ServerError) throw error(500, { message: err.message })

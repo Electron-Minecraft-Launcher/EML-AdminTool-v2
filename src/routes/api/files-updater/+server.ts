@@ -1,5 +1,5 @@
-import { deleteFile, getFiles, uploadFile } from '$lib/server/files'
-import { error, json } from '@sveltejs/kit'
+import { deleteFile, getCachedFiles, uploadFile } from '$lib/server/files'
+import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
 import path_ from 'path'
@@ -7,7 +7,8 @@ import { deleteFilesSchema, uploadFilesSchema } from '$lib/utils/validations'
 
 export const GET: RequestHandler = async (event) => {
   const domain = event.url.origin
-  return json({ success: true, files: getFiles(domain, 'files-updater') })
+  const cache = await getCachedFiles(domain, 'files-updater')
+  return new Response(`{"success": true, "files": ${cache}}`, { headers: { 'Content-Type': 'application/json' } })
 }
 
 export const POST: RequestHandler = async (event) => {
@@ -70,7 +71,7 @@ export const DELETE: RequestHandler = async (event) => {
 
   for (const path of paths) {
     try {
-      deleteFile('files-updater', path)
+      await deleteFile('files-updater', path)
     } catch (err) {
       console.error('Error deleting file:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
@@ -79,3 +80,4 @@ export const DELETE: RequestHandler = async (event) => {
 
   return GET(event)
 }
+
