@@ -61,6 +61,9 @@ export default {
     [NotificationCode.FILESUPDATER_MINECRAFT_VERSION_NOT_FOUND]: `Minecraft version not found.`,
     [NotificationCode.FILESUPDATER_FORGE_VERSION_NOT_FOUND]: `Forge version not found.`,
 
+    [NotificationCode.BOOTSTRAPS_MALFORMED_VERSION]: `Bootstraps version is malformed. It must be a valid semantic version (SemVer).`,
+    [NotificationCode.BOOTSTRAPS_INVALID_VERSION]: `Bootstraps version is invalid. It must be higher than the current version.`,
+
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,

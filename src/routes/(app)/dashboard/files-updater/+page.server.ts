@@ -1,7 +1,7 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
-import { createFileSchema, editFileSchema, renameFileSchema, updateLoaderSchema } from '$lib/utils/validations'
+import { createFileSchema, editFileSchema, renameFileSchema, changeLoaderSchema } from '$lib/utils/validations'
 import { cacheFiles, createFile, editFile, getFiles, renameFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
@@ -175,7 +175,7 @@ export const actions: Actions = {
       loaderVersion: form.get('loader-version')
     }
 
-    const result = updateLoaderSchema.safeParse(raw)
+    const result = changeLoaderSchema.safeParse(raw)
     if (!result.success) {
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }

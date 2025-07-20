@@ -9,6 +9,7 @@ import { createReadStream } from 'fs'
 const root = path_.join(process.cwd())
 
 export async function getFiles(domain: string, dir: Dir) {
+  await fs.mkdir(path_.join(root, 'files', dir), { recursive: true })
   const filesArray: File_[] = []
   await browse(filesArray, dir, '', domain)
   return filesArray

@@ -2,7 +2,14 @@
   import { l } from '$lib/stores/language'
   import ModalTemplate from './__ModalTemplate.svelte'
   import type { File as File_ } from '$lib/utils/types'
-  import { SemVer } from 'semver'
+  import getEnv from '$lib/utils/env'
+  import semver from 'semver'
+  import { enhance } from '$app/forms'
+  import type { SubmitFunction } from '@sveltejs/kit'
+  import { applyAction } from '$app/forms'
+  import { addNotification } from '$lib/stores/notifications'
+  import { NotificationCode } from '$lib/utils/notifications'
+  import LoadingSplash from '../layouts/LoadingSplash.svelte'
 
   interface Props {
     show: boolean
@@ -11,94 +18,109 @@
 
   let { show = $bindable(), bootstraps }: Props = $props()
 
+  const env = getEnv()
+
   const versionInfo = `The version must follow the format: x.y.z, x.y.z-beta.x, or x.y.z-alpha.x. The new version must be higher than the current version (${bootstraps.version}).`
+
+  let showLoader = $state(false)
 
   let version = $state(bootstraps.version ?? '')
   let win = $state('')
   let mac = $state('')
   let lin = $state('')
-  let files: File[] = []
+  let winFile: File | null = $state(null)
+  let macFile: File | null = $state(null)
+  let linFile: File | null = $state(null)
 
-  let winInput: HTMLInputElement | undefined = $state()
-  let macInput: HTMLInputElement | undefined = $state()
-  let linInput: HTMLInputElement | undefined = $state()
+  let disabled: boolean = $derived(!semver.valid(version) || !winFile || !macFile || !linFile)
 
-  let disabled: boolean = $derived(
-    !version.match(/(\d\.\d\.\d)(-[a-z]*(\.\d)?)?/gi) ||
-      winInput?.files?.length === 0 ||
-      macInput?.files?.length === 0 ||
-      linInput?.files?.length === 0
-  )
+  const accept = {
+    win: '.exe,.msi,.msix,.appx,.appxbundle,.appinstaller',
+    mac: '.dmg,.app,.pkg,.zip,.tar.gz',
+    lin: '.deb,.rpm,.freebsd,.AppImage,.tar.gz,.7z,.zip,.sh,.snap'
+  }
 
   async function uploadFile(platform: 'win' | 'mac' | 'lin') {
-    let current: HTMLInputElement
-    if (platform === 'win') current = winInput!
-    else if (platform === 'mac') current = macInput!
-    else current = linInput!
-    current.click()
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = accept[platform]
 
-    await new Promise((resolve) => {
-      current.addEventListener('change', resolve, { once: true })
-    })
+    input.onchange = () => {
+      const file = input.files?.[0]
+      if (!file) return
 
-    if (!current.files) return
+      switch (platform) {
+        case 'win':
+          winFile = file
+          win = file.name
+          break
+        case 'mac':
+          macFile = file
+          mac = file.name
+          break
+        case 'lin':
+          linFile = file
+          lin = file.name
+          break
+        default:
+          console.warn('Unknown platform:', platform)
+      }
+    }
 
-    files.push(current.files!.item(0)!)
-    if (platform === 'win') win = current!.files!.item(0)!.name
-    if (platform === 'mac') mac = current!.files!.item(0)!.name
-    if (platform === 'lin') lin = current!.files!.item(0)!.name
+    input.click()
   }
 
   function reset(platform: 'win' | 'mac' | 'lin') {
-    let current = document.querySelector(`input#${platform}-upload`) as HTMLInputElement
-    current.value = ''
-    current.files = null
-    if (platform === 'win') win = ''
-    if (platform === 'mac') mac = ''
-    if (platform === 'lin') lin = ''
+    if (platform === 'win') {
+      win = ''
+      winFile = null
+    }
+    if (platform === 'mac') {
+      mac = ''
+      macFile = null
+    }
+    if (platform === 'lin') {
+      lin = ''
+      linFile = null
+    }
   }
 
-  async function submit(e: SubmitEvent) {
-    // e.preventDefault()
-    // if (version === '') return
-    // if (
-    //   version === data.bootstraps.version &&
-    //   !confirm('You did not change the version. Are you sure you want to continue? The Launchers will not be updated.')
-    // )
-    //   return
-    // let bootstrapsRes: BootstrapsRes = data.bootstraps
-    // if (win && win !== '' && files.find((file) => file.name === win)) {
-    //   ;(await apiBootstrapsService.uploadBootstrap(version, 'win', files.find((file) => file.name === win)!)).subscribe({
-    //     next: (res) => {
-    //       bootstrapsRes = res.body.data!
-    //     }
-    //   })
-    // }
-    // if (mac && mac !== '' && files.find((file) => file.name === mac)) {
-    //   ;(await apiBootstrapsService.uploadBootstrap(version, 'mac', files.find((file) => file.name === mac)!)).subscribe({
-    //     next: (res) => {
-    //       bootstrapsRes = res.body.data!
-    //     }
-    //   })
-    // }
-    // if (lin && lin !== '' && files.find((file) => file.name === lin)) {
-    //   ;(await apiBootstrapsService.uploadBootstrap(version, 'lin', files.find((file) => file.name === lin)!)).subscribe({
-    //     next: (res) => {
-    //       bootstrapsRes = res.body.data!
-    //     }
-    //   })
-    // }
-    // data.bootstraps = bootstrapsRes
-    // show = false
+  const enhanceForm: SubmitFunction = ({ formData }) => {
+    showLoader = true
+    formData.set('new-version', version)
+    formData.set('name', env.name)
+    formData.set('win-file', winFile ?? '')
+    formData.set('mac-file', macFile ?? '')
+    formData.set('lin-file', linFile ?? '')
+
+    return async ({ result, update }) => {
+      update({ reset: false })
+      showLoader = false
+
+      if (result.type === 'failure') {
+        const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+      } else if (result.type === 'success') {
+        show = false
+      }
+
+      await applyAction(result)
+    }
   }
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <form onsubmit={submit}>
+  {#if showLoader}
+    <LoadingSplash transparent />
+  {/if}
+
+  <form method="POST" action="?/changeBootstraps" use:enhance={enhanceForm} enctype="multipart/form-data">
     <h2>Change bootstraps and version</h2>
 
-    <label for="version" style="margin-top: 0">New version&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={versionInfo} style="cursor: help"></i></label>
-    <input type="text" id="version" placeholder="1.0.2, 2.4.0-beta.3" bind:value={version} />
+    <label for="version" style="margin-top: 0">
+      New version&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={versionInfo} style="cursor: help"></i>
+    </label>
+    <input type="text" id="version" bind:value={version} />
 
     <p class="label" style="margin-top: 20px"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
     {#if !win || win === ''}
@@ -107,9 +129,9 @@
       </button>
     {:else}
       <p class="no-link">{win}</p>
-      <button type="button" class="remove" onclick={() => reset('win')} aria-label="Remove Windows Bootstrap"
-        ><i class="fa-solid fa-circle-xmark"></i></button
-      >
+      <button type="button" class="remove" onclick={() => reset('win')} aria-label="Remove Windows Bootstrap">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </button>
     {/if}
 
     <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
@@ -119,9 +141,9 @@
       </button>
     {:else}
       <p class="no-link">{mac}</p>
-      <button type="button" class="remove" onclick={() => reset('mac')} aria-label="Remove macOS Bootstrap"
-        ><i class="fa-solid fa-circle-xmark"></i></button
-      >
+      <button type="button" class="remove" onclick={() => reset('mac')} aria-label="Remove macOS Bootstrap">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </button>
     {/if}
 
     <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
@@ -131,19 +153,18 @@
       </button>
     {:else}
       <p class="no-link">{lin}</p>
-      <button type="button" class="remove" onclick={() => reset('lin')} aria-label="Remove Linux Bootstrap"
-        ><i class="fa-solid fa-circle-xmark"></i></button
-      >
+      <button type="button" class="remove" onclick={() => reset('lin')} aria-label="Remove Linux Bootstrap">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </button>
     {/if}
+
+    <!-- Just for sending form in multipart -->
+    <!-- <input type="file" name="file" id="file" hidden style="display: none" />  -->
 
     <div class="actions">
       <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
       <button type="submit" class="primary" {disabled}>{$l.main.save}</button>
     </div>
-
-    <input type="file" id="win-upload" accept=".exe,.msi,.msix,.appx,.appxbundle,.appinstaller" style="display: none" bind:this={winInput} />
-    <input type="file" id="mac-upload" accept=".dmg,.app,.pkg,.zip,.tar.gz" style="display: none" bind:this={macInput} />
-    <input type="file" id="lin-upload" accept=".deb,.rpm,.freebsd,.AppImage,.tar.gz,.7z,.zip,.sh,.snap" style="display: none" bind:this={linInput} />
   </form>
 </ModalTemplate>
 

@@ -114,8 +114,20 @@ export const editFileSchema = z.object({
   content: z.string()
 })
 
-export const updateLoaderSchema = z.object({
+export const changeLoaderSchema = z.object({
   type: z.enum(LoaderType),
   minecraftVersion: z.string(),
   loaderVersion: z.string()
+})
+
+export const changeBootstrapsSchema = z.object({
+  newVersion: z.string(),
+  name: z
+    .string()
+    .transform((val) => val.trim())
+    .refine((val) => val.length >= 2, { message: NotificationCode.EMLAT_NAME_TOO_SHORT })
+    .refine((val) => val.length <= 64, { message: NotificationCode.EMLAT_NAME_TOO_LONG }),
+  winFile: z.instanceof(File),
+  macFile: z.instanceof(File),
+  linFile: z.instanceof(File)
 })

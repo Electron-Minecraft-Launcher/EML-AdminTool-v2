@@ -37,7 +37,6 @@ export const POST: RequestHandler = async (event) => {
     if (!(file instanceof File)) continue
 
     const path = path_.join(currentPath, path_.dirname(file.webkitRelativePath ?? file.name))
-    console.log(file.webkitRelativePath, file.name)
 
     try {
       await uploadFile('files-updater', path, file)

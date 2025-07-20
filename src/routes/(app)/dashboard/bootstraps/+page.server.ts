@@ -1,9 +1,13 @@
-import { error, redirect } from '@sveltejs/kit'
+import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
-import { ServerError } from '$lib/utils/errors'
+import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import type { File as File_ } from '$lib/utils/types'
+import { changeBootstrapsSchema } from '$lib/utils/validations'
+import { getBootstraps, updateBootstraps } from '$lib/server/bootstraps'
+import semver from 'semver'
+import { deleteFile, uploadFile } from '$lib/server/files'
 
 export const load = (async (event) => {
   const user = event.locals.user
@@ -16,7 +20,12 @@ export const load = (async (event) => {
     let bootstraps
 
     try {
-      bootstraps = await db.bootstrap.findUnique({ where: { id: '1' } }) as { winFile: File_ | null; macFile: File_ | null; linFile: File_ | null; version: string }
+      bootstraps = (await db.bootstrap.findUnique({ where: { id: '1' } })) as {
+        winFile: File_ | null
+        macFile: File_ | null
+        linFile: File_ | null
+        version: string
+      }
     } catch (err) {
       console.error('Failed to load bootstraps:', err)
       throw new ServerError('Failed to load bootstraps', err, NotificationCode.DATABASE_ERROR, 500)
@@ -27,7 +36,7 @@ export const load = (async (event) => {
         winFile: null as null | File_,
         macFile: null as null | File_,
         linFile: null as null | File_,
-        version: '',
+        version: ''
       }
     }
 
@@ -40,5 +49,70 @@ export const load = (async (event) => {
   }
 }) satisfies PageServerLoad
 
+export const actions: Actions = {
+  changeBootstraps: async (event) => {
+    const user = event.locals.user
 
+    if (!user?.p_bootstraps) {
+      return { error: NotificationCode.UNAUTHORIZED }
+    }
+
+    const formData = await event.request.formData()
+    const raw = {
+      newVersion: formData.get('new-version'),
+      name: formData.get('name'),
+      winFile: formData.get('win-file'),
+      macFile: formData.get('mac-file'),
+      linFile: formData.get('lin-file')
+    }
+
+    const result = changeBootstrapsSchema.safeParse(raw)
+    if (!result.success) {
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+    }
+
+    const { newVersion, name, winFile, macFile, linFile } = result.data
+
+    try {
+      if (!semver.valid(newVersion)) {
+        console.warn('Invalid version:', newVersion)
+        throw new BusinessError('Invalid version format', NotificationCode.BOOTSTRAPS_MALFORMED_VERSION, 400)
+      }
+
+      const currentBootstraps = await getBootstraps()
+      if (currentBootstraps && !semver.gt(newVersion, currentBootstraps.version)) {
+        console.warn('Invalid bootstraps version:', newVersion, currentBootstraps.version)
+        throw new BusinessError('Invalid bootstraps version', NotificationCode.BOOTSTRAPS_INVALID_VERSION, 400)
+      }
+
+      const winExt = winFile.name.split('.').pop() ?? ''
+      const macExt = macFile.name.split('.').pop() ?? ''
+      const linExt = linFile.name.split('.').pop() ?? ''
+
+      const newWinFile = new File([winFile], `${name.toLowerCase()}-launcher_win-${newVersion}.${winExt}`, { type: winFile.type })
+      const newMacFile = new File([macFile], `${name.toLowerCase()}-launcher_mac-${newVersion}.${macExt}`, { type: macFile.type })
+      const newLinFile = new File([linFile], `${name.toLowerCase()}-launcher_lin-${newVersion}.${linExt}`, { type: linFile.type })
+
+      try {
+        await deleteFile('bootstraps', '')
+      } catch (err) {
+        console.warn('Failed to delete existing bootstrap files (maybe the bootstraps folder is already deleted):', err)
+      }
+
+      await uploadFile('bootstraps', 'win', newWinFile)
+      await uploadFile('bootstraps', 'mac', newMacFile)
+      await uploadFile('bootstraps', 'lin', newLinFile)
+
+      await updateBootstraps(newVersion, currentBootstraps)
+
+      return { success: true }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  }
+}
 
