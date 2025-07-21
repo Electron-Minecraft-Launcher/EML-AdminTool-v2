@@ -3,57 +3,62 @@ import { NotificationCode } from '$lib/utils/notifications'
 import type { LoaderVersion } from '$lib/utils/types'
 import { LoaderFormat, LoaderType, type Loader } from '@prisma/client'
 import { db } from './db'
+import { getOrSet } from './cache'
 
 export async function getVanillaVersions() {
-  let response = await fetchVanillaVersions()
+  return getOrSet('vanilla-versions', async () => {
+    let response = await fetchVanillaVersions()
 
-  let versions = [
-    { minecraftVersion: 'Latest', loaderVersion: 'latest_release', type: ['release'] },
-    { minecraftVersion: 'Latest', loaderVersion: 'latest_snapshot', type: ['snapshot'] }
-  ]
+    let versions = [
+      { minecraftVersion: 'Latest', loaderVersion: 'latest_release', type: ['release'] },
+      { minecraftVersion: 'Latest', loaderVersion: 'latest_snapshot', type: ['snapshot'] }
+    ]
 
-  let release = 'Latest'
-  for (const version of response.versions) {
-    if (version.id.startsWith('1.')) release = version.id.split('-')[0].split(' ')[0].split('.').slice(0, 2).join('.')
-    if (release.startsWith('1.RV')) continue
-    versions.push({
-      minecraftVersion: release,
-      loaderVersion: version.id,
-      type: [version.type]
-    })
-  }
+    let release = 'Latest'
+    for (const version of response.versions) {
+      if (version.id.startsWith('1.')) release = version.id.split('-')[0].split(' ')[0].split('.').slice(0, 2).join('.')
+      if (release.startsWith('1.RV')) continue
+      versions.push({
+        minecraftVersion: release,
+        loaderVersion: version.id,
+        type: [version.type]
+      })
+    }
 
-  return versions as LoaderVersion[]
+    return versions as LoaderVersion[]
+  })
 }
 
 export async function getForgeVersions() {
-  let res1 = await fetchForgeVersions()
-  let res2 = await fetchForgePromos()
+  return getOrSet('forge-versions', async () => {
+    let res1 = await fetchForgeVersions()
+    let res2 = await fetchForgePromos()
 
-  let versions = []
-  for (const [version, data] of Object.entries(res1)) {
-    versions.push(
-      ...(data as any).map((v: any) => ({
-        minecraftVersion: version.split('.').slice(0, 2).join('.'),
-        loaderVersion: v,
-        type: ['default' as const]
-      }))
-    )
-  }
+    let versions = []
+    for (const [version, data] of Object.entries(res1)) {
+      versions.push(
+        ...(data as any).map((v: any) => ({
+          minecraftVersion: version.split('.').slice(0, 2).join('.'),
+          loaderVersion: v,
+          type: ['default' as const]
+        }))
+      )
+    }
 
-  for (const [version, data] of Object.entries(res2.promos)) {
-    const minecraftVersion = version.split('-')[0]
-    const type = version.split('-')[1] as 'recommended' | 'latest'
-    const i = versions.findIndex((v) => v.loaderVersion.startsWith(`${minecraftVersion}-${data}`))
-    versions[i].type =
-      (versions[i].type.includes('recommended') || versions[i].type.includes('latest')) && !versions[i].type.includes(type)
-        ? ['latest', 'recommended']
-        : [type]
-  }
+    for (const [version, data] of Object.entries(res2.promos)) {
+      const minecraftVersion = version.split('-')[0]
+      const type = version.split('-')[1] as 'recommended' | 'latest'
+      const i = versions.findIndex((v) => v.loaderVersion.startsWith(`${minecraftVersion}-${data}`))
+      versions[i].type =
+        (versions[i].type.includes('recommended') || versions[i].type.includes('latest')) && !versions[i].type.includes(type)
+          ? ['latest', 'recommended']
+          : [type]
+    }
 
-  versions = versions.reverse()
+    versions = versions.reverse()
 
-  return versions as LoaderVersion[]
+    return versions as LoaderVersion[]
+  })
 }
 
 export async function checkVanillaLoader(minecraftVersion: string, loaderVersion: string) {
@@ -143,7 +148,7 @@ export async function updateLoader(loader: Partial<Loader>) {
 
 async function fetchVanillaVersions() {
   try {
-    return await (await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest.json`)).json()
+    return await (await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest.json`, { headers: { Connection: 'close' } })).json()
   } catch (err) {
     console.error('Failed to fetch Minecraft versions:', err)
     throw new ServerError('Failed to fetch Minecraft versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -152,7 +157,9 @@ async function fetchVanillaVersions() {
 
 async function fetchForgeVersions() {
   try {
-    return await (await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`)).json()
+    return await (
+      await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`, { headers: { Connection: 'close' } })
+    ).json()
   } catch (err) {
     console.error('Failed to fetch Forge versions:', err)
     throw new ServerError('Failed to fetch Forge versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -161,7 +168,9 @@ async function fetchForgeVersions() {
 
 async function fetchForgePromos() {
   try {
-    return await (await fetch(`https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json`)).json()
+    return await (
+      await fetch(`https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json`, { headers: { Connection: 'close' } })
+    ).json()
   } catch (err) {
     console.error('Failed to fetch Forge promotions:', err)
     throw new ServerError('Failed to fetch Forge promotions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -170,7 +179,9 @@ async function fetchForgePromos() {
 
 async function getForgeMeta(version: string) {
   try {
-    return await (await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`)).json()
+    return await (
+      await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`, { headers: { Connection: 'close' } })
+    ).json()
   } catch (err) {
     console.error('Failed to fetch Forge meta:', err)
     throw new ServerError('Failed to fetch Forge meta', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -179,7 +190,9 @@ async function getForgeMeta(version: string) {
 
 async function getForgeArtifactSize(version: string, format: string, ext: string) {
   try {
-    return await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}`)
+    return await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}`, {
+      headers: { Connection: 'close' }
+    })
       .then((res) => Number(res.headers.get('Content-Length') ?? 0))
       .catch((err) => {
         throw err
@@ -192,7 +205,9 @@ async function getForgeArtifactSize(version: string, format: string, ext: string
 
 async function getForgeArtifactSha1(version: string, format: string, ext: string) {
   try {
-    return await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`)
+    return await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`, {
+      headers: { Connection: 'close' }
+    })
       .then((res) => res.text())
       .catch((err) => {
         throw err
@@ -219,5 +234,4 @@ function getTypedFormat(format: string) {
       return LoaderFormat.UNIVERSAL
   }
 }
-
 

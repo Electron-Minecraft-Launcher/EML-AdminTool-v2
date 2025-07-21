@@ -33,7 +33,7 @@
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
     return async ({ result, update }) => {
-      update({ reset: false })
+      await update({ reset: false })
       if (result.type === 'failure') {
         const message = $l.notifications[result.data?.failure as NotificationCode] ?? $l.notifications.INTERNAL_SERVER_ERROR
         addNotification('ERROR', message)

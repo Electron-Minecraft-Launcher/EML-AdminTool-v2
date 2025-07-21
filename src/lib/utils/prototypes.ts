@@ -21,6 +21,10 @@ declare global {
      * Format the date to a human-readable string.
      */
     formatDate(): string
+    /**
+     * Format the date to a string suitable for input fields.
+     */
+    formatDateInput(): string
   }
 }
 
@@ -263,4 +267,13 @@ Date.prototype.formatDate = function (): string {
     minute: '2-digit'
   })
   return dateFormatter.format(this)
+}
+
+Date.prototype.formatDateInput = function (): string {
+  let year = this.getFullYear()
+  let month = ('0' + (this.getMonth() + 1)).slice(-2)
+  let day = ('0' + this.getDate()).slice(-2)
+  let hours = ('0' + this.getHours()).slice(-2)
+  let minutes = ('0' + this.getMinutes()).slice(-2)
+  return `${year}-${month}-${day}T${hours}:${minutes}`
 }

@@ -57,13 +57,13 @@ export const actions: Actions = {
       return { error: NotificationCode.UNAUTHORIZED }
     }
 
-    const formData = await event.request.formData()
+    const form = await event.request.formData()
     const raw = {
-      newVersion: formData.get('new-version'),
-      name: formData.get('name'),
-      winFile: formData.get('win-file'),
-      macFile: formData.get('mac-file'),
-      linFile: formData.get('lin-file')
+      newVersion: form.get('new-version'),
+      name: form.get('name'),
+      winFile: form.get('win-file'),
+      macFile: form.get('mac-file'),
+      linFile: form.get('lin-file')
     }
 
     const result = changeBootstrapsSchema.safeParse(raw)
@@ -122,8 +122,8 @@ export const actions: Actions = {
       throw error(403, { message: NotificationCode.FORBIDDEN })
     }
 
-    const formData = await event.request.formData()
-    const platform = formData.get('platform')
+    const form = await event.request.formData()
+    const platform = form.get('platform')
 
     if (typeof platform !== 'string' || !['win', 'mac', 'lin'].includes(platform)) {
       return fail(400, { failure: NotificationCode.INVALID_REQUEST })

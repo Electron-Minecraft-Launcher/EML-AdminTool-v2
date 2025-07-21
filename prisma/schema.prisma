@@ -94,7 +94,7 @@ model Maintenance {
   id        String    @id @default(cuid(2))
   startTime DateTime?
   endTime   DateTime?
-  message   String?
+  message   String    @default("")
 }
 
 model News {

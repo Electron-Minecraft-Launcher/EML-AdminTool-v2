@@ -1,6 +1,7 @@
 import { z } from 'zod/v4'
 import { NotificationCode } from './notifications'
 import { LoaderType } from '@prisma/client'
+import { DateTime } from 'luxon'
 
 export const setupSchema = z.object({
   language: z.string().length(2, NotificationCode.SETUP_INVALID_LANGUAGE),
@@ -131,3 +132,32 @@ export const changeBootstrapsSchema = z.object({
   macFile: z.instanceof(File),
   linFile: z.instanceof(File)
 })
+
+export const maintenanceSchema = z
+  .object({
+    startTime: z
+      .string()
+      .optional()
+      .nullable()
+      .transform((val) => (val ? new Date(DateTime.fromISO(val, { zone: 'utc' }).toLocal().toFormat('yyyy-MM-dd HH:mm')) : null)),
+    endTime: z
+      .string()
+      .optional()
+      .nullable()
+      .transform((val) => (val ? new Date(DateTime.fromISO(val, { zone: 'utc' }).toLocal().toFormat('yyyy-MM-dd HH:mm')) : null)),
+    message: z
+      .string()
+      .optional()
+      .nullable()
+      .transform((val) => val?.trim() ?? '')
+  })
+  .refine(
+    (schema) => {
+      if (schema.startTime && schema.endTime) {
+        return schema.startTime < schema.endTime
+      }
+      return true
+    },
+    { error: NotificationCode.MAINTENANCE_INVALID_DATES }
+  )
+

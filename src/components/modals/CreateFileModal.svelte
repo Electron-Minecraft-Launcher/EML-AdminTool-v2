@@ -46,8 +46,7 @@
       formData.set('name', name)
     }
 
-    return async ({ result, update }) => {
-      update({ reset: false })
+    return async ({ result }) => {
       showLoader = false
 
       if (result.type === 'failure') {

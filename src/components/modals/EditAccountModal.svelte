@@ -29,7 +29,7 @@
     showLoader = true
 
     return async ({ result, update }) => {
-      update({ reset: false })
+      await update({ reset: false })
       showLoader = false
 
       if (result.type === 'failure') {
