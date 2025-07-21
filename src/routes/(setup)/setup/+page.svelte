@@ -10,6 +10,7 @@
   import { getContext, onMount } from 'svelte'
   import type { Env } from '$lib/utils/types'
   import LoadingSplash from '../../../components/layouts/LoadingSplash.svelte'
+  import { callAction } from '$lib/utils/call'
 
   let { data }: PageProps = $props()
 
@@ -39,7 +40,7 @@
     showH1 = false
     await sleep(1000)
     try {
-      await fetch('/api/setup/mark-as-configured', { method: 'POST' })
+      await callAction({ url: '/setup', action: 'finish', formData: new FormData() }, $l)
       showLoader = true
       pingServerAndReload()
     } catch (err) {

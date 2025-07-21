@@ -12,6 +12,8 @@ import { generateRandomPin, getPin } from '$lib/server/pin'
 import type { LanguageCode } from '$lib/stores/language'
 import { deleteUser, updateUser } from '$lib/server/user'
 import { verify } from '$lib/server/auth'
+import { deleteAllFiles, markAsUnconfigured, resetDatabase } from '$lib/server/reset'
+import { restartServer } from '$lib/server/setup'
 
 export const load = (async (event) => {
   const user = event.locals.user
@@ -201,6 +203,30 @@ export const actions: Actions = {
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  resetEMLAT: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.isAdmin) {
+      return error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    try {
+      await markAsUnconfigured()
+      await resetDatabase()
+      await deleteAllFiles()
+
+      restartServer()
+
+      return { success: true }
+    } catch (err) {
+      if (err instanceof BusinessError) throw fail(500, { failure: err.message })
+      if (err instanceof ServerError) throw error(500, { message: err.message })
 
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })

@@ -9,6 +9,7 @@
   import RenameFileModal from '../modals/RenameFileModal.svelte'
   import CreateFileModal from '../modals/CreateFileModal.svelte'
   import EditFileModal from '../modals/EditFileModal.svelte'
+  import { callAction } from '$lib/utils/call'
 
   interface Props {
     currentPath: string
@@ -47,19 +48,11 @@
     if (!target.files || target.files.length === 0) return
 
     const formData = new FormData()
+    formData.set('/action', 'uploadFiles')
     formData.set('current-path', currentPath)
-    for (const file of target.files || []) {
-      formData.append('files', file)
-    }
+    for (const file of target.files ?? []) formData.append('files', file)
 
-    try {
-      const response = await fetch('/api/files-updater', { method: 'POST', body: formData })
-      if (!response.ok) throw new Error('Failed to upload files')
-      files = (await response.json()).files as File_[]
-    } catch (err) {
-      // TODO
-    }
-
+    files = (await callAction({ url: '/dashboard/files-updater', action: 'uploadFiles', formData }, $l)).data.files as File_[]
     folderUpload.value = ''
     folderUpload.files = null
     filesUpload.value = ''
@@ -108,18 +101,9 @@
     ready = false
 
     const formData = new FormData()
-    for (const file of selectedItems) {
-      formData.append('paths', `${file.path}${file.name}`)
-    }
+    for (const file of selectedItems) {formData.append('paths', `${file.path}${file.name}`)}
 
-    try {
-      const response = await fetch('/api/files-updater', { method: 'DELETE', body: formData })
-      if (!response.ok) throw new Error('Failed to delete files')
-      files = (await response.json()).files as File_[]
-    } catch (err) {
-      // TODO
-    }
-
+    files = (await callAction({ url: '/dashboard/files-updater', action: 'deleteFiles', formData }, $l)).data.files as File_[]
     selectedItems = []
     ready = true
   }
@@ -301,7 +285,6 @@
 
 <input type="file" name="files" multiple bind:this={filesUpload} style="display: none" onchange={uploadItems} />
 <input type="file" name="files" multiple bind:this={folderUpload} style="display: none" onchange={uploadItems} />
-
 
 <style lang="scss">
   .fap-fix {

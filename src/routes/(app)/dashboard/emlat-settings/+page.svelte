@@ -15,6 +15,7 @@
   import { applyAction, enhance } from '$app/forms'
   import { pingServerAndReload, sleep } from '$lib/utils/utils'
   import { goto } from '$app/navigation'
+  import { callAction } from '$lib/utils/call'
 
   let { data = $bindable() }: PageProps = $props()
 
@@ -78,7 +79,7 @@
     if (!confirm($l.dashboard.emlatSettings.areYouSure)) return
 
     try {
-      await fetch('/api/reset', { method: 'POST' })
+      await callAction({ url: '/dashboard/emlat-settings', action: 'resetEMLAT', formData: new FormData() }, $l)
       showLoader = true
       pingServerAndReload()
     } catch (err) {

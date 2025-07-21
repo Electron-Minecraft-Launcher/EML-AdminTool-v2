@@ -4,17 +4,20 @@
   import type { PageProps } from './$types'
   import ChangeBootstrapsFilesModal from '../../../../components/modals/ChangeBootstrapsFilesModal.svelte'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
+  import { l } from '$lib/stores/language'
+  import { callAction } from '$lib/utils/call'
+  import { invalidateAll } from '$app/navigation'
 
   let { data }: PageProps = $props()
 
   const env = getEnv()
 
-  let bootstraps = $derived(data.bootstraps)
+  // let bootstraps = $state(data.bootstraps)
   let showLoader = $state(false)
   let showChangeBootstrapFileModal: boolean = $state(false)
 
   async function download(platform: 'win' | 'mac' | 'lin') {
-    if (!bootstraps[`${platform}File`]) return
+    if (!data.bootstraps[`${platform}File`]) return
     const file = data.bootstraps[`${platform}File`] as File_
     try {
       const response = await fetch(file.url)
@@ -40,13 +43,8 @@
     const formData = new FormData()
     formData.append('platform', platform)
 
-    try {
-      const response = await fetch('/api/bootstraps', { method: 'DELETE', body: formData })
-      if (!response.ok) throw new Error('Failed to delete files')
-      bootstraps = (await response.json()) as typeof data.bootstraps
-    } catch (err) {
-      // TODO
-    }
+    await callAction({ url: '/dashboard/bootstraps', action: 'deleteBootstrap', formData }, $l)
+    invalidateAll()
     showLoader = false
   }
 </script>
@@ -56,7 +54,7 @@
 </svelte:head>
 
 {#if showChangeBootstrapFileModal}
-  <ChangeBootstrapsFilesModal bind:show={showChangeBootstrapFileModal} {bootstraps} />
+  <ChangeBootstrapsFilesModal bind:show={showChangeBootstrapFileModal} bootstraps={data.bootstraps} />
 {/if}
 
 <h2>Bootstraps</h2>
@@ -74,15 +72,15 @@
   <div class="container">
     <div>
       <p class="label">Version</p>
-      <p class="no-link">{bootstraps.version || '-'}</p>
+      <p class="no-link">{data.bootstraps.version || '-'}</p>
     </div>
 
     <div>
       <p class="label"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
       <div class="buttons">
-        {#if bootstraps.winFile}
+        {#if data.bootstraps.winFile}
           <button onclick={() => download('win')}>
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(bootstraps.winFile as File_).name}
+            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.winFile as File_).name}
           </button>
           <button class="remove" onclick={() => deleteFile('win')} aria-label="Delete Windows Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
@@ -94,9 +92,9 @@
     <div>
       <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
       <div class="buttons">
-        {#if bootstraps.macFile}
+        {#if data.bootstraps.macFile}
           <button onclick={() => download('mac')}>
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(bootstraps.macFile as File_).name}
+            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.macFile as File_).name}
           </button>
           <button class="remove" onclick={() => deleteFile('mac')} aria-label="Delete macOS Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
@@ -108,9 +106,9 @@
     <div>
       <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
       <div class="buttons">
-        {#if bootstraps.linFile}
+        {#if data.bootstraps.linFile}
           <button onclick={() => download('lin')}>
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(bootstraps.linFile as File_).name}
+            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.linFile as File_).name}
           </button>
           <button class="remove" onclick={() => deleteFile('lin')} aria-label="Delete Linux Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}

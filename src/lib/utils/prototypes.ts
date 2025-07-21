@@ -15,6 +15,13 @@ declare global {
      */
     removeUnwantedFilenameChars(): string
   }
+
+  interface Date {
+    /**
+     * Format the date to a human-readable string.
+     */
+    formatDate(): string
+  }
 }
 
 String.prototype.markdownToHTML = function (
@@ -223,11 +230,12 @@ String.prototype.markdownToHTML = function (
           .replaceAll(/\* (.+)/gm, '<li_dot>$1</li_dot>')
           .replaceAll(/((?:\s*<li_dot>(?:[^<]|<(?!\/li_dot>))*<\/li_dot>)+)/gm, '<ul>$1</ul>') //! Need to be checked
     )
-    .map((p) =>
-      p
-        .replaceAll(/<p>(\d+)\. (.+)$/gm, '<p><li_num>$2</li_num>')
-        .replaceAll(/^(\d+)\. (.+)$/gm, '<li_num>$2</li_num>')
-        .replaceAll(/((?:\s*<li_num>(?:[^<]|<(?!\/li_num>))*<\/li_num>)+)/gm, '<ol>$1</ol>') //! Need to be checked
+    .map(
+      (p) =>
+        p
+          .replaceAll(/<p>(\d+)\. (.+)$/gm, '<p><li_num>$2</li_num>')
+          .replaceAll(/^(\d+)\. (.+)$/gm, '<li_num>$2</li_num>')
+          .replaceAll(/((?:\s*<li_num>(?:[^<]|<(?!\/li_num>))*<\/li_num>)+)/gm, '<ol>$1</ol>') //! Need to be checked
     )
     .map((p) => p.replaceAll('<li_dot>', '<li>').replaceAll('</li_dot>', '</li>').replaceAll('<li_num>', '<li>').replaceAll('</li_num>', '</li>'))
     .join('\n')
@@ -240,5 +248,19 @@ String.prototype.formatPath = function (): string {
 }
 
 String.prototype.removeUnwantedFilenameChars = function (): string {
-  return this.replace(/[\x00-\x1F\x7F"*/:<>?\\|]/g, '').replace(/^\.{2,}/, '').replace(/\.+$/, '').trim()
+  return this.replace(/[\x00-\x1F\x7F"*/:<>?\\|]/g, '')
+    .replace(/^\.{2,}/, '')
+    .replace(/\.+$/, '')
+    .trim()
+}
+
+Date.prototype.formatDate = function (): string {
+  const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+  return dateFormatter.format(this)
 }

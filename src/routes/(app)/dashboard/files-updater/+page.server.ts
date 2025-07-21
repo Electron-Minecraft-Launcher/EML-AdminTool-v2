@@ -1,23 +1,26 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
-import { createFileSchema, editFileSchema, renameFileSchema, changeLoaderSchema } from '$lib/utils/validations'
-import { cacheFiles, createFile, editFile, getFiles, renameFile } from '$lib/server/files'
+import { createFileSchema, editFileSchema, renameFileSchema, changeLoaderSchema, uploadFilesSchema, deleteFilesSchema } from '$lib/utils/validations'
+import { cacheFiles, createFile, deleteFile, editFile, getCachedFilesParsed, getFiles, renameFile, uploadFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
 import { type Loader, LoaderType, LoaderFormat } from '@prisma/client'
 import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
+import path_ from 'path'
 
 export const load = (async (event) => {
+  const domain = event.url.origin
   const user = event.locals.user
 
   if (!user?.p_filesUpdater) {
     throw redirect(303, '/dashboard')
   }
 
-  let loader
-
   try {
+    const files = await getCachedFilesParsed(domain, 'files-updater')
+
+    let loader
     try {
       loader = await db.loader.findFirst()
     } catch (err) {
@@ -41,7 +44,7 @@ export const load = (async (event) => {
       [LoaderType.FORGE]: await getForgeVersions()
     }
 
-    return { loader, loaderList }
+    return { loader, loaderList, files }
   } catch (err) {
     if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
@@ -79,6 +82,49 @@ export const actions: Actions = {
 
       const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  uploadFiles: async (event) => {
+    const domain = event.url.origin
+    const user = event.locals.user
+
+    if (!user?.p_filesUpdater) {
+      throw error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    const form = await event.request.formData()
+    const raw = {
+      currentPath: form.get('current-path'),
+      files: form.getAll('files')
+    }
+
+    const result = uploadFilesSchema.safeParse(raw)
+
+    if (!result.success) {
+      return error(400, { message: JSON.parse(result.error.message)[0].message })
+    }
+
+    const { currentPath, files } = result.data
+
+    try {
+      for (const file of files) {
+        if (!(file instanceof File)) continue
+
+        const path = path_.join(currentPath, path_.dirname(file.webkitRelativePath ?? file.name))
+
+        await uploadFile('files-updater', path, file)
+        await cacheFiles(domain, 'files-updater')
+      }
+
+      const cache = await getCachedFilesParsed(domain, 'files-updater')
+      return { success: true, files: cache }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
@@ -152,6 +198,44 @@ export const actions: Actions = {
 
       const files = await getFiles(domain, 'files-updater')
       return { success: true, files }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  deleteFiles: async (event) => {
+    const domain = event.url.origin
+    const user = event.locals.user
+
+    if (!user?.p_filesUpdater) {
+      throw error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    const form = await event.request.formData()
+    const raw = {
+      paths: form.getAll('paths')
+    }
+
+    const result = deleteFilesSchema.safeParse(raw)
+
+    if (!result.success) {
+      return error(400, { message: JSON.parse(result.error.message)[0].message })
+    }
+
+    const { paths } = result.data
+
+    try {
+      for (const path of paths) {
+        await deleteFile('files-updater', path)
+        await cacheFiles(domain, 'files-updater')
+      }
+
+      const cache = await getCachedFilesParsed(domain, 'files-updater')
+      return { success: true, files: cache }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })

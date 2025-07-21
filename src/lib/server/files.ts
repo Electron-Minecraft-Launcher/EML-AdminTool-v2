@@ -29,6 +29,16 @@ export async function getCachedFiles(domain: string, dir: Dir) {
   return cache
 }
 
+export async function getCachedFilesParsed(domain: string, dir: Dir) {
+  const cache = await getCachedFiles(domain, dir)
+  try {
+    return JSON.parse(cache) as File_[]
+  } catch (err) {
+    console.error('Failed to parse cached files:', err)
+    throw new ServerError('Failed to parse cached files', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+}
+
 /**
  * @param dir Directory to upload the file to.
  * @param path Path to the file, relative to the directory, without the file name.

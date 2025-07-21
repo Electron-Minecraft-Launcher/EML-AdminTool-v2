@@ -1,7 +1,7 @@
 import { error, fail, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { setupSchema } from '$lib/utils/validations'
-import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin } from '$lib/server/setup'
+import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin, markAsConfigured, restartServer } from '$lib/server/setup'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 
@@ -46,5 +46,24 @@ export const actions: Actions = {
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
     }
+  },
+
+  finish: async (event) => {
+    if (event.locals.isConfigured) {
+      throw error(400, { message: 'Already configured' })
+    }
+
+    try {
+      await markAsConfigured()
+      restartServer()
+
+      return { success: true }
+    } catch (err) {
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
   }
 }
+

@@ -2,21 +2,22 @@
   import { onMount } from 'svelte'
   import type { PageProps } from './$types'
   import getEnv from '$lib/utils/env'
-  import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
   import FilesUpdater from '../../../../components/contents/FilesUpdater.svelte'
   import type { File as File_ } from '$lib/utils/types'
   import { LoaderFormat, LoaderType } from '@prisma/client'
   import ChangeLoaderModal from '../../../../components/modals/ChangeLoaderModal.svelte'
   import getUser from '$lib/utils/user'
+  import { callAction } from '$lib/utils/call'
+  import { l } from '$lib/stores/language'
 
   let { data }: PageProps = $props()
 
   const env = getEnv()
   const user = getUser()
 
-  let files: File_[] = $state([])
+  let files = $state(data.files)
 
-  let filesReady = $state(false)
+  let filesReady = $state(true)
   let isDragOver = $state(false)
   let path: HTMLSpanElement | undefined = $state()
   let oldPath = $state('')
@@ -36,8 +37,6 @@
       sL = path!.scrollLeft > 0
       sR = path!.scrollLeft < path!.scrollWidth - path!.clientWidth - 1
     })
-
-    getData()
   })
 
   function handleLeave(e: any) {
@@ -80,17 +79,9 @@
 
     const formData = new FormData()
     formData.append('current-path', currentPath)
-    for (const file of entries) {
-      formData.append('files', file)
-    }
+    for (const file of entries) formData.append('files', file)
 
-    try {
-      const response = await fetch('/api/files-updater', { method: 'POST', body: formData })
-      if (!response.ok) throw new Error('Failed to upload files')
-      files = (await response.json()).files as File_[]
-    } catch (err) {
-      // TODO
-    }
+    files = await callAction({ url: '/dashboard/files-updater', action: 'uploadFiles', formData }, $l).then((res) => res.data.files as File_[])
 
     filesReady = true
   }

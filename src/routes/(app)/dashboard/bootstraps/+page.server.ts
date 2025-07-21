@@ -113,6 +113,45 @@ export const actions: Actions = {
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
     }
+  },
+
+  deleteBootstrap: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_bootstraps) {
+      throw error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    const formData = await event.request.formData()
+    const platform = formData.get('platform')
+
+    if (typeof platform !== 'string' || !['win', 'mac', 'lin'].includes(platform)) {
+      return fail(400, { failure: NotificationCode.INVALID_REQUEST })
+    }
+
+    try {
+      try {
+        await deleteFile('bootstraps', platform)
+      } catch (err) {
+        console.error('Failed to delete bootstrap file:', err)
+        throw new ServerError('Failed to delete bootstrap file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+      }
+
+      try {
+        await db.bootstrap.update({ where: { id: '1' }, data: { [`${platform}File`]: null } })
+      } catch (err) {
+        console.error('Failed to update bootstrap:', err)
+        throw new ServerError('Failed to update bootstrap', err, NotificationCode.DATABASE_ERROR, 500)
+      }
+
+      return { success: true }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
   }
 }
 
