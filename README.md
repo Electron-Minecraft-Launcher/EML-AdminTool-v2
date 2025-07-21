@@ -25,7 +25,7 @@
 
 ## Installation
 
-###### For more information, please read the [installation guide](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki/EML-AdminTool-settings-and-new-users).
+###### For more information, please read the [installation guide](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki/Installation-and-setup).
 
 ### Minimum VPS requirements
 
