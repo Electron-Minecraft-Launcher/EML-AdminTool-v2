@@ -9,21 +9,9 @@
   <hr />
   <p>
     EML AdminTool v{env.version} – <a href="https://discord.gg/nfEHKtghPh" target="_blank">Discord</a> –
+    <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki" target="_blank">Wiki</a> –
     <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2" target="_blank">GitHub</a>
   </p>
-  <!-- {#if process.env.NODE_ENV === 'development'}
-    <p style="font-size: 9px">
-      User JWT: <input
-        value={cookiesService.get('JWT')}
-        onclick={(e) => {
-          // @ts-ignore
-          e.target.select()
-          // @ts-ignore
-          navigator.clipboard.writeText(e.target.value)
-        }}
-      />
-    </p>
-  {/if} -->
 </footer>
 
 <style lang="scss">

@@ -20,7 +20,6 @@ services:
     image: eml-admintool:2.0.0-beta.2
     environment:
       NODE_ENV: 'production'
-      PORT: 4000
     volumes:
       - files:/app/files
       - env:/app/api/env

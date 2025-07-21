@@ -181,6 +181,7 @@ button:not(.a) {
   transition: all 0.3s ease, shadow 0.1s ease, margin 0.1s, outline 0.1s ease;
   outline: 0px solid var(--primary-tr-color-hover);
   line-height: 15px;
+  font-size: 13.3px;
 
   &.primary {
     margin-top: 30px;

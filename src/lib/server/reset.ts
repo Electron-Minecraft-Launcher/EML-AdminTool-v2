@@ -50,6 +50,11 @@ export async function deleteAllFiles() {
   } catch (err) {
     console.error('Failed to delete files in "images":', err)
   }
+  try {
+    await deleteFile('cache', '')
+  } catch (err) {
+    console.error('Failed to delete files in "cache":', err)
+  }
 }
 
 export async function markAsUnconfigured() {

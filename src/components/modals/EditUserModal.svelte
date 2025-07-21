@@ -152,11 +152,11 @@
             }}
           /> Add, edit and delete news categories
         </label>
-        <label class="p" for="p_news_tags">
+        <label class="p" for="p_news-tags">
           <input
             type="checkbox"
-            id="p_news_tags"
-            name="p_news_tags"
+            id="p_news-tags"
+            name="p_news-tags"
             bind:checked={p_newsTags}
             onchange={() => {
               if (p_newsTags) p_news_1 = true

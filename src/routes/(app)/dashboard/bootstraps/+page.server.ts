@@ -13,7 +13,7 @@ export const load = (async (event) => {
   const user = event.locals.user
 
   if (!user?.p_bootstraps) {
-    return redirect(303, '/dashboard')
+    throw redirect(303, '/dashboard')
   }
 
   try {
