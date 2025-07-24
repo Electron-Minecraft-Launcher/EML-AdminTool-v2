@@ -57,7 +57,6 @@ export const actions: Actions = {
 
     const result = maintenanceSchema.safeParse(raw)
     if (!result.success) {
-      console.log(result.error)
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
@@ -65,8 +64,6 @@ export const actions: Actions = {
 
     try {
       await updateMaintenance({ id: '1', startTime, endTime, message })
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })

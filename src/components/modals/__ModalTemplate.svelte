@@ -66,6 +66,8 @@
 
     &.size-m {
       width: 750px;
+      margin-top: 45px;
+      margin-bottom: 30px;
     }
 
     &.size-l {

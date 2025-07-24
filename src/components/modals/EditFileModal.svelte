@@ -92,23 +92,6 @@
     }
   }
 
-  async function submit(e: Event | null, close: boolean = true) {
-    // e?.preventDefault()
-    // if (action.action === 'edit') {
-    //   newName = utils.removeUnwantedFilenameChars(newName)
-    //   ;(await apiFilesUpdaterService.renameFile(`${path}${name}`, `${path}${newName}`)).subscribe({})
-    //   name = newName
-    // }
-    // const blob = new Blob([content], { type: 'text/plain' })
-    // const file = new File([blob], newName, { type: 'text/plain' })
-    // ;(await apiFilesUpdaterService.uploadFiles(`${path}`, [file])).subscribe({
-    //   next: (res) => {
-    //     data.files = res.body.data!
-    //     if (close) show = false
-    //   }
-    // })
-  }
-
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
     formData.set('path', path)
@@ -134,10 +117,6 @@
 
 <svelte:body
   onkeydown={(e) => {
-    if (e.ctrlKey && e.key === 's') {
-      e.preventDefault()
-      submit(null, false)
-    }
     if (e.key === 'Escape') {
       if (confirm('Are you sure you want to close the editor? Unsaved changes will be lost.')) {
         show = false
@@ -167,7 +146,7 @@
 
     <div class="actions">
       <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary" onclick={submit}>{$l.main.save}</button>
+      <button type="submit" class="primary">{$l.main.save}</button>
     </div>
   </form>
 </ModalTemplate>
@@ -198,12 +177,6 @@
     overflow-y: auto;
     overflow-x: auto;
     font-family: 'Courier New', Courier, monospace;
+    border-radius: 5px;
   }
-
-  // div.container-editor {
-  //   height: calc(100vh - 177px - 66px - 30px - 63px);
-  //   margin-top: 20px;
-  //   border: 1px solid var(--border-color2);
-  //   border-radius: 5px;
-  // }
 </style>

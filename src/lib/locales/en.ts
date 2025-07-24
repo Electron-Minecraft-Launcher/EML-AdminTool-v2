@@ -66,6 +66,9 @@ export default {
 
     [NotificationCode.MAINTENANCE_INVALID_DATES]: `Maintenance dates are invalid. Start date must be before end date.`,
 
+    [NotificationCode.NEWS_TITLE_TOO_SHORT]: `News title must be at least 1 character long.`,
+    [NotificationCode.NEWS_TITLE_TOO_LONG]: `News title must be at most 255 characters long.`,
+
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,

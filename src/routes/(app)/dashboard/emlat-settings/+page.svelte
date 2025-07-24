@@ -20,7 +20,6 @@
   let { data = $bindable() }: PageProps = $props()
 
   const env = getEnv()
-  const user = getUser()
 
   let showLoader = $state(false)
   let showEditAdminToolModal = $state(false)

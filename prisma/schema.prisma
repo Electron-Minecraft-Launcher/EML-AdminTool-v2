@@ -112,17 +112,15 @@ model News {
 model NewsCategory {
   id        String   @id @default(cuid(2))
   name      String   @unique
-  news      News?    @relation(fields: [newsId], references: [id])
-  newsId    String?
+  news      News[]   
   createdAt DateTime @default(now())
 }
 
 model NewsTag {
   id     String  @id @default(cuid(2))
   name   String  @unique
-  color  String?
-  news   News?   @relation(fields: [newsId], references: [id])
-  newsId String?
+  color  String
+  news   News[]  
 }
 
 model Background {

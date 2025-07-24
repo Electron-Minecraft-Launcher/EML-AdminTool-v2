@@ -12,9 +12,7 @@ export async function getUserById(userId: string) {
     throw new ServerError('Error fetching user by ID', err, NotificationCode.DATABASE_ERROR, 500)
   }
 
-  if (!user) {
-    return null
-  }
+  if (!user) return null
 
   return user
 }
@@ -60,3 +58,4 @@ export async function deleteUser(userId: string) {
     throw new ServerError('Error deleting user', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
+

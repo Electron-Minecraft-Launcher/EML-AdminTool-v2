@@ -104,8 +104,6 @@ export const actions: Actions = {
       await uploadFile('bootstraps', 'lin', newLinFile)
 
       await updateBootstraps(newVersion, currentBootstraps)
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -143,8 +141,6 @@ export const actions: Actions = {
         console.error('Failed to update bootstrap:', err)
         throw new ServerError('Failed to update bootstrap', err, NotificationCode.DATABASE_ERROR, 500)
       }
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })

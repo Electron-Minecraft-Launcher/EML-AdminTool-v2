@@ -14,7 +14,6 @@ type CallActionOptions = {
 export async function callAction({ url, action, formData, apply = true, notify = true }: CallActionOptions, $l: typeof en) {
   let response: Response
   try {
-    console.log(`${url}/?${action}`)
     response = await fetch(`${url}?/${action}`, { method: 'POST', body: formData })
   } catch {
     if (notify) addNotification('ERROR', $l.notifications.INTERNAL_SERVER_ERROR)
@@ -40,7 +39,6 @@ export async function callAction({ url, action, formData, apply = true, notify =
   if (apply) await applyAction(result)
 
   if (result.type === 'success') {
-    console.log({ ...result, data: denormalize(result.data) })
     return { ...result, data: denormalize(result.data) }
   }
 

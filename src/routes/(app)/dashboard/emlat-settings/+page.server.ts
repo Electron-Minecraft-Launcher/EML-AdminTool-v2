@@ -93,8 +93,6 @@ export const actions: Actions = {
     try {
       const newPin = regeneratePin ? generateRandomPin() : await getPin()
       await editEMLAT(name, language as LanguageCode, newPin)
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -135,8 +133,6 @@ export const actions: Actions = {
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
-    console.log(raw, result.data)
-
     const userId = result.data.userId
     const username = result.data.username
     const status = UserStatus.ACTIVE
@@ -162,8 +158,6 @@ export const actions: Actions = {
         p_backgrounds,
         p_stats
       })
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -198,8 +192,6 @@ export const actions: Actions = {
 
     try {
       await deleteUser(userId)
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -222,8 +214,6 @@ export const actions: Actions = {
       await deleteAllFiles()
 
       restartServer()
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) throw fail(500, { failure: err.message })
       if (err instanceof ServerError) throw error(500, { message: err.message })
@@ -265,8 +255,6 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
       p_backgrounds: 0,
       p_stats: 0
     })
-
-    return { success: true }
   } catch (err) {
     if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
     if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })

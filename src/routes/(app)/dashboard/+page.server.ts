@@ -18,7 +18,5 @@ export const actions: Actions = {
       console.error('Failed to logout:', err)
       event.cookies.delete('session', { path: '/' })
     }
-
-    return { success: true }
   }
 }

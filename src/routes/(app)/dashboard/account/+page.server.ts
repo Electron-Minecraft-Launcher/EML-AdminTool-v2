@@ -26,7 +26,6 @@ export const actions: Actions = {
     const result = editAccountSchema.safeParse(raw)
 
     if (!result.success) {
-      console.log(result)
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
@@ -43,8 +42,6 @@ export const actions: Actions = {
       if (user?.isAdmin) {
         await editEMLATName(username)
       }
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -65,8 +62,6 @@ export const actions: Actions = {
       await logout(event.cookies.get('session') ?? '')
       await deleteUser(user!.id)
       deleteSession(event)
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })

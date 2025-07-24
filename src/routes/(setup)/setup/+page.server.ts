@@ -38,8 +38,6 @@ export const actions: Actions = {
       await setAdminUser(adminUsername, adminPassword)
       await setPin()
       await setLanguage(language)
-
-      return { success: true }
     } catch (err) {
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
@@ -56,8 +54,6 @@ export const actions: Actions = {
     try {
       await markAsConfigured()
       restartServer()
-
-      return { success: true }
     } catch (err) {
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 

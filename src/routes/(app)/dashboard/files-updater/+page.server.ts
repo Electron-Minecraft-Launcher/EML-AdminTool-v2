@@ -1,7 +1,7 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
-import { createFileSchema, editFileSchema, renameFileSchema, changeLoaderSchema, uploadFilesSchema, deleteFilesSchema } from '$lib/utils/validations'
+import { createFileSchema, editFileSchema, renameFileSchema, changeLoaderSchema, uploadFilesSchema } from '$lib/utils/validations'
 import { cacheFiles, createFile, deleteFile, editFile, getCachedFilesParsed, getFiles, renameFile, uploadFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
@@ -81,7 +81,7 @@ export const actions: Actions = {
       await cacheFiles(domain, 'files-updater')
 
       const files = await getFiles(domain, 'files-updater')
-      return { success: true, files }
+      return { files }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
@@ -124,7 +124,7 @@ export const actions: Actions = {
       }
 
       const cache = await getCachedFilesParsed(domain, 'files-updater')
-      return { success: true, files: cache }
+      return { files: cache }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
@@ -160,7 +160,7 @@ export const actions: Actions = {
       await cacheFiles(domain, 'files-updater')
 
       const files = await getFiles(domain, 'files-updater')
-      return { success: true, files }
+      return { files }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
@@ -197,7 +197,7 @@ export const actions: Actions = {
       await cacheFiles(domain, 'files-updater')
 
       const files = await getFiles(domain, 'files-updater')
-      return { success: true, files }
+      return { files }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
@@ -216,26 +216,18 @@ export const actions: Actions = {
     }
 
     const form = await event.request.formData()
-    const raw = {
-      paths: form.getAll('paths')
-    }
-
-    const result = deleteFilesSchema.safeParse(raw)
-
-    if (!result.success) {
-      return error(400, { message: JSON.parse(result.error.message)[0].message })
-    }
-
-    const { paths } = result.data
+    const paths = form.getAll('paths')
 
     try {
       for (const path of paths) {
+        if (typeof path !== 'string') continue
+
         await deleteFile('files-updater', path)
         await cacheFiles(domain, 'files-updater')
       }
 
       const cache = await getCachedFilesParsed(domain, 'files-updater')
-      return { success: true, files: cache }
+      return { files: cache }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })

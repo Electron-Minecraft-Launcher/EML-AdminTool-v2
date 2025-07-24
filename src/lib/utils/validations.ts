@@ -82,10 +82,6 @@ export const uploadFilesSchema = z.object({
   files: z.array(z.instanceof(File))
 })
 
-export const deleteFilesSchema = z.object({
-  paths: z.array(z.string())
-})
-
 export const renameFileSchema = z.object({
   path: z.string(),
   name: z.string().min(1, NotificationCode.INVALID_INPUT).max(255, NotificationCode.INVALID_INPUT),
@@ -161,3 +157,14 @@ export const maintenanceSchema = z
     { error: NotificationCode.MAINTENANCE_INVALID_DATES }
   )
 
+export const newsSchema = z.object({
+  newsId: z.string().optional(),
+  title: z
+    .string()
+    .transform((val) => val.trim())
+    .refine((val) => val.length >= 1, { message: NotificationCode.NEWS_TITLE_TOO_SHORT })
+    .refine((val) => val.length <= 255, { message: NotificationCode.NEWS_TITLE_TOO_LONG }),
+  content: z.string(),
+  categoriesId: z.array(z.string()).optional(),
+  tagsId: z.array(z.string()).optional()
+})

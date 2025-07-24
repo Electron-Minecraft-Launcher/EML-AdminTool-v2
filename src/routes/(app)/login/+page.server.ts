@@ -40,8 +40,6 @@ export const actions: Actions = {
       const sessionToken = await createSessionToken(user)
 
       event.cookies.set('session', sessionToken, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), path: '/', secure: !dev })
-
-      return { success: true }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
