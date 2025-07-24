@@ -229,15 +229,14 @@
       </div>
       <div>
         <p class="release-name"><b>EML AdminTool {data.update.latestVersion}</b></p>
-        <p class="release-date">{$l.dashboard.emlatSettings.releasedOn} {new Date(data.update.releaseDate).toLocaleDateString()}</p>
+        <p class="release-date">{$l.dashboard.emlatSettings.releasedOn} {new Date(data.update.releaseDate).toLocaleDateString()} – 
+          <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data.update.latestVersion}" target="_blank">
+            {$l.dashboard.emlatSettings.openGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px"></i>
+          </a>
+        </p>
       </div>
       <div class="actions">
         <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.runUpdate}</button>
-        <p>
-          <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data.update.latestVersion}" target="_blank">
-            {$l.dashboard.emlatSettings.seeOnGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        </p>
       </div>
     </div>
     <div class="changelogs">

@@ -273,7 +273,7 @@ Date.prototype.formatDate = function (): string {
   return dateFormatter.format(this)
 }
 
-Date.prototype.formatDate = function (): string {
+Date.prototype.shortFormatDate = function (): string {
   const dateFormatter = new Intl.DateTimeFormat(undefined, {
     year: 'numeric',
     month: 'long',

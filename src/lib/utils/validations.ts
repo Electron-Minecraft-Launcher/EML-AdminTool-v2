@@ -168,3 +168,23 @@ export const newsSchema = z.object({
   categoriesId: z.array(z.string()).optional(),
   tagsId: z.array(z.string()).optional()
 })
+
+export const newsCategorySchema = z.object({
+  categoryId: z.string().optional(),
+  name: z
+    .string()
+    .transform((val) => val.trim())
+    .refine((val) => val.length >= 1, { message: NotificationCode.NEWS_CATEGORY_NAME_TOO_SHORT })
+    .refine((val) => val.length <= 64, { message: NotificationCode.NEWS_CATEGORY_NAME_TOO_LONG })
+})
+
+export const newsTagSchema = z.object({
+  tagId: z.string().optional(),
+  name: z
+    .string()
+    .transform((val) => val.trim())
+    .refine((val) => val.length >= 1, { message: NotificationCode.NEWS_TAG_NAME_TOO_SHORT })
+    .refine((val) => val.length <= 64, { message: NotificationCode.NEWS_TAG_NAME_TOO_LONG }),
+  color: z
+    .string()
+})

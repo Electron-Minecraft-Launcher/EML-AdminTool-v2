@@ -69,6 +69,14 @@ export default {
     [NotificationCode.NEWS_TITLE_TOO_SHORT]: `News title must be at least 1 character long.`,
     [NotificationCode.NEWS_TITLE_TOO_LONG]: `News title must be at most 255 characters long.`,
 
+    [NotificationCode.NEWS_CATEGORY_NAME_TOO_SHORT]: `News category name must be at least 1 character long.`,
+    [NotificationCode.NEWS_CATEGORY_NAME_TOO_LONG]: `News category name must be at most 64 characters long.`,
+    [NotificationCode.NEWS_CATEGORY_ALREADY_EXISTS]: `News category already exists.`,
+
+    [NotificationCode.NEWS_TAG_NAME_TOO_SHORT]: `News tag name must be at least 1 character long.`,
+    [NotificationCode.NEWS_TAG_NAME_TOO_LONG]: `News tag name must be at most 64 characters long.`,
+    [NotificationCode.NEWS_TAG_ALREADY_EXISTS]: `News tag already exists.`,
+
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
@@ -138,7 +146,7 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
       latestVersion: `Latest version`,
       releasedOn: `Released on`,
       runUpdate: `Update`,
-      seeOnGithub: `See on GitHub...`,
+      openGithub: `Open GitHub...`,
       vpsAndDocker: `VPS & Docker`,
       dockerInfo: `Docker information`,
       storage: `Storage`,

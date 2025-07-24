@@ -86,7 +86,7 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
       latestVersion: `Dernière version`,
       releasedOn: `Publiée le`,
       runUpdate: `Mettre à jour`,
-      seeOnGithub: `Voir sur GitHub...`,
+      openGithub: `Voir sur GitHub...`,
       vpsAndDocker: `VPS & Docker`,
       dockerInfo: `Informations Docker`,
       storage: `Stockage`,

@@ -86,7 +86,7 @@ Wenn du uns bei der Übersetzung des EML AdminTools helfen möchtest, findest du
       latestVersion: 'Neueste Version',
       releasedOn: 'Veröffentlicht am',
       runUpdate: 'Aktualisieren',
-      seeOnGithub: 'Auf GitHub ansehen...',
+      openGithub: 'Auf GitHub ansehen...',
       vpsAndDocker: 'VPS & Docker',
       dockerInfo: 'Docker-Informationen',
       storage: 'Speicher',

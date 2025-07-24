@@ -23,7 +23,7 @@
 
   interface Props {
     show: boolean
-    news: NonNullable<PageData['news']>
+    news: PageData['news']
     newsCategories: NewsCategory[]
     newsTags: NewsTag[]
     images: File_[]
@@ -42,6 +42,8 @@
   let content = $state(selectedNews?.content ?? '')
   let categories = $state(selectedNews?.categories ?? [])
   let tags = $state(selectedNews?.tags ?? [])
+
+  $inspect(categories)
 
   let editorContainer: HTMLDivElement
   let editorView: EditorView
@@ -134,25 +136,6 @@
     // })
   }
 
-  async function submit(e: Event) {
-    // e.preventDefault()
-    // if (action.action === 'add') {
-    //   ;(await apiNewsService.postNews({ title, content, categories, tags })).subscribe({
-    //     next: (res) => {
-    //       data.news = res.body.data!
-    //       show = false
-    //     }
-    //   })
-    // } else {
-    //   ;(await apiNewsService.putNews(action.news.id || 0, { title, content, categories, tags })).subscribe({
-    //     next: (res) => {
-    //       data.news = res.body.data!
-    //       show = false
-    //     }
-    //   })
-    // }
-  }
-
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
     formData.set('news-id', selectedNewsId ?? '')
@@ -203,13 +186,24 @@
 
 <!--* Modal -->
 
+<svelte:body onclick={(e) => {
+  // @ts-ignore
+    if (addCategoriesDropdownOpen && e.target && !e.target.closest('button.add.categories')) {
+      addCategoriesDropdownOpen = false
+    }
+  // @ts-ignore
+    if (addTagsDropdownOpen && e.target && !e.target.closest('button.add.tags')) {
+      addTagsDropdownOpen = false
+    }
+}}/>
+
 <ModalTemplate size={'m'} bind:show translateX={'-23%'}>
   {#if showLoader}
     <LoadingSplash transparent />
   {/if}
 
   <form method="POST" action="?/addEditNews" use:enhance={enhanceForm}>
-    <h2>{selectedNewsId ? 'Edit the news' : 'Publish a news'}</h2>
+    <h2>{selectedNewsId ? 'Edit news' : 'Publish news'}</h2>
 
     <div style="display: {mode === 'EDIT' ? 'block' : 'none'}">
       <label for="title">Title</label>
@@ -245,7 +239,7 @@
           {#if addCategoriesDropdownOpen}
             <div class="add-category-dropdown" transition:slide={{ duration: 200 }}>
               {#each newsCategories as category}
-                {#if !categories.includes(category)}
+                {#if !categories.find((cat) => cat.id === category.id) /* Cannot use .includes because of object reference */}
                   <button type="button" onclick={() => (categories = [...categories, category])}>
                     <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.name}
                   </button>
@@ -279,7 +273,7 @@
           {#if addTagsDropdownOpen}
             <div class="add-tags-dropdown" transition:slide={{ duration: 200 }}>
               {#each newsTags as tag}
-                {#if !tags.includes(tag)}
+                {#if !tags.find((t) => t.id === tag.id) /* Cannot use .includes because of object reference */}
                   <button type="button" onclick={() => (tags = [...tags, tag])} style="color: {tag.color}">
                     <i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.name}
                   </button>

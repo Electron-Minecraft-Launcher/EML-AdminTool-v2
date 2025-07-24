@@ -39,28 +39,40 @@
 
 <div class="content">
   {@html content.markdownToHTML({ p: 13, h1: 20, h2: 18, h3: 16, h4: 14 })}
+
+  <div class="tags">
+    {#each tags as tag}
+      <span class="tag" style="color: {tag.color}; background-color: {backgroundColor(tag.color!)}">
+        <i class="fa-solid fa-hashtag"></i>{tag.name}
+      </span>
+    {/each}
+  </div>
 </div>
 
-{#each tags as tag}
-  <span class="tag" style="color: {tag.color}; background-color: {backgroundColor(tag.color!)}">
-    <i class="fa-solid fa-hashtag"></i>{tag.name}
-  </span>
-{/each}
-
 <style lang="scss">
+  p.label {
+    font-size: 13px !important;
+  }
+
   p.name {
     font-size: 17px;
     font-weight: 500;
   }
 
   div.content {
-    height: calc(100vh - 385px);
+    height: calc(100vh - 384px);
     margin-top: 20px;
     overflow-y: auto;
   }
 
+  div.tags {
+    margin-top: 10px;
+    display: flex;
+    gap: 0;
+  }
+
   span.tag {
-    display: inline-block;
+    display: block;
     margin-top: 5px;
     margin-right: 5px;
     padding: 5px 10px;

@@ -2,6 +2,8 @@
   import getEnv from '$lib/utils/env'
   import getUser from '$lib/utils/user'
   import News from '../../../../components/contents/News.svelte'
+  import NewsCategories from '../../../../components/contents/NewsCategories.svelte'
+  import NewsTags from '../../../../components/contents/NewsTags.svelte'
   import type { PageProps } from './$types'
 
   let { data }: PageProps = $props()
@@ -13,6 +15,12 @@
   let newsCategories = $state(data.newsCategories)
   let newsTags = $state(data.newsTags)
   let images = $state(data.images)
+
+  let showAddEditCategoryModal = $state(false)
+  let selectedCategoryId: string | null = $state(null)
+
+  let showAddEditTagModal = $state(false)
+  let selectedTagId: string | null = $state(null)
 
   $effect(() => {
     if (data.news) news = data.news
@@ -36,39 +44,39 @@
 
 {#if user.p_newsCategories}
   <section class="section">
-    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="secondary right"
       onclick={() => {
-        // addEditCategoryAction = { action: 'add' }
-        // showAddEditCategoryModal = true
+        selectedCategoryId = null
+        showAddEditCategoryModal = true
       }}
+      aria-label="Add News Category"
     >
       <i class="fa-solid fa-plus"></i>
     </button>
 
     <h3>Categories</h3>
 
-    <!-- <NewsCategories bind:data={data_} bind:showAddEditCategoryModal bind:addEditCategoryAction></NewsCategories> -->
+    <NewsCategories {newsCategories} bind:showAddEditCategoryModal bind:selectedCategoryId />
   </section>
 {/if}
 
 {#if user.p_newsTags}
   <section class="section">
-    <!-- svelte-ignore a11y_consider_explicit_label -->
     <button
       class="secondary right"
       onclick={() => {
-        // addEditTagAction = { action: 'add' }
-        // showAddEditTagModal = true
+        selectedTagId = null
+        showAddEditTagModal = true
       }}
+      aria-label="Add News Tag"
     >
       <i class="fa-solid fa-plus"></i>
     </button>
 
     <h3>Tags</h3>
 
-    <!-- <NewsTags bind:data={data_} bind:showAddEditTagModal bind:addEditTagAction></NewsTags> -->
+    <NewsTags {newsTags} bind:showAddEditTagModal bind:selectedTagId></NewsTags>
   </section>
 {/if}
 

@@ -86,7 +86,7 @@ Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nost
       latestVersion: 'Ultima versione',
       releasedOn: 'Rilasciata il',
       runUpdate: 'Aggiorna',
-      seeOnGithub: 'Vedi su GitHub...',
+      openGithub: 'Vedi su GitHub...',
       vpsAndDocker: 'VPS & Docker',
       dockerInfo: 'Informazioni Docker',
       storage: 'Spazio di archiviazione',

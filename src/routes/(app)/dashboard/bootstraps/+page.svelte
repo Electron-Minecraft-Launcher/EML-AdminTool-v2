@@ -106,7 +106,7 @@
       <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
       <div class="buttons">
         {#if data.bootstraps.linFile}
-          <button onclick={() => download('lin')}>
+          <button onclick={() => download('lin')} title="{( data.bootstraps.linFile as File_ ).name}">
             <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.linFile as File_).name}
           </button>
           <button class="remove" onclick={() => deleteBootstrap('lin')} aria-label="Delete Linux Bootstrap"><i class="fa-solid fa-trash"></i></button>

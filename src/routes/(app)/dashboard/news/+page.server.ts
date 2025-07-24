@@ -4,8 +4,21 @@ import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { db } from '$lib/server/db'
 import { getFiles } from '$lib/server/files'
-import { newsSchema } from '$lib/utils/validations'
-import { addNews, deleteNews, getNewsById, updateNews } from '$lib/server/news'
+import { newsCategorySchema, newsSchema, newsTagSchema } from '$lib/utils/validations'
+import {
+  addNews,
+  addNewsCategory,
+  addNewsTag,
+  deleteNews,
+  deleteNewsCategory,
+  deleteNewsTag,
+  getNewsById,
+  getNewsCategoryById,
+  getNewsTagById,
+  updateNews,
+  updateNewsCategory,
+  updateNewsTag
+} from '$lib/server/news'
 
 export const load = (async (event) => {
   const domain = event.url.origin
@@ -85,7 +98,7 @@ export const actions: Actions = {
           throw new BusinessError('News not found', NotificationCode.NOT_FOUND, 404)
         }
 
-        if (user.id !== news.id) {
+        if (user.id !== news.authorId) {
           throw new BusinessError('You are not the author of this news', NotificationCode.FORBIDDEN, 403)
         }
 
@@ -135,6 +148,136 @@ export const actions: Actions = {
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
     }
+  },
+
+  addEditCategory: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_newsCategories) {
+      throw redirect(303, '/dashboard')
+    }
+
+    const form = await event.request.formData()
+    const raw = {
+      categoryId: form.get('category-id'),
+      name: form.get('name')
+    }
+
+    const result = newsCategorySchema.safeParse(raw)
+    if (!result.success) {
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+    }
+
+    const { categoryId, name } = result.data
+
+    try {
+      if (categoryId) {
+        const category = await getNewsCategoryById(categoryId)
+        if (!category) {
+          console.warn(`News category with ID ${categoryId} not found`)
+          throw new BusinessError('News category not found', NotificationCode.NOT_FOUND, 404)
+        }
+
+        await updateNewsCategory(categoryId, name)
+      } else {
+        await addNewsCategory(name)
+      }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  deleteCategory: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_newsCategories) {
+      throw redirect(303, '/dashboard')
+    }
+
+    const form = await event.request.formData()
+    const categoryId = form.get('category-id')
+
+    try {
+      if (typeof categoryId !== 'string') return
+
+      await deleteNewsCategory(categoryId)
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  addEditTag: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_newsTags) {
+      throw redirect(303, '/dashboard')
+    }
+
+    const form = await event.request.formData()
+    const raw = {
+      tagId: form.get('tag-id'),
+      name: form.get('name'),
+      color: form.get('color')
+    }
+
+    const result = newsTagSchema.safeParse(raw)
+    if (!result.success) {
+      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+    }
+
+    const { tagId, name, color } = result.data
+
+    try {
+      if (tagId) {
+        const tag = await getNewsTagById(tagId)
+        if (!tag) {
+          console.warn(`News tag with ID ${tagId} not found`)
+          throw new BusinessError('News tag not found', NotificationCode.NOT_FOUND, 404)
+        }
+
+        await updateNewsTag(tagId, name, color)
+      } else {
+        await addNewsTag(name, color)
+      }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  deleteTag: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_newsTags) {
+      throw redirect(303, '/dashboard')
+    }
+
+    const form = await event.request.formData()
+    const tagId = form.get('tag-id')
+
+    try {
+      if (typeof tagId !== 'string') return
+
+      await deleteNewsTag(tagId)
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
   }
 }
+
 

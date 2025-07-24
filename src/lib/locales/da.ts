@@ -86,7 +86,7 @@ Hvis du vil hjælpe med at oversætte EML AdminTool, kan du finde JSON-filerne p
       latestVersion: `Seneste version`,
       releasedOn: `Udgivet den`,
       runUpdate: `Opdater`,
-      seeOnGithub: `Se på GitHub...`,
+      openGithub: `Se på GitHub...`,
       vpsAndDocker: `VPS & Docker`,
       dockerInfo: `Docker information`,
       storage: `Lagring`,
