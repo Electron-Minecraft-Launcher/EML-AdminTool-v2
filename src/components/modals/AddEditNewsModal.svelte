@@ -20,6 +20,8 @@
   import { NotificationCode } from '$lib/utils/notifications'
   import NewsViewer from '../contents/NewsViewer.svelte'
   import getUser from '$lib/utils/user'
+  import { callAction } from '$lib/utils/call'
+  import { invalidateAll } from '$app/navigation'
 
   interface Props {
     show: boolean
@@ -90,50 +92,42 @@
   }
 
   async function uploadImages() {
-    const imagesUpload = document.getElementById('images') as HTMLInputElement
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.multiple = true
 
-    imagesUpload.click()
+    input.click()
 
     await new Promise((resolve) => {
-      imagesUpload!.addEventListener('change', resolve, { once: true })
+      input.addEventListener('change', resolve, { once: true })
     })
 
-    if (!imagesUpload.files) return
-    let files: File[] = []
-
-    for (let i = 0; i < imagesUpload.files.length; i++) {
-      files.push(imagesUpload.files.item(i)!)
+    const formData = new FormData()
+    if (input.files) {
+      for (const file of Array.from(input.files)) {
+        formData.append('images', file)
+      }
     }
 
-    upload(files)
-  }
+    if (formData.get('images') === null) return
 
-  async function upload(files: File[]) {
-    const imagesUpload = document.getElementById('images') as HTMLInputElement
-
-    // ;(await apiNewsService.uploadImages(files)).subscribe({
-    //   next: (res) => {
-    //     data.images = res.body.data!
-    //   }
-    // })
-
-    if (imagesUpload) {
-      imagesUpload.value = ''
-      imagesUpload.files = null
-    }
+    await callAction({ url: '/dashboard/news', action: 'uploadImages', formData }, $l)
+    invalidateAll()
   }
 
   async function copy(image: File_) {
     navigator.clipboard.writeText(`![${image.name}](${image.url})`)
   }
 
-  async function deleteImage(image: File_) {
-    // if (!confirm('Are you sure you want to delete this image? It will not be available in the news anymore.')) return
-    // ;(await apiNewsService.deleteImages([image.name])).subscribe({
-    //   next: (res) => {
-    //     data.images = res.body.data!
-    //   }
-    // })
+  async function deleteImage(imageName: string) {
+    if (!confirm('Are you sure you want to delete this image? It will not be available in the news anymore.')) return
+    
+    const formData = new FormData()
+    formData.set('image-name', imageName)
+
+    await callAction({ url: '/dashboard/news', action: 'deleteImage', formData }, $l)
+    invalidateAll()
   }
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
@@ -169,33 +163,34 @@
       <div class="img" style="background-image: url('{image.url}')">
         <div>
           <button onclick={() => copy(image)} aria-label="Copy image URL"><i class="fa-solid fa-copy"></i></button>
-          <button class="remove" onclick={() => deleteImage(image)} aria-label="Delete image"><i class="fa-solid fa-trash"></i></button>
+          <button class="remove" onclick={() => deleteImage(image.name)} aria-label="Delete image"><i class="fa-solid fa-trash"></i></button>
         </div>
       </div>
     {:else}
       <p class="nothing">No image</p>
     {/each}
-    {#if images.length % 2 !== 0}
+    {#if images?.length % 2 !== 0}
       <div class="img"></div>
     {/if}
   </div>
 
   <button class="secondary" onclick={uploadImages}><i class="fa-solid fa-file-arrow-up"></i>&nbsp;&nbsp;Upload images...</button>
-  <input type="file" multiple name="images" id="images" accept="image/*" style="display: none" />
 </div>
 
 <!--* Modal -->
 
-<svelte:body onclick={(e) => {
-  // @ts-ignore
+<svelte:body
+  onclick={(e) => {
+    // @ts-ignore
     if (addCategoriesDropdownOpen && e.target && !e.target.closest('button.add.categories')) {
       addCategoriesDropdownOpen = false
     }
-  // @ts-ignore
+    // @ts-ignore
     if (addTagsDropdownOpen && e.target && !e.target.closest('button.add.tags')) {
       addTagsDropdownOpen = false
     }
-}}/>
+  }}
+/>
 
 <ModalTemplate size={'m'} bind:show translateX={'-23%'}>
   {#if showLoader}
@@ -239,7 +234,7 @@
           {#if addCategoriesDropdownOpen}
             <div class="add-category-dropdown" transition:slide={{ duration: 200 }}>
               {#each newsCategories as category}
-                {#if !categories.find((cat) => cat.id === category.id) /* Cannot use .includes because of object reference */}
+                {#if !categories.find((cat) => cat.id === category.id)}
                   <button type="button" onclick={() => (categories = [...categories, category])}>
                     <i class="fa-solid fa-tag"></i>&nbsp;&nbsp;{category.name}
                   </button>
@@ -273,7 +268,7 @@
           {#if addTagsDropdownOpen}
             <div class="add-tags-dropdown" transition:slide={{ duration: 200 }}>
               {#each newsTags as tag}
-                {#if !tags.find((t) => t.id === tag.id) /* Cannot use .includes because of object reference */}
+                {#if !tags.find((t) => t.id === tag.id)}
                   <button type="button" onclick={() => (tags = [...tags, tag])} style="color: {tag.color}">
                     <i class="fa-solid fa-hashtag"></i>&nbsp;&nbsp;{tag.name}
                   </button>

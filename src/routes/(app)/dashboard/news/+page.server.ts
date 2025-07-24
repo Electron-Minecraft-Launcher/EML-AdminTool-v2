@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { db } from '$lib/server/db'
-import { getFiles } from '$lib/server/files'
+import { deleteFile, getFiles, uploadFile } from '$lib/server/files'
 import { newsCategorySchema, newsSchema, newsTagSchema } from '$lib/utils/validations'
 import {
   addNews,
@@ -19,6 +19,8 @@ import {
   updateNewsCategory,
   updateNewsTag
 } from '$lib/server/news'
+import path_ from 'path'
+import { randomBytes } from 'crypto'
 
 export const load = (async (event) => {
   const domain = event.url.origin
@@ -144,6 +146,58 @@ export const actions: Actions = {
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  uploadImages: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_news) {
+      throw redirect(303, '/dashboard')
+    }
+
+    const formData = await event.request.formData()
+    const images = formData.getAll('images')
+
+    try {
+      for (const image of images) {
+        if (!(image instanceof File)) continue
+ 
+        const newName = `${randomBytes(8).toString('hex')}${path_.extname(image.name)}`
+
+        const newImage = new File([image], newName, { type: image.type })
+
+        await uploadFile('images', '', newImage)
+      }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
+  deleteImage: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.p_news) {
+      throw redirect(303, '/dashboard')
+    }
+
+    const form = await event.request.formData()
+    const imageName = form.get('image-name')
+
+    try {
+      if (typeof imageName !== 'string') return
+
+      await deleteFile('images', imageName)
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
       throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
@@ -279,5 +333,7 @@ export const actions: Actions = {
     }
   }
 }
+
+
 
 

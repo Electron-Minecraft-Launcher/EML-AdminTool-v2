@@ -158,9 +158,6 @@
       </button>
     {/if}
 
-    <!-- Just for sending form in multipart -->
-    <!-- <input type="file" name="file" id="file" hidden style="display: none" />  -->
-
     <div class="actions">
       <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
       <button type="submit" class="primary" {disabled}>{$l.main.save}</button>
