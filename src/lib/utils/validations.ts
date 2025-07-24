@@ -111,13 +111,13 @@ export const editFileSchema = z.object({
   content: z.string()
 })
 
-export const changeLoaderSchema = z.object({
+export const loaderSchema = z.object({
   type: z.enum(LoaderType),
   minecraftVersion: z.string(),
   loaderVersion: z.string()
 })
 
-export const changeBootstrapsSchema = z.object({
+export const bootstrapsSchema = z.object({
   newVersion: z.string(),
   name: z
     .string()
@@ -185,6 +185,21 @@ export const newsTagSchema = z.object({
     .transform((val) => val.trim())
     .refine((val) => val.length >= 1, { message: NotificationCode.NEWS_TAG_NAME_TOO_SHORT })
     .refine((val) => val.length <= 64, { message: NotificationCode.NEWS_TAG_NAME_TOO_LONG }),
-  color: z
-    .string()
+  color: z.string()
 })
+
+export const backgroundSchema = z
+  .object({
+    backgroundId: z.string().optional(),
+    name: z
+      .string()
+      .transform((val) => val.trim())
+      .refine((val) => val.length >= 1, { message: NotificationCode.BACKGROUND_NAME_TOO_SHORT })
+      .refine((val) => val.length <= 255, { message: NotificationCode.BACKGROUND_NAME_TOO_LONG }),
+    status: z.enum(['ACTIVE', 'INACTIVE'], { error: NotificationCode.BACKGROUND_INVALID_STATUS }),
+    file: z.instanceof(File).optional().or(z.string().optional().or(z.null()))
+  })
+  .refine((schema) => !(!schema.backgroundId && !schema.file), {
+    message: NotificationCode.MISSING_INPUT
+  })
+

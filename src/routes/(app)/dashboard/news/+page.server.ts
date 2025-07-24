@@ -167,7 +167,6 @@ export const actions: Actions = {
         if (!(image instanceof File)) continue
  
         const newName = `${randomBytes(8).toString('hex')}${path_.extname(image.name)}`
-
         const newImage = new File([image], newName, { type: image.type })
 
         await uploadFile('images', '', newImage)

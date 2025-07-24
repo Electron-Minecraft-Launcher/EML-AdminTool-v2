@@ -31,6 +31,7 @@ You will need to disable maintenance manually.`
 {#if showChangeMaintenanceStatusModal}
   <ChangeMaintenanceStatusModal bind:show={showChangeMaintenanceStatusModal} maintenance={data.maintenance} />
 {/if}
+
 <h2>Maintenance</h2>
 
 <section class="section">
@@ -38,7 +39,7 @@ You will need to disable maintenance manually.`
     ><i class="fa-solid fa-ellipsis"></i></button
   >
 
-  <h3>Maintenance status</h3>
+  <h3>Maintenance</h3>
 
   <div class="container">
     <div>

@@ -10,10 +10,11 @@
   import { addNotification } from '$lib/stores/notifications'
   import { NotificationCode } from '$lib/utils/notifications'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
+  import type { PageData } from '../../routes/(app)/dashboard/bootstraps/$types'
 
   interface Props {
     show: boolean
-    bootstraps: { version?: string; winFile: File_ | null; macFile: File_ | null; linFile: File_ | null }
+    bootstraps: PageData['bootstraps']
   }
 
   let { show = $bindable(), bootstraps }: Props = $props()
@@ -87,7 +88,6 @@
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
-    formData.set('new-version', version)
     formData.set('name', env.name)
     formData.set('win-file', winFile ?? '')
     formData.set('mac-file', macFile ?? '')
@@ -117,10 +117,10 @@
   <form method="POST" action="?/changeBootstraps" use:enhance={enhanceForm} enctype="multipart/form-data">
     <h2>Change bootstraps and version</h2>
 
-    <label for="version" style="margin-top: 0">
+    <label for="new-version" style="margin-top: 0">
       New version&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={versionInfo} style="cursor: help"></i>
     </label>
-    <input type="text" id="version" bind:value={version} />
+    <input type="text" id="new-version" name="new-version" bind:value={version} />
 
     <p class="label" style="margin-top: 20px"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
     {#if !win || win === ''}

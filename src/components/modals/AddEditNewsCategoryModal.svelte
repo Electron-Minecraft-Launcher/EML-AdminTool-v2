@@ -67,7 +67,7 @@
   {/if}
   
   <form method="POST" action="?/addEditCategory" use:enhance={enhanceForm}>
-    <h2>{selectedCategoryId ? 'Create a category' : 'Edit category'}</h2>
+    <h2>{selectedCategoryId ? 'Edit category' : 'Create a category'}</h2>
 
     <label for="name">Category name</label>
     <input type="text" id="name" name="name" bind:value={name} />

@@ -112,21 +112,21 @@ model News {
 model NewsCategory {
   id        String   @id @default(cuid(2))
   name      String   @unique
-  news      News[]   
+  news      News[]
   createdAt DateTime @default(now())
 }
 
 model NewsTag {
-  id     String  @id @default(cuid(2))
-  name   String  @unique
-  color  String
-  news   News[]  
+  id    String @id @default(cuid(2))
+  name  String @unique
+  color String
+  news  News[]
 }
 
 model Background {
   id        String           @id @default(cuid(2))
   name      String           @unique
-  fileUrl   String
+  file      Json
   status    BackgroundStatus @default(ACTIVE)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt

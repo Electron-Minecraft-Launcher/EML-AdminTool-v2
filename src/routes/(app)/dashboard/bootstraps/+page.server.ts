@@ -4,7 +4,7 @@ import { db } from '$lib/server/db'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import type { File as File_ } from '$lib/utils/types'
-import { changeBootstrapsSchema } from '$lib/utils/validations'
+import { bootstrapsSchema } from '$lib/utils/validations'
 import { getBootstraps, updateBootstraps } from '$lib/server/bootstraps'
 import semver from 'semver'
 import { deleteFile, uploadFile } from '$lib/server/files'
@@ -66,7 +66,7 @@ export const actions: Actions = {
       linFile: form.get('lin-file')
     }
 
-    const result = changeBootstrapsSchema.safeParse(raw)
+    const result = bootstrapsSchema.safeParse(raw)
     if (!result.success) {
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }

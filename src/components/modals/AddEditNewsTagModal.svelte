@@ -48,7 +48,7 @@
   {/if}
   
   <form method="POST" action="?/addEditTag" use:enhance={enhanceForm}>
-    <h2>{selectedTagId ? 'Create a tag' : 'Edit tag'}</h2>
+    <h2>{selectedTagId ? 'Edit tag' : 'Create a tag'}</h2>
 
     <label for="name">Tag name</label>
     <input type="text" id="name" name="name" bind:value={name} />

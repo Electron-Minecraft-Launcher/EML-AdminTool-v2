@@ -77,6 +77,11 @@ export default {
     [NotificationCode.NEWS_TAG_NAME_TOO_LONG]: `News tag name must be at most 64 characters long.`,
     [NotificationCode.NEWS_TAG_ALREADY_EXISTS]: `News tag already exists.`,
 
+    [NotificationCode.BACKGROUND_NAME_TOO_SHORT]: `Background name must be at least 1 character long.`,
+    [NotificationCode.BACKGROUND_NAME_TOO_LONG]: `Background name must be at most 255 characters long.`,
+    [NotificationCode.BACKGROUND_INVALID_STATUS]: `Background status is invalid.`,
+    [NotificationCode.BACKGROUND_ALREADY_EXISTS]: `Background with this name already exists.`,
+
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
