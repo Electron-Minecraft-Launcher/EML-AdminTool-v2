@@ -22,6 +22,10 @@ declare global {
      */
     formatDate(): string
     /**
+     * Format the date to a short human-readable string.
+     */
+    shortFormatDate(): string
+    /**
      * Format the date to a string suitable for input fields.
      */
     formatDateInput(): string
@@ -269,6 +273,15 @@ Date.prototype.formatDate = function (): string {
   return dateFormatter.format(this)
 }
 
+Date.prototype.formatDate = function (): string {
+  const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+  return dateFormatter.format(this)
+}
+
 Date.prototype.formatDateInput = function (): string {
   let year = this.getFullYear()
   let month = ('0' + (this.getMonth() + 1)).slice(-2)
@@ -277,3 +290,4 @@ Date.prototype.formatDateInput = function (): string {
   let minutes = ('0' + this.getMinutes()).slice(-2)
   return `${year}-${month}-${day}T${hours}:${minutes}`
 }
+

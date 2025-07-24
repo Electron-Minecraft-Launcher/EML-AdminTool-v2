@@ -12,7 +12,6 @@
 
   const env = getEnv()
 
-  // let bootstraps = $state(data.bootstraps)
   let showLoader = $state(false)
   let showChangeBootstrapFileModal: boolean = $state(false)
 
@@ -35,7 +34,7 @@
     }
   }
 
-  async function deleteFile(platform: 'win' | 'mac' | 'lin') {
+  async function deleteBootstrap(platform: 'win' | 'mac' | 'lin') {
     const loaderPlatformName = { win: 'Windows', mac: 'macOS', lin: 'Linux' }[platform]
     if (!confirm(`Are you sure you want to delete ${loaderPlatformName} Bootstrap?`)) return
 
@@ -82,7 +81,7 @@
           <button onclick={() => download('win')}>
             <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.winFile as File_).name}
           </button>
-          <button class="remove" onclick={() => deleteFile('win')} aria-label="Delete Windows Bootstrap"><i class="fa-solid fa-trash"></i></button>
+          <button class="remove" onclick={() => deleteBootstrap('win')} aria-label="Delete Windows Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
           <p class="no-link">-</p>
         {/if}
@@ -96,7 +95,7 @@
           <button onclick={() => download('mac')}>
             <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.macFile as File_).name}
           </button>
-          <button class="remove" onclick={() => deleteFile('mac')} aria-label="Delete macOS Bootstrap"><i class="fa-solid fa-trash"></i></button>
+          <button class="remove" onclick={() => deleteBootstrap('mac')} aria-label="Delete macOS Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
           <p class="no-link">-</p>
         {/if}
@@ -110,7 +109,7 @@
           <button onclick={() => download('lin')}>
             <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.linFile as File_).name}
           </button>
-          <button class="remove" onclick={() => deleteFile('lin')} aria-label="Delete Linux Bootstrap"><i class="fa-solid fa-trash"></i></button>
+          <button class="remove" onclick={() => deleteBootstrap('lin')} aria-label="Delete Linux Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
           <p class="no-link">-</p>
         {/if}

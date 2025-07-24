@@ -6,8 +6,8 @@ generator client {
 
 enum UserStatus {
   ACTIVE // User is active and can log in
-  PENDING // User is pending activation by an admin
-  SPAM // User is flagged as spam (wrong PIN)
+  PENDING // User is pending activation by an admin, can log in
+  SPAM // User is flagged as spam (wrong PIN), can log in
   DELETED // User is deleted and cannot log in
 }
 

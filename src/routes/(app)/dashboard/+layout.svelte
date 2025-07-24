@@ -34,7 +34,7 @@
   div.container {
     display: flex;
     flex-direction: row;
-    min-height: 100vh;
+    min-height: calc(100vh - 107px);
     flex: 1;
   }
 
@@ -51,5 +51,6 @@
   div.content {
     padding: 30px 100px;
     flex: 1;
+    position: relative;
   }
 </style>

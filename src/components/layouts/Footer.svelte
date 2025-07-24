@@ -16,10 +16,13 @@
 
 <style lang="scss">
   footer {
-    width: 100%;
+    width: calc(100% - 200px);
     text-align: center;
     margin-top: 75px;
-    position: relative;
+    padding-bottom: 30px;
+    position: absolute;
+    bottom: -107px;
+    // position: relative;
     z-index: 0;
   }
 
