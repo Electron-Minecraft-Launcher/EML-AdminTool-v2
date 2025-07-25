@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { PageProps, SubmitFunction } from './$types'
-  import { io } from 'socket.io-client'
   import { fade } from 'svelte/transition'
   import { onMount } from 'svelte'
   import getEnv from '$lib/utils/env'
