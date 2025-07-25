@@ -56,7 +56,6 @@ export const actions: Actions = {
 
     const result = backgroundSchema.safeParse(raw)
     if (!result.success) {
-      console.log(result.error)
       return fail(400, { failure: JSON.parse(result.error.message)[0].message })
     }
 

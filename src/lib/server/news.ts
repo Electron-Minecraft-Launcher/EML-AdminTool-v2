@@ -3,6 +3,22 @@ import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { Prisma, type News } from '@prisma/client'
 
+export async function getNews(limit: number = 20) {
+  let news
+  try {
+    news = await db.news.findMany({
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: { author: { select: { id: true, username: true } } }
+    })
+  } catch (err) {
+    console.error('Failed to get news:', err)
+    throw new ServerError('Failed to get news', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+
+  return news
+}
+
 export async function getNewsById(newsId: string) {
   let news
   try {

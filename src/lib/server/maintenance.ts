@@ -3,6 +3,17 @@ import { NotificationCode } from '$lib/utils/notifications'
 import type { Maintenance } from '@prisma/client'
 import { db } from './db'
 
+export async function getMaintenance() {
+  try {
+    const maintenance = await db.maintenance.findUnique({ where: { id: '1' } })
+    return maintenance
+  } catch (err) {
+    console.error('Failed to get maintenance:', err)
+    throw new ServerError('Failed to get maintenance', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+}
+
+
 export async function updateMaintenance(maintenance: Maintenance) {
   let existingMaintenance
   try {
@@ -23,4 +34,5 @@ export async function updateMaintenance(maintenance: Maintenance) {
     throw new ServerError('Failed to update maintenance', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
+
 

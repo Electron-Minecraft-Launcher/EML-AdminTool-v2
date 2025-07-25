@@ -80,7 +80,6 @@ export async function checkVanillaLoader(minecraftVersion: string, loaderVersion
 export async function checkForgeLoader(minecraftVersion: string, loaderVersion: string) {
   if (loaderVersion.split('-')[0].replace('_', '-') !== minecraftVersion) {
     console.warn('Loader version and Minecraft version mismatch:', loaderVersion, minecraftVersion)
-    console.log(loaderVersion, minecraftVersion)
     throw new BusinessError('Loader version and Minecraft version mismatch', NotificationCode.FILESUPDATER_VERSIONS_MISMATCH, 400)
   }
 

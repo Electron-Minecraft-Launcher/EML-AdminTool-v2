@@ -4,6 +4,18 @@ import { BackgroundStatus, Prisma } from '@prisma/client'
 import { db } from './db'
 import type { File as File_ } from '../utils/types.d'
 
+export async function getActiveBackground() {
+  let background
+  try {
+    background = await db.background.findFirst({ where: { status: BackgroundStatus.ACTIVE } })
+  } catch (err) {
+    console.error('Failed to get active background:', err)
+    throw new ServerError('Failed to get active background', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+
+  return background
+}
+
 export async function getBackgroundById(backgroundId: string) {
   let background
   try {

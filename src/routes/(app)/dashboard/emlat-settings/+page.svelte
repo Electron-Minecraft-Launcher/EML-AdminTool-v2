@@ -21,6 +21,9 @@
 
   const env = getEnv()
 
+  const updateWarning = `Are you sure you want to update EML AdminTool?
+Please note that EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 1 minutes downtime).`
+
   let showLoader = $state(false)
   let showEditAdminToolModal = $state(false)
 
@@ -39,10 +42,7 @@
   }
 
   async function update() {
-    //     if (
-    //       confirm(`Are you sure you want to update EML AdminTool?
-    // Please note that EML AdminTool, and therefore the Launchers too, will be unavailable during the update (about 1 minutes downtime).`)
-    //     ) {
+    if (!confirm(updateWarning)) return
     //       const socket = io({ auth: { token: cookiesService.get('JWT') } })
     //       socket.emit('update')
     //       showLoader = true
@@ -70,7 +70,6 @@
     //         notificationsService.update({ type: 'ERROR', code: `updating_${message}` })
     //         document.body.style.overflow = 'auto'
     //       })
-    //     }
   }
 
   async function reset() {
@@ -229,7 +228,9 @@
       </div>
       <div>
         <p class="release-name"><b>EML AdminTool {data.update.latestVersion}</b></p>
-        <p class="release-date">{$l.dashboard.emlatSettings.releasedOn} {new Date(data.update.releaseDate).toLocaleDateString()} – 
+        <p class="release-date">
+          {$l.dashboard.emlatSettings.releasedOn}
+          {new Date(data.update.releaseDate).toLocaleDateString()} –
           <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data.update.latestVersion}" target="_blank">
             {$l.dashboard.emlatSettings.openGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px"></i>
           </a>

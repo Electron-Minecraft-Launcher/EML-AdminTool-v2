@@ -4,6 +4,11 @@ generator client {
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 enum UserStatus {
   ACTIVE // User is active and can log in
   PENDING // User is pending activation by an admin, can log in
@@ -28,9 +33,11 @@ enum BackgroundStatus {
   INACTIVE
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+enum StatAction {
+  STARTUP
+  LOGIN
+  LAUNCH
+  DEVTOOLS
 }
 
 model Environment {
@@ -133,10 +140,10 @@ model Background {
 }
 
 model Stat {
-  id        String   @id @default(cuid(2))
-  type      String
-  value     Int
-  createdAt DateTime @default(now())
+  id        String     @id @default(cuid(2))
+  action    StatAction
+  value     String?
+  createdAt DateTime   @default(now())
 }
 
 model ExpiredToken {
