@@ -147,7 +147,7 @@ export async function updateLoader(loader: Partial<Loader>) {
 
 async function fetchVanillaVersions() {
   try {
-    const response = await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest_v2.json`, { headers: { Connection: 'close' } })
+    const response = await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest.json`, { headers: { Connection: 'close' } })
     if (!response.ok) {
       console.error('Failed to fetch Minecraft versions:', response.statusText)
       throw new ServerError('Failed to fetch Minecraft versions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
@@ -193,7 +193,7 @@ async function fetchForgePromos() {
 
 async function getForgeMeta(version: string) {
   try {
-    const response = await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`, {
+    const response = await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`, {
       headers: { Connection: 'close' }
     })
     if (!response.ok) {
@@ -209,10 +209,9 @@ async function getForgeMeta(version: string) {
 
 async function getForgeArtifactSize(version: string, format: string, ext: string) {
   try {
-    const response = await fetch(
-      `https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format.toLowerCase()}.${ext}`,
-      { headers: { Connection: 'close' } }
-    )
+    const response = await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}`, {
+      headers: { Connection: 'close' }
+    })
     if (!response.ok) {
       console.error('Failed to fetch Forge artifact size:', response.statusText)
       throw new ServerError('Failed to fetch Forge artifact size', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
@@ -227,7 +226,7 @@ async function getForgeArtifactSize(version: string, format: string, ext: string
 async function getForgeArtifactSha1(version: string, format: string, ext: string) {
   try {
     const response = await fetch(
-      `https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format.toLowerCase()}.${ext}.sha1`,
+      `https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`,
       { headers: { Connection: 'close' } }
     )
     if (!response.ok) {
