@@ -1,3 +1,5 @@
+import { ServerError } from '$lib/utils/errors'
+import { NotificationCode } from '$lib/utils/notifications'
 import pkg from '../../../package.json'
 
 export async function getUpdate() {
@@ -5,12 +7,14 @@ export async function getUpdate() {
 
   try {
     const response = await fetch('https://api.github.com/repos/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/latest')
-    data = (await response.json()) as { tag_name: string; published_at: string; body: string }
-    //! DEV ONLY: Uncomment the next two lines and comment the previous two lines to prevent rate limiting during development
-    // const response = new Response() //! DEV ONLY: Prevent rate limit
-    // response.ok = false //! DEV ONLY: Prevent rate limit
+    if (response.ok) {
+      data = (await response.json()) as { tag_name: string; published_at: string; body: string }
+    } else {
+      console.error('Failed to fetch latest release:', response.statusText)
+      data = { tag_name: pkg.version, published_at: Date.now().toString().split('T')[0], body: '' }
+    }
   } catch (err) {
-    console.error(err)
+    console.error('Failed to fetch latest release:', err)
     data = { tag_name: pkg.version, published_at: Date.now().toString().split('T')[0], body: '' }
   }
 
@@ -23,3 +27,4 @@ export async function getUpdate() {
 
   return { currentVersion, latestVersion, releaseDate, logoUrl, changelogs }
 }
+

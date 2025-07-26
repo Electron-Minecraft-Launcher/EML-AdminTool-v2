@@ -7,6 +7,7 @@
   import { l } from '$lib/stores/language'
   import { callAction } from '$lib/utils/call'
   import { invalidateAll } from '$app/navigation'
+  import { addNotification } from '$lib/stores/notifications'
 
   let { data }: PageProps = $props()
 
@@ -20,7 +21,12 @@
     const file = data.bootstraps[`${platform}File`] as File_
     try {
       const response = await fetch(file.url)
-      if (!response.ok) throw new Error('Failed to download file')
+      if (!response.ok) {
+        console.error('Failed to download file:', response.statusText)
+        const message = $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+        return
+      }
 
       const blob = await response.blob()
       const downloadUrl = window.URL.createObjectURL(blob)
@@ -29,8 +35,10 @@
       a.download = file.name
       a.click()
       window.URL.revokeObjectURL(downloadUrl)
-    } catch (error) {
-      // TODO
+    } catch (err) {
+      console.error('Failed to download file:', err)
+      const message = $l.notifications.INTERNAL_SERVER_ERROR
+      addNotification('ERROR', message)
     }
   }
 
@@ -81,7 +89,9 @@
           <button onclick={() => download('win')}>
             <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.winFile as File_).name}
           </button>
-          <button class="remove" onclick={() => deleteBootstrap('win')} aria-label="Delete Windows Bootstrap"><i class="fa-solid fa-trash"></i></button>
+          <button class="remove" onclick={() => deleteBootstrap('win')} aria-label="Delete Windows Bootstrap"
+            ><i class="fa-solid fa-trash"></i></button
+          >
         {:else}
           <p class="no-link">-</p>
         {/if}
@@ -106,7 +116,7 @@
       <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
       <div class="buttons">
         {#if data.bootstraps.linFile}
-          <button onclick={() => download('lin')} title="{( data.bootstraps.linFile as File_ ).name}">
+          <button onclick={() => download('lin')} title={(data.bootstraps.linFile as File_).name}>
             <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.linFile as File_).name}
           </button>
           <button class="remove" onclick={() => deleteBootstrap('lin')} aria-label="Delete Linux Bootstrap"><i class="fa-solid fa-trash"></i></button>

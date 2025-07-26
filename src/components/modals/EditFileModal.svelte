@@ -42,13 +42,21 @@
   onMount(async () => {
     if (fileToEdit.url) {
       try {
-        content = await (await fetch(fileToEdit.url)).text()
+        const response = await fetch(fileToEdit.url)
+        if (!response.ok) {
+          console.error('Failed to download file:', response.statusText)
+          const message = $l.notifications.INTERNAL_SERVER_ERROR
+          addNotification('ERROR', message)
+          return
+        }
+        content = await response.text()
       } catch (err) {
-        console.error(err)
-        // TODO
+        console.error('Failed to download file:', err)
+        const message = $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
       }
     }
-    
+
     const state = EditorState.create({
       doc: content,
       extensions: [

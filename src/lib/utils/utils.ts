@@ -19,6 +19,8 @@ export async function pingServerAndReload(retrying: number = 5) {
       if (response.ok) {
         goto('/')
         return
+      } else {
+        console.error('Ping failed:', response.statusText)
       }
     } catch (err) {
       console.error('Ping failed, retrying...', err)

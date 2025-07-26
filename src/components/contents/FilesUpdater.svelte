@@ -10,6 +10,8 @@
   import CreateFileModal from '../modals/CreateFileModal.svelte'
   import EditFileModal from '../modals/EditFileModal.svelte'
   import { callAction } from '$lib/utils/call'
+  import { NotificationCode } from '$lib/utils/notifications'
+  import { addNotification } from '$lib/stores/notifications'
 
   interface Props {
     currentPath: string
@@ -79,7 +81,12 @@
     try {
       const file = selectedItems[0]
       const response = await fetch(file.url)
-      if (!response.ok) throw new Error('Failed to download file')
+      if (!response.ok) {
+        console.error('Failed to download file:', response.statusText)
+        const message = $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+        return
+      }
 
       const blob = await response.blob()
       const downloadUrl = window.URL.createObjectURL(blob)
@@ -89,9 +96,10 @@
       a.click()
       window.URL.revokeObjectURL(downloadUrl)
       selectedItems = [file]
-    } catch (error) {
-      // TODO
-      // getData()
+    } catch (err) {
+      console.error('Failed to download file:', err)
+      const message = $l.notifications.INTERNAL_SERVER_ERROR
+      addNotification('ERROR', message)
     }
   }
 
@@ -101,7 +109,9 @@
     ready = false
 
     const formData = new FormData()
-    for (const file of selectedItems) {formData.append('paths', `${file.path}${file.name}`)}
+    for (const file of selectedItems) {
+      formData.append('paths', `${file.path}${file.name}`)
+    }
 
     files = (await callAction({ url: '/dashboard/files-updater', action: 'deleteFiles', formData }, $l)).data.files as File_[]
     selectedItems = []

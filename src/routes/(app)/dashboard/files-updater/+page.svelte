@@ -9,6 +9,7 @@
   import getUser from '$lib/utils/user'
   import { callAction } from '$lib/utils/call'
   import { l } from '$lib/stores/language'
+  import { addNotification } from '$lib/stores/notifications'
 
   let { data }: PageProps = $props()
 
@@ -50,11 +51,18 @@
     filesReady = false
     try {
       const response = await fetch('/api/files-updater')
-      if (!response.ok) throw new Error('Failed to fetch files')
+      if (!response.ok) {
+        console.error('Failed to download file:', response.statusText)
+        const message = $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+        return
+      }
       files = (await response.json()).files as File_[]
       filesReady = true
     } catch (err) {
-      // TODO
+      console.error('Failed to download file:', err)
+      const message = $l.notifications.INTERNAL_SERVER_ERROR
+      addNotification('ERROR', message)
     }
   }
 

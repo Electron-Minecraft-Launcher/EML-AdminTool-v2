@@ -147,7 +147,12 @@ export async function updateLoader(loader: Partial<Loader>) {
 
 async function fetchVanillaVersions() {
   try {
-    return await (await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest.json`, { headers: { Connection: 'close' } })).json()
+    const response = await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest_v2.json`, { headers: { Connection: 'close' } })
+    if (!response.ok) {
+      console.error('Failed to fetch Minecraft versions:', response.statusText)
+      throw new ServerError('Failed to fetch Minecraft versions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+    }
+    return await response.json()
   } catch (err) {
     console.error('Failed to fetch Minecraft versions:', err)
     throw new ServerError('Failed to fetch Minecraft versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -156,9 +161,14 @@ async function fetchVanillaVersions() {
 
 async function fetchForgeVersions() {
   try {
-    return await (
-      await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`, { headers: { Connection: 'close' } })
-    ).json()
+    const response = await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`, {
+      headers: { Connection: 'close' }
+    })
+    if (!response.ok) {
+      console.error('Failed to fetch Forge versions:', response.statusText)
+      throw new ServerError('Failed to fetch Forge versions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+    }
+    return await response.json()
   } catch (err) {
     console.error('Failed to fetch Forge versions:', err)
     throw new ServerError('Failed to fetch Forge versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -167,9 +177,14 @@ async function fetchForgeVersions() {
 
 async function fetchForgePromos() {
   try {
-    return await (
-      await fetch(`https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json`, { headers: { Connection: 'close' } })
-    ).json()
+    const response = await fetch(`https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json`, {
+      headers: { Connection: 'close' }
+    })
+    if (!response.ok) {
+      console.error('Failed to fetch Forge promotions:', response.statusText)
+      throw new ServerError('Failed to fetch Forge promotions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+    }
+    return await response.json()
   } catch (err) {
     console.error('Failed to fetch Forge promotions:', err)
     throw new ServerError('Failed to fetch Forge promotions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -178,9 +193,14 @@ async function fetchForgePromos() {
 
 async function getForgeMeta(version: string) {
   try {
-    return await (
-      await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`, { headers: { Connection: 'close' } })
-    ).json()
+    const response = await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`, {
+      headers: { Connection: 'close' }
+    })
+    if (!response.ok) {
+      console.error('Failed to fetch Forge meta:', response.statusText)
+      throw new ServerError('Failed to fetch Forge meta', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+    }
+    return await response.json()
   } catch (err) {
     console.error('Failed to fetch Forge meta:', err)
     throw new ServerError('Failed to fetch Forge meta', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -189,13 +209,15 @@ async function getForgeMeta(version: string) {
 
 async function getForgeArtifactSize(version: string, format: string, ext: string) {
   try {
-    return await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}`, {
-      headers: { Connection: 'close' }
-    })
-      .then((res) => Number(res.headers.get('Content-Length') ?? 0))
-      .catch((err) => {
-        throw err
-      })
+    const response = await fetch(
+      `https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format.toLowerCase()}.${ext}`,
+      { headers: { Connection: 'close' } }
+    )
+    if (!response.ok) {
+      console.error('Failed to fetch Forge artifact size:', response.statusText)
+      throw new ServerError('Failed to fetch Forge artifact size', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+    }
+    return Number(response.headers.get('Content-Length') ?? 0)
   } catch (err) {
     console.error('Failed to fetch Forge artifact size:', err)
     throw new ServerError('Failed to fetch Forge artifact size', err, NotificationCode.EXTERNAL_API_ERROR, 500)
@@ -204,13 +226,15 @@ async function getForgeArtifactSize(version: string, format: string, ext: string
 
 async function getForgeArtifactSha1(version: string, format: string, ext: string) {
   try {
-    return await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`, {
-      headers: { Connection: 'close' }
-    })
-      .then((res) => res.text())
-      .catch((err) => {
-        throw err
-      })
+    const response = await fetch(
+      `https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format.toLowerCase()}.${ext}.sha1`,
+      { headers: { Connection: 'close' } }
+    )
+    if (!response.ok) {
+      console.error('Failed to fetch Forge artifact SHA1:', response.statusText)
+      throw new ServerError('Failed to fetch Forge artifact SHA1', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+    }
+    return await response.text().then((text) => text.trim())
   } catch (err) {
     console.error('Failed to fetch Forge artifact SHA1:', err)
     throw new ServerError('Failed to fetch Forge artifact SHA1', err, NotificationCode.EXTERNAL_API_ERROR, 500)
