@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
     bootstraps = await getBootstraps()
   } catch (err) {
     console.error('Failed to get bootstraps:', err)
-    return error(500, { message: 'Failed to get bootstraps' })
+    return json({ success: false, message: 'Failed to get bootstraps' }, { status: 500 })
   }
 
   const res = {
@@ -22,3 +22,4 @@ export const GET: RequestHandler = async () => {
 
   return json(res)
 }
+

@@ -2,6 +2,7 @@
   import { l } from '$lib/stores/language'
   import getEnv from '$lib/utils/env'
   import getUser from '$lib/utils/user'
+  import { error } from '@sveltejs/kit'
   import type { PageProps } from './$types'
 
   let { data }: PageProps = $props()

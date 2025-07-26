@@ -10,7 +10,7 @@ export const GET: RequestHandler = async (event) => {
     news = await getNews()
   } catch (err) {
     console.error('Failed to get news:', err)
-    return error(500, { message: 'Failed to get news' })
+    return json({ success: false, message: 'Failed to get news' }, { status: 500 })
   }
 
   const res = {
@@ -20,6 +20,4 @@ export const GET: RequestHandler = async (event) => {
 
   return json(res)
 }
-
-
 

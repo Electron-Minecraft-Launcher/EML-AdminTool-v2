@@ -1,5 +1,9 @@
 ## Change Logs
 
+### Removed features
+
+* Removed feature
+
 ### New features
 
 * Added new feature
@@ -17,6 +21,11 @@
 * Fixed a bug
 * Fixed another bug
 * Fixed yet another bug
+
+### Known issues
+
+* Known issue
+* Another known issue
 
 ## How to upgrade
 

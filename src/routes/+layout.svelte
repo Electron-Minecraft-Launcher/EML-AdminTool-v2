@@ -3,6 +3,7 @@
   import { setContext } from 'svelte'
   import type { Env } from '$lib/utils/types'
   import Notifications from '../components/layouts/Notifications.svelte'
+  import { error } from '@sveltejs/kit'
 
   interface Props {
     data: LayoutData

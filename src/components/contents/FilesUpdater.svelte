@@ -240,7 +240,7 @@
           showCreateFileModal = true
         }}
       >
-        <i class="fap-fix fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder
+        <i class="fa-solid fa-folder-plus"></i>&nbsp;&nbsp;Create folder
       </button>
       <button
         onclick={() => {
@@ -248,7 +248,7 @@
           showCreateFileModal = true
         }}
       >
-        <i class="fap-fix fa-solid fap-file-plus"></i>&nbsp;&nbsp;Create file
+        <i class="fa-solid fa-file-circle-plus"></i>&nbsp;&nbsp;Create file
       </button>
     </div>
   {/if}
@@ -312,19 +312,6 @@
       left: 15px;
       width: 13.34px;
       height: 14px;
-    }
-  }
-
-  .fap-file-plus {
-    width: 16px;
-
-    &::before {
-      content: url('../static/images/fa-solid fa-file-plus.svg');
-      position: absolute;
-      top: 12px;
-      left: 16px;
-      width: 10px;
-      height: 13.2;
     }
   }
 

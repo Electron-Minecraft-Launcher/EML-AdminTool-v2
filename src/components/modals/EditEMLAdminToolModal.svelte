@@ -42,7 +42,7 @@
   }
 </script>
 
-<ModalTemplate size={'m'} bind:show>
+<ModalTemplate size={'ms'} bind:show>
   {#if showLoader}
     <LoadingSplash transparent />
   {/if}
