@@ -5,6 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN npm i --ignore-scripts
+RUN npx prisma db push
 
 RUN npm run build
 
