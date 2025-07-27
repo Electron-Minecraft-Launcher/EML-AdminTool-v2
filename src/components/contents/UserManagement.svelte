@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UserStatus } from '.prisma/client'
+  import pkg from '@prisma/client'
   import type { PageData } from '../../routes/(app)/dashboard/emlat-settings/$types'
   import { emptyUser } from '$lib/stores/user'
   import { l } from '$lib/stores/language'
@@ -9,6 +9,7 @@
   import type { NotificationCode } from '$lib/utils/notifications'
   import { applyAction } from '$app/forms'
   import EditUserModal from '../modals/EditUserModal.svelte'
+  const { UserStatus } = pkg
 
   interface Props {
     selectedUserId: string

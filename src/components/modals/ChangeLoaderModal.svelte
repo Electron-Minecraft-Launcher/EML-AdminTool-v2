@@ -1,6 +1,7 @@
 <script lang="ts">
+  import pkg from '@prisma/client'
   import type { LoaderVersion } from '$lib/utils/types'
-  import { LoaderType, type Loader } from '.prisma/client'
+  import type { LoaderType, Loader } from '@prisma/client'
   import ModalTemplate from './__ModalTemplate.svelte'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { l } from '$lib/stores/language'
@@ -8,11 +9,12 @@
   import { applyAction, enhance } from '$app/forms'
   import { NotificationCode } from '$lib/utils/notifications'
   import { addNotification } from '$lib/stores/notifications'
+  const { LoaderType } = pkg
 
   interface Props {
     show: boolean
     loader: Loader
-    loaderList: { [key in LoaderType]: LoaderVersion[] }
+    loaderList: { [key: string]: LoaderVersion[] }
   }
 
   let { show = $bindable(), loader, loaderList }: Props = $props()

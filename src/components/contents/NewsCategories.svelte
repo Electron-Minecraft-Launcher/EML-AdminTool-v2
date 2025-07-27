@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { NewsCategory } from '.prisma/client'
+  import type { NewsCategory } from '@prisma/client'
   import AddEditNewsCategoryModal from '../modals/AddEditNewsCategoryModal.svelte'
   import { callAction } from '$lib/utils/call'
   import { l } from '$lib/stores/language'

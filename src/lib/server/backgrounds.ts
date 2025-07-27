@@ -1,8 +1,10 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { BackgroundStatus, Prisma } from '.prisma/client'
+import pkg from '@prisma/client'
+import type { BackgroundStatus as BgStatus } from '@prisma/client'
 import { db } from './db'
 import type { File as File_ } from '../utils/types.d'
+const { Prisma, BackgroundStatus } = pkg
 
 export async function getActiveBackground() {
   let background
@@ -28,7 +30,7 @@ export async function getBackgroundById(backgroundId: string) {
   return background
 }
 
-export async function addBackground(name: string, file: File_, status: BackgroundStatus) {
+export async function addBackground(name: string, file: File_, status: BgStatus) {
   if (status === BackgroundStatus.ACTIVE) {
     await disableAllBackgrounds()
   }

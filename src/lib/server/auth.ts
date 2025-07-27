@@ -1,10 +1,11 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { Prisma, UserStatus } from '.prisma/client'
+import pkg from '@prisma/client'
 import { db } from './db'
 import bcrypt from 'bcrypt'
 import { checkSession } from './jwt'
 import { checkPin } from './pin'
+const { Prisma, UserStatus } = pkg
 
 export async function login(username: string, password: string) {
   let user
@@ -85,3 +86,4 @@ export async function logout(session: string) {
     throw new ServerError('Failed to log out user', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
+

@@ -1,19 +1,15 @@
 <script lang="ts">
-  import type { PageProps, SubmitFunction } from './$types'
+  import type { PageProps } from './$types'
   import { fade } from 'svelte/transition'
   import { onMount } from 'svelte'
   import getEnv from '$lib/utils/env'
-  import getUser from '$lib/utils/user'
-  import { addNotification, notifications } from '$lib/stores/notifications'
-  import { NotificationCode } from '$lib/utils/notifications'
+  import { addNotification } from '$lib/stores/notifications'
   import { l } from '$lib/stores/language'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
-  import { UserStatus } from '.prisma/client'
+  import { UserStatus } from '@prisma/client'
   import UserManagement from '../../../../components/contents/UserManagement.svelte'
   import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
-  import { applyAction, enhance } from '$app/forms'
   import { pingServerAndReload, sleep } from '$lib/utils/utils'
-  import { goto } from '$app/navigation'
   import { callAction } from '$lib/utils/call'
 
   let { data = $bindable() }: PageProps = $props()

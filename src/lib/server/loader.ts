@@ -1,9 +1,11 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import type { LoaderVersion } from '$lib/utils/types'
-import { LoaderFormat, LoaderType, type Loader } from '.prisma/client'
+import pkg from '@prisma/client'
+import { type Loader } from '@prisma/client'
 import { db } from './db'
 import { getOrSet } from './cache'
+const { LoaderFormat, LoaderType } = pkg
 
 export async function getVanillaVersions() {
   return getOrSet('vanilla-versions', async () => {
@@ -225,10 +227,9 @@ async function getForgeArtifactSize(version: string, format: string, ext: string
 
 async function getForgeArtifactSha1(version: string, format: string, ext: string) {
   try {
-    const response = await fetch(
-      `https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`,
-      { headers: { Connection: 'close' } }
-    )
+    const response = await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`, {
+      headers: { Connection: 'close' }
+    })
     if (!response.ok) {
       console.error('Failed to fetch Forge artifact SHA1:', response.statusText)
       throw new ServerError('Failed to fetch Forge artifact SHA1', null, NotificationCode.EXTERNAL_API_ERROR, response.status)

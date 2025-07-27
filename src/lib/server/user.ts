@@ -1,7 +1,9 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { Prisma, type User } from '.prisma/client'
+import { type User } from '@prisma/client'
 import { db } from './db'
+import pkg from '@prisma/client'
+const { Prisma } = pkg
 
 export async function getUserById(userId: string) {
   let user

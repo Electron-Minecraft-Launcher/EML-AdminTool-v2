@@ -1,6 +1,6 @@
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import type { Bootstrap } from '.prisma/client'
+import type { Bootstrap } from '@prisma/client'
 import { db } from './db'
 import { getFiles } from './files'
 

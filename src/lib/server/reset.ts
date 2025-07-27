@@ -5,8 +5,9 @@ import fs from 'fs'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { Client } from 'pg'
-import { Prisma } from '.prisma/client'
 import { deleteFile } from './files'
+import pkg from '@prisma/client'
+const { Prisma } = pkg
 
 export async function resetDatabase() {
   console.log('\n-------------- RESETTING DATABASE --------------\n')

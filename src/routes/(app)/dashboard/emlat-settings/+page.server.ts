@@ -1,5 +1,4 @@
 import type { PageServerLoad } from './$types'
-import { UserStatus } from '.prisma/client'
 import { db } from '$lib/server/db'
 import { error, fail, redirect, type Actions, type RequestEvent } from '@sveltejs/kit'
 import { BusinessError, ServerError } from '$lib/utils/errors'
@@ -14,6 +13,8 @@ import { deleteUser, updateUser } from '$lib/server/user'
 import { verify } from '$lib/server/auth'
 import { deleteAllFiles, markAsUnconfigured, resetDatabase } from '$lib/server/reset'
 import { restartServer } from '$lib/server/setup'
+import pkg from '@prisma/client'
+const { UserStatus } = pkg
 
 export const load = (async (event) => {
   const user = event.locals.user

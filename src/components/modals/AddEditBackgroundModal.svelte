@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BackgroundStatus } from '.prisma/client'
+  import pkg from '@prisma/client'
   import type { PageData } from '../../routes/(app)/dashboard/backgrounds/$types'
   import ModalTemplate from './__ModalTemplate.svelte'
   import Toggle from '../layouts/Toggle.svelte'
@@ -10,6 +10,7 @@
   import { applyAction } from '$app/forms'
   import { addNotification } from '$lib/stores/notifications'
   import type { NotificationCode } from '$lib/utils/notifications'
+  const { BackgroundStatus } = pkg
 
   interface Props {
     show: boolean
