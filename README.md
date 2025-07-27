@@ -6,7 +6,7 @@
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
-[<img src="https://img.shields.io/badge/version-2.0.0--beta.2-orangered?style=for-the-badge&color=orangered">](package.json)</p>
+[<img src="https://img.shields.io/badge/version-2.0.0--beta.3-orangered?style=for-the-badge&color=orangered">](package.json)</p>
 
 ---
 
@@ -57,7 +57,7 @@ Then, in a terminal, execute the following command:
 # with wget
 wget -qO- https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-2 | bash
 # with curl
-curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.2 | bash
+curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.3 | bash
 ```
 
 ### Web server configuration
