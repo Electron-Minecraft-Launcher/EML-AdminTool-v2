@@ -1,5 +1,5 @@
 <script lang="ts">
-  import pkg from '@prisma/client'
+  import { IUserStatus } from '$lib/utils/db'
   import type { PageData } from '../../routes/(app)/dashboard/emlat-settings/$types'
   import { emptyUser } from '$lib/stores/user'
   import { l } from '$lib/stores/language'
@@ -9,7 +9,6 @@
   import type { NotificationCode } from '$lib/utils/notifications'
   import { applyAction } from '$app/forms'
   import EditUserModal from '../modals/EditUserModal.svelte'
-  const { UserStatus } = pkg
 
   interface Props {
     selectedUserId: string
@@ -55,7 +54,7 @@
   <EditUserModal bind:show={showEditUserModal} bind:selectedUserId {action} {data} />
 {/if}
 
-{#if !selectedUser.isAdmin && selectedUser.status === UserStatus.ACTIVE}
+{#if !selectedUser.isAdmin && selectedUser.status === IUserStatus.ACTIVE}
   <form method="POST" action="?/deleteUser" use:enhance={enhanceForm}>
     <button type="submit" class="secondary right refuse" aria-label="Delete user"><i class="fa-solid fa-trash"></i></button>
   </form>
@@ -69,7 +68,7 @@
   >
     <i class="fa-solid fa-pen"></i>
   </button>
-{:else if selectedUser.status === UserStatus.PENDING}
+{:else if selectedUser.status === IUserStatus.PENDING}
   <form method="POST" action="?/refuseUser" use:enhance={enhanceForm}>
     <button type="submit" class="secondary right refuse" aria-label="Refuse user"><i class="fa-solid fa-times"></i></button>
   </form>
@@ -83,7 +82,7 @@
   >
     <i class="fa-solid fa-check"></i>
   </button>
-{:else if selectedUser.status && (selectedUser.status === UserStatus.DELETED || selectedUser.status === UserStatus.SPAM)}
+{:else if selectedUser.status && (selectedUser.status === IUserStatus.DELETED || selectedUser.status === IUserStatus.SPAM)}
   <form method="POST" action="?/deleteUserForever" use:enhance={enhanceForm}>
     <button type="submit" class="secondary right delete" aria-label="Delete user forever"><i class="fa-solid fa-trash"></i></button>
   </form>
@@ -95,7 +94,7 @@
   <p class="label">{$l.main.username}</p>
   <p>{selectedUser.username}</p>
 
-  {#if selectedUser.status === UserStatus.ACTIVE}
+  {#if selectedUser.status === IUserStatus.ACTIVE}
     <p class="label">{$l.dashboard.permissions}</p>
     {#if selectedUser.isAdmin}
       <p>Admin (all permissions)</p>

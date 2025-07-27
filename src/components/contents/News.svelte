@@ -1,6 +1,6 @@
 <script lang="ts">
   import getUser from '$lib/utils/user'
-  import type { News, NewsCategory, NewsTag } from '@prisma/client'
+  import type { ExtendedNews, NewsCategory, NewsTag } from '$lib/utils/db'
   import type { PageData } from '../../routes/(app)/dashboard/news/$types'
   import type { File as File_ } from '$lib/utils/types'
   import AddEditNewsModal from '../modals/AddEditNewsModal.svelte'
@@ -23,18 +23,18 @@
   let showReadNewsModal = $state(false)
   let showAddEditNewsModal = $state(false)
   let selectedNewsId: string | null = $state(null)
-  let selectedNews: News[] = $state([])
+  let selectedNews: ExtendedNews[] = $state([])
 
   let iLength = 25
   let iStart = $state(0)
 
-  function showNews(news_: News) {
+  function showNews(news_: ExtendedNews) {
     selectedNewsId = news_.id
     if (news_.authorId == user.id) showAddEditNewsModal = true
     else showReadNewsModal = true
   }
 
-  function selectNews(e: Event, news_: News) {
+  function selectNews(e: Event, news_: ExtendedNews) {
     if (user.p_news === 2 || news_.authorId == user.id) {
       e.stopPropagation()
       if ((e.target as HTMLInputElement).checked) {

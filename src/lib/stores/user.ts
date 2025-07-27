@@ -1,6 +1,5 @@
-import pkg from '@prisma/client'
+import { IUserStatus } from '$lib/utils/db'
 import { writable, derived, type Readable } from 'svelte/store'
-const { UserStatus } = pkg
 
 interface User {
   id: string
@@ -26,7 +25,7 @@ export const emptyUser = {
   id: '0',
   username: '',
   isAdmin: false,
-  status: UserStatus.ACTIVE,
+  status: IUserStatus.ACTIVE,
   p_filesUpdater: 0,
   p_bootstraps: 0,
   p_maintenance: 0,
@@ -38,3 +37,4 @@ export const emptyUser = {
   createdAt: new Date(),
   updatedAt: new Date()
 }
+

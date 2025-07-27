@@ -1,5 +1,5 @@
 <script lang="ts">
-  import pkg from '@prisma/client'
+  import { IBackgroundStatus } from '$lib/utils/db'
   import type { PageData } from '../../routes/(app)/dashboard/backgrounds/$types'
   import ModalTemplate from './__ModalTemplate.svelte'
   import Toggle from '../layouts/Toggle.svelte'
@@ -10,7 +10,6 @@
   import { applyAction } from '$app/forms'
   import { addNotification } from '$lib/stores/notifications'
   import type { NotificationCode } from '$lib/utils/notifications'
-  const { BackgroundStatus } = pkg
 
   interface Props {
     show: boolean
@@ -24,8 +23,8 @@
 
   let selectedBackground = $state(backgrounds.find((b) => b.id === selectedBackgroundId) ?? null)
   let name = $state(selectedBackground?.name ?? '')
-  let status = $state(selectedBackground?.status === BackgroundStatus.ACTIVE)
-  let disableStatus = $state(selectedBackground?.status === BackgroundStatus.ACTIVE)
+  let status = $state(selectedBackground?.status === IBackgroundStatus.ACTIVE)
+  let disableStatus = $state(selectedBackground?.status === IBackgroundStatus.ACTIVE)
   let fileName = $state('')
   let file: File | null = $state(null)
 
@@ -53,7 +52,7 @@
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
     formData.set('background-id', selectedBackgroundId ?? '')
-    formData.set('status', status ? BackgroundStatus.ACTIVE : BackgroundStatus.INACTIVE)
+    formData.set('status', status ? IBackgroundStatus.ACTIVE : IBackgroundStatus.INACTIVE)
     formData.set('file', file ?? '')
 
     return async ({ result, update }) => {

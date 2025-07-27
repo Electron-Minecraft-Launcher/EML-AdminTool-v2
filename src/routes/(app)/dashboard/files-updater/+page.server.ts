@@ -5,11 +5,9 @@ import { createFileSchema, editFileSchema, renameFileSchema, loaderSchema, uploa
 import { cacheFiles, createFile, deleteFile, editFile, getCachedFilesParsed, getFiles, renameFile, uploadFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
-import type { Loader, LoaderFormat as LdFormat} from '@prisma/client'
+import { ILoaderFormat, ILoaderType, type Loader, type LoaderFormat } from '$lib/utils/db'
 import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
 import path_ from 'path'
-import pkg from '@prisma/client'
-const { LoaderType, LoaderFormat } = pkg
 
 export const load = (async (event) => {
   const domain = event.url.origin
@@ -33,17 +31,18 @@ export const load = (async (event) => {
     if (!loader?.loaderVersion) {
       loader = {
         id: '',
-        type: LoaderType.VANILLA,
+        type: ILoaderType.VANILLA,
         minecraftVersion: 'latest_release',
         loaderVersion: 'latest_release',
-        format: LoaderFormat.CLIENT,
-        file: null
+        format: ILoaderFormat.CLIENT,
+        file: null,
+        updatedAt: new Date()
       } as Loader
     }
 
     const loaderList = {
-      [LoaderType.VANILLA]: await getVanillaVersions(),
-      [LoaderType.FORGE]: await getForgeVersions()
+      [ILoaderType.VANILLA]: await getVanillaVersions(),
+      [ILoaderType.FORGE]: await getForgeVersions()
     }
 
     return { loader, loaderList, files }
@@ -262,10 +261,10 @@ export const actions: Actions = {
 
     try {
       let file: any = null
-      let format: LdFormat = LoaderFormat.CLIENT
-      if (type === LoaderType.VANILLA) {
+      let format: LoaderFormat = ILoaderFormat.CLIENT
+      if (type === ILoaderType.VANILLA) {
         checkVanillaLoader(minecraftVersion, loaderVersion)
-      } else if (type === LoaderType.FORGE) {
+      } else if (type === ILoaderType.FORGE) {
         checkForgeLoader(minecraftVersion, loaderVersion)
         const res = await getForgeFile(loaderVersion)
         file = res.file

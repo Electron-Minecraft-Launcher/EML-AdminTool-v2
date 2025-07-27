@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { NewsCategory, NewsTag, User } from '@prisma/client'
+  import type { NewsCategory, NewsTag } from '$lib/utils/db'
 
   interface Props {
     title: string

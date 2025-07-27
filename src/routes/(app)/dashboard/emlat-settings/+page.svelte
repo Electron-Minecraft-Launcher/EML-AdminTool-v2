@@ -6,7 +6,7 @@
   import { addNotification } from '$lib/stores/notifications'
   import { l } from '$lib/stores/language'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
-  import { UserStatus } from '@prisma/client'
+  import { IUserStatus } from '$lib/utils/db'
   import UserManagement from '../../../../components/contents/UserManagement.svelte'
   import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
   import { pingServerAndReload, sleep } from '$lib/utils/utils'
@@ -159,7 +159,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
     <div class="list">
       <p class="label">{$l.dashboard.emlatSettings.users}</p>
       {#each data.users as u}
-        {#if u.status === UserStatus.ACTIVE}
+        {#if u.status === IUserStatus.ACTIVE}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
             {u.username}
           </button>
@@ -168,7 +168,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
       <p class="label">{$l.dashboard.emlatSettings.pendingUsers}</p>
       {#each data.users as u}
-        {#if u.status === UserStatus.PENDING}
+        {#if u.status === IUserStatus.PENDING}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
             {u.username}
           </button>
@@ -177,7 +177,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
       <p class="label">{$l.dashboard.emlatSettings.wrongPinUsers}</p>
       {#each data.users as u}
-        {#if u.status === UserStatus.SPAM}
+        {#if u.status === IUserStatus.SPAM}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
             {u.username}
           </button>
@@ -186,7 +186,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
       <p class="label">{$l.dashboard.emlatSettings.deletedUsers}</p>
       {#each data.users as u}
-        {#if u.status === UserStatus.DELETED}
+        {#if u.status === IUserStatus.DELETED}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
             {u.username}
           </button>

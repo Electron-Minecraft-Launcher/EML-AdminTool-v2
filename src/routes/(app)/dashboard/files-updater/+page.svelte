@@ -9,8 +9,7 @@
   import { callAction } from '$lib/utils/call'
   import { l } from '$lib/stores/language'
   import { addNotification } from '$lib/stores/notifications'
-  import pkg from '@prisma/client'
-  const { LoaderFormat, LoaderType } = pkg
+  import { ILoaderFormat, ILoaderType, type Loader } from '$lib/utils/db'
 
   let { data }: PageProps = $props()
 
@@ -156,7 +155,7 @@
 </svelte:head>
 
 {#if showChangeLoaderModal}
-  <ChangeLoaderModal bind:show={showChangeLoaderModal} loader={data.loader} loaderList={data.loaderList} />
+  <ChangeLoaderModal bind:show={showChangeLoaderModal} loader={data.loader as unknown as Loader} loaderList={data.loaderList} />
 {/if}
 
 <h2>Files Updater</h2>
@@ -216,7 +215,7 @@
       <div>
         <p class="label">Loader</p>
         <p>
-          {data.loader.type === LoaderType.FORGE ? 'Forge' : 'Vanilla'}
+          {data.loader.type === ILoaderType.FORGE ? 'Forge' : 'Vanilla'}
         </p>
       </div>
 
@@ -239,7 +238,7 @@
             style="cursor: help"
           ></i>
         </p>
-        <p>{data.loader.format === LoaderFormat.INSTALLER ? 'Installer' : data.loader.format === LoaderFormat.UNIVERSAL ? 'Universal' : 'Client'}</p>
+        <p>{data.loader.format === ILoaderFormat.INSTALLER ? 'Installer' : data.loader.format === ILoaderFormat.UNIVERSAL ? 'Universal' : 'Client'}</p>
       </div>
     </div>
   </section>
