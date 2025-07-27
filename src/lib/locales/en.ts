@@ -36,6 +36,7 @@ export default {
     [NotificationCode.EMLAT_NAME_TOO_LONG]: `EML AdminTool name must be at most 64 characters long.`,
     [NotificationCode.EMLAT_INVALID_LANGUAGE]: `Language must be exactly 2 characters long.`,
     [NotificationCode.EMLAT_UPDATED]: `EML AdminTool has been updated successfully.`,
+    [NotificationCode.EMLAT_UP_TO_DATE]: `EML AdminTool is up-to-date.`,
 
     [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.EDIT_USER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
@@ -85,7 +86,7 @@ export default {
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
-    [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`
+    [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`,
   },
   setup: {
     setup: `Setup`,

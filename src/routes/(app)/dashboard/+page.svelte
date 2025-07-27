@@ -4,6 +4,7 @@
   import getUser from '$lib/utils/user'
   import { error } from '@sveltejs/kit'
   import type { PageProps } from './$types'
+  import { onMount } from 'svelte'
 
   let { data }: PageProps = $props()
 

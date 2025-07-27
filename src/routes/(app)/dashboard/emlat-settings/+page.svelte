@@ -31,7 +31,8 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
   onMount(() => {
     if (window.location.search.includes('updated=true')) {
-      addNotification('INFO', NotificationCode.EMLAT_UPDATED)
+      const message = $l.notifications.EMLAT_UPDATED
+      addNotification('INFO', message)
       window.history.replaceState({}, document.title, window.location.pathname)
     }
   })
@@ -42,33 +43,37 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
   async function update() {
     if (!confirm(updateWarning)) return
-    //       const socket = io({ auth: { token: cookiesService.get('JWT') } })
-    //       socket.emit('update')
-    //       showLoader = true
-    //       document.body.style.overflow = 'hidden'
-    //       socket.on('updating', (message: string) => {
-    //         if (message == 'fetching' || message == 'downloading') {
-    //           updateMessage = 'Downloading the update...'
-    //         } else if (message == 'extracting' || message == 'script' || message == 'docker_load') {
-    //           updateMessage = 'Installing the update...'
-    //         } else if (message == 'docker_run') {
-    //           updateMessage = 'Installing the update...'
-    //           checkUpdateEnded()
-    //         }
-    //       })
-    //       socket.on('updating_success', (message: string, args: any) => {
-    //         if (message == 'up-to-date') {
-    //           showLoader = false
-    //           notificationsService.update({ type: 'SUCCESS', code: `updating_up-to-date` })
-    //           document.body.style.overflow = 'auto'
-    //         }
-    //       })
-    //       socket.on('updating_error', (message: string, args: any) => {
-    //         updateMessage = undefined
-    //         showLoader = false
-    //         notificationsService.update({ type: 'ERROR', code: `updating_${message}` })
-    //         document.body.style.overflow = 'auto'
-    //       })
+    showLoader = true
+    document.body.style.overflow = 'hidden'
+    const eventSource = new EventSource('/api/update')
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+
+      if (data.status === 'in-progress' || data.status === 'success') {
+        if (data.event === 'up-to-date') {
+          showLoader = false
+          document.body.style.overflow = 'auto'
+          const message = $l.notifications.EMLAT_UP_TO_DATE
+          addNotification('INFO', message)
+        } else if (data.event === 'fetching' || data.event === 'downloading') {
+          updateMessage = 'Downloading update...'
+        } else if (data.event === 'extracting' || data.event === 'script' || data.event === 'docker-load' || data.event === 'docker-volume') {
+          updateMessage = 'Installing update...'
+        } else if (data.event === 'docker-run') {
+          updateMessage = 'Installing update'
+          checkUpdateEnded()
+        }
+      } else if (data.status === 'error') {
+        updateMessage = undefined
+        showLoader = false
+        const message = $l.notifications.INTERNAL_SERVER_ERROR
+        addNotification('ERROR', message)
+        document.body.style.overflow = 'auto'
+      }
+    }
+
+    return () => eventSource.close()
   }
 
   async function reset() {
@@ -85,18 +90,22 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
     }
   }
 
-  // async function checkUpdateEnded() {
-  //   ;(await apiEnvService.getEnv()).subscribe({
-  //     next: async (resp) => {
-  //       if (resp.body.data.version != data.update.latestVersion) {
-  //         await utils.sleep(5000)
-  //         checkUpdateEnded()
-  //       } else {
-  //         window.location.href = '/dashboard/emlat-settings?updated=true'
-  //       }
-  //     }
-  //   })
-  // }
+  async function checkUpdateEnded() {
+    await sleep(5000)
+    for (let i = 0; i < 12; i++) {
+      try {
+        const response = await fetch('/api/ping')
+        if (response.ok) {
+          window.location.href = '/dashboard/emlat-settings?updated=true'
+          return
+        } else {
+          console.error('Ping failed:', response.statusText)
+        }
+      } catch (err) {
+        console.error('Ping failed, retrying...', err)
+      }
+    }
+  }
 </script>
 
 <svelte:head>

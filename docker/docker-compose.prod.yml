@@ -22,7 +22,7 @@ services:
       NODE_ENV: 'production'
     volumes:
       - files:/app/files
-      - env:/app/api/env
+      - env/.env:/app/.env
       - loader:/app/loader
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
@@ -30,14 +30,15 @@ services:
     depends_on:
       - db
   db:
-    image: mysql:8.4
+    image: postgres:latest
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      MYSQL_DATABASE: 'eml_admintool'
-      MYSQL_USER: 'eml'
-      MYSQL_PASSWORD: 'eml'
+      POSTGRES_USER: eml
+      POSTGRES_PASSWORD: eml
+      POSTGRES_DB: eml_admintool
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
 
 volumes:
   db-data:

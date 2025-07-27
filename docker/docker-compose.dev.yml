@@ -9,6 +9,13 @@
 # To run the application in a production environment, #
 # you should use the docker-compose.prod.yml file     #
 # with an existing Docker image.                      #
+#                                                     #
+# Warning:                                            #
+#  - You may sometimes need to restart the container  #
+#    when you create a new file.                      #
+#  - You may need to delete and rebuild the "web"     #
+#    container and image when you install a new       #
+#    dependency or update dependencies.               #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 name: eml_admintool_dev
