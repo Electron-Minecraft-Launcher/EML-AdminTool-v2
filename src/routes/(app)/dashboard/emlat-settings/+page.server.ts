@@ -13,8 +13,7 @@ import { deleteUser, updateUser } from '$lib/server/user'
 import { verify } from '$lib/server/auth'
 import { deleteAllFiles, markAsUnconfigured, resetDatabase } from '$lib/server/reset'
 import { restartServer } from '$lib/server/setup'
-import pkg from '@prisma/client'
-const { UserStatus } = pkg
+import { IUserStatus } from '$lib/utils/db'
 
 export const load = (async (event) => {
   const user = event.locals.user
@@ -136,7 +135,7 @@ export const actions: Actions = {
 
     const userId = result.data.userId
     const username = result.data.username
-    const status = UserStatus.ACTIVE
+    const status = IUserStatus.ACTIVE
     const p_filesUpdater = getFilesUpdaterPermission(result)
     const p_bootstraps = result.data.p_bootstraps ? 1 : 0
     const p_maintenance = result.data.p_maintenance ? 1 : 0
@@ -246,7 +245,7 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
 
   try {
     await updateUser(userId, {
-      status: UserStatus.DELETED,
+      status: IUserStatus.DELETED,
       p_filesUpdater: 0,
       p_bootstraps: 0,
       p_maintenance: 0,
@@ -282,4 +281,5 @@ function getStatsPermissions(result: any) {
   if (result.data.p_stats_1) return 1
   return 0
 }
+
 

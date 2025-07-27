@@ -4,14 +4,12 @@ import { db } from '$lib/server/db'
 import { NotificationCode } from '$lib/utils/notifications'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import type { File as File_ } from '$lib/utils/types'
-import { BackgroundStatus as BgStatus } from '@prisma/client'
+import { type BackgroundStatus, IBackgroundStatus } from '$lib/utils/db'
 import { backgroundSchema } from '$lib/utils/validations'
 import { addBackground, updateBackground, enableBackground, getBackgroundById, deleteBackground } from '$lib/server/backgrounds'
 import { randomBytes } from 'crypto'
 import path_ from 'path'
 import { deleteFile, getFiles, uploadFile } from '$lib/server/files'
-import pkg from '@prisma/client'
-const { BackgroundStatus } = pkg
 
 export const load = (async (event) => {
   const user = event.locals.user
@@ -24,7 +22,7 @@ export const load = (async (event) => {
     let backgrounds
 
     try {
-      backgrounds = (await db.background.findMany({orderBy: { createdAt: 'desc' }})) as { id: string; name: string; file: File_ | null; status: BgStatus }[]
+      backgrounds = (await db.background.findMany({orderBy: { createdAt: 'desc' }})) as { id: string; name: string; file: File_ | null; status: BackgroundStatus }[]
     } catch (err) {
       console.error('Failed to load backgrounds:', err)
       throw new ServerError('Failed to load backgrounds', err, NotificationCode.DATABASE_ERROR, 500)
@@ -72,9 +70,9 @@ export const actions: Actions = {
         }
 
         const newStatus =
-          status === BackgroundStatus.ACTIVE || existingBackground.status === BackgroundStatus.ACTIVE
-            ? BackgroundStatus.ACTIVE
-            : BackgroundStatus.INACTIVE
+          status === IBackgroundStatus.ACTIVE || existingBackground.status === IBackgroundStatus.ACTIVE
+            ? IBackgroundStatus.ACTIVE
+            : IBackgroundStatus.INACTIVE
         
         if (newStatus !== existingBackground.status) {
           await enableBackground(backgroundId)
@@ -163,6 +161,7 @@ export const actions: Actions = {
     }
   }
 }
+
 
 
 

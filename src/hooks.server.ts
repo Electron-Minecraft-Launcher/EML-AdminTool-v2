@@ -6,7 +6,7 @@ import { verify } from '$lib/server/auth'
 import { deleteSession } from '$lib/server/jwt'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import type { Environment, User } from '@prisma/client'
+import { type User } from '$lib/utils/db'
 
 export const handle: Handle = async ({ event, resolve }) => {
   const session = event.cookies.get('session')
@@ -82,8 +82,3 @@ function getUserInfo(user: User) {
   }
 }
 
-async function setEnv(env?: Environment) {
-  if (env) {
-    return {}
-  }
-}

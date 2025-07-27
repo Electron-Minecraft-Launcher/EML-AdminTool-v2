@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { NewsCategory, NewsTag } from '@prisma/client'
+  import type { NewsCategory, NewsTag } from '$lib/utils/db'
   import type { PageData } from '../../routes/(app)/dashboard/news/$types'
   import type { File as File_ } from '$lib/utils/types'
   import ModalTemplate from './__ModalTemplate.svelte'
-  import { EditorView } from '@codemirror/view'
   import NewsViewer from '../contents/NewsViewer.svelte'
 
   interface Props {

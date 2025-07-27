@@ -1,3 +1,5 @@
+//! Don't forget to update db.d.ts after editing this file
+
 generator client {
   provider      = "prisma-client-js"
   output        = "../node_modules/.prisma/client"

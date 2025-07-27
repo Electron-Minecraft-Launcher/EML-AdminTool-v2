@@ -1,8 +1,7 @@
 import { z } from 'zod/v4'
 import { NotificationCode } from './notifications'
 import { DateTime } from 'luxon'
-import pkg from '@prisma/client'
-const { LoaderType } = pkg
+import { ILoaderType } from '$lib/utils/db'
 
 export const setupSchema = z.object({
   language: z.string().length(2, NotificationCode.SETUP_INVALID_LANGUAGE),
@@ -113,7 +112,7 @@ export const editFileSchema = z.object({
 })
 
 export const loaderSchema = z.object({
-  type: z.enum(LoaderType),
+  type: z.enum(ILoaderType),
   minecraftVersion: z.string(),
   loaderVersion: z.string()
 })

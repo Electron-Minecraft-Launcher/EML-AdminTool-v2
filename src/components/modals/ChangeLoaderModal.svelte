@@ -1,7 +1,6 @@
 <script lang="ts">
-  import pkg from '@prisma/client'
+  import { ILoaderType, type LoaderType, type Loader } from '$lib/utils/db'
   import type { LoaderVersion } from '$lib/utils/types'
-  import type { LoaderType, Loader } from '@prisma/client'
   import ModalTemplate from './__ModalTemplate.svelte'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { l } from '$lib/stores/language'
@@ -9,7 +8,6 @@
   import { applyAction, enhance } from '$app/forms'
   import { NotificationCode } from '$lib/utils/notifications'
   import { addNotification } from '$lib/stores/notifications'
-  const { LoaderType } = pkg
 
   interface Props {
     show: boolean
@@ -22,7 +20,7 @@
   const latestInfo = 'Choosing this version will always force the Launcher to download the latest release.'
 
   let showLoader = $state(false)
-  let type: LoaderType = $state(loader.type ?? LoaderType.VANILLA)
+  let type: LoaderType = $state(loader.type ?? ILoaderType.VANILLA)
   let minecraftVersion = $state(loader.minecraftVersion ?? '')
   let minecraftMajorVersion = $state(
     loader.minecraftVersion?.includes('latest') ? 'Latest' : (loader.minecraftVersion?.split('.').slice(0, 2).join('.') ?? '')
@@ -46,7 +44,7 @@
 
   function setVersion(selectedType: LoaderType, selectedVersion: LoaderVersion) {
     type = selectedType
-    minecraftVersion = type === LoaderType.VANILLA ? selectedVersion.loaderVersion : selectedVersion.loaderVersion.split('-')[0].replace('_', '-')
+    minecraftVersion = type === ILoaderType.VANILLA ? selectedVersion.loaderVersion : selectedVersion.loaderVersion.split('-')[0].replace('_', '-')
     loaderVersion = selectedVersion.loaderVersion
   }
 
@@ -93,8 +91,9 @@
     <div class="list-container">
       <div class="list loader-list">
         <p class="label" style="margin-top: 0; position: sticky; top: 0; background: white">Loaders</p>
-        <button class="list" type="button" class:active={type === LoaderType.VANILLA} onclick={() => switchType(LoaderType.VANILLA)}>Vanilla</button>
-        <button class="list" type="button" class:active={type === LoaderType.FORGE} onclick={() => switchType(LoaderType.FORGE)}>Forge</button>
+        <button class="list" type="button" class:active={type === ILoaderType.VANILLA} onclick={() => switchType(ILoaderType.VANILLA)}>Vanilla</button
+        >
+        <button class="list" type="button" class:active={type === ILoaderType.FORGE} onclick={() => switchType(ILoaderType.FORGE)}>Forge</button>
       </div>
 
       <div class="list version-list">
@@ -108,20 +107,20 @@
 
       <div class="list content-list">
         <h4>
-          {type === LoaderType.FORGE ? 'Minecraft Forge' : 'Minecraft Vanilla'}
+          {type === ILoaderType.FORGE ? 'Minecraft Forge' : 'Minecraft Vanilla'}
           {minecraftMajorVersion === 'Latest' ? minecraftMajorVersion : `${minecraftMajorVersion}.x`}
         </h4>
 
-        {#if type === LoaderType.VANILLA}
+        {#if type === ILoaderType.VANILLA}
           <!--* VANILLA -->
           <p class="label">Releases</p>
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('release')) as version}
             {#if version.loaderVersion === 'latest_release'}
-              <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
+              <button type="button" class:active={isActive(ILoaderType.VANILLA, version)} onclick={() => setVersion(ILoaderType.VANILLA, version)}>
                 Latest Minecraft release&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={latestInfo} style="cursor: help"></i>
               </button>
             {:else}
-              <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
+              <button type="button" class:active={isActive(ILoaderType.VANILLA, version)} onclick={() => setVersion(ILoaderType.VANILLA, version)}>
                 Minecraft {version.loaderVersion}
               </button>
             {/if}
@@ -130,22 +129,22 @@
           <p class="label">Snapshots</p>
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('snapshot')) as version}
             {#if version.loaderVersion === 'latest_snapshot'}
-              <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
+              <button type="button" class:active={isActive(ILoaderType.VANILLA, version)} onclick={() => setVersion(ILoaderType.VANILLA, version)}>
                 Latest Minecraft snapshot&nbsp;&nbsp;<i class="fa-solid fa-circle-question" title={latestInfo} style="cursor: help"></i>
               </button>
             {:else}
-              <button type="button" class:active={isActive(LoaderType.VANILLA, version)} onclick={() => setVersion(LoaderType.VANILLA, version)}>
+              <button type="button" class:active={isActive(ILoaderType.VANILLA, version)} onclick={() => setVersion(ILoaderType.VANILLA, version)}>
                 Minecraft {version.loaderVersion}
               </button>
             {/if}
           {:else}
             <p class="no-link">-</p>
           {/each}
-        {:else if type === LoaderType.FORGE}
+        {:else if type === ILoaderType.FORGE}
           <!--* FORGE -->
           <p class="label">Recommended</p>
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('recommended')) as version}
-            <button type="button" class:active={isActive(LoaderType.FORGE, version)} onclick={() => setVersion(LoaderType.FORGE, version)}>
+            <button type="button" class:active={isActive(ILoaderType.FORGE, version)} onclick={() => setVersion(ILoaderType.FORGE, version)}>
               Minecraft {version.loaderVersion.split('-')[0].replace('_', '-')} (Forge {version.loaderVersion.split('-').slice(1).join('-')})
             </button>
           {:else}
@@ -154,7 +153,7 @@
 
           <p class="label">Latest</p>
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('latest')) as version}
-            <button type="button" class:active={isActive(LoaderType.FORGE, version)} onclick={() => setVersion(LoaderType.FORGE, version)}>
+            <button type="button" class:active={isActive(ILoaderType.FORGE, version)} onclick={() => setVersion(ILoaderType.FORGE, version)}>
               Minecraft {version.loaderVersion.split('-')[0].replace('_', '-')} (Forge {version.loaderVersion.split('-').slice(1).join('-')})
             </button>
           {:else}
@@ -163,7 +162,7 @@
 
           <p class="label">All versions</p>
           {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion) as version}
-            <button type="button" class:active={isActive(LoaderType.FORGE, version)} onclick={() => setVersion(LoaderType.FORGE, version)}>
+            <button type="button" class:active={isActive(ILoaderType.FORGE, version)} onclick={() => setVersion(ILoaderType.FORGE, version)}>
               Minecraft {version.loaderVersion.split('-')[0].replace('_', '-')} (Forge {version.loaderVersion.split('-').slice(1).join('-')})
             </button>
           {:else}
