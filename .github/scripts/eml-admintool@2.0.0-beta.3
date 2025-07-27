@@ -2,7 +2,7 @@
 # Copyright (c) 2025 - GoldFrite
 # This script is under the GPL-3.0 license.
 #
-# This script is used to install EML AdminTool v2.0.0-beta.2.
+# This script is used to install EML AdminTool v2.0.0-beta.3.
 
 echo "                                                                        "
 echo " ______ __  __ _                    _           _    _______          _ "
@@ -20,7 +20,7 @@ echo "                                    | | | | \__ \ || (_| | | |  __/ |   "
 echo "                                    |_|_| |_|___/\__\__,_|_|_|\___|_|   "
 echo "                                                                        "
 echo "                                                                        "
-echo "EML AdminTool v2.0.0-beta.2 Installer"
+echo "EML AdminTool v2.0.0-beta.3 Installer"
 echo "Copyright (c) 2025 - GoldFrite"
 echo "This script is under the GPL-3.0 license."
 echo ""
@@ -91,12 +91,12 @@ echo ""
 echo -e "• \e[1mInstalling EML AdminTool...\e[0m"
 
 if [ "$fetcher" == "wget" ]; then
-  wget -qO- https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.2/eml-admintool-2.0.0-beta.2.tar.gz | tar -xz
+  wget -qO- https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.3/eml-admintool-2.0.0-beta.3.tar.gz | tar -xz
 else
-  curl -sSL https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.2/eml-admintool-2.0.0-beta.2.tar.gz | tar -xz
+  curl -sSL https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.3/eml-admintool-2.0.0-beta.3.tar.gz | tar -xz
 fi
 
-docker load -i eml-admintool-2.0.0-beta.2.tar
+docker load -i eml-admintool-2.0.0-beta.3.tar
 docker compose -f docker-compose.prod.yml up -d
 
 echo ""
