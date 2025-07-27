@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN npm i --ignore-scripts
-RUN npx prisma db push
+RUN npx prisma generate
 
 RUN npm run build
 
@@ -26,10 +26,11 @@ COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/package-lock.json ./package-lock.json
 COPY --from=build /app/LICENSE ./LICENSE
+COPY --from=build /app/docker/entrypoint.prod.sh /app/entrypoint.prod.sh
 
+RUN chmod +x /app/entrypoint.prod.sh
 RUN npm ci --ignore-scripts --omit=dev
-RUN npx prisma db push
 
 EXPOSE 3000
 
-CMD ["npm", "run", "serve"]
+ENTRYPOINT ["/app/entrypoint.prod.sh"]
