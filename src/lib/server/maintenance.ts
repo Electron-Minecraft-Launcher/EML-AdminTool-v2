@@ -1,6 +1,6 @@
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import type { Maintenance } from '@prisma/client'
+import type { Maintenance } from '.prisma/client'
 import { db } from './db'
 
 export async function getMaintenance() {

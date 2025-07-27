@@ -1,6 +1,6 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import type { User } from '@prisma/client'
+import type { User } from '.prisma/client'
 import type { RequestEvent } from '@sveltejs/kit'
 import { errors, jwtVerify, SignJWT } from 'jose'
 

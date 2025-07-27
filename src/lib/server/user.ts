@@ -1,6 +1,6 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { Prisma, type User } from '@prisma/client'
+import { Prisma, type User } from '.prisma/client'
 import { db } from './db'
 
 export async function getUserById(userId: string) {

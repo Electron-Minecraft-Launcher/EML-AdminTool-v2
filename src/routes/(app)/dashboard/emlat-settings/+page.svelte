@@ -8,7 +8,7 @@
   import { NotificationCode } from '$lib/utils/notifications'
   import { l } from '$lib/stores/language'
   import LoadingSplash from '../../../../components/layouts/LoadingSplash.svelte'
-  import { UserStatus } from '@prisma/client'
+  import { UserStatus } from '.prisma/client'
   import UserManagement from '../../../../components/contents/UserManagement.svelte'
   import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
   import { applyAction, enhance } from '$app/forms'

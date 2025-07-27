@@ -1,6 +1,6 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { Prisma, UserStatus } from '@prisma/client'
+import { Prisma, UserStatus } from '.prisma/client'
 import { db } from './db'
 import bcrypt from 'bcrypt'
 import { checkSession } from './jwt'
