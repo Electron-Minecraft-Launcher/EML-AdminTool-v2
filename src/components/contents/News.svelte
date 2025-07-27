@@ -1,6 +1,6 @@
 <script lang="ts">
   import getUser from '$lib/utils/user'
-  import type { News, NewsCategory, NewsTag } from '.prisma/client'
+  import type { News, NewsCategory, NewsTag } from '@prisma/client'
   import type { PageData } from '../../routes/(app)/dashboard/news/$types'
   import type { File as File_ } from '$lib/utils/types'
   import AddEditNewsModal from '../modals/AddEditNewsModal.svelte'

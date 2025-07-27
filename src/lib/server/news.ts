@@ -1,7 +1,8 @@
 import { db } from './db'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { Prisma, type News } from '.prisma/client'
+import pkg from '@prisma/client'
+const { Prisma } = pkg
 
 export async function getNews(limit: number = 20) {
   let news

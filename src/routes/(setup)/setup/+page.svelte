@@ -3,7 +3,6 @@
   import ConfigurationDatabase from '../../../components/setup/DatabaseSetup.svelte'
   import ConfigurationLanguage from '../../../components/setup/LanguageSetup.svelte'
   import { l, type LanguageCode } from '$lib/stores/language'
-  import { goto } from '$app/navigation'
   import type { PageProps } from './$types'
   import { pingServerAndReload, sleep } from '$lib/utils/utils'
   import { fade } from 'svelte/transition'

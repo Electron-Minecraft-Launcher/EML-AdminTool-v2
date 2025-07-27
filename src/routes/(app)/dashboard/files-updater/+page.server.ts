@@ -5,9 +5,11 @@ import { createFileSchema, editFileSchema, renameFileSchema, loaderSchema, uploa
 import { cacheFiles, createFile, deleteFile, editFile, getCachedFilesParsed, getFiles, renameFile, uploadFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
-import { type Loader, LoaderType, LoaderFormat } from '.prisma/client'
+import type { Loader, LoaderFormat as LdFormat} from '@prisma/client'
 import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
 import path_ from 'path'
+import pkg from '@prisma/client'
+const { LoaderType, LoaderFormat } = pkg
 
 export const load = (async (event) => {
   const domain = event.url.origin
@@ -260,7 +262,7 @@ export const actions: Actions = {
 
     try {
       let file: any = null
-      let format: LoaderFormat = LoaderFormat.CLIENT
+      let format: LdFormat = LoaderFormat.CLIENT
       if (type === LoaderType.VANILLA) {
         checkVanillaLoader(minecraftVersion, loaderVersion)
       } else if (type === LoaderType.FORGE) {

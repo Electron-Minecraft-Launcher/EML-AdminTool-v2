@@ -4,12 +4,13 @@
   import getEnv from '$lib/utils/env'
   import FilesUpdater from '../../../../components/contents/FilesUpdater.svelte'
   import type { File as File_ } from '$lib/utils/types'
-  import { LoaderFormat, LoaderType } from '.prisma/client'
   import ChangeLoaderModal from '../../../../components/modals/ChangeLoaderModal.svelte'
   import getUser from '$lib/utils/user'
   import { callAction } from '$lib/utils/call'
   import { l } from '$lib/stores/language'
   import { addNotification } from '$lib/stores/notifications'
+  import pkg from '@prisma/client'
+  const { LoaderFormat, LoaderType } = pkg
 
   let { data }: PageProps = $props()
 

@@ -1,7 +1,8 @@
 import { z } from 'zod/v4'
 import { NotificationCode } from './notifications'
-import { LoaderType } from '.prisma/client'
 import { DateTime } from 'luxon'
+import pkg from '@prisma/client'
+const { LoaderType } = pkg
 
 export const setupSchema = z.object({
   language: z.string().length(2, NotificationCode.SETUP_INVALID_LANGUAGE),

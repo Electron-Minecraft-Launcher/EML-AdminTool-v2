@@ -1,5 +1,6 @@
-import { UserStatus } from '.prisma/client'
+import pkg from '@prisma/client'
 import { writable, derived, type Readable } from 'svelte/store'
+const { UserStatus } = pkg
 
 interface User {
   id: string
