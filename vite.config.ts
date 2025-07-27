@@ -6,7 +6,6 @@ import mime from 'mime-types'
 
 const filesDir = path.resolve(__dirname, 'files')
 
-
 const rawFiles = () => {
   return {
     name: 'raw-files-server',

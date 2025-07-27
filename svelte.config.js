@@ -12,7 +12,7 @@ const config = {
     handler(warning)
   },
   kit: {
-    adapter: adapter({ out: '../dist/client' })
+    adapter: adapter({ out: '../dist' })
   }
 }
 
