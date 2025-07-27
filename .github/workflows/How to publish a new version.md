@@ -36,3 +36,12 @@ Wait for the GitHub Actions to run. If everything is fine, you will see a new re
 ### 5. Check everything is working
 
 Check the "Release" section of the repository to ensure that the new version is available and that the install script is attached. You can now add an `.sh` if needed.
+
+### In case of error...
+
+Remove the tag and the release from GitHub, then delete the local tag:
+
+```sh
+git pull
+git tag -d <tag_name>
+```
