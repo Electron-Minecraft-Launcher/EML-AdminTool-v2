@@ -1,0 +1,153 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../node_modules/.prisma/client"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE // User is active and can log in
+  PENDING // User is pending activation by an admin, can log in
+  SPAM // User is flagged as spam (wrong PIN), can log in
+  DELETED // User is deleted and cannot log in
+}
+
+enum LoaderType {
+  VANILLA
+  FORGE
+  // FABRIC
+}
+
+enum LoaderFormat {
+  INSTALLER
+  UNIVERSAL
+  CLIENT
+}
+
+enum BackgroundStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum StatAction {
+  STARTUP
+  LOGIN
+  LAUNCH
+  DEVTOOLS
+}
+
+model Environment {
+  id        String   @id @default(cuid(2))
+  language  String   @default("en")
+  name      String   @default("EML")
+  theme     String   @default("default")
+  pin       String   @default("000")
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id               String     @id @default(cuid(2))
+  username         String     @unique
+  password         String
+  status           UserStatus @default(PENDING)
+  isAdmin          Boolean    @default(false)
+  p_filesUpdater   Int        @default(0) // 0 = no access, 1 = read and write, 2 = read, write and change loader
+  p_bootstraps     Int        @default(0) // 0 = no access, 1 = read and write
+  p_maintenance    Int        @default(0) // 0 = no access, 1 = read and write
+  p_news           Int        @default(0) // 0 = no access, 1 = read and write, 2 = admin (can delete news they did not create)
+  p_newsCategories Int        @default(0) // 0 = no access, 1 = read and write
+  p_newsTags       Int        @default(0) // 0 = no access, 1 = read and write
+  p_backgrounds    Int        @default(0) // 0 = no access, 1 = read and write
+  p_stats          Int        @default(0) // 0 = no access, 1 = read, 2 = read and reset
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  logs             Log[]
+  news             News[]
+}
+
+model Log {
+  id        String   @id @default(cuid(2))
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  details   String?
+  timestamp DateTime @default(now())
+}
+
+model Loader {
+  id               String       @id @default(cuid(2))
+  type             LoaderType
+  minecraftVersion String
+  loaderVersion    String
+  format           LoaderFormat
+  file             Json?
+  updatedAt        DateTime     @updatedAt
+}
+
+model Bootstrap {
+  id        String   @id @default(cuid(2))
+  winFile   Json
+  macFile   Json
+  linFile   Json
+  version   String
+  updatedAt DateTime @updatedAt
+}
+
+model Maintenance {
+  id        String    @id @default(cuid(2))
+  startTime DateTime?
+  endTime   DateTime?
+  message   String    @default("")
+}
+
+model News {
+  id         String         @id @default(cuid(2))
+  title      String
+  content    String
+  authorId   String
+  author     User           @relation(fields: [authorId], references: [id])
+  categories NewsCategory[]
+  tags       NewsTag[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model NewsCategory {
+  id        String   @id @default(cuid(2))
+  name      String   @unique
+  news      News[]
+  createdAt DateTime @default(now())
+}
+
+model NewsTag {
+  id    String @id @default(cuid(2))
+  name  String @unique
+  color String
+  news  News[]
+}
+
+model Background {
+  id        String           @id @default(cuid(2))
+  name      String           @unique
+  file      Json
+  status    BackgroundStatus @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Stat {
+  id        String     @id @default(cuid(2))
+  action    StatAction
+  value     String?
+  createdAt DateTime   @default(now())
+}
+
+model ExpiredToken {
+  id        String   @id @default(cuid(2))
+  token     String   @unique
+  expiredAt DateTime @default(now())
+}

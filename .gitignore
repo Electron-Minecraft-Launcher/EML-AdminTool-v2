@@ -1,10 +1,6 @@
 /node_modules
 /.vscode
-
-/api/node_modules
-
-/client/node_modules
-/client/.svelte-kit
+/.svelte-kit
 
 /files/files-updater/*
 /files/bootstraps/*
@@ -14,3 +10,4 @@
 /update
 
 .DS_Store
+env/.env_bkp

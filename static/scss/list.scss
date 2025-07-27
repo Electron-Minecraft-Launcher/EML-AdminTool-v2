@@ -1,0 +1,38 @@
+div.list-container {
+    display: flex;
+    flex: auto;
+    flex-wrap: nowrap;
+    gap: 0 50px;
+  
+    div.list {
+      display: block;
+      flex: 1;
+      width: 175px;
+      overflow-x: hidden;
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+  
+      button.list {
+        overflow-x: hidden;
+        background: none;
+        display: block;
+        width: 175px;
+        text-align: left;
+        margin-top: 5px;
+  
+        &.active {
+          background: #f5f5f5;
+        }
+  
+        &:hover {
+          background: #eeeeee;
+        }
+      }
+    }
+  
+    div.content-list {
+      flex: calc(100% - 400px);
+      position: relative;
+    }
+  }

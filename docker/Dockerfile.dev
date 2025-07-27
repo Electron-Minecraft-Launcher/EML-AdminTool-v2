@@ -1,32 +1,23 @@
-FROM node:20
+FROM node:24-alpine
 
 WORKDIR /app
 
 ENV CHOKIDAR_USEPOLLING=true
 
-RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-27.5.1.tgz | tar -xz && \
+RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-28.3.0.tgz | tar -xz && \
   mv docker/docker /usr/local/bin/ && \
   rm -rf docker
 
-RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v2.33.1/docker-compose-linux-x86_64 && \
+RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v2.38.1/docker-compose-linux-x86_64 && \
   chmod +x /usr/local/bin/docker-compose
 
-COPY package*.json ./
+COPY package.json ./
 
-RUN mkdir api client shared
-COPY api/package*.json ./api
-COPY client/package*.json ./client
-COPY shared/package*.json ./shared
+RUN npm i --ignore-scripts
+RUN npx db prisma push
 
-RUN npm i
-RUN npm i --workspace=api
-RUN npm i --workspace=client
-RUN npm i --workspace=shared
-
-COPY api ./api
-COPY client ./client
-COPY shared ./shared
-
-EXPOSE 3000 5173
+EXPOSE 5173
 
 CMD ["npm", "run", "dev"]
+# wait command
+# CMD ["tail", "-f", "/dev/null"]

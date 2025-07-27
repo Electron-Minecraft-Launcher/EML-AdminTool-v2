@@ -31,7 +31,7 @@ jobs:
       - name: Verify file existence
         run: |
           TAG=${GITHUB_REF/refs\/tags\//}
-          FILE_NAME=".changelogs/${TAG}.md"
+          FILE_NAME="github/changelogs/${TAG}.md"
           if [ ! -f "$FILE_NAME" ]; then
             echo "File $FILE_NAME does not exist. Stopping workflow."
             exit 1
@@ -66,5 +66,5 @@ jobs:
           name: EML AdminTool ${{ github.ref_name }}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
-          body_path: .changelogs/${{ github.ref_name }}.md
+          body_path: github/changelogs/${{ github.ref_name }}.md
           files: eml-admintool-${{ env.IMAGE_TAG }}.tar.gz
