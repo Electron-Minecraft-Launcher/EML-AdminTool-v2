@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import { NotificationCode } from './notifications'
-import { LoaderType } from '@prisma/client'
+import { LoaderType } from '.prisma/client'
 import { DateTime } from 'luxon'
 
 export const setupSchema = z.object({

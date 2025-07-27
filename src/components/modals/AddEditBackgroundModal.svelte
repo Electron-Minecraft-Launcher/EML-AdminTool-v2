@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BackgroundStatus } from '@prisma/client'
+  import { BackgroundStatus } from '.prisma/client'
   import type { PageData } from '../../routes/(app)/dashboard/backgrounds/$types'
   import ModalTemplate from './__ModalTemplate.svelte'
   import Toggle from '../layouts/Toggle.svelte'

@@ -1,7 +1,7 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import type { LoaderVersion } from '$lib/utils/types'
-import { LoaderFormat, LoaderType, type Loader } from '@prisma/client'
+import { LoaderFormat, LoaderType, type Loader } from '.prisma/client'
 import { db } from './db'
 import { getOrSet } from './cache'
 

@@ -5,7 +5,7 @@ import { createFileSchema, editFileSchema, renameFileSchema, loaderSchema, uploa
 import { cacheFiles, createFile, deleteFile, editFile, getCachedFilesParsed, getFiles, renameFile, uploadFile } from '$lib/server/files'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
-import { type Loader, LoaderType, LoaderFormat } from '@prisma/client'
+import { type Loader, LoaderType, LoaderFormat } from '.prisma/client'
 import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
 import path_ from 'path'
 

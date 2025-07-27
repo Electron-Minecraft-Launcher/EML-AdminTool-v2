@@ -1,6 +1,6 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import { BackgroundStatus, Prisma } from '@prisma/client'
+import { BackgroundStatus, Prisma } from '.prisma/client'
 import { db } from './db'
 import type { File as File_ } from '../utils/types.d'
 

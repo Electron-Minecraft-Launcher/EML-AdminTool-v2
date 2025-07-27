@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { NewsTag } from "@prisma/client"
-  import AddEditNewsTagModal from "../modals/AddEditNewsTagModal.svelte"
-  import { invalidateAll } from "$app/navigation"
-  import { callAction } from "$lib/utils/call"
-  import { l } from "$lib/stores/language"
+  import type { NewsTag } from '.prisma/client'
+  import AddEditNewsTagModal from '../modals/AddEditNewsTagModal.svelte'
+  import { invalidateAll } from '$app/navigation'
+  import { callAction } from '$lib/utils/call'
+  import { l } from '$lib/stores/language'
 
   interface Props {
     newsTags: NewsTag[]

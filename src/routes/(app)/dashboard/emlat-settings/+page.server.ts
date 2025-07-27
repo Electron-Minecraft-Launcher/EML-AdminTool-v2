@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types'
-import { UserStatus } from '@prisma/client'
+import { UserStatus } from '.prisma/client'
 import { db } from '$lib/server/db'
 import { error, fail, redirect, type Actions, type RequestEvent } from '@sveltejs/kit'
 import { BusinessError, ServerError } from '$lib/utils/errors'

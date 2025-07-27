@@ -1,4 +1,4 @@
-import { UserStatus } from '@prisma/client'
+import { UserStatus } from '.prisma/client'
 import { writable, derived, type Readable } from 'svelte/store'
 
 interface User {

@@ -5,7 +5,7 @@ import fs from 'fs'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { Client } from 'pg'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '.prisma/client'
 import { deleteFile } from './files'
 
 export async function resetDatabase() {
