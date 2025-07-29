@@ -1,6 +1,7 @@
 /node_modules
 /.vscode
 /.svelte-kit
+/env/.env
 
 /files/files-updater/*
 /files/bootstraps/*

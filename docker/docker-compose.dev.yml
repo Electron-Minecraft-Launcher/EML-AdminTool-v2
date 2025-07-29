@@ -33,14 +33,13 @@ services:
       - ../node_modules/.prisma:/app/node_modules/.prisma
       - ../prisma:/app/prisma
       - ../src:/app/src
-      - ../.env:/app/.env
+      - ../env:/app/env
       - ../LICENSE:/app/LICENSE
       - ../package.json:/app/package.json
       - ../svelte.config.js:/app/svelte.config.js
       - ../tsconfig.json:/app/tsconfig.json
       - ../vite.config.ts:/app/vite.config.ts
-      - files:/app/files
-      - loader:/app/loader
+      - ../files:/app/files
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - '5173:5173'
@@ -70,5 +69,3 @@ services:
 
 volumes:
   db-data:
-  files:
-  loader:

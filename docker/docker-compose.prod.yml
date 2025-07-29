@@ -22,8 +22,7 @@ services:
       NODE_ENV: 'production'
     volumes:
       - files:/app/files
-      - env/.env:/app/.env
-      - loader:/app/loader
+      - env:/app/env
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - '3000:3000'
@@ -43,5 +42,4 @@ services:
 volumes:
   db-data:
   files:
-  loader:
   env:

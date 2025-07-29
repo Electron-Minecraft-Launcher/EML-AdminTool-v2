@@ -5,15 +5,16 @@ import { config } from 'dotenv'
 import { ServerError } from '$lib/utils/errors'
 import { randomBytes } from 'crypto'
 import fs from 'fs'
-import pkg from '../../../package.json'
 import bcrypt from 'bcrypt'
 import { NotificationCode } from '$lib/utils/notifications'
 import { dev } from '$app/environment'
 import { generateRandomPin } from './pin'
 import { sleep } from '$lib/utils/utils'
+import path from 'path'
+
+export const envPath = path.resolve(process.cwd(), 'env', '.env')
 
 const execAsync = promisify(exec)
-export const envFilePath = './.env'
 export const defaultPgURL = 'postgresql://eml:eml@db:5432/eml_admintool'
 
 export async function changeDatabasePassword(newPassword: string) {
@@ -164,7 +165,7 @@ export async function markAsConfigured() {
   const databaseUrl = process.env.DATABASE_URL ?? defaultPgURL
   const jwtSecretKey = process.env.JWT_SECRET_KEY ?? randomBytes(64).toString('base64url')
 
-  const envFile = envFilePath
+  const envFile = envPath
 
   const devWarning = dev
     ? `
@@ -194,7 +195,7 @@ DATABASE_URL="${databaseUrl}"
 JWT_SECRET_KEY="${jwtSecretKey}"`
 
   try {
-    if (!fs.existsSync('./env')) fs.mkdirSync('./env')
+    if (!fs.existsSync(envPath)) fs.mkdirSync(envPath)
   } catch (err) {
     console.error('Error creating env directory:', err)
     throw new ServerError('Failed to create env directory', err, NotificationCode.FILE_SYSTEM_ERROR, 500)
@@ -216,14 +217,14 @@ export function resetProcessEnv() {
   if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
   if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
   if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY
-  config()
+  config({path: envPath})
 }
 
 function updateEnv(dbPassword: string) {
   resetProcessEnv()
   const isConfigured = process.env.IS_CONFIGURED === 'true'
 
-  const envFile = envFilePath
+  const envFile = envPath
 
   const newDatabaseUrl = `postgresql://eml:${dbPassword}@db:5432/eml_admintool`
   const newJwtSecretKey = randomBytes(64).toString('base64url')
@@ -256,7 +257,7 @@ DATABASE_URL="${newDatabaseUrl}"
 JWT_SECRET_KEY="${newJwtSecretKey}"`
 
   try {
-    if (!fs.existsSync('./env')) fs.mkdirSync('./env')
+    if (!fs.existsSync(envPath)) fs.mkdirSync(envPath)
   } catch (err) {
     console.error('Error creating env directory:', err)
     throw new ServerError('Failed to create env directory', err, NotificationCode.FILE_SYSTEM_ERROR, 500)
