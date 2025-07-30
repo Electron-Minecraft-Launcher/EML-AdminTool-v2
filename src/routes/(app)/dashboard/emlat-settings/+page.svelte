@@ -23,7 +23,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
   let showEditAdminToolModal = $state(false)
 
   let selectedUserId = $state(data.users[0].id)
-  let updateMessage: undefined | string = $state(undefined)
+  let updateMessage: string = $state('')
 
   onMount(() => {
     if (window.location.search.includes('updated=true')) {
@@ -41,64 +41,65 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
     if (!confirm(updateWarning)) return
     showLoader = true
     document.body.style.overflow = 'hidden'
-    const eventSource = new EventSource('/api/update')
+    updateMessage = 'Updating...'
 
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-
-      if (data.status === 'in-progress' || data.status === 'success') {
-        if (data.event === 'up-to-date') {
-          showLoader = false
-          document.body.style.overflow = 'auto'
-          const message = $l.notifications.EMLAT_UP_TO_DATE
-          addNotification('INFO', message)
-        } else if (data.event === 'fetching' || data.event === 'downloading') {
-          updateMessage = 'Downloading update...'
-        } else if (data.event === 'extracting' || data.event === 'script' || data.event === 'docker-load' || data.event === 'docker-volume') {
-          updateMessage = 'Installing update...'
-        } else if (data.event === 'docker-run') {
-          updateMessage = 'Installing update'
-          checkUpdateEnded()
-        }
-      } else if (data.status === 'error') {
-        updateMessage = undefined
+    try {
+      const status = await callAction({ url: '/dashboard/emlat-settings', action: 'updateEMLAT', formData: new FormData() }, $l)
+      if (status?.data.dev) {
+        await sleep(2000)
+        updateMessage = '[DEV] Update is working!'
+        await sleep(2000)
         showLoader = false
-        const message = $l.notifications.INTERNAL_SERVER_ERROR
-        addNotification('ERROR', message)
         document.body.style.overflow = 'auto'
+      } else {
+        checkUpdateEnded()
       }
+    } catch (err) {
+      console.error('Failed to update:', err)
+      addNotification('ERROR', $l.notifications.EMLAT_UPDATE_FAILED)
+      showLoader = false
+      document.body.style.overflow = 'auto'
+      return
     }
-
-    return () => eventSource.close()
   }
 
   async function reset() {
     if (!confirm($l.dashboard.emlatSettings.resetEMLATWarning)) return
     if (!confirm($l.dashboard.emlatSettings.areYouSure)) return
 
+    updateMessage = 'Resetting...'
+    showLoader = true
+
     try {
       await callAction({ url: '/dashboard/emlat-settings', action: 'resetEMLAT', formData: new FormData() }, $l)
-      showLoader = true
-      pingServerAndReload()
+      pingServerAndReload(5, 2000)
     } catch (err) {
       console.error('Failed to reset:', err)
-      // TODO
+      addNotification('ERROR', $l.notifications.EMLAT_RESET_FAILED)
+      showLoader = false
+      document.body.style.overflow = 'auto'
+      return
     }
   }
 
   async function checkUpdateEnded() {
-    await sleep(5000)
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 40; i++) {
+      // Check every 3 seconds for 2 minutes
+      await sleep(3000)
       try {
         const response = await fetch('/api/ping')
         if (response.ok) {
-          window.location.href = '/dashboard/emlat-settings?updated=true'
-          return
+          const version = await response.text()
+          if (env.version !== version) {
+            updateMessage = `Restarting...`
+            window.location.href = '/dashboard/emlat-settings?updated=true'
+            return
+          }
         } else {
-          console.error('Ping failed:', response.statusText)
+          updateMessage = `Restarting...`
         }
       } catch (err) {
-        console.error('Ping failed, retrying...', err)
+        updateMessage = `Restarting...`
       }
     }
   }

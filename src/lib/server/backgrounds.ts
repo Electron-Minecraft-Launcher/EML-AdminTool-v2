@@ -10,24 +10,22 @@ export async function getActiveBackground() {
   let background
   try {
     background = await db.background.findFirst({ where: { status: BackgroundStatus.ACTIVE } })
+    return background
   } catch (err) {
     console.error('Failed to get active background:', err)
     throw new ServerError('Failed to get active background', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return background
 }
 
 export async function getBackgroundById(backgroundId: string) {
   let background
   try {
     background = await db.background.findUnique({ where: { id: backgroundId } })
+    return background
   } catch (err) {
     console.error('Error fetching background by ID:', err)
     throw new ServerError('Error fetching background by ID', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return background
 }
 
 export async function addBackground(name: string, file: File_, status: BgStatus) {
@@ -112,3 +110,4 @@ export async function deleteBackground(backgroundId: string) {
     throw new ServerError('Error deleting background', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
+

@@ -4,12 +4,7 @@ WORKDIR /app
 
 ENV CHOKIDAR_USEPOLLING=true
 
-# RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-28.3.0.tgz | tar -xz && \
-#   mv docker/docker /usr/local/bin/ && \
-#   rm -rf docker
-
-# RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v2.38.1/docker-compose-linux-x86_64 && \
-#   chmod +x /usr/local/bin/docker-compose
+RUN apk add --no-cache docker-cli
 
 COPY package.json ./
 COPY docker/entrypoint.dev.sh ./entrypoint.dev.sh

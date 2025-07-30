@@ -16,7 +16,7 @@ else
 fi
 
 echo "⏳ Waiting for database..."
-until nc -z db 5432; do
+until nc -z dbs 5432; do
   sleep 1
 done
 

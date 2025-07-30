@@ -11,11 +11,31 @@ import { dev } from '$app/environment'
 import { generateRandomPin } from './pin'
 import { sleep } from '$lib/utils/utils'
 import path from 'path'
+const execAsync = promisify(exec)
 
 export const envPath = path.resolve(process.cwd(), 'env', '.env')
-
-const execAsync = promisify(exec)
-export const defaultPgURL = 'postgresql://eml:eml@db:5432/eml_admintool'
+export const defaultPgURL = 'postgresql://eml:eml@dbs:5432/eml_admintool'
+export const defaultEnvHeader = `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#          DO NOT MODIFY OR DELETE THIS FILE          #
+#                                                     #
+# This file contains important environment variables  #
+# for your application, including the password for    #
+# your database and a JWT key. Modifying or deleting  #
+# this file would break your application and          #
+# compromise its security.                            #
+#                                                     #
+# If you need to change any of these values, please   #
+# use the appropriate configuration options rather    #
+# than modifying this file directly.                  #
+# Consult the documentation for more information.     #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #`
+export const devWarning = dev
+  ? `
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#       FAKE ENVIRONMENT VARIABLES FOR TESTING        #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+`
+  : ''
 
 export async function changeDatabasePassword(newPassword: string) {
   console.log('\n---------- CHANGING DATABASE PASSWORD ----------\n')
@@ -71,10 +91,7 @@ export async function initDatabase() {
   try {
     res = await client.query(`SELECT 1 FROM "Environment" WHERE id = $1`, [1])
     if (res.rowCount === 0) {
-      await client.query(
-        `INSERT INTO "Environment" ("id", "language", "name", "theme", "updatedAt") VALUES ($1, 'en', 'EML', 'default', NOW())`,
-        [1]
-      )
+      await client.query(`INSERT INTO "Environment" ("id", "language", "name", "theme", "updatedAt") VALUES ($1, 'en', 'EML', 'default', NOW())`, [1])
     } else {
       await client.query(`UPDATE "Environment" SET "updatedAt" = NOW() WHERE "id" = $1`, [1])
     }
@@ -164,6 +181,7 @@ export async function markAsConfigured() {
   resetProcessEnv()
   const databaseUrl = process.env.DATABASE_URL ?? defaultPgURL
   const jwtSecretKey = process.env.JWT_SECRET_KEY ?? randomBytes(64).toString('base64url')
+  const apiToken = process.env.WATCHTOWER_HTTP_API_TOKEN ?? randomBytes(32).toString('hex')
 
   const envFile = envPath
 
@@ -175,24 +193,20 @@ export async function markAsConfigured() {
 `
     : ''
 
-  const newEnv = `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#          DO NOT MODIFY OR DELETE THIS FILE          #
-#                                                     #
-# This file contains important environment variables  #
-# for your application, including the password for    #
-# your database and a JWT key. Modifying or deleting  #
-# this file would break your application and          #
-# compromise its security.                            #
-#                                                     #
-# If you need to change any of these values, please   #
-# use the appropriate configuration options rather    #
-# than modifying this file directly.                  #
-# Consult the documentation for more information.     #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+  const newEnv = `${defaultEnvHeader}
 ${devWarning}
+# EML AdminTool configuration
 IS_CONFIGURED="true"
 DATABASE_URL="${databaseUrl}"
-JWT_SECRET_KEY="${jwtSecretKey}"`
+JWT_SECRET_KEY="${jwtSecretKey}"
+
+# Watchtower configuration
+WATCHTOWER_RUN_ONCE="true"
+WATCHTOWER_HTTP_API_UPDATE="true"
+WATCHTOWER_LABEL_ENABLE="true"
+WATCHTOWER_CLEANUP="true"
+WATCHTOWER_HTTP_API_TOKEN="${apiToken}"
+`
 
   try {
     if (!fs.existsSync(envPath)) fs.mkdirSync(envPath)
@@ -217,7 +231,8 @@ export function resetProcessEnv() {
   if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
   if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
   if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY
-  config({path: envPath})
+  if (process.env.WATCHTOWER_HTTP_API_TOKEN) delete process.env.WATCHTOWER_HTTP_API_TOKEN
+  config({ path: envPath, quiet: true })
 }
 
 function updateEnv(dbPassword: string) {
@@ -226,35 +241,24 @@ function updateEnv(dbPassword: string) {
 
   const envFile = envPath
 
-  const newDatabaseUrl = `postgresql://eml:${dbPassword}@db:5432/eml_admintool`
+  const newDatabaseUrl = `postgresql://eml:${dbPassword}@dbs:5432/eml_admintool`
   const newJwtSecretKey = randomBytes(64).toString('base64url')
+  const newApiToken = randomBytes(32).toString('hex')
 
-  const devWarning = dev
-    ? `
-# # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#       FAKE ENVIRONMENT VARIABLES FOR TESTING        #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # #
-`
-    : ''
-
-  const newEnv = `# # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#          DO NOT MODIFY OR DELETE THIS FILE          #
-#                                                     #
-# This file contains important environment variables  #
-# for your application, including the password for    #
-# your database and a JWT key. Modifying or deleting  #
-# this file would break your application and          #
-# compromise its security.                            #
-#                                                     #
-# If you need to change any of these values, please   #
-# use the appropriate configuration options rather    #
-# than modifying this file directly.                  #
-# Consult the documentation for more information.     #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # #
+  const newEnv = `${defaultEnvHeader}
 ${devWarning}
+# EML AdminTool configuration
 IS_CONFIGURED="${isConfigured}"
 DATABASE_URL="${newDatabaseUrl}"
-JWT_SECRET_KEY="${newJwtSecretKey}"`
+JWT_SECRET_KEY="${newJwtSecretKey}"
+
+# Watchtower configuration
+WATCHTOWER_RUN_ONCE="true"
+WATCHTOWER_HTTP_API_UPDATE="true"
+WATCHTOWER_LABEL_ENABLE="true"
+WATCHTOWER_CLEANUP="true"
+WATCHTOWER_HTTP_API_TOKEN="${newApiToken}"
+`
 
   try {
     if (!fs.existsSync(envPath)) fs.mkdirSync(envPath)
@@ -269,7 +273,7 @@ JWT_SECRET_KEY="${newJwtSecretKey}"`
     console.error('Error writing to env file:', err)
     throw new ServerError('Failed to write to env file', err, NotificationCode.FILE_SYSTEM_ERROR, 500)
   }
-
+  
   resetProcessEnv()
 }
 
@@ -277,3 +281,22 @@ export async function restartServer() {
   await sleep(100)
   process.exit(0)
 }
+
+export async function restartWatchtower() {
+  const watchtowerName = 'wtw'
+  console.log(`Trying to restart container ${watchtowerName}...`)
+
+  try {
+    const { stdout, stderr } = await execAsync(`docker restart ${watchtowerName}`)
+    if (stderr && stderr.trim() !== watchtowerName) {
+      console.error('Error while restarting Watchtower:', stderr)
+      throw new ServerError('Failed to restart Watchtower', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    }
+    console.log('Watchtower has been restarted successfully')
+  } catch (err) {
+    console.error('Error restarting Watchtower:', err)
+    throw new ServerError('Failed to restart Watchtower', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+}
+
+

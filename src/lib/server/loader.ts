@@ -1,11 +1,20 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import type { LoaderVersion } from '$lib/utils/types'
-import pkg from '@prisma/client'
-import { type Loader } from '@prisma/client'
 import { db } from './db'
 import { getOrSet } from './cache'
-const { LoaderFormat, LoaderType } = pkg
+import { ILoaderFormat, ILoaderType, type Loader } from '$lib/utils/db'
+
+export async function getLoader() {
+  let loader
+  try {
+    loader = await db.loader.findFirst()
+    return loader as Loader
+  } catch (err) {
+    console.error('Failed to load loader:', err)
+    throw new ServerError('Failed to load loader', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+}
 
 export async function getVanillaVersions() {
   return getOrSet('vanilla-versions', async () => {
@@ -126,11 +135,11 @@ export async function updateLoader(loader: Partial<Loader>) {
 
   const formattedLoader = {
     id: '1',
-    type: loader.type ?? LoaderType.VANILLA,
+    type: loader.type ?? ILoaderType.VANILLA,
     minecraftVersion: loader.minecraftVersion ?? 'latest_release',
     loaderVersion: loader.loaderVersion ?? 'latest_release',
-    format: loader.format ?? LoaderFormat.UNIVERSAL,
-    file: loader.file ? { update: loader.file } : undefined
+    format: loader.format ?? ILoaderFormat.UNIVERSAL,
+    file: loader.file ? { update: loader.file } : (undefined as any)
   }
 
   try {
@@ -144,8 +153,6 @@ export async function updateLoader(loader: Partial<Loader>) {
     throw new ServerError('Failed to update loader', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
-
-// TODO catch HTTP errors in ALL files, including .svelte files
 
 async function fetchVanillaVersions() {
   try {
@@ -250,11 +257,11 @@ function getFormat(forgeMeta: any) {
 function getTypedFormat(format: string) {
   switch (format) {
     case 'installer':
-      return LoaderFormat.INSTALLER
+      return ILoaderFormat.INSTALLER
     case 'client':
-      return LoaderFormat.CLIENT
+      return ILoaderFormat.CLIENT
     default:
-      return LoaderFormat.UNIVERSAL
+      return ILoaderFormat.UNIVERSAL
   }
 }
 

@@ -18,13 +18,20 @@
 #    dependency or update dependencies.               #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-name: eml_admintool_dev
+name: eml-admintool-dev
+
+networks:
+  eml-admintool-network:
 
 services:
   web:
+    container_name: web
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.dev
+    restart: unless-stopped
+    networks:
+      - eml-admintool-network
     environment:
       NODE_ENV: 'development'
     volumes:
@@ -44,10 +51,13 @@ services:
     ports:
       - '5173:5173'
     depends_on:
-      - db
-    restart: always
-  db:
+      - dbs
+  dbs:
+    container_name: dbs
     image: postgres:latest
+    restart: unless-stopped
+    networks:
+      - eml-admintool-network
     environment:
       POSTGRES_USER: eml
       POSTGRES_PASSWORD: eml
@@ -56,16 +66,30 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-  
+  wtw:
+    container_name: wtw
+    build:
+      context: ../mock-watchtower
+      dockerfile: Dockerfile
+    networks:
+      - eml-admintool-network
+    volumes:
+      - ../env:/config:ro
+    ports:
+      - '8080:8080'
+    depends_on:
+      - web
   pga:
+    container_name: pga
     image: dpage/pgadmin4
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admintool@eml.com
       PGADMIN_DEFAULT_PASSWORD: eml
     ports:
-      - '8080:80'
+      - '5050:80'
     depends_on:
-      - db
+      - dbs
 
 volumes:
   db-data:

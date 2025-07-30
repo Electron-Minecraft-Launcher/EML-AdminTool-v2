@@ -11,12 +11,11 @@ export async function getPin() {
   let pin
   try {
     pin = (await db.environment.findFirst({ select: { pin: true } }))!.pin
+    return pin
   } catch (err) {
     console.error('Error fetching PIN from database:', err)
     throw new ServerError('Failed to fetch PIN from database', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return pin
 }
 
 export async function checkPin(pin: string) {
