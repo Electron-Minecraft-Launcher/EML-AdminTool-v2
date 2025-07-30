@@ -6,6 +6,7 @@
 /files/files-updater/*
 /files/bootstraps/*
 /files/backgrounds/*
+/files/cache/*
 
 /dist
 /update

@@ -49,8 +49,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
         await sleep(2000)
         updateMessage = '[DEV] Update is working!'
         await sleep(2000)
-        showLoader = false
-        document.body.style.overflow = 'auto'
+        window.location.href = '/dashboard/emlat-settings?updated=true'
       } else {
         checkUpdateEnded()
       }
