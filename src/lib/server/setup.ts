@@ -235,6 +235,43 @@ export function resetProcessEnv() {
   config({ path: envPath, quiet: true })
 }
 
+export async function restartWatchtower() {
+  console.log('\n------------ RESTARTING WATCHTOWER -------------\n')
+
+  let watchtowerName = 'wtw'
+  const filter = dev ? `com.eml.admintool.watchtower=dev` : `com.eml.admintool.watchtower=prod`
+
+  try {
+    const { stdout, stderr } = await execAsync(`docker ps --filter "label=${filter}" --format "{{.Names}}"`)
+    if (stderr) {
+      console.error('Error while fetching Watchtower container name:', stderr)
+      throw new ServerError('Failed to fetch Watchtower container name', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    }
+    watchtowerName = stdout.trim() ?? watchtowerName
+  } catch (err) {
+    console.error('Error while fetching Watchtower container name:', err)
+    throw new ServerError('Failed to fetch Watchtower container name', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+
+  try {
+    const { stdout, stderr } = await execAsync(`docker restart ${watchtowerName}`)
+    if (stderr && stderr.trim() !== watchtowerName) {
+      console.error('Error while restarting Watchtower:', stderr)
+      throw new ServerError('Failed to restart Watchtower', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    }
+  } catch (err) {
+    console.error('Error restarting Watchtower:', err)
+    throw new ServerError('Failed to restart Watchtower', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+  }
+
+  console.log('Watchtower restarted successfully.')
+}
+
+export async function restartServer() {
+  await sleep(100)
+  process.exit(0)
+}
+
 function updateEnv(dbPassword: string) {
   resetProcessEnv()
   const isConfigured = process.env.IS_CONFIGURED === 'true'
@@ -273,30 +310,7 @@ WATCHTOWER_HTTP_API_TOKEN="${newApiToken}"
     console.error('Error writing to env file:', err)
     throw new ServerError('Failed to write to env file', err, NotificationCode.FILE_SYSTEM_ERROR, 500)
   }
-  
+
   resetProcessEnv()
 }
-
-export async function restartServer() {
-  await sleep(100)
-  process.exit(0)
-}
-
-export async function restartWatchtower() {
-  const watchtowerName = 'wtw'
-  console.log(`Trying to restart container ${watchtowerName}...`)
-
-  try {
-    const { stdout, stderr } = await execAsync(`docker restart ${watchtowerName}`)
-    if (stderr && stderr.trim() !== watchtowerName) {
-      console.error('Error while restarting Watchtower:', stderr)
-      throw new ServerError('Failed to restart Watchtower', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
-    }
-    console.log('Watchtower has been restarted successfully')
-  } catch (err) {
-    console.error('Error restarting Watchtower:', err)
-    throw new ServerError('Failed to restart Watchtower', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
-  }
-}
-
 
