@@ -21,17 +21,16 @@
 name: eml-admintool-dev
 
 networks:
-  eml-admintool-network:
+  network:
 
 services:
   web:
-    container_name: web
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.dev
     restart: unless-stopped
     networks:
-      - eml-admintool-network
+      - network
     environment:
       NODE_ENV: 'development'
     volumes:
@@ -53,11 +52,10 @@ services:
     depends_on:
       - dbs
   dbs:
-    container_name: dbs
     image: postgres:latest
     restart: unless-stopped
     networks:
-      - eml-admintool-network
+      - network
     environment:
       POSTGRES_USER: eml
       POSTGRES_PASSWORD: eml
@@ -67,20 +65,21 @@ services:
     ports:
       - '5432:5432'
   wtw:
-    container_name: wtw
     build:
       context: ../mock-watchtower
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     networks:
-      - eml-admintool-network
+      - network
     volumes:
       - ../env:/config:ro
+    labels:
+      - com.eml.admintool.watchtower=dev
     ports:
       - '8080:8080'
     depends_on:
       - web
+    command: ["npm", "run", "start"]
   pga:
-    container_name: pga
     image: dpage/pgadmin4
     restart: unless-stopped
     environment:

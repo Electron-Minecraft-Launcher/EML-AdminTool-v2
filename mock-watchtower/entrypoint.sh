@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 ENV_FILE="/config/.env"
 
@@ -9,5 +10,4 @@ else
   echo "🔧 No .env file found at $ENV_FILE"
 fi
 
-# Démarre Watchtower avec les paramètres par défaut
-exec npm start
+exec "$@"

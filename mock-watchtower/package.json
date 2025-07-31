@@ -2,7 +2,7 @@
   "name": "mock-watchtower",
   "main": "server.js",
   "scripts": { 
-    "start": "node server.js" 
+    "start": "node server.dev.js" 
   },
   "dependencies": { 
     "express": "^4.18.2" 
