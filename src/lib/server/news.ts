@@ -12,24 +12,22 @@ export async function getNews(limit: number = 20) {
       orderBy: { createdAt: 'desc' },
       include: { author: { select: { id: true, username: true } } }
     })
+    return news
   } catch (err) {
     console.error('Failed to get news:', err)
     throw new ServerError('Failed to get news', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return news
 }
 
 export async function getNewsById(newsId: string) {
   let news
   try {
     news = await db.news.findUnique({ where: { id: newsId } })
+    return news
   } catch (err) {
     console.error('Error fetching news by ID:', err)
     throw new ServerError('Error fetching news by ID', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return news
 }
 
 export async function addNews(title: string, content: string, authorId: string, categoriesId: string[], tagsId: string[]) {
@@ -85,16 +83,28 @@ export async function deleteNews(newsId: string) {
 
 //* News Categories
 
+export async function getNewsCategories() {
+  let categories
+  try {
+    categories = await db.newsCategory.findMany({
+      orderBy: { name: 'asc' }
+    })
+    return categories
+  } catch (err) {
+    console.error('Failed to get news categories:', err)
+    throw new ServerError('Failed to get news categories', err, NotificationCode.DATABASE_ERROR, 500)
+  }
+}
+
 export async function getNewsCategoryById(categoryId: string) {
   let category
   try {
     category = await db.newsCategory.findUnique({ where: { id: categoryId } })
+    return category
   } catch (err) {
     console.error('Error fetching news category by ID:', err)
     throw new ServerError('Error fetching news category by ID', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return category
 }
 
 export async function addNewsCategory(name: string) {
@@ -151,12 +161,11 @@ export async function getNewsTagById(tagId: string) {
   let tag
   try {
     tag = await db.newsTag.findUnique({ where: { id: tagId } })
+    return tag
   } catch (err) {
     console.error('Error fetching news tag by ID:', err)
     throw new ServerError('Error fetching news tag by ID', err, NotificationCode.DATABASE_ERROR, 500)
   }
-
-  return tag
 }
 
 export async function addNewsTag(name: string, color: string = '#000000') {

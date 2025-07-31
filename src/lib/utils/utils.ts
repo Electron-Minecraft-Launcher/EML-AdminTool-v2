@@ -9,11 +9,13 @@ export function sleep(duration: number) {
 }
 
 /**
+ * Pings the server and reloads the page if successful. The function first waits for `sleepDuration` before attempting to ping the server.
  * @param retrying Number of times to retry pinging the server. Default is `5`.
+ * @param sleepDuration Duration to wait between retries in ms. Default is `1000`.
  */
-export async function pingServerAndReload(retrying: number = 5) {
-  await sleep(2000)
+export async function pingServerAndReload(retrying: number = 5, sleepDuration: number = 1000) {
   for (let i = 0; i < retrying; i++) {
+    await sleep(sleepDuration)
     try {
       const response = await fetch('/api/ping')
       if (response.ok) {
@@ -101,3 +103,4 @@ export function getFileIcon(file: File_) {
       return 'fa-solid fa-file'
   }
 }
+

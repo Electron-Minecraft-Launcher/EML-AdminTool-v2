@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: Checkout code
@@ -21,43 +22,46 @@ jobs:
 
       - name: Verify branch is main
         run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          BRANCHES=$(git branch -r --contains tags/$TAG)
-          if [[ ! "$BRANCHES" == *"origin/main"* ]]; then
-            echo "Tag $TAG is not on the main branch. Stopping workflow."
+          # Cette commande vérifie si le tag actuel est un ancêtre de la branche 'main'
+          if ! git branch -r --contains ${{ github.ref_name }} | grep -q "origin/main"; then
+            echo "Error: Tag ${{ github.ref_name }} is not on the main branch."
             exit 1
           fi
-      
-      - name: Verify file existence
+          echo "✅ Tag is on the main branch."
+
+      - name: Verify changelog file exists
         run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          FILE_NAME=".github/changelogs/${TAG}.md"
-          if [ ! -f "$FILE_NAME" ]; then
-            echo "File $FILE_NAME does not exist. Stopping workflow."
+          CHANGELOG_FILE=".github/changelogs/${{ github.ref_name }}.md"
+          if [ ! -f "$CHANGELOG_FILE" ]; then
+            echo "Error: Changelog file $CHANGELOG_FILE does not exist."
             exit 1
           fi
+          echo "✅ Changelog file found."
 
-      - name: Build Docker image
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          IMAGE_TAG=${TAG#v}
-          docker build -t eml-admintool:$IMAGE_TAG -f docker/Dockerfile.build .
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Save Docker image as tarball
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          IMAGE_TAG=${TAG#v}
-          docker save eml-admintool:$IMAGE_TAG > eml-admintool-$IMAGE_TAG.tar
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
       
-      - name: Create tarball
-        run: |
-          TAR_FILE=eml-admintool-$IMAGE_TAG.tar.gz
-          tar -czf $TAR_FILE eml-admintool-$IMAGE_TAG.tar -C docker docker-compose.prod.yml
-          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.build
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Create Release
-        id: create_release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,4 +71,4 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
           body_path: .github/changelogs/${{ github.ref_name }}.md
-          files: eml-admintool-${{ env.IMAGE_TAG }}.tar.gz
+          files: docker/docker-compose.prod.yml

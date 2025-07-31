@@ -13,14 +13,10 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-RUN wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-27.5.1.tgz | tar -xz && \
-  mv docker/docker /usr/local/bin/ && \
-  rm -rf docker
-
-RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v2.33.1/docker-compose-linux-x86_64 && \
-  chmod +x /usr/local/bin/docker-compose
+RUN apk add --no-cache docker-cli
 
 COPY --from=build /app/dist .
+COPY --from=build /app/env ./env
 COPY --from=build /app/prisma ./prisma
 
 COPY --from=build /app/package.json ./package.json

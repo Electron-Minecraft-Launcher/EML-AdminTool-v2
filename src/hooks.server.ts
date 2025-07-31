@@ -52,7 +52,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 function isConfigured() {
   return (
     process.env.IS_CONFIGURED === 'true' &&
-    process.env.DATABASE_URL !== 'postgresql://eml:eml@db:5432/eml_admintool' &&
+    process.env.DATABASE_URL !== 'postgresql://eml:eml@dbs:5432/eml_admintool' &&
     process.env.DATABASE_URL !== undefined
   )
 }

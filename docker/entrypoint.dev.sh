@@ -20,8 +20,8 @@ until nc -z dbs 5432; do
   sleep 1
 done
 
-echo "✅ Database available. Applying `prisma db push`..."
+echo "✅ Database available. Applying 'prisma db push'..."
 npx prisma db push
 
-echo "🚀 Starting application"
-exec npm run serve
+echo "🚀 Starting application..."
+exec npm run dev

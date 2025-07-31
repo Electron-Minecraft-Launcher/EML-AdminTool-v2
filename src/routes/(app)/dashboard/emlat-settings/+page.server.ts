@@ -4,7 +4,7 @@ import { error, fail, redirect, type Actions, type RequestEvent } from '@sveltej
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { getOS, getStorage } from '$lib/server/vps'
-import { getUpdate } from '$lib/server/update'
+import { getUpdate, update } from '$lib/server/update'
 import { editEMLATSchema, editUserSchema } from '$lib/utils/validations'
 import { editEMLAT } from '$lib/server/emlat'
 import { generateRandomPin, getPin } from '$lib/server/pin'
@@ -12,8 +12,9 @@ import type { LanguageCode } from '$lib/stores/language'
 import { deleteUser, updateUser } from '$lib/server/user'
 import { verify } from '$lib/server/auth'
 import { deleteAllFiles, markAsUnconfigured, resetDatabase } from '$lib/server/reset'
-import { restartServer } from '$lib/server/setup'
+import { restartServer, restartWatchtower } from '$lib/server/setup'
 import { IUserStatus } from '$lib/utils/db'
+import { dev } from '$app/environment'
 
 export const load = (async (event) => {
   const user = event.locals.user
@@ -201,6 +202,28 @@ export const actions: Actions = {
     }
   },
 
+  updateEMLAT: async (event) => {
+    const user = event.locals.user
+
+    if (!user?.isAdmin) {
+      return error(403, { message: NotificationCode.FORBIDDEN })
+    }
+
+    try {
+      await update()
+
+      if (dev) {
+        return { dev: true }
+      }
+    } catch (err) {
+      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
+
+      console.error('Unknown error:', err)
+      throw error(500, { message: NotificationCode.INTERNAL_SERVER_ERROR })
+    }
+  },
+
   resetEMLAT: async (event) => {
     const user = event.locals.user
 
@@ -281,5 +304,4 @@ function getStatsPermissions(result: any) {
   if (result.data.p_stats_1) return 1
   return 0
 }
-
 

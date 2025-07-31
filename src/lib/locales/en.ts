@@ -37,7 +37,9 @@ export default {
     [NotificationCode.EMLAT_INVALID_LANGUAGE]: `Language must be exactly 2 characters long.`,
     [NotificationCode.EMLAT_UPDATED]: `EML AdminTool has been updated successfully.`,
     [NotificationCode.EMLAT_UP_TO_DATE]: `EML AdminTool is up-to-date.`,
-
+    [NotificationCode.EMLAT_UPDATE_FAILED]: `Failed to update EML AdminTool. Please see the logs for more details.`,
+    [NotificationCode.EMLAT_RESET_FAILED]: `Failed to reset EML AdminTool. Please see the logs for more details.`,
+    
     [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.EDIT_USER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
 
@@ -84,6 +86,7 @@ export default {
     [NotificationCode.BACKGROUND_ALREADY_EXISTS]: `Background with this name already exists.`,
 
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
+    [NotificationCode.WATCHTOWER_ERROR]: `Watchtower error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
     [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`,
