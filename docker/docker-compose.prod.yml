@@ -13,35 +13,53 @@
 # start or restart the application.                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-name: eml_admintool
+name: eml-admintool
+
+networks:
+  network:
 
 services:
   web:
-    image: eml-admintool:2.0.0-beta.1
+    image: ghcr.io/electron-minecraft-launcher/eml-admintool-v2:latest
+    restart: unless-stopped
+    networks:
+      - network
     environment:
       NODE_ENV: 'production'
-      PORT: 4000
     volumes:
       - files:/app/files
-      - env:/app/api/env
-      - loader:/app/loader
+      - env:/app/env
       - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
     ports:
-      - '3000:3000'
+      - '8080:3000'
     depends_on:
-      - db
-  db:
-    image: mysql:8.4
+      - dbs
+  dbs:
+    image: postgres:latest
+    restart: unless-stopped
+    networks:
+      - network
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      MYSQL_DATABASE: 'eml_admintool'
-      MYSQL_USER: 'eml'
-      MYSQL_PASSWORD: 'eml'
+      POSTGRES_USER: eml
+      POSTGRES_PASSWORD: eml
+      POSTGRES_DB: eml_admintool
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data:/var/lib/postgresql/data
+  wtw:
+    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat:latest
+    networks:
+      - network
+    volumes:
+      - env:/config:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - com.eml.admintool.watchtower=prod
+    depends_on:
+      - web
 
 volumes:
   db-data:
   files:
-  loader:
   env:

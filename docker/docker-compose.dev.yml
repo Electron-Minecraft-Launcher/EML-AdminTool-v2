@@ -9,52 +9,81 @@
 # To run the application in a production environment, #
 # you should use the docker-compose.prod.yml file     #
 # with an existing Docker image.                      #
+#                                                     #
+# Warning:                                            #
+#  - You may sometimes need to restart the container  #
+#    when you create a new file.                      #
+#  - You may need to delete and rebuild the "web"     #
+#    container and image when you install a new       #
+#    dependency or update dependencies.               #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-name: eml_admintool_dev
+name: eml-admintool-dev
+
+networks:
+  network:
 
 services:
   web:
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.dev
+    restart: unless-stopped
+    networks:
+      - network
     environment:
       NODE_ENV: 'development'
     volumes:
-      - ../api:/app/api
-      - ../api/env:/app/api/env
-      - ../client:/app/client
-      - ../shared:/app/shared
+      - ../.svelte-kit:/app/.svelte-kit
+      - ../static:/app/static
+      - ../node_modules/.prisma:/app/node_modules/.prisma
+      - ../prisma:/app/prisma
+      - ../src:/app/src
+      - ../env:/app/env
+      - ../LICENSE:/app/LICENSE
       - ../package.json:/app/package.json
-      - files:/app/files
-      - loader:/app/loader
+      - ../svelte.config.js:/app/svelte.config.js
+      - ../tsconfig.json:/app/tsconfig.json
+      - ../vite.config.ts:/app/vite.config.ts
+      - ../files:/app/files
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - '3000:3000'
       - '5173:5173'
     depends_on:
-      - db
-  db:
-    image: mysql:8.4
+      - dbs
+  dbs:
+    image: postgres:latest
+    restart: unless-stopped
+    networks:
+      - network
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      MYSQL_DATABASE: 'eml_admintool'
-      MYSQL_USER: 'eml'
-      MYSQL_PASSWORD: 'eml'
+      POSTGRES_USER: eml
+      POSTGRES_PASSWORD: eml
+      POSTGRES_DB: eml_admintool
     volumes:
-      - db-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  
-  pma:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: db
+      - db-data:/var/lib/postgresql/data
     ports:
-      - '8080:80'
+      - '5432:5432'
+  wtw:
+    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat-dev:latest
+    networks:
+      - network
+    volumes:
+      - ../env:/config:ro
+    labels:
+      - com.eml.admintool.watchtower=dev
     depends_on:
-      - db
+      - web
+  pga:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admintool@eml.com
+      PGADMIN_DEFAULT_PASSWORD: eml
+    ports:
+      - '5050:80'
+    depends_on:
+      - dbs
 
 volumes:
   db-data:
-  files:
-  loader:

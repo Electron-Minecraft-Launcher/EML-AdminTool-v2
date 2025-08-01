@@ -1,10 +1,12 @@
 # EML AdminTool
 
-**EML AdminTool is a Web software to manage a Minecraft Launcher built with the [EML Lib](https://github.com/Electron-Minecraft-Launcher/EML-Lib-v2) library.**
+**EML AdminTool is a Web software to manage a Minecraft Launcher built with [EML Lib](https://github.com/Electron-Minecraft-Launcher/EML-Lib-v2) library.**
+
+![EML AdminTool](./.github/assets/files-updater.png)
 
 [<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
-[<img src="https://img.shields.io/badge/version-2.0.0--beta.1-orangered?style=for-the-badge&color=orangered">](package.json)</p>
+[<img src="https://img.shields.io/badge/version-2.0.0--beta.3-orangered?style=for-the-badge&color=orangered">](package.json)</p>
 
 ---
 
@@ -23,6 +25,8 @@
 
 ## Installation
 
+###### For more information, please read the [installation guide](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki/Installation-and-setup).
+
 ### Minimum VPS requirements
 
 You have to use a compatible **VPS**.
@@ -30,11 +34,11 @@ You have to use a compatible **VPS**.
 You can choose your Linux distribution, but Debian or Ubuntu is highly recommended.
 
 
-|              | Minimum       | Recommended   |
-|--------------|---------------|---------------|
-| CPU          | 1 core 2 GHz  | 4 cores 2 GHz |
-| RAM          | 1 GB          | 4 GB          |
-| Storage      | 5 GB          | 50 GB SSD     |
+|              | Minimum       | Recommended    |
+|--------------|---------------|----------------|
+| CPU          | 2 core 2 GHz. | 4 cores 2 GHz  |
+| RAM          | 2 GB          | 4 GB           |
+| Storage      | 5 GB free     | 50 GB SSD free |
 
 > [!NOTE]
 > The Launcher can make many requests to EML AdminTool. If your Minecraft serveur doesn't have a lot of players, you can use a VPS with low requirements. However, if you have a lot of players, you should use a VPS with high requirements, to avoid any performance issues or crashes.
@@ -52,9 +56,9 @@ Node.js is not required, because it is already included in the Docker image of E
 Then, in a terminal, execute the following command:
 ```bash
 # with wget
-wget -qO- https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.1 | bash
+wget -qO- https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-2 | bash
 # with curl
-curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.1 | bash
+curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.3 | bash
 ```
 
 ### Web server configuration
@@ -137,7 +141,7 @@ You can download the previous major version of the [EML AdminTool](https://githu
 
 You can help to translate EML AdminTool!
 
-The languages files are [here](./client/src/assets/language/). You can create another file with your translation. Please make sure to provide a correct translation!
+The languages files are [here](./client/src/lib/locales/). You can create another file with your translation. Please make sure to provide a correct translation!
 
 Then, you can submit your translation file as an [issue](https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/issues/new?template=translation.md), by using the *Language* issue template. Your file needs to be checked and approved by two other persons.
 
@@ -157,10 +161,7 @@ cd docker
 docker-compose -f dockerfile.dev.yml up
 ```
 
-The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access phpMyAdmin at [https://localhost:8080](http://localhost:8080).
-
-> [!NOTE]
-> You are not supposed to access the application from port `3000` in development mode, because of interference with Vite WebSocket and Server API WebSocket.
+The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access pgAdmin at [https://localhost:8080](http://localhost:8080).
 
 You can now make pull requests!
 

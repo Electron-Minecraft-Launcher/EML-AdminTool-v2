@@ -3,15 +3,17 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'
-      - 'v*.*.*-beta.*'
-      - 'v*.*.*-alpha.*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-alpha.[0-9]+'
 
 jobs:
   build:
+    name: Build, publish Release and Docker image
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: Checkout code
@@ -21,43 +23,68 @@ jobs:
 
       - name: Verify branch is main
         run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          BRANCHES=$(git branch -r --contains tags/$TAG)
-          if [[ ! "$BRANCHES" == *"origin/main"* ]]; then
-            echo "Tag $TAG is not on the main branch. Stopping workflow."
+          if ! git branch -r --contains ${{ github.ref_name }} | grep -q "origin/main"; then
+            echo "Error: Tag ${{ github.ref_name }} is not on the main branch."
             exit 1
           fi
-      
-      - name: Verify file existence
+          echo "✅ Tag is on the main branch."
+
+      - name: Verify changelog file exists
         run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          FILE_NAME=".changelogs/${TAG}.md"
-          if [ ! -f "$FILE_NAME" ]; then
-            echo "File $FILE_NAME does not exist. Stopping workflow."
+          CHANGELOG_FILE=".github/changelogs/${{ github.ref_name }}.md"
+          if [ ! -f "$CHANGELOG_FILE" ]; then
+            echo "Error: Changelog file $CHANGELOG_FILE does not exist."
             exit 1
           fi
+          echo "✅ Changelog file found."
 
-      - name: Build Docker image
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          IMAGE_TAG=${TAG#v}
-          docker build -t eml-admintool:$IMAGE_TAG -f docker/Dockerfile.build .
-      
-      - name: Save Docker image as tarball
-        run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          IMAGE_TAG=${TAG#v}
-          docker save eml-admintool:$IMAGE_TAG > eml-admintool-$IMAGE_TAG.tar
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-      
-      - name: Create tarball
-        run: |
-          TAR_FILE=eml-admintool-$IMAGE_TAG.tar.gz
-          tar -czf $TAR_FILE eml-admintool-$IMAGE_TAG.tar -C docker docker-compose.prod.yml
-          echo "TAR_FILE=$TAR_FILE" >> $GITHUB_ENV
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Create Release
-        id: create_release
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract version without "v"
+        id: version
+        run: |
+          RAW_TAG="${{ github.ref_name }}"
+          CLEAN_TAG="${RAW_TAG#v}"
+          echo "clean_tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
+
+          if [[ "$CLEAN_TAG" == *"-alpha."* ]]; then
+            echo "release_type=alpha" >> $GITHUB_OUTPUT
+          elif [[ "$CLEAN_TAG" == *"-beta."* ]]; then
+            echo "release_type=beta" >> $GITHUB_OUTPUT
+          else
+            echo "release_type=stable" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=${{ steps.version.outputs.clean_tag }}
+            #${{ steps.version.outputs.release_type == 'stable' && 'latest' || '' }}
+            latest
+      
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.build
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,5 +93,5 @@ jobs:
           name: EML AdminTool ${{ github.ref_name }}
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
-          body_path: .changelogs/${{ github.ref_name }}.md
-          files: eml-admintool-${{ env.IMAGE_TAG }}.tar.gz
+          body_path: .github/changelogs/${{ github.ref_name }}.md
+          files: docker/docker-compose.prod.yml
