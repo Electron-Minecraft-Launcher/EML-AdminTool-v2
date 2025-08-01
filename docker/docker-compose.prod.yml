@@ -58,6 +58,7 @@ services:
       - com.eml.admintool.watchtower=prod
     depends_on:
       - web
+
 volumes:
   db-data:
   files:
