@@ -9,8 +9,8 @@ RUN apk add --no-cache docker-cli
 COPY package.json ./
 COPY docker/entrypoint.dev.sh ./entrypoint.dev.sh
 
-RUN chmod +x /app/entrypoint.dev.sh
 RUN npm i --ignore-scripts
+RUN chmod +x /app/entrypoint.dev.sh
 
 EXPOSE 5173
 

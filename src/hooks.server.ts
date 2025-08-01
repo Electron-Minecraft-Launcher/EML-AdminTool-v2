@@ -7,6 +7,7 @@ import { deleteSession } from '$lib/server/jwt'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { type User } from '$lib/utils/db'
+import { defaultPgURL } from '$lib/server/setup'
 
 export const handle: Handle = async ({ event, resolve }) => {
   const session = event.cookies.get('session')
@@ -52,7 +53,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 function isConfigured() {
   return (
     process.env.IS_CONFIGURED === 'true' &&
-    process.env.DATABASE_URL !== 'postgresql://eml:eml@dbs:5432/eml_admintool' &&
+    process.env.DATABASE_URL !== defaultPgURL &&
     process.env.DATABASE_URL !== undefined
   )
 }

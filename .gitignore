@@ -2,6 +2,9 @@
 /.vscode
 /.svelte-kit
 /env/.env
+/sonar-cmd
+/sonar-project.properties
+/.scannerwork/*
 
 /files/files-updater/*
 /files/bootstraps/*
