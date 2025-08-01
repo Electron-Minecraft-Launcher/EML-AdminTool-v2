@@ -1,7 +1,6 @@
-import { db } from '$lib/server/db'
 import { getNews } from '$lib/server/news'
 import type { RequestHandler } from './$types'
-import { error, json } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async (event) => {
   let news

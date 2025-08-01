@@ -23,12 +23,10 @@ export const load = (async (event) => {
       throw new ServerError('Failed to load maintenance', err, NotificationCode.DATABASE_ERROR, 500)
     }
 
-    if (!maintenance) {
-      maintenance = {
-        startTime: null,
-        endTime: null,
-        message: ''
-      }
+    maintenance ??= {
+      startTime: null,
+      endTime: null,
+      message: ''
     }
 
     return { maintenance }
@@ -73,4 +71,3 @@ export const actions: Actions = {
     }
   }
 }
-

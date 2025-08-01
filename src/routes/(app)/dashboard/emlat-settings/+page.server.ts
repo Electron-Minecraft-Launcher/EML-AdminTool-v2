@@ -12,7 +12,7 @@ import type { LanguageCode } from '$lib/stores/language'
 import { deleteUser, updateUser } from '$lib/server/user'
 import { verify } from '$lib/server/auth'
 import { deleteAllFiles, markAsUnconfigured, resetDatabase } from '$lib/server/reset'
-import { restartServer, restartWatchtower } from '$lib/server/setup'
+import { restartServer } from '$lib/server/setup'
 import { IUserStatus } from '$lib/utils/db'
 import { dev } from '$app/environment'
 

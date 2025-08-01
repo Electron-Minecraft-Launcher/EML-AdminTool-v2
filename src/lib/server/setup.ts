@@ -254,7 +254,7 @@ export async function restartWatchtower() {
   }
 
   try {
-    const { stdout, stderr } = await execAsync(`docker restart ${watchtowerName}`)
+    const { stderr } = await execAsync(`docker restart ${watchtowerName}`)
     if (stderr && stderr.trim() !== watchtowerName) {
       console.error('Error while restarting Watchtower:', stderr)
       throw new ServerError('Failed to restart Watchtower', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)

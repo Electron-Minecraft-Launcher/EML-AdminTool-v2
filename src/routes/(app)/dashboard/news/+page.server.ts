@@ -133,7 +133,7 @@ export const actions: Actions = {
 
         const news = await getNewsById(id)
         if (!news) {
-          console.warn(`News with ID ${newsId} not found`)
+          console.warn(`News with ID ${id} not found`)
           throw new BusinessError('News not found', NotificationCode.NOT_FOUND, 404)
         }
 
