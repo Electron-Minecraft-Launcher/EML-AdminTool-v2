@@ -37,7 +37,7 @@ services:
     depends_on:
       - dbs
   dbs:
-    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat:latest
+    image: postgres:latest
     restart: unless-stopped
     networks:
       - network
@@ -48,7 +48,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
   wtw:
-    image: containrrr/watchtower
+    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat:latest
     networks:
       - network
     volumes:
@@ -56,6 +56,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - com.eml.admintool.watchtower=prod
+    depends_on:
+      - web
+
 volumes:
   db-data:
   files:
