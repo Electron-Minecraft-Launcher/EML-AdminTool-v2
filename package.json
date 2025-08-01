@@ -10,7 +10,8 @@
     "build": "vite build --emptyOutDir",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "serve": "node ."
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.6",
