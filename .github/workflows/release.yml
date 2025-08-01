@@ -55,8 +55,6 @@ jobs:
           CLEAN_TAG="${RAW_TAG#v}"
           echo "clean_tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
 
-          echo "clean_tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
-
           if [[ "$CLEAN_TAG" == *"-alpha."* ]]; then
             echo "release_type=alpha" >> $GITHUB_OUTPUT
           elif [[ "$CLEAN_TAG" == *"-beta."* ]]; then
@@ -72,7 +70,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=${{ steps.version.outputs.clean_tag }}
-            ${{ steps.version.outputs.release_type == 'stable' && 'latest' || '' }}
+            #${{ steps.version.outputs.release_type == 'stable' && 'latest' || '' }}
       
       - name: Build and push Docker image
         id: build-and-push
