@@ -16,14 +16,14 @@
 name: eml-admintool
 
 networks:
-  eml-admintool-network:
+  network:
 
 services:
   web:
     image: ghcr.io/electron-minecraft-launcher/eml-admintool-v2:latest
     restart: unless-stopped
     networks:
-      - eml-admintool-network
+      - network
     environment:
       NODE_ENV: 'production'
     volumes:
@@ -37,10 +37,10 @@ services:
     depends_on:
       - dbs
   dbs:
-    image: postgres:latest
+    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat:latest
     restart: unless-stopped
     networks:
-      - eml-admintool-network
+      - network
     environment:
       POSTGRES_USER: eml
       POSTGRES_PASSWORD: eml
@@ -50,26 +50,12 @@ services:
   wtw:
     image: containrrr/watchtower
     networks:
-      - eml-admintool-network
+      - network
     volumes:
       - env:/config:ro
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - com.eml.admintool.watchtower=prod
-    entrypoint: |
-      /bin/sh -c "
-        set -e
-
-        ENV_FILE='/config/.env'
-
-        if [ -f \"$$ENV_FILE\" ]; then
-          echo '🔧 Sourcing $$ENV_FILE'
-          export $(grep -v '^#' \"$$ENV_FILE\" | xargs)
-        else
-          echo '🔧 No .env file found at $$ENV_FILE'
-        fi
-
-        exec /watchtower"
 volumes:
   db-data:
   files:

@@ -65,9 +65,7 @@ services:
     ports:
       - '5432:5432'
   wtw:
-    build:
-      context: ../mock-watchtower
-      dockerfile: Dockerfile.dev
+    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat-dev:latest
     networks:
       - network
     volumes:
@@ -78,7 +76,6 @@ services:
       - '8080:8080'
     depends_on:
       - web
-    command: ["npm", "run", "start"]
   pga:
     image: dpage/pgadmin4
     restart: unless-stopped
