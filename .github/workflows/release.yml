@@ -71,6 +71,7 @@ jobs:
           tags: |
             type=raw,value=${{ steps.version.outputs.clean_tag }}
             #${{ steps.version.outputs.release_type == 'stable' && 'latest' || '' }}
+            latest
       
       - name: Build and push Docker image
         id: build-and-push
