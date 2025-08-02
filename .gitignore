@@ -4,7 +4,8 @@
 /env/.env
 /sonar-cmd
 /sonar-project.properties
-/.scannerwork/*
+/.scannerwork
+/.sonarlint
 
 /files/files-updater/*
 /files/bootstraps/*

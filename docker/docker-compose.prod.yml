@@ -26,6 +26,7 @@ services:
       - network
     environment:
       NODE_ENV: 'production'
+      ORIGIN: 'http://localhost:3000'
     volumes:
       - files:/app/files
       - env:/app/env
