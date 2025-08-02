@@ -1,6 +1,6 @@
 /**
  * Translated by TheMFCRaft1
- * EML AdminTool v2.0.0-beta.3
+ * EML AdminTool v2.0.0-beta.4
  */
 
 export default {

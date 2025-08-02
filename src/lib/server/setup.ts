@@ -201,7 +201,6 @@ DATABASE_URL="${databaseUrl}"
 JWT_SECRET_KEY="${jwtSecretKey}"
 
 # Watchtower configuration
-WATCHTOWER_RUN_ONCE="true"
 WATCHTOWER_HTTP_API_UPDATE="true"
 WATCHTOWER_LABEL_ENABLE="true"
 WATCHTOWER_CLEANUP="true"
@@ -290,7 +289,6 @@ DATABASE_URL="${newDatabaseUrl}"
 JWT_SECRET_KEY="${newJwtSecretKey}"
 
 # Watchtower configuration
-WATCHTOWER_RUN_ONCE="true"
 WATCHTOWER_HTTP_API_UPDATE="true"
 WATCHTOWER_LABEL_ENABLE="true"
 WATCHTOWER_CLEANUP="true"
