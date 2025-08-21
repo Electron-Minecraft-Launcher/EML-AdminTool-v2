@@ -31,8 +31,6 @@ services:
       - files:/app/files
       - env:/app/env
       - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
     ports:
       - '8080:3000'
     depends_on:
@@ -48,17 +46,19 @@ services:
       POSTGRES_DB: eml_admintool
     volumes:
       - db-data:/var/lib/postgresql/data
-  wtw:
-    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat:latest
+  upd:
+    image: ghcr.io/electron-minecraft-launcher/eml-admintool-updater:latest
     networks:
       - network
+    env_file:
+      - ENVIRONMENT: production
     volumes:
-      - env:/config:ro
+      - env:/app/env:ro
       - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      - com.eml.admintool.watchtower=prod
     depends_on:
       - web
+    labels:
+      - com.eml.admintool.updater
 
 volumes:
   db-data:

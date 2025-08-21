@@ -181,7 +181,7 @@ export async function markAsConfigured() {
   resetProcessEnv()
   const databaseUrl = process.env.DATABASE_URL ?? defaultPgURL
   const jwtSecretKey = process.env.JWT_SECRET_KEY ?? randomBytes(64).toString('base64url')
-  const apiToken = process.env.WATCHTOWER_HTTP_API_TOKEN ?? randomBytes(32).toString('hex')
+  const apiToken = process.env.UPDATER_HTTP_API_TOKEN ?? randomBytes(32).toString('hex')
 
   const envFile = envPath
 
@@ -199,12 +199,7 @@ ${devWarning}
 IS_CONFIGURED="true"
 DATABASE_URL="${databaseUrl}"
 JWT_SECRET_KEY="${jwtSecretKey}"
-
-# Watchtower configuration
-WATCHTOWER_HTTP_API_UPDATE="true"
-WATCHTOWER_LABEL_ENABLE="true"
-WATCHTOWER_CLEANUP="true"
-WATCHTOWER_HTTP_API_TOKEN="${apiToken}"
+UPDATER_HTTP_API_TOKEN="${apiToken}"
 `
 
   try {
@@ -230,40 +225,40 @@ export function resetProcessEnv() {
   if (process.env.IS_CONFIGURED) delete process.env.IS_CONFIGURED
   if (process.env.DATABASE_URL) delete process.env.DATABASE_URL
   if (process.env.JWT_SECRET_KEY) delete process.env.JWT_SECRET_KEY
-  if (process.env.WATCHTOWER_HTTP_API_TOKEN) delete process.env.WATCHTOWER_HTTP_API_TOKEN
+  if (process.env.UPDATER_HTTP_API_TOKEN) delete process.env.UPDATER_HTTP_API_TOKEN
   config({ path: envPath, quiet: true })
 }
 
-export async function restartWatchtower() {
-  console.log('\n------------ RESTARTING WATCHTOWER -------------\n')
+export async function restartUpdater() {
+  console.log('\n-------------- RESTARTING UPDATER --------------\n')
 
-  let watchtowerName = 'wtw'
-  const filter = dev ? `com.eml.admintool.watchtower=dev` : `com.eml.admintool.watchtower=prod`
+  let updaterName = 'upd'
+  const filter = 'com.eml.admintool.updater'
 
   try {
     const { stdout, stderr } = await execAsync(`docker ps --filter "label=${filter}" --format "{{.Names}}"`)
     if (stderr) {
-      console.error('Error while fetching Watchtower container name:', stderr)
-      throw new ServerError('Failed to fetch Watchtower container name', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
+      console.error('Error while fetching Updater container name:', stderr)
+      throw new ServerError('Failed to fetch Updater container name', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
     }
-    watchtowerName = stdout.trim() ?? watchtowerName
+    updaterName ??= stdout.trim()
   } catch (err) {
-    console.error('Error while fetching Watchtower container name:', err)
-    throw new ServerError('Failed to fetch Watchtower container name', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    console.error('Error while fetching Updater container name:', err)
+    throw new ServerError('Failed to fetch Updater container name', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
   }
 
   try {
-    const { stderr } = await execAsync(`docker restart ${watchtowerName}`)
-    if (stderr && stderr.trim() !== watchtowerName) {
-      console.error('Error while restarting Watchtower:', stderr)
-      throw new ServerError('Failed to restart Watchtower', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    const { stderr } = await execAsync(`docker restart ${updaterName}`)
+    if (stderr && stderr.trim() !== updaterName) {
+      console.error('Error while restarting Updater:', stderr)
+      throw new ServerError('Failed to restart Updater', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
     }
   } catch (err) {
-    console.error('Error restarting Watchtower:', err)
-    throw new ServerError('Failed to restart Watchtower', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+    console.error('Error restarting Updater:', err)
+    throw new ServerError('Failed to restart Updater', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
   }
 
-  console.log('Watchtower restarted successfully.')
+  console.log('Updater restarted successfully.')
 }
 
 export async function restartServer() {
@@ -287,12 +282,7 @@ ${devWarning}
 IS_CONFIGURED="${isConfigured}"
 DATABASE_URL="${newDatabaseUrl}"
 JWT_SECRET_KEY="${newJwtSecretKey}"
-
-# Watchtower configuration
-WATCHTOWER_HTTP_API_UPDATE="true"
-WATCHTOWER_LABEL_ENABLE="true"
-WATCHTOWER_CLEANUP="true"
-WATCHTOWER_HTTP_API_TOKEN="${newApiToken}"
+UPDATER_HTTP_API_TOKEN="${newApiToken}"
 `
 
   try {
@@ -311,4 +301,9 @@ WATCHTOWER_HTTP_API_TOKEN="${newApiToken}"
 
   resetProcessEnv()
 }
+
+
+
+
+
 

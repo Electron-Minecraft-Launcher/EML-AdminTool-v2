@@ -64,14 +64,14 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-  wtw:
-    image: ghcr.io/electron-minecraft-launcher/watchtower-for-emlat-dev:latest
+  upd:
+    image: ghcr.io/electron-minecraft-launcher/eml-admintool-updater:latest
     networks:
       - network
+    environment:
+      - ENVIRONMENT: development
     volumes:
-      - ../env:/config:ro
-    labels:
-      - com.eml.admintool.watchtower=dev
+      - ../env:/app/env:ro
     depends_on:
       - web
   pga:
@@ -87,3 +87,7 @@ services:
 
 volumes:
   db-data:
+
+# TODO1 Update volumes to save docker-compose.yml
+# TODO2 Update install script to place docker-compose.yml in the `~` directory
+# TODO3 Test
