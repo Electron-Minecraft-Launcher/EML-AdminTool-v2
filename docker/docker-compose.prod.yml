@@ -45,14 +45,13 @@ services:
       POSTGRES_PASSWORD: eml
       POSTGRES_DB: eml_admintool
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
   upd:
     image: ghcr.io/electron-minecraft-launcher/eml-admintool-updater:latest
     networks:
       - network
-    env_file:
-      - ENVIRONMENT: production
     volumes:
+      - ./docker-compose.prod.yml:/app/compose/docker-compose.prod.yml
       - env:/app/env:ro
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
@@ -61,6 +60,6 @@ services:
       - com.eml.admintool.updater
 
 volumes:
-  db-data:
+  database:
   files:
   env:

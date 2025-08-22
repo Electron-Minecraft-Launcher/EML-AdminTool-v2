@@ -61,7 +61,7 @@ services:
       POSTGRES_PASSWORD: eml
       POSTGRES_DB: eml_admintool
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     ports:
       - '5432:5432'
   upd:
@@ -69,7 +69,7 @@ services:
     networks:
       - network
     environment:
-      - ENVIRONMENT: development
+      - ENVIRONMENT=development
     volumes:
       - ../env:/app/env:ro
     depends_on:
@@ -86,7 +86,7 @@ services:
       - dbs
 
 volumes:
-  db-data:
+  database:
 
 # TODO1 Update volumes to save docker-compose.yml
 # TODO2 Update install script to place docker-compose.yml in the `~` directory
