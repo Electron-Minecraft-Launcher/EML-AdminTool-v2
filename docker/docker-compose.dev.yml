@@ -87,7 +87,3 @@ services:
 
 volumes:
   database:
-
-# TODO1 Update volumes to save docker-compose.yml
-# TODO2 Update install script to place docker-compose.yml in the `~` directory
-# TODO3 Test
