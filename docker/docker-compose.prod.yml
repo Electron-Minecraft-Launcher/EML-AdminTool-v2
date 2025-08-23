@@ -14,19 +14,20 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 name: eml-admintool
+version: 2.0.0-beta.3
 
 networks:
   network:
 
 services:
   web:
-    image: ghcr.io/electron-minecraft-launcher/eml-admintool-v2:latest
+    image: ghcr.io/electron-minecraft-launcher/eml-admintool:2.0.0-beta.3
     restart: unless-stopped
     networks:
       - network
     environment:
       NODE_ENV: 'production'
-      ORIGIN: 'http://localhost:3000'
+      ORIGIN: 'http://localhost:8080'
     volumes:
       - files:/app/files
       - env:/app/env

@@ -161,7 +161,7 @@ cd docker
 docker-compose -f dockerfile.dev.yml up
 ```
 
-The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access pgAdmin at [https://localhost:8080](http://localhost:8080).
+The application is accessible at [http://localhost:5173](http://localhost:5173). You can also access pgAdmin at [https://localhost:5050](http://localhost:5050).
 
 You can now make pull requests!
 
