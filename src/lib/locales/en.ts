@@ -86,7 +86,7 @@ export default {
     [NotificationCode.BACKGROUND_ALREADY_EXISTS]: `Background with this name already exists.`,
 
     [NotificationCode.DATABASE_ERROR]: `Database error.`,
-    [NotificationCode.WATCHTOWER_ERROR]: `Watchtower error.`,
+    [NotificationCode.UPDATER_ERROR]: `Updater error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
     [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`,

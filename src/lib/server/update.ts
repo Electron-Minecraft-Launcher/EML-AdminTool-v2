@@ -29,29 +29,30 @@ export async function getUpdate() {
 }
 
 export async function update() {
-  const watchtowerHost = `http://wtw:8080`
-  const apiToken = process.env.WATCHTOWER_HTTP_API_TOKEN
+  const updaterHost = `http://upd:4000`
+  const apiToken = process.env.UPDATER_HTTP_API_TOKEN
 
   if (!apiToken) {
-    console.error('Watchtower API token is not configured.')
-    throw new ServerError('Update service not configured.', null, NotificationCode.WATCHTOWER_ERROR)
+    console.error('Updater API token is not configured.')
+    throw new ServerError('Update service not configured.', null, NotificationCode.UPDATER_ERROR)
   }
 
   try {
-    const response = await fetch(`${watchtowerHost}/v1/update`, {
+    const response = await fetch(`${updaterHost}/v1/update`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiToken}` }
     })
 
     if (!response.ok) {
       console.error('Update service returned an error:', response.statusText)
-      throw new ServerError('Update service returned an error', null, NotificationCode.WATCHTOWER_ERROR)
+      throw new ServerError('Update service returned an error', null, NotificationCode.UPDATER_ERROR)
     }
   } catch (err) {
     console.error('Failed to reach the update service:', err)
-    throw new ServerError('Could not reach the update service', err, NotificationCode.WATCHTOWER_ERROR)
+    throw new ServerError('Could not reach the update service', err, NotificationCode.UPDATER_ERROR)
   }
 }
+
 
 
 

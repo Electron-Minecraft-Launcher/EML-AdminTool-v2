@@ -1,7 +1,7 @@
 import { error, fail, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { setupSchema } from '$lib/utils/validations'
-import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin, markAsConfigured, restartServer, restartWatchtower } from '$lib/server/setup'
+import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin, markAsConfigured, restartServer, restartUpdater } from '$lib/server/setup'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 
@@ -53,7 +53,7 @@ export const actions: Actions = {
 
     try {
       await markAsConfigured()
-      await restartWatchtower()
+      await restartUpdater()
       
       restartServer()
     } catch (err) {

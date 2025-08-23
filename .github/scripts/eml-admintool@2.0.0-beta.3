@@ -90,12 +90,16 @@ fi
 echo ""
 echo -e "• \e[1mInstalling EML AdminTool...\e[0m"
 
+mkdir -p ~/.eml/admintool
 if [ "$fetcher" == "wget" ]; then
-  wget -qO- https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.3/docker-compose.prod.yml
+  wget -qO ~/.eml/admintool/docker-compose.prod.yml \
+    https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.3/docker-compose.prod.yml
 else
-  curl -sSL https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.3/docker-compose.prod.yml
+  curl -sSL https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.3/docker-compose.prod.yml \
+    -o ~/.eml/admintool/docker-compose.prod.yml
 fi
 
+cd ~/.eml/admintool
 docker compose -f docker-compose.prod.yml up -d
 
 echo ""

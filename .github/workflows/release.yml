@@ -63,6 +63,7 @@ jobs:
           else
             echo "release_type=stable" >> $GITHUB_OUTPUT
           fi
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
