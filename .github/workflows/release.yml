@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build, publish Release and Docker image
+    name: Build, publish image and create release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -47,35 +47,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Extract version without "v"
-        id: version
-        run: |
-          RAW_TAG="${{ github.ref_name }}"
-          STRIPPED_V="${RAW_TAG#v}"
-          CLEAN_TAG="${STRIPPED_V%-dev}"
-          echo "clean_tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
-
-          if [[ "$CLEAN_TAG" == *"-alpha."* ]]; then
-            echo "release_type=alpha" >> $GITHUB_OUTPUT
-          elif [[ "$CLEAN_TAG" == *"-beta."* ]]; then
-            echo "release_type=beta" >> $GITHUB_OUTPUT
-          else
-            echo "release_type=stable" >> $GITHUB_OUTPUT
-          fi
 
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ghcr.io/electron-minecraft-launcher/eml-admintool
           tags: |
-            type=raw,value=${{ steps.version.outputs.clean_tag }}
-            ${{ steps.version.outputs.release_type == 'stable' && format('ghcr.io/{0}/eml-admintool:latest', env.OWNER_LC) || '' }}
-      
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enabled=${{ !contains(github.ref_name, '-') }}
+
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/Dockerfile.build
