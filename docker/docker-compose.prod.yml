@@ -12,16 +12,18 @@
 # You can use `docker start <container_name>` to      #
 # start or restart the application.                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# EML AdminTool v2.0.0-beta.4
+#
 
 name: eml-admintool
-version: 2.0.0-beta.3
 
 networks:
   network:
 
 services:
   web:
-    image: ghcr.io/electron-minecraft-launcher/eml-admintool:2.0.0-beta.3
+    image: ghcr.io/electron-minecraft-launcher/eml-admintool:2.0.0-beta.4
     restart: unless-stopped
     networks:
       - network
