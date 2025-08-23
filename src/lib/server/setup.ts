@@ -241,7 +241,7 @@ export async function restartUpdater() {
       console.error('Error while fetching Updater container name:', stderr)
       throw new ServerError('Failed to fetch Updater container name', new Error(stderr), NotificationCode.INTERNAL_SERVER_ERROR, 500)
     }
-    updaterName ??= stdout.trim()
+    updaterName = stdout.trim() ?? updaterName
   } catch (err) {
     console.error('Error while fetching Updater container name:', err)
     throw new ServerError('Failed to fetch Updater container name', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
