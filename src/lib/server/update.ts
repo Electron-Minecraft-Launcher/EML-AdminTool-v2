@@ -38,7 +38,7 @@ export async function update() {
   }
 
   try {
-    const response = await fetch(`${updaterHost}/v1/update`, {
+    const response = await fetch(`${updaterHost}/update`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiToken}` }
     })

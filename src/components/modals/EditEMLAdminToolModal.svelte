@@ -88,6 +88,12 @@
           Dansk
         </p>
       </button>
+      <button type="button" class="secondary" class:selected={language === 'ja'} id="ja-button" onclick={() => language = 'ja'}>
+        <p>
+          <img src="/images/flags/ja.png" alt="Japanese flag" />
+          日本語
+        </p>
+      </button>
     </div>
 
     <p class="label">{$l.main.pin}</p>
