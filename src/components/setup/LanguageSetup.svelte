@@ -60,6 +60,12 @@
           Dansk
         </p>
       </button>
+      <button type="button" class="secondary" class:selected={setupData.language === 'ja'} id="ja-button" onclick={() => switchLanguage('ja')}>
+        <p>
+          <img src="/images/flags/ja.png" alt="Japanese flag" />
+          日本語
+        </p>
+      </button>
     </div>
 
     <p class="center">
