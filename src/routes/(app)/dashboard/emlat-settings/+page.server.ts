@@ -214,6 +214,8 @@ export const actions: Actions = {
 
       if (dev) {
         return { dev: true }
+      } else {
+        return { dev: false }
       }
     } catch (err) {
       if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
