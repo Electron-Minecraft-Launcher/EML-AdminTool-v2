@@ -1,6 +1,6 @@
 /**
  * Translated by GoldFrite
- * EML AdminTool v2.0.0-
+ * EML AdminTool v2.0.0-beta.4
  */
 
 export default {
@@ -117,5 +117,6 @@ Ainsi, si vous souhaitez nous aider à traduire l'EML AdminTool, vous pourrez tr
     }
   }
 }
+
 
 
