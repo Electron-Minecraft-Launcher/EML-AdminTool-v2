@@ -1,6 +1,6 @@
 /**
  * Translated by uta1508
- * EML AdminTool v2.0.0-beta.3
+ * EML AdminTool v2.0.0-
  */
 
 import { NotificationCode } from '$lib/utils/notifications'
