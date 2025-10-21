@@ -8,9 +8,46 @@ import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { type User } from '$lib/utils/db'
 import { defaultPgURL } from '$lib/server/setup'
+import path from 'node:path'
+import fs from 'node:fs'
+import mime from 'mime-types'
+
+const filesDir = path.resolve(process.cwd(), 'files')
 
 export const handle: Handle = async ({ event, resolve }) => {
   const session = event.cookies.get('session')
+  const url = event.url
+
+  if (url.pathname.startsWith('/files/')) {
+    const filePath = path.join(filesDir, url.pathname.substring('/files/'.length))
+
+    const resolvedPath = path.resolve(filePath)
+    if (!resolvedPath.startsWith(filesDir)) {
+      return new Response('Forbidden', { status: 403 })
+    }
+
+    if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()) {
+      const extension = path.extname(resolvedPath).toLowerCase()
+      let mimeType: string
+
+      if (['.ts', '.js', '.jsx', '.tsx', '.svelte', '.vue', '.css', '.html'].includes(extension)) {
+        mimeType = 'text/plain; charset=utf-8'
+      } else {
+        mimeType = mime.lookup(resolvedPath) || 'application/octet-stream'
+      }
+
+      const fileContent = fs.readFileSync(resolvedPath)
+
+      return new Response(fileContent, {
+        status: 200,
+        headers: {
+          'Content-Type': mimeType
+        }
+      })
+    }
+
+    return new Response('File not found', { status: 404 })
+  }
 
   event.locals.isConfigured = isConfigured()
 
@@ -82,4 +119,7 @@ function getUserInfo(user: User) {
     isAdmin: user.isAdmin
   }
 }
+
+
+
 
