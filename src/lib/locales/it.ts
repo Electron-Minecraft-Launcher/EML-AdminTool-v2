@@ -1,6 +1,6 @@
 /**
  * Translated by TheMFCRaft1
- * EML AdminTool v2.0.0-
+ * EML AdminTool v2.0.0-beta.4
  */
 
 export default {
@@ -116,5 +116,6 @@ Se desideri aiutarci a tradurre EML AdminTool, puoi trovare i file JSON sul nost
     }
   }
 }
+
 
 

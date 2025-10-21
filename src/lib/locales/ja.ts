@@ -1,6 +1,6 @@
 /**
  * Translated by uta1508
- * EML AdminTool v2.0.0-
+ * EML AdminTool v2.0.0-beta.4
  */
 
 import { NotificationCode } from '$lib/utils/notifications'
@@ -202,5 +202,6 @@ export default {
     }
   }
 }
+
 
 
