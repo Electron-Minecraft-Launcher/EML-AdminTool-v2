@@ -39,7 +39,7 @@ services:
     depends_on:
       - dbs
   dbs:
-    image: postgres:17.6
+    image: postgres:17.7
     restart: unless-stopped
     networks:
       - network
