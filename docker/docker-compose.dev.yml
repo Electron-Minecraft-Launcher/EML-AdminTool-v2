@@ -74,6 +74,8 @@ services:
       - ../env:/app/env:ro
     depends_on:
       - web
+    labels:
+      - com.eml.admintool.updater
   pga:
     image: dpage/pgadmin4
     restart: unless-stopped
