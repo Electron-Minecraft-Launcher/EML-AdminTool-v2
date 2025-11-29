@@ -112,10 +112,10 @@ if [ "$os" == "mac" ]; then
 else
   LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "127.0.0.1")
 fi
-echo "Local IP detected: $LOCAL_IP"
+echo "Local IP detected:    $LOCAL_IP"
 
 PUBLIC_IP=""
-echo -n "Detecting Public IP... "
+echo -n "Public IP detected:   "
 if [ "$fetcher" == "curl" ]; then
   PUBLIC_IP=$(curl -s --max-time 3 https://ifconfig.me 2>/dev/null)
 else
@@ -131,7 +131,7 @@ fi
 echo ""
 echo "Do you have a custom domain pointing to this server?"
 echo "Example: admintool.myserver.com (Enter WITHOUT http:// or https://)"
-read -p "Domain (leave empty if none): " CUSTOM_DOMAIN
+read -p "Domain (leave empty if none): " CUSTOM_DOMAIN < /dev/tty
 
 if [ -n "$CUSTOM_DOMAIN" ]; then
   CUSTOM_DOMAIN=$(echo "$CUSTOM_DOMAIN" | sed -e 's|^[^/]*//||' -e 's|/.*$||')
