@@ -17,7 +17,7 @@ Then, fill in the change log with the changes made since the last version.
 
 Copy the previous install script from `.github/scripts/eml-admintool@X.X.X` and create a new file with the new version number (e.g., `eml-admintool@2.0.1`). Then update the new file with the new version.
 
-Additionally, the EML AdminTool can run a script before the update. You can create this file and attach it to the release (after step 5) via GitHub. The script extension must be `.sh` and must not start with `._`.
+<!-- Additionally, the EML AdminTool can run a script before the update. You can create this file and attach it to the release (after step 5) via GitHub. The script extension must be `.sh` and must not start with `._`. -->
 
 ### 4. Create a new tag
 
