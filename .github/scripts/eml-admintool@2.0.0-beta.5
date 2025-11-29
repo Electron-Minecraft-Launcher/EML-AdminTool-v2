@@ -86,22 +86,6 @@ else
   exit 1
 fi
 
-# Install EML AdminTool
-echo ""
-echo -e "• \e[1mInstalling EML AdminTool...\e[0m"
-
-INSTALL_DIR="$HOME/.eml/admintool"
-mkdir -p "$INSTALL_DIR"
-URL="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.5/docker-compose.prod.yml"
-
-if [ "$fetcher" == "curl" ]; then
-  curl -sSL "$URL" -o "$INSTALL_DIR/docker-compose.prod.yml"
-else
-  wget -qO "$INSTALL_DIR/docker-compose.prod.yml" "$URL"
-fi
-
-cd "$INSTALL_DIR" || exit 1
-
 # Configuration
 echo ""
 echo -e "• \e[1mNetwork configuration...\e[0m"
@@ -110,16 +94,16 @@ LOCAL_IP="127.0.0.1"
 if [ "$os" == "mac" ]; then
   LOCAL_IP=$(ipconfig getifaddr en0 2>/dev/null || echo "127.0.0.1")
 else
-  LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "127.0.0.1")
+  LOCAL_IP=$(hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1 || echo "127.0.0.1")
 fi
 echo "Local IP detected:    $LOCAL_IP"
 
 PUBLIC_IP=""
-echo -n "Public IP detected:   "
-if [ "$fetcher" == "curl" ]; then
-  PUBLIC_IP=$(curl -s --max-time 3 https://ifconfig.me 2>/dev/null)
+echo -n "Detecting Public IPv4... "
+if [ "$fetcher" == "wget" ]; then
+  PUBLIC_IP=$(wget -4 -qO- --timeout=3 https://ifconfig.me 2>/dev/null)
 else
-  PUBLIC_IP=$(wget -qO- --timeout=3 https://ifconfig.me 2>/dev/null)
+  PUBLIC_IP=$(curl -4 -s --max-time 3 https://ifconfig.me 2>/dev/null)
 fi
 
 if [ -n "$PUBLIC_IP" ]; then
@@ -161,9 +145,21 @@ echo ""
 echo -e "Configuration saved to $INSTALL_DIR/.env"
 echo -e "Allowed Origins: \e[2m$ORIGINS\e[0m"
 
-# Start services
+# Install EML AdminTool
 echo ""
-echo -e "• \e[1mStarting services...\e[0m"
+echo -e "• \e[1mInstalling EML AdminTool...\e[0m"
+
+INSTALL_DIR="$HOME/.eml/admintool"
+mkdir -p "$INSTALL_DIR"
+URL="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/download/v2.0.0-beta.5/docker-compose.prod.yml"
+
+if [ "$fetcher" == "curl" ]; then
+  curl -sSL "$URL" -o "$INSTALL_DIR/docker-compose.prod.yml"
+else
+  wget -qO "$INSTALL_DIR/docker-compose.prod.yml" "$URL"
+fi
+
+cd "$INSTALL_DIR" || exit 1
 
 start_docker() {
   if docker compose -f docker-compose.prod.yml up -d 2>/dev/null; then

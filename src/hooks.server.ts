@@ -32,7 +32,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 }
 
 function getAllowedOrigins() {
-  const allowed = (dynEnv.ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim())
+  const allowed = (process.env.ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim())
   if (dynEnv.ORIGIN) allowed.push(dynEnv.ORIGIN)
   return allowed.filter(Boolean)
 }
@@ -166,7 +166,7 @@ async function handleUserSession(event: RequestEvent, session: string) {
 }
 
 function checkIsConfigured() {
-  return dynEnv.IS_CONFIGURED === 'true' && dynEnv.DATABASE_URL !== defaultPgURL && dynEnv.DATABASE_URL !== undefined
+  return process.env.IS_CONFIGURED === 'true' && process.env.DATABASE_URL !== defaultPgURL && process.env.DATABASE_URL !== undefined
 }
 
 function getDefaultEnv() {
