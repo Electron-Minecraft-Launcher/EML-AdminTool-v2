@@ -25,19 +25,6 @@ echo "Copyright (c) 2025, GoldFrite"
 echo "This script is under the GPL-3.0 license."
 echo ""
 
-
-# sudo
-if [ "$EUID" -ne 0 ]; then
-  if groups | grep -q "\bdocker\b"; then
-    echo -e "Running as non-root (docker group detected). Good."
-  else
-    echo -e "\e[33mWarning: You are not root and not in the 'docker' group.\e[0m"
-    echo -e "You might need to run this script with sudo or add your user to the docker group."
-    echo -e "Press Ctrl+C to abort or Enter to try anyway."
-    read -r
-  fi
-fi
-
 # Check OS
 echo ""
 echo -e "• \e[1mChecking OS...\e[0m"
@@ -178,12 +165,26 @@ echo -e "Allowed Origins: \e[2m$ORIGINS\e[0m"
 echo ""
 echo -e "• \e[1mStarting services...\e[0m"
 
-if docker compose -f docker-compose.prod.yml up -d; then
+start_docker() {
+  if docker compose -f docker-compose.prod.yml up -d 2>/dev/null; then
+    return 0
+  fi
+  
+  echo -e "\e[33mDocker permissions denied. Trying with sudo...\e[0m"
+  
+  if sudo docker compose -f docker-compose.prod.yml up -d; then
+    return 0
+  fi
+  
+  return 1
+}
+
+if start_docker; then
   echo ""
-  echo -e "\e[32mEML AdminTool is successfully installed and running!\e[0m"
+  echo -e "\e[32mEML AdminTool is successfully installed and running! \e[0m"
   echo -e "Access it at \e[1mhttp://localhost:8080\e[0m or at \e[1m$PRIMARY_ORIGIN\e[0m if your reverse proxy is set up."
 else
   echo ""
   echo -e "\e[31mFailed to start Docker containers.\e[0m"
-  echo "If you saw a permission error, try running: sudo docker compose -f \"$INSTALL_DIR/docker-compose.prod.yml\" up -d"
+  echo "Please ensure Docker is running and you have permissions."
 fi

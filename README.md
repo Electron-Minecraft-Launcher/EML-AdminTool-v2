@@ -56,9 +56,9 @@ Node.js is not required, because it is already included in the Docker image of E
 Then, in a terminal, execute the following command:
 ```bash
 # with wget
-wget -qO- https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.5 | sudo bash
+wget -qO- https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.5 | bash
 # with curl
-curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.5 | sudo bash
+curl -sSL https://raw.githubusercontent.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/main/.github/scripts/eml-admintool@2.0.0-beta.5 | bash
 ```
 
 ### Web server configuration
