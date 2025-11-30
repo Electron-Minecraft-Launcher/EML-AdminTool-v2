@@ -1,4 +1,5 @@
-import { error, fail, type Actions } from '@sveltejs/kit'
+import { error, type Actions } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import type { PageServerLoad } from './$types'
 import { setupSchema } from '$lib/utils/validations'
 import { initDatabase, changeDatabasePassword, setAdminUser, setLanguage, setPin, markAsConfigured, restartServer, restartUpdater } from '$lib/server/setup'
@@ -12,7 +13,7 @@ export const load = (async () => {
 export const actions: Actions = {
   setup: async (event) => {
     if (event.locals.isConfigured) {
-      return fail(400, { failure: 'Already configured' })
+      return fail(event, 400, { failure: 'Already configured' })
     }
 
     const form = await event.request.formData()
@@ -27,7 +28,7 @@ export const actions: Actions = {
     const result = setupSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { language, dbPassword, adminUsername, adminPassword } = result.data

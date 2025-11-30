@@ -153,7 +153,7 @@ export async function setPin() {
 
   await client.end()
 
-  console.log('Pin set successfully')
+  console.log('Pin set successfully.')
 }
 
 export async function setLanguage(language: string) {

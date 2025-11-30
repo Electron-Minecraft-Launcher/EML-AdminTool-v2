@@ -71,7 +71,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
     try {
       await callAction({ url: '/dashboard/emlat-settings', action: 'resetEMLAT', formData: new FormData() }, $l)
-      pingServerAndReload(5, 2000)
+      await pingServerAndReload(5, 2000)
     } catch (err) {
       console.error('Failed to reset:', err)
       addNotification('ERROR', $l.notifications.EMLAT_RESET_FAILED)

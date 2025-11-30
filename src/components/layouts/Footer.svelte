@@ -9,7 +9,7 @@
   <hr />
   <p>
     EML AdminTool v{env.version} – <a href="https://discord.gg/nfEHKtghPh" target="_blank">Discord</a> –
-    <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/wiki" target="_blank">Wiki</a> –
+    <a href="https://emlproject.qzz.io/documentation" target="_blank">Docs</a> –
     <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2" target="_blank">GitHub</a>
   </p>
 </footer>

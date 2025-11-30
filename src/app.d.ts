@@ -25,7 +25,8 @@ declare global {
         p_newsTags: 0 | 1
         p_backgrounds: 0 | 1
         p_stats: 0 | 1 | 2
-      }
+      },
+      logStatus?: number
     }
     // interface PageData {}
     // interface PageState {}

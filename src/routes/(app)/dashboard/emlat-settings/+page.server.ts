@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
-import { error, fail, redirect, type Actions, type RequestEvent } from '@sveltejs/kit'
+import { error, redirect, type Actions, type RequestEvent } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { getOS, getStorage } from '$lib/server/vps'
@@ -86,7 +87,7 @@ export const actions: Actions = {
     const result = editEMLATSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { name, language, regeneratePin } = result.data
@@ -95,7 +96,7 @@ export const actions: Actions = {
       const newPin = regeneratePin ? generateRandomPin() : await getPin()
       await editEMLAT(name, language as LanguageCode, newPin)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -131,7 +132,7 @@ export const actions: Actions = {
     const result = editUserSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const userId = result.data.userId
@@ -160,7 +161,7 @@ export const actions: Actions = {
         p_stats
       })
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -194,7 +195,7 @@ export const actions: Actions = {
     try {
       await deleteUser(userId)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -218,7 +219,7 @@ export const actions: Actions = {
         return { dev: false }
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -240,7 +241,7 @@ export const actions: Actions = {
 
       restartServer()
     } catch (err) {
-      if (err instanceof BusinessError) throw fail(500, { failure: err.message })
+      if (err instanceof BusinessError) throw fail(event, 400, { failure: err.message })
       if (err instanceof ServerError) throw error(500, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -249,7 +250,7 @@ export const actions: Actions = {
   }
 }
 
-async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, string>>, string | null>) {
+async function refuseDeleteUser(event: RequestEvent<any>) {
   const user = event.locals.user
 
   if (!user?.isAdmin) {
@@ -281,7 +282,7 @@ async function refuseDeleteUser(event: RequestEvent<Partial<Record<string, strin
       p_stats: 0
     })
   } catch (err) {
-    if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+    if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
     if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
     console.error('Unknown error:', err)

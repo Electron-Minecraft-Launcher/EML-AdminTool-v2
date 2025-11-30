@@ -3,9 +3,9 @@ import type { PageServerLoad } from './$types'
 import { loginSchema } from '$lib/utils/validations'
 import { login } from '$lib/server/auth'
 import { BusinessError, ServerError } from '$lib/utils/errors'
-import { error, fail, redirect } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import { NotificationCode } from '$lib/utils/notifications'
-import { dev } from '$app/environment'
 import { createSessionToken } from '$lib/server/jwt'
 import { sleep } from '$lib/utils/utils'
 
@@ -30,7 +30,7 @@ export const actions: Actions = {
     const result = loginSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { username, password } = result.data
@@ -39,9 +39,9 @@ export const actions: Actions = {
       const user = await login(username, password)
       const sessionToken = await createSessionToken(user)
 
-      event.cookies.set('session', sessionToken, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), path: '/', secure: !dev })
+      event.cookies.set('session', sessionToken, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), path: '/', secure: false })
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
