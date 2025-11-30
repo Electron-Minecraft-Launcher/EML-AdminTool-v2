@@ -1,4 +1,5 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit'
+import { error, redirect, type Actions } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
 import { createFileSchema, editFileSchema, renameFileSchema, loaderSchema, uploadFilesSchema } from '$lib/utils/validations'
@@ -7,7 +8,7 @@ import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
 import { ILoaderFormat, ILoaderType, type Loader, type LoaderFormat } from '$lib/utils/db'
 import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
-import path_ from 'path'
+import path_ from 'node:path'
 
 export const load = (async (event) => {
   const domain = event.url.origin
@@ -72,7 +73,7 @@ export const actions: Actions = {
 
     const result = renameFileSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { path, name, newName } = result.data
@@ -84,7 +85,7 @@ export const actions: Actions = {
       const files = await getFiles(domain, 'files-updater')
       return { files }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -127,7 +128,7 @@ export const actions: Actions = {
       const cache = await getCachedFilesParsed(domain, 'files-updater')
       return { files: cache }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -151,7 +152,7 @@ export const actions: Actions = {
 
     const result = createFileSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { path, name } = result.data
@@ -163,7 +164,7 @@ export const actions: Actions = {
       const files = await getFiles(domain, 'files-updater')
       return { files }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -188,7 +189,7 @@ export const actions: Actions = {
 
     const result = editFileSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { path, name, content } = result.data
@@ -200,7 +201,7 @@ export const actions: Actions = {
       const files = await getFiles(domain, 'files-updater')
       return { files }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -230,7 +231,7 @@ export const actions: Actions = {
       const cache = await getCachedFilesParsed(domain, 'files-updater')
       return { files: cache }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -254,7 +255,7 @@ export const actions: Actions = {
 
     const result = loaderSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { type, minecraftVersion, loaderVersion } = result.data
@@ -275,7 +276,7 @@ export const actions: Actions = {
 
       await updateLoader(loader)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)

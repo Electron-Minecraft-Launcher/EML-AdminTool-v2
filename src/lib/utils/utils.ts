@@ -31,6 +31,10 @@ export async function pingServerAndReload(retrying: number = 5, sleepDuration: n
   throw new Error('Failed to ping server after multiple attempts.')
 }
 
+/**
+ * Returns the appropriate FontAwesome icon class for a given file based on its type or extension.
+ * @param file The file object containing its name and type.
+ */
 export function getFileIcon(file: File_) {
   if (file.type === 'FOLDER') return 'fa-solid fa-folder'
   switch (file.name.split('.').slice(-1)[0]) {

@@ -1,4 +1,4 @@
-import { error, redirect, type Handle, type RequestEvent } from '@sveltejs/kit'
+import { error, redirect, type Handle, type HandleServerError, type RequestEvent } from '@sveltejs/kit'
 import { env as dynEnv } from '$env/dynamic/private'
 import pkg from '../package.json'
 import { db } from '$lib/server/db'
@@ -13,10 +13,11 @@ import path from 'node:path'
 import fs from 'node:fs'
 import mime from 'mime-types'
 import { dev } from '$app/environment'
+import { sequence } from '@sveltejs/kit/hooks'
 
 const filesDir = path.resolve(process.cwd(), 'files')
 
-export const handle: Handle = async ({ event, resolve }) => {
+const app: Handle = async ({ event, resolve }) => {
   const securityResponse = handleSecurityBlocking(event)
   if (securityResponse) return securityResponse
 
@@ -30,6 +31,59 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   return injectCorsHeaders(response, event)
 }
+
+const logger: Handle = async ({ event, resolve }) => {
+  const user = event.locals.user
+  const ip = event.getClientAddress()
+  const date = new Date().formatDateLogs()
+  const start = performance.now()
+  const method = event.request.method
+  const host = event.request.headers.get('host') ?? 'unknown'
+  const url = event.url.pathname
+
+  const response = await resolve(event)
+
+  const end = performance.now()
+  const duration = (end - start).toFixed(2)
+
+  const kitStatus = response.headers.get('x-sveltekit-status')
+  const status = event.locals.logStatus ?? (kitStatus ? Number.parseInt(kitStatus) : response.status)
+
+  if (!url.startsWith('/_app') && !url.startsWith('/favicon.ico')) {
+    let username = ''
+    if (user?.username) {
+      username = ` ${user.username}`
+    }
+
+    let color = '\x1b[32m' // Green
+    if (status >= 300) color = '\x1b[33m' // Yellow
+    if (status >= 400) color = '\x1b[31m' // Red
+    const reset = '\x1b[0m'
+
+    console.log(`[${date}] ${host} - [${ip}${username}] ${method} ${url} ${color}${status}${reset} (${duration}ms)`)
+  }
+
+  return response
+}
+
+export const handleError: HandleServerError = ({ error, event, status, message }) => {
+  if (status >= 404) {
+    return {
+      message: 'Not Found',
+      code: NotificationCode.NOT_FOUND
+    }
+  }
+
+  console.error('*** SERVER ERROR ***')
+  console.error(error)
+
+  return {
+    message: message ?? 'Internal Server Error',
+    code: NotificationCode.INTERNAL_SERVER_ERROR
+  }
+}
+
+export const handle = sequence(app, logger)
 
 function getAllowedOrigins() {
   const allowed = (process.env.ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim())

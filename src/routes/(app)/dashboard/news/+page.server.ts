@@ -1,4 +1,5 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit'
+import { error, redirect, type Actions } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import type { PageServerLoad } from './$types'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
@@ -19,8 +20,8 @@ import {
   updateNewsCategory,
   updateNewsTag
 } from '$lib/server/news'
-import path_ from 'path'
-import { randomBytes } from 'crypto'
+import path_ from 'node:path'
+import { randomBytes } from 'node:crypto'
 
 export const load = (async (event) => {
   const domain = event.url.origin
@@ -87,7 +88,7 @@ export const actions: Actions = {
 
     const result = newsSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { newsId, title, content, categoriesId, tagsId } = result.data
@@ -109,7 +110,7 @@ export const actions: Actions = {
         await addNews(title, content, user.id, categoriesId ?? [], tagsId ?? [])
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -144,7 +145,7 @@ export const actions: Actions = {
         await deleteNews(id)
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -172,7 +173,7 @@ export const actions: Actions = {
         await uploadFile('images', '', newImage)
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -195,7 +196,7 @@ export const actions: Actions = {
 
       await deleteFile('images', imageName)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.message })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.message })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.message })
 
       console.error('Unknown error:', err)
@@ -218,7 +219,7 @@ export const actions: Actions = {
 
     const result = newsCategorySchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { categoryId, name } = result.data
@@ -236,7 +237,7 @@ export const actions: Actions = {
         await addNewsCategory(name)
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -259,7 +260,7 @@ export const actions: Actions = {
 
       await deleteNewsCategory(categoryId)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -283,7 +284,7 @@ export const actions: Actions = {
 
     const result = newsTagSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { tagId, name, color } = result.data
@@ -301,7 +302,7 @@ export const actions: Actions = {
         await addNewsTag(name, color)
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -324,7 +325,7 @@ export const actions: Actions = {
 
       await deleteNewsTag(tagId)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)

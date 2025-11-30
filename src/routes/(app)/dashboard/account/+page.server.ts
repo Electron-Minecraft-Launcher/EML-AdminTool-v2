@@ -1,4 +1,5 @@
-import { error, fail, type Actions } from '@sveltejs/kit'
+import { error, type Actions } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import type { PageServerLoad } from './$types'
 import { NotificationCode } from '$lib/utils/notifications'
 import { deleteUser, updateUser } from '$lib/server/user'
@@ -26,7 +27,7 @@ export const actions: Actions = {
     const result = editAccountSchema.safeParse(raw)
 
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { username, password } = result.data
@@ -43,7 +44,7 @@ export const actions: Actions = {
         await editEMLATName(username)
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -63,7 +64,7 @@ export const actions: Actions = {
       await deleteUser(user!.id)
       deleteSession(event)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)

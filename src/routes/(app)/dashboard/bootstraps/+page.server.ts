@@ -1,4 +1,5 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit'
+import { error, redirect, type Actions } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import { BusinessError, ServerError } from '$lib/utils/errors'
@@ -68,7 +69,7 @@ export const actions: Actions = {
 
     const result = bootstrapsSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { newVersion, name, winFile, macFile, linFile } = result.data
@@ -105,7 +106,7 @@ export const actions: Actions = {
 
       await updateBootstraps(newVersion, currentBootstraps)
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)
@@ -124,7 +125,7 @@ export const actions: Actions = {
     const platform = form.get('platform')
 
     if (typeof platform !== 'string' || !['win', 'mac', 'lin'].includes(platform)) {
-      return fail(400, { failure: NotificationCode.INVALID_REQUEST })
+      return fail(event, 400, { failure: NotificationCode.INVALID_REQUEST })
     }
 
     try {
@@ -142,7 +143,7 @@ export const actions: Actions = {
         throw new ServerError('Failed to update bootstrap', err, NotificationCode.DATABASE_ERROR, 500)
       }
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)

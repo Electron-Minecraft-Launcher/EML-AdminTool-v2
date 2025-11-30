@@ -99,7 +99,7 @@ fi
 echo "Local IP detected:    $LOCAL_IP"
 
 PUBLIC_IP=""
-echo -n "Detecting Public IPv4... "
+echo -n "Public IP detected:   "
 if [ "$fetcher" == "wget" ]; then
   PUBLIC_IP=$(wget -4 -qO- --timeout=3 https://ifconfig.me 2>/dev/null)
 else

@@ -1,4 +1,5 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit'
+import { error, redirect, type Actions } from '@sveltejs/kit'
+import { fail } from '$lib/server/action'
 import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import { NotificationCode } from '$lib/utils/notifications'
@@ -55,7 +56,7 @@ export const actions: Actions = {
 
     const result = maintenanceSchema.safeParse(raw)
     if (!result.success) {
-      return fail(400, { failure: JSON.parse(result.error.message)[0].message })
+      return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
     const { startTime, endTime, message } = result.data
@@ -63,7 +64,7 @@ export const actions: Actions = {
     try {
       await updateMaintenance({ id: '1', startTime, endTime, message })
     } catch (err) {
-      if (err instanceof BusinessError) return fail(err.httpStatus, { failure: err.code })
+      if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
       console.error('Unknown error:', err)

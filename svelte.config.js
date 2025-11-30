@@ -12,12 +12,13 @@ const config = {
     handler(warning)
   },
   kit: {
-    adapter: adapter({ out: './dist' }),
+    adapter: adapter({ out: './dist', addressHeader: 'X-Forwarded-For', xffDepth: 1 }),
     csrf: {
       trustedOrigins: ['*']
     }
-  },
+  }
 }
 
 export default config
+
 
