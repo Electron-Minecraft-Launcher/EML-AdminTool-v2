@@ -1,5 +1,7 @@
-import 'dotenv/config'
-import { defineConfig, env } from 'prisma/config'
+import { config } from 'dotenv'
+import { defineConfig } from 'prisma/config'
+
+config()
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
@@ -7,6 +9,6 @@ export default defineConfig({
     path: 'prisma/migrations'
   },
   datasource: {
-    url: env('DATABASE_URL') ?? 'postgresql://eml:eml@dbs:5432/eml_admintool' // Default for build without env
+    url: process.env.DATABASE_URL ?? 'postgresql://eml:eml@dbs:5432/eml_admintool' // Default for build without env
   }
 })
