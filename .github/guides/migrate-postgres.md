@@ -6,7 +6,7 @@ With the latest update of EML AdminTool, we have upgraded the internal database 
 
 Because of this change, **the automatic update will break the database connection**. This is expected behavior.
 
-## The Strategy
+## The strategy
 
 Here is exactly what is going to happen:
 
@@ -14,6 +14,8 @@ Here is exactly what is going to happen:
 2. The tool restarts and likely **crashes** or shows a "Database Error". **Do not panic.**
 3. You will connect via SSH to perform a manual migration.
 4. You will backup the data, delete the old storage, and restore the data into the new version.
+
+## Steps to follow
 
 ### Preparation (before updating)
 
