@@ -23,7 +23,6 @@
 
   let showLoader = $state(false)
 
-  // let version = $state(bootstraps.version ?? '')
   let winLabel = $state('')
   let macLabel = $state('')
   let linLabel = $state('')
