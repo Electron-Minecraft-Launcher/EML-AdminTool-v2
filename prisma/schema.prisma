@@ -8,7 +8,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserStatus {
@@ -92,9 +91,9 @@ model Loader {
 
 model Bootstrap {
   id        String   @id @default(cuid(2))
-  winFile   Json
-  macFile   Json
-  linFile   Json
+  winFile   Json?
+  macFile   Json?
+  linFile   Json?
   version   String
   updatedAt DateTime @updatedAt
 }

@@ -14,35 +14,44 @@ export async function getBootstraps() {
   }
 }
 
-export async function updateBootstraps(newVersion: string, existingBootstraps: Bootstrap | null) {
+export async function updateBootstraps(
+  newVersion: string,
+  existingBootstraps: Bootstrap | null,
+  filenames: { win?: string; mac?: string; lin?: string }
+) {
   const files = await getFiles('', 'bootstraps')
-  const winFile = files.find((file) => file.name.includes('win'))
-  const macFile = files.find((file) => file.name.includes('mac'))
-  const linFile = files.find((file) => file.name.includes('lin'))
 
-  if (!winFile || !macFile || !linFile) {
-    throw new ServerError('Missing bootstrap files', null, NotificationCode.FILE_SYSTEM_ERROR, 500)
+  const findFileMetadata = (filename: string | undefined, platformSubdir: string) => {
+    if (!filename) return undefined
+    return files.find((f) => f.name === filename && (f.path.includes(platformSubdir) || f.path === platformSubdir))
   }
+
+  const newWinFile = findFileMetadata(filenames.win, 'win')
+  const newMacFile = findFileMetadata(filenames.mac, 'mac')
+  const newLinFile = findFileMetadata(filenames.lin, 'lin')
+
+  const data: any = {
+    version: newVersion
+  }
+
+  if (filenames.win && newWinFile) data.winFile = newWinFile as any
+  if (filenames.mac && newMacFile) data.macFile = newMacFile as any
+  if (filenames.lin && newLinFile) data.linFile = newLinFile as any
 
   try {
     if (existingBootstraps) {
       await db.bootstrap.update({
         where: { id: existingBootstraps.id },
-        data: {
-          version: newVersion,
-          winFile: winFile as any,
-          macFile: macFile as any,
-          linFile: linFile as any
-        }
+        data: data
       })
     } else {
       await db.bootstrap.create({
         data: {
           id: '1',
           version: newVersion,
-          winFile: winFile as any,
-          macFile: macFile as any,
-          linFile: linFile as any
+          winFile: (newWinFile as any) ?? null,
+          macFile: (newMacFile as any) ?? null,
+          linFile: (newLinFile as any) ?? null
         }
       })
     }
@@ -51,4 +60,3 @@ export async function updateBootstraps(newVersion: string, existingBootstraps: B
     throw new ServerError('Failed to update bootstraps', err, NotificationCode.DATABASE_ERROR, 500)
   }
 }
-

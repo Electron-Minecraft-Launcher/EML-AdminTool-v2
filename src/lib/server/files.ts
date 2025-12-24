@@ -1,10 +1,10 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import fs from 'fs/promises'
-import path_ from 'path'
+import fs from 'node:fs/promises'
+import path_ from 'node:path'
 import type { Dir, File as File_ } from '$lib/utils/types'
-import crypto from 'crypto'
-import { createReadStream } from 'fs'
+import crypto from 'node:crypto'
+import { createReadStream } from 'node:fs'
 
 const root = path_.join(process.cwd())
 
@@ -191,7 +191,7 @@ export async function deleteFile(dir: Dir, path: string) {
 
 export function sanitizePath(...path: string[]): string {
   const sanitizedPath = path_.resolve(root, path_.join(...path).replace(/^\\+/, ''))
-  if (!sanitizedPath.startsWith(root)) throw Error('Invalid path')
+  if (!sanitizedPath.startsWith(root)) throw new Error('Invalid path')
   return sanitizedPath
 }
 

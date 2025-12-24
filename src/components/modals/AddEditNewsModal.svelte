@@ -504,6 +504,8 @@
     top: 42px;
     left: 0;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    max-height: 110px;
+    overflow-y: auto;
 
     button {
       width: 100%;

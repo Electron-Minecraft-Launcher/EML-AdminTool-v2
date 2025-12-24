@@ -1,11 +1,10 @@
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import pkg from '@prisma/client'
 import { db } from './db'
 import bcrypt from 'bcrypt'
 import { checkSession } from './jwt'
 import { checkPin } from './pin'
-const { Prisma, UserStatus } = pkg
+import { Prisma, UserStatus } from '@prisma/client'
 
 export async function login(username: string, password: string) {
   let user

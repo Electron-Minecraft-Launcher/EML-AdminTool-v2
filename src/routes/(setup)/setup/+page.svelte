@@ -41,7 +41,7 @@
     try {
       await callAction({ url: '/setup', action: 'finish', formData: new FormData() }, $l)
       showLoader = true
-      await pingServerAndReload(8, 3000)
+      await pingServerAndReload(8, 5000)
     } catch (err) {
       console.error('Failed to mark as configured:', err)
       // TODO

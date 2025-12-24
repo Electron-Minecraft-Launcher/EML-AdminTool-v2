@@ -13,7 +13,7 @@
 # start or restart the application.                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-# EML AdminTool v2.0.0-beta.5
+# EML AdminTool v2.0.0-beta.6
 #
 
 name: eml-admintool
@@ -23,7 +23,7 @@ networks:
 
 services:
   web:
-    image: ghcr.io/electron-minecraft-launcher/eml-admintool:2.0.0-beta.5
+    image: ghcr.io/electron-minecraft-launcher/eml-admintool:2.0.0-beta.6
     restart: unless-stopped
     networks:
       - network
@@ -40,7 +40,7 @@ services:
     depends_on:
       - dbs
   dbs:
-    image: postgres:17.7
+    image: postgres:18.1
     restart: unless-stopped
     networks:
       - network
@@ -49,7 +49,7 @@ services:
       POSTGRES_PASSWORD: eml
       POSTGRES_DB: eml_admintool
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql
   upd:
     image: ghcr.io/electron-minecraft-launcher/eml-admintool-updater:latest
     networks:

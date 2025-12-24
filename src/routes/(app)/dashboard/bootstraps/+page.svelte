@@ -16,17 +16,10 @@
   let showLoader = $state(false)
   let showChangeBootstrapFileModal: boolean = $state(false)
 
-  async function download(platform: 'win' | 'mac' | 'lin') {
-    if (!data.bootstraps[`${platform}File`]) return
-    const file = data.bootstraps[`${platform}File`] as File_
+  async function download(file: File_) {
     try {
       const response = await fetch(file.url)
-      if (!response.ok) {
-        console.error('Failed to download file:', response.statusText)
-        const message = $l.notifications.INTERNAL_SERVER_ERROR
-        addNotification('ERROR', message)
-        return
-      }
+      if (!response.ok) throw new Error(response.statusText)
 
       const blob = await response.blob()
       const downloadUrl = window.URL.createObjectURL(blob)
@@ -37,8 +30,7 @@
       window.URL.revokeObjectURL(downloadUrl)
     } catch (err) {
       console.error('Failed to download file:', err)
-      const message = $l.notifications.INTERNAL_SERVER_ERROR
-      addNotification('ERROR', message)
+      addNotification('ERROR', $l.notifications.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -79,19 +71,23 @@
   <div class="container">
     <div>
       <p class="label">Version</p>
-      <p class="no-link">{data.bootstraps.version || '-'}</p>
+      <p class="no-link">{data.bootstraps.version ?? '-'}</p>
     </div>
 
     <div>
       <p class="label"><i class="fa-brands fa-microsoft"></i>&nbsp;&nbsp;Windows Bootstrap</p>
       <div class="buttons">
-        {#if data.bootstraps.winFile}
-          <button onclick={() => download('win')}>
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.winFile as File_).name}
+        {#if data.bootstraps.winFiles && data.bootstraps.winFiles.length > 0}
+          <div class="file-list">
+            {#each data.bootstraps.winFiles as file}
+              <button onclick={() => download(file)} title={file.name}>
+                <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{file.name}
+              </button>
+            {/each}
+          </div>
+          <button class="remove" onclick={() => deleteBootstrap('win')} aria-label="Delete All Windows Files">
+            <i class="fa-solid fa-trash"></i>
           </button>
-          <button class="remove" onclick={() => deleteBootstrap('win')} aria-label="Delete Windows Bootstrap"
-            ><i class="fa-solid fa-trash"></i></button
-          >
         {:else}
           <p class="no-link">-</p>
         {/if}
@@ -101,11 +97,17 @@
     <div>
       <p class="label"><i class="fa-brands fa-apple"></i>&nbsp;&nbsp;macOS Bootstrap</p>
       <div class="buttons">
-        {#if data.bootstraps.macFile}
-          <button onclick={() => download('mac')}>
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.macFile as File_).name}
+        {#if data.bootstraps.macFiles && data.bootstraps.macFiles.length > 0}
+          <div class="file-list">
+            {#each data.bootstraps.macFiles as file}
+              <button onclick={() => download(file)} title={file.name}>
+                <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{file.name}
+              </button>
+            {/each}
+          </div>
+          <button class="remove" onclick={() => deleteBootstrap('mac')} aria-label="Delete All macOS Files">
+            <i class="fa-solid fa-trash"></i>
           </button>
-          <button class="remove" onclick={() => deleteBootstrap('mac')} aria-label="Delete macOS Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
           <p class="no-link">-</p>
         {/if}
@@ -115,11 +117,17 @@
     <div>
       <p class="label"><i class="fa-brands fa-linux"></i>&nbsp;&nbsp;Linux Bootstrap</p>
       <div class="buttons">
-        {#if data.bootstraps.linFile}
-          <button onclick={() => download('lin')} title={(data.bootstraps.linFile as File_).name}>
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{(data.bootstraps.linFile as File_).name}
+        {#if data.bootstraps.linFiles && data.bootstraps.linFiles.length > 0}
+          <div class="file-list">
+            {#each data.bootstraps.linFiles as file}
+              <button onclick={() => download(file)} title={file.name}>
+                <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp;&nbsp;{file.name}
+              </button>
+            {/each}
+          </div>
+          <button class="remove" onclick={() => deleteBootstrap('lin')} aria-label="Delete All Linux Files">
+            <i class="fa-solid fa-trash"></i>
           </button>
-          <button class="remove" onclick={() => deleteBootstrap('lin')} aria-label="Delete Linux Bootstrap"><i class="fa-solid fa-trash"></i></button>
         {:else}
           <p class="no-link">-</p>
         {/if}
@@ -132,11 +140,24 @@
   @use '../../../../../static/scss/dashboard.scss';
 
   div.container {
+    div.files-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    div.file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
     div.buttons {
       display: flex;
     }
 
     button {
+      text-align: left;
       display: inline-block;
       margin-top: 0;
       border-bottom: none;
@@ -145,7 +166,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      max-width: 230px;
+      max-width: 350px;
       vertical-align: bottom;
       font-family: 'Poppins';
       background: none;
@@ -162,6 +183,8 @@
         background: none;
         color: var(--red-color);
         vertical-align: middle;
+        align-self: flex-start;
+        text-overflow: clip;
 
         &:hover {
           background: #faeeee;

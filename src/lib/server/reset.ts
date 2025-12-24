@@ -1,13 +1,12 @@
 import { dev } from '$app/environment'
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'node:crypto'
 import { defaultPgURL, envPath, resetProcessEnv } from './setup'
-import fs from 'fs'
+import fs from 'node:fs'
 import { ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
 import { Client } from 'pg'
 import { deleteFile } from './files'
-import pkg from '@prisma/client'
-const { Prisma } = pkg
+import { Prisma } from '@prisma/client'
 
 export async function resetDatabase() {
   console.log('\n-------------- RESETTING DATABASE --------------\n')
@@ -91,7 +90,8 @@ export async function markAsUnconfigured() {
 ${devWarning}
 IS_CONFIGURED="false"
 DATABASE_URL="${databaseUrl}"
-JWT_SECRET_KEY="${jwtSecretKey}"`
+JWT_SECRET_KEY="${jwtSecretKey}"
+BODY_SIZE_LIMIT=Infinity`
 
   try {
     if (!fs.existsSync('./env')) fs.mkdirSync('./env')
