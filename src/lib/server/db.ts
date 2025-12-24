@@ -1,9 +1,18 @@
-import pkg from '@prisma/client'
-import type { PrismaClient as PClient } from '@prisma/client'
-const { PrismaClient } = pkg
+import { PrismaClient } from '@prisma/client'
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { config } from 'dotenv'
 
-const globalForPrisma = globalThis as unknown as { prisma: PClient }
+config()
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
-export const db = globalForPrisma.prisma || new PrismaClient()
+const createPrismaClient = () => {
+  const connectionString = process.env.DATABASE_URL
+  const pool = new Pool({ connectionString })
+  const adapter = new PrismaPg(pool)
+  return new PrismaClient({ adapter })
+}
+
+export const db = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db

@@ -64,8 +64,8 @@ export default {
     [NotificationCode.FILESUPDATER_MINECRAFT_VERSION_NOT_FOUND]: `Minecraft version not found.`,
     [NotificationCode.FILESUPDATER_FORGE_VERSION_NOT_FOUND]: `Forge version not found.`,
 
-    [NotificationCode.BOOTSTRAPS_MALFORMED_VERSION]: `Bootstraps version is malformed. It must be a valid semantic version (SemVer).`,
-    [NotificationCode.BOOTSTRAPS_INVALID_VERSION]: `Bootstraps version is invalid. It must be higher than the current version.`,
+    [NotificationCode.BOOTSTRAPS_MALFORMED_VERSION]: `The version specified in the YAML file is malformed.`,
+    [NotificationCode.BOOTSTRAPS_INVALID_FILES]: `One or more uploaded bootstrap files are invalid.`,
 
     [NotificationCode.MAINTENANCE_INVALID_DATES]: `Maintenance dates are invalid. Start date must be before end date.`,
 

@@ -306,7 +306,7 @@
     width: 16px;
 
     &::before {
-      content: url('../images/fa-solid fa-folder-arrow-up.svg');
+      content: url('/images/fa-solid fa-folder-arrow-up.svg');
       position: absolute;
       top: 12.5px;
       left: 15px;

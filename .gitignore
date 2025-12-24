@@ -11,6 +11,7 @@
 /files/bootstraps/*
 /files/backgrounds/*
 /files/cache/*
+/files/images/*
 
 /dist
 /update

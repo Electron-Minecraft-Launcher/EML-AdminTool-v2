@@ -21,7 +21,7 @@ until nc -z dbs 5432; do
 done
 
 echo "✅ Database available. Applying `prisma db push`..."
-npx prisma db push
+npx dotenv -e /app/.env -- prisma db push
 
 echo "🚀 Starting application"
 exec npm run serve

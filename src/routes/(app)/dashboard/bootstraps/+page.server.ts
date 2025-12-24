@@ -8,40 +8,33 @@ import type { File as File_ } from '$lib/utils/types'
 import { bootstrapsSchema } from '$lib/utils/validations'
 import { getBootstraps, updateBootstraps } from '$lib/server/bootstraps'
 import semver from 'semver'
-import { deleteFile, uploadFile } from '$lib/server/files'
+import { deleteFile, getFiles, uploadFile } from '$lib/server/files'
 
 export const load = (async (event) => {
   const user = event.locals.user
+  const domain = event.url.origin
 
   if (!user?.p_bootstraps) {
     throw redirect(303, '/dashboard')
   }
 
   try {
-    let bootstraps
+    let bootstraps = await db.bootstrap.findUnique({ where: { id: '1' } })
 
-    try {
-      bootstraps = (await db.bootstrap.findUnique({ where: { id: '1' } })) as {
-        winFile: File_ | null
-        macFile: File_ | null
-        linFile: File_ | null
-        version: string
-      }
-    } catch (err) {
-      console.error('Failed to load bootstraps:', err)
-      throw new ServerError('Failed to load bootstraps', err, NotificationCode.DATABASE_ERROR, 500)
-    }
+    const allFiles = await getFiles(domain, 'bootstraps')
 
-    if (!bootstraps) {
-      bootstraps = {
-        winFile: null as null | File_,
-        macFile: null as null | File_,
-        linFile: null as null | File_,
-        version: ''
+    const winFiles = allFiles.filter((f) => f.path.includes('win') && f.type !== 'FOLDER')
+    const macFiles = allFiles.filter((f) => f.path.includes('mac') && f.type !== 'FOLDER')
+    const linFiles = allFiles.filter((f) => f.path.includes('lin') && f.type !== 'FOLDER')
+
+    return {
+      bootstraps: {
+        ...bootstraps,
+        winFiles,
+        macFiles,
+        linFiles
       }
     }
-
-    return { bootstraps }
   } catch (err) {
     if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
 
@@ -60,11 +53,9 @@ export const actions: Actions = {
 
     const form = await event.request.formData()
     const raw = {
-      newVersion: form.get('new-version'),
-      name: form.get('name'),
-      winFile: form.get('win-file'),
-      macFile: form.get('mac-file'),
-      linFile: form.get('lin-file')
+      winFiles: form.getAll('win-files'),
+      macFiles: form.getAll('mac-files'),
+      linFiles: form.getAll('lin-files')
     }
 
     const result = bootstrapsSchema.safeParse(raw)
@@ -72,39 +63,65 @@ export const actions: Actions = {
       return fail(event, 400, { failure: JSON.parse(result.error.message)[0].message })
     }
 
-    const { newVersion, name, winFile, macFile, linFile } = result.data
+    const { winFiles, macFiles, linFiles } = result.data
 
-    try {
-      if (!semver.valid(newVersion)) {
-        console.warn('Invalid version:', newVersion)
-        throw new BusinessError('Invalid version format', NotificationCode.BOOTSTRAPS_MALFORMED_VERSION, 400)
+    if (winFiles.length === 0 && macFiles.length === 0 && linFiles.length === 0) {
+      return
+    }
+
+    const processPlatform = async (files: File[], platform: 'win' | 'mac' | 'lin', yamlName: string) => {
+      if (files.length === 0) return null
+
+      const yamlFile = files.find((f) => f.name === yamlName)
+      if (!yamlFile) {
+        throw new BusinessError(`Missing ${yamlName}`, NotificationCode.INVALID_INPUT, 400)
       }
 
-      const currentBootstraps = await getBootstraps()
-      if (currentBootstraps && !semver.gt(newVersion, currentBootstraps.version)) {
-        console.warn('Invalid bootstraps version:', newVersion, currentBootstraps.version)
-        throw new BusinessError('Invalid bootstraps version', NotificationCode.BOOTSTRAPS_INVALID_VERSION, 400)
+      const content = await yamlFile.text()
+      const version = extractVersionFromYaml(content)
+
+      if (!version || !semver.valid(version)) {
+        throw new BusinessError('Invalid version in YAML', NotificationCode.BOOTSTRAPS_MALFORMED_VERSION, 400)
       }
-
-      const winExt = winFile.name.split('.').pop() ?? ''
-      const macExt = macFile.name.split('.').pop() ?? ''
-      const linExt = linFile.name.split('.').pop() ?? ''
-
-      const newWinFile = new File([winFile], `${name.toLowerCase()}-launcher_win-${newVersion}.${winExt}`, { type: winFile.type })
-      const newMacFile = new File([macFile], `${name.toLowerCase()}-launcher_mac-${newVersion}.${macExt}`, { type: macFile.type })
-      const newLinFile = new File([linFile], `${name.toLowerCase()}-launcher_lin-${newVersion}.${linExt}`, { type: linFile.type })
 
       try {
-        await deleteFile('bootstraps', '')
+        await deleteFile('bootstraps', platform)
       } catch (err) {
-        console.warn('Failed to delete existing bootstrap files (maybe the bootstraps folder is already deleted):', err)
+        console.warn(`Failed to clean ${platform} folder (might be empty):`, err)
       }
 
-      await uploadFile('bootstraps', 'win', newWinFile)
-      await uploadFile('bootstraps', 'mac', newMacFile)
-      await uploadFile('bootstraps', 'lin', newLinFile)
+      let mainFileName: string | undefined
 
-      await updateBootstraps(newVersion, currentBootstraps)
+      for (const file of files) {
+        await uploadFile('bootstraps', platform, file)
+
+        if (file.name.endsWith('.exe') || file.name.endsWith('.dmg') || file.name.endsWith('.AppImage')) {
+          mainFileName = file.name
+        }
+      }
+
+      return { version, mainFileName: mainFileName ?? files[0].name }
+    }
+
+    try {
+      const [winRes, macRes, linRes] = await Promise.all([
+        processPlatform(winFiles, 'win', 'latest.yml'),
+        processPlatform(macFiles, 'mac', 'latest-mac.yml'),
+        processPlatform(linFiles, 'lin', 'latest-linux.yml')
+      ])
+
+      const current = await getBootstraps()
+      let displayVersion = current?.version ?? '0.0.0'
+
+      if (winRes && semver.gt(winRes.version, displayVersion)) displayVersion = winRes.version
+      if (macRes && semver.gt(macRes.version, displayVersion)) displayVersion = macRes.version
+      if (linRes && semver.gt(linRes.version, displayVersion)) displayVersion = linRes.version
+
+      await updateBootstraps(displayVersion, current, {
+        win: winRes?.mainFileName,
+        mac: macRes?.mainFileName,
+        lin: linRes?.mainFileName
+      })
     } catch (err) {
       if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
       if (err instanceof ServerError) throw error(err.httpStatus, { message: err.code })
@@ -132,15 +149,17 @@ export const actions: Actions = {
       try {
         await deleteFile('bootstraps', platform)
       } catch (err) {
-        console.error('Failed to delete bootstrap file:', err)
-        throw new ServerError('Failed to delete bootstrap file', err, NotificationCode.INTERNAL_SERVER_ERROR, 500)
+        console.error(`Failed to delete bootstrap folder for ${platform}:`, err)
       }
 
       try {
-        await db.bootstrap.update({ where: { id: '1' }, data: { [`${platform}File`]: null } })
+        await db.bootstrap.update({
+          where: { id: '1' },
+          data: { [`${platform}File`]: null }
+        })
       } catch (err) {
-        console.error('Failed to update bootstrap:', err)
-        throw new ServerError('Failed to update bootstrap', err, NotificationCode.DATABASE_ERROR, 500)
+        console.error('Failed to update bootstrap in DB:', err)
+        throw new ServerError('Failed to update bootstrap DB', err, NotificationCode.DATABASE_ERROR, 500)
       }
     } catch (err) {
       if (err instanceof BusinessError) return fail(event, err.httpStatus, { failure: err.code })
@@ -152,3 +171,7 @@ export const actions: Actions = {
   }
 }
 
+function extractVersionFromYaml(content: string): string | null {
+  const match = content.match(/^version:\s*(.+)$/m)
+  return match ? match[1].trim() : null
+}

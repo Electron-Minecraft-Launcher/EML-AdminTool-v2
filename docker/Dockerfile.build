@@ -21,11 +21,13 @@ COPY --from=build /app/prisma ./prisma
 
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/package-lock.json ./package-lock.json
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/LICENSE ./LICENSE
 COPY --from=build /app/docker/entrypoint.prod.sh /app/entrypoint.prod.sh
 
 RUN chmod +x /app/entrypoint.prod.sh
 RUN npm ci --ignore-scripts --omit=dev
+RUN npx prisma generate --no-hints
 
 EXPOSE 3000
 

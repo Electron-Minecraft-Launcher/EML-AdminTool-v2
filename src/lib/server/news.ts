@@ -1,8 +1,7 @@
 import { db } from './db'
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { NotificationCode } from '$lib/utils/notifications'
-import pkg from '@prisma/client'
-const { Prisma } = pkg
+import { Prisma } from '@prisma/client'
 
 export async function getNews(limit: number = 20) {
   let news
@@ -10,7 +9,7 @@ export async function getNews(limit: number = 20) {
     news = await db.news.findMany({
       take: limit,
       orderBy: { createdAt: 'desc' },
-      include: { author: { select: { id: true, username: true } } }
+      include: { author: { select: { id: true, username: true } }, categories: true, tags: true }
     })
     return news
   } catch (err) {

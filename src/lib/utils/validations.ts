@@ -3,6 +3,15 @@ import { NotificationCode } from './notifications'
 import { DateTime } from 'luxon'
 import { ILoaderType } from '$lib/utils/db'
 
+const isValidPlatformBatch = (files: File[], extensions: string[]) => {
+  if (files.length === 0) return true
+
+  const hasYml = files.some((f) => f.name.endsWith('.yml'))
+  const hasBinary = files.some((f) => extensions.some((ext) => f.name.endsWith(ext)))
+
+  return hasYml && hasBinary
+}
+
 export const setupSchema = z.object({
   language: z.string().length(2, NotificationCode.SETUP_INVALID_LANGUAGE),
   dbPassword: z.string().min(10, NotificationCode.SETUP_DATABASE_PASSWORD_TOO_SHORT),
@@ -117,17 +126,24 @@ export const loaderSchema = z.object({
   loaderVersion: z.string()
 })
 
-export const bootstrapsSchema = z.object({
-  newVersion: z.string(),
-  name: z
-    .string()
-    .transform((val) => val.trim())
-    .refine((val) => val.length >= 2, { message: NotificationCode.EMLAT_NAME_TOO_SHORT })
-    .refine((val) => val.length <= 64, { message: NotificationCode.EMLAT_NAME_TOO_LONG }),
-  winFile: z.instanceof(File),
-  macFile: z.instanceof(File),
-  linFile: z.instanceof(File)
-})
+export const bootstrapsSchema = z
+  .object({
+    winFiles: z.array(z.instanceof(File)).optional().default([]),
+    macFiles: z.array(z.instanceof(File)).optional().default([]),
+    linFiles: z.array(z.instanceof(File)).optional().default([])
+  })
+  .refine((data) => isValidPlatformBatch(data.winFiles, ['.exe']), {
+    message: NotificationCode.BOOTSTRAPS_INVALID_FILES,
+    path: ['winFiles']
+  })
+  .refine((data) => isValidPlatformBatch(data.macFiles, ['.dmg', '.zip']), {
+    message: NotificationCode.BOOTSTRAPS_INVALID_FILES,
+    path: ['macFiles']
+  })
+  .refine((data) => isValidPlatformBatch(data.linFiles, ['.AppImage']), {
+    message: NotificationCode.BOOTSTRAPS_INVALID_FILES,
+    path: ['linFiles']
+  })
 
 export const maintenanceSchema = z
   .object({
@@ -202,4 +218,3 @@ export const backgroundSchema = z
   .refine((schema) => !(!schema.backgroundId && !schema.file), {
     message: NotificationCode.MISSING_INPUT
   })
-
