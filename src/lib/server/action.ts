@@ -1,6 +1,5 @@
-// src/lib/server/action.ts
 import { fail as svelteFail } from '@sveltejs/kit'
-import type { ActionFailure, RequestEvent } from '@sveltejs/kit'
+import type { RequestEvent } from '@sveltejs/kit'
 
 /**
  * Create an ActionFailure object. Call when form submission fails.

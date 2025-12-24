@@ -83,7 +83,6 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
   async function checkUpdateEnded() {
     for (let i = 0; i < 40; i++) {
-      // Check every 3 seconds for 2 minutes
       await sleep(3000)
       try {
         const response = await fetch('/api/ping')

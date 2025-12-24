@@ -7,6 +7,6 @@ export default defineConfig({
     path: 'prisma/migrations'
   },
   datasource: {
-    url: env('DATABASE_URL')
+    url: env('DATABASE_URL') ?? 'postgresql://eml:eml@dbs:5432/eml_admintool' // Default for build without env
   }
 })

@@ -353,9 +353,6 @@
     width: 178px;
     bottom: 142px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    // opacity: 0;
-    // height: 0;
-    // display: none;
 
     > a:nth-of-type(1) {
       margin-top: 0;

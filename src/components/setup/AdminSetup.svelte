@@ -95,21 +95,6 @@
 <style lang="scss">
   @use '../../../static/scss/setup.scss';
 
-  // div.flex {
-  //   display: flex;
-  //   flex-direction: row;
-
-  //   input {
-  //     flex-grow: calc(100% - 50px);
-  //   }
-
-  //   button.secondary {
-  //     margin-top: 15px;
-  //     margin-left: 20px;
-  //     white-space: nowrap;
-  //   }
-  // }
-
   div.rel-progress {
     width: 130px;
     border-radius: 50rem;

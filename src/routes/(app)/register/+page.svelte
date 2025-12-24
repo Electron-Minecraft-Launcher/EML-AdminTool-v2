@@ -80,11 +80,6 @@
       e.preventDefault()
     }
 
-    // const pinInputs = Array.from(document.querySelectorAll<HTMLInputElement>('div.pin-inputs input[type="text"]'))
-    // if (pinInputs.every((input) => input.value !== '') && input.id === 'pin-3') {
-    //   pinInputs.forEach((input) => input.blur())
-    // }
-
     pin = [
       (document.getElementById('pin-1') as HTMLInputElement)?.value || '',
       (document.getElementById('pin-2') as HTMLInputElement)?.value || '',

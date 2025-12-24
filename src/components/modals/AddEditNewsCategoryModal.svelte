@@ -22,25 +22,6 @@
   let selectedCategory = $state(newsCategories.find((c) => c.id === selectedCategoryId) ?? null)
   let name = $state(selectedCategory?.name ?? '')
 
-  async function submit(e: SubmitEvent) {
-    // e.preventDefault()
-    // if (action.action === 'add') {
-    //   ;(await apiNewsService.postCategory({ title })).subscribe({
-    //     next: (res) => {
-    //       data.categories = res.body.data!
-    //       show = false
-    //     }
-    //   })
-    // } else {
-    //   ;(await apiNewsService.putCategory(action.category.id || 0, { title })).subscribe({
-    //     next: (res) => {
-    //       data.categories = res.body.data!
-    //       show = false
-    //     }
-    //   })
-    // }
-  }
-
   const enhanceForm: SubmitFunction = ({ formData }) => {
     showLoader = true
     formData.set('category-id', selectedCategoryId ?? '')

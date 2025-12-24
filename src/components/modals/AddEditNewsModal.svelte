@@ -478,7 +478,6 @@
   div.categories,
   div.tags {
     max-width: 100%;
-    // overflow-x: auto;
     overflow-y: visible;
   }
 
