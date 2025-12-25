@@ -16,7 +16,7 @@
 * Changed something else
 * Changed yet something else
 
-### Bug fixes
+### Bug fixes and improvements
 
 * Fixed a bug
 * Fixed another bug
