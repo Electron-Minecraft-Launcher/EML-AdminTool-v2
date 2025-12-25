@@ -56,7 +56,7 @@ Now that your data is safe, you can proceed with the update.
 
 2.  **Click the "Update" button.** The AdminTool will download the new files and restart.
 
-    **⚠️ IMPORTANT:** After a minute, the AdminTool will likely stop working (Error 500, Bad Gateway, or "Service Unavailable"). **This is NORMAL.** Do not panic. The new database version cannot read the old files yet.
+    **⚠️ IMPORTANT:** After a minute, the AdminTool will likely stop working (Error 500, Bad Gateway, Service Unavailable, or infinite loadings). **This is NORMAL.** Do not panic. The new database version cannot read the old files yet.
 
 ### The migration (fixing things)
 
@@ -95,10 +95,10 @@ Now we need to clear the old incompatible storage and restore your backup into t
 4.  **Restore your data:** Inject your backup into the new database. Replace `USER` with your database username found in step 3.
 
     ```bash
-    cat migration_backup.sql | docker compose -f docker-compose.prod.yml exec -T dbs psql -U USER
+    cat migration_backup.sql | docker compose -f docker-compose.prod.yml exec -T dbs psql -U eml -d postgres
     ```
 
-    _Note: You might see "role already exists" errors. This is normal and safe to ignore._
+    _Note: You might see "role already exists" or "database already exists" errors. This is normal and safe to ignore._
 
 ### Restart
 
@@ -108,10 +108,16 @@ Now we need to clear the old incompatible storage and restore your backup into t
     docker compose -f docker-compose.prod.yml up -d
     ```
 
-2.  **Check the logs (Optional):**
+2.  **Check the database and logs (Optional):**
+
+    ```bash
+    docker compose -f docker-compose.prod.yml exec -T dbs psql -U eml -d eml_admintool -c "\dt"
+    # This lists the tables in the database to verify data presence.
+    ```
 
     ```bash
     docker compose -f docker-compose.prod.yml logs -f web
+    # This shows the application logs to verify everything is running smoothly.
     ```
 
     Ensure the application starts without database errors.
