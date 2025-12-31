@@ -44,12 +44,23 @@
 
   function setVersion(selectedType: LoaderType, selectedVersion: LoaderVersion) {
     type = selectedType
-    minecraftVersion = type === ILoaderType.VANILLA ? selectedVersion.loaderVersion : selectedVersion.loaderVersion.split('-')[0].replace('_', '-')
-    loaderVersion = selectedVersion.loaderVersion
+    minecraftVersion =
+      type === ILoaderType.FORGE
+        ? selectedVersion.loaderVersion.split('-')[0].replace('_', '-')
+        : type === ILoaderType.FABRIC
+          ? selectedVersion.loaderVersion.split('+')[0]
+          : selectedVersion.loaderVersion
+    loaderVersion = type === ILoaderType.FABRIC ? selectedVersion.loaderVersion.split('+')[1] : selectedVersion.loaderVersion
   }
 
   function isActive(selectedType: LoaderType, selectedVersion: LoaderVersion) {
-    return selectedType === type && selectedVersion.loaderVersion === loaderVersion
+    if (selectedType !== type) return false
+
+    if (selectedType === ILoaderType.FABRIC) {
+      return selectedVersion.loaderVersion === `${minecraftVersion}+${loaderVersion}`
+    }
+    
+    return selectedVersion.loaderVersion === loaderVersion
   }
 
   const enhanceForm: SubmitFunction = ({ formData }) => {
@@ -80,7 +91,7 @@
   })
 </script>
 
-<ModalTemplate size={'m'} bind:show>
+<ModalTemplate size={'ml'} bind:show>
   {#if showLoader}
     <LoadingSplash transparent />
   {/if}
@@ -94,6 +105,7 @@
         <button class="list" type="button" class:active={type === ILoaderType.VANILLA} onclick={() => switchType(ILoaderType.VANILLA)}>Vanilla</button
         >
         <button class="list" type="button" class:active={type === ILoaderType.FORGE} onclick={() => switchType(ILoaderType.FORGE)}>Forge</button>
+        <button class="list" type="button" class:active={type === ILoaderType.FABRIC} onclick={() => switchType(ILoaderType.FABRIC)}>Fabric</button>
       </div>
 
       <div class="list version-list">
@@ -107,7 +119,7 @@
 
       <div class="list content-list">
         <h4>
-          {type === ILoaderType.FORGE ? 'Minecraft Forge' : 'Minecraft Vanilla'}
+          {type === ILoaderType.FORGE ? 'Minecraft Forge' : type === ILoaderType.FABRIC ? 'Minecraft Fabric' : 'Minecraft Vanilla'}
           {minecraftMajorVersion === 'Latest' ? minecraftMajorVersion : `${minecraftMajorVersion}.x`}
         </h4>
 
@@ -168,6 +180,25 @@
           {:else}
             <p class="no-link">-</p>
           {/each}
+        {:else if type === ILoaderType.FABRIC}
+          <!--* FABRIC -->
+          <p class="label">Releases</p>
+          {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('release')) as version}
+            <button type="button" class:active={isActive(ILoaderType.FABRIC, version)} onclick={() => setVersion(ILoaderType.FABRIC, version)}>
+              Minecraft {version.loaderVersion.split('+')[0].replace('_', '-')} (Fabric {version.loaderVersion.split('+')[1]})
+            </button>
+          {:else}
+            <p class="no-link">-</p>
+          {/each}
+
+          <p class="label">Snapshots</p>
+          {#each loaderList[type].filter((l) => l.minecraftVersion === minecraftMajorVersion && l.type.includes('snapshot')) as version}
+            <button type="button" class:active={isActive(ILoaderType.FABRIC, version)} onclick={() => setVersion(ILoaderType.FABRIC, version)}>
+              Minecraft {version.loaderVersion.split('+')[0].replace('_', '-')} (Fabric {version.loaderVersion.split('+')[1]})
+            </button>
+          {:else}
+            <p class="no-link">-</p>
+          {/each}
         {/if}
       </div>
     </div>
@@ -189,11 +220,11 @@
     overflow-y: auto;
 
     &.loader-list {
-      flex: 0.4 !important;
+      flex: 0.3 !important;
     }
 
     &.version-list {
-      flex: 0.4 !important;
+      flex: 0.3 !important;
     }
 
     &.content-list {

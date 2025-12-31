@@ -18,7 +18,7 @@ export async function getLoader() {
 
 export async function getVanillaVersions() {
   return getOrSet('vanilla-versions', async () => {
-    let response = await fetchVanillaVersions()
+    const response = await fetchJson('https://launchermeta.mojang.com/mc/game/version_manifest.json', 'Failed to fetch Minecraft versions')
 
     let versions = [
       { minecraftVersion: 'Latest', loaderVersion: 'latest_release', type: ['release'] },
@@ -42,10 +42,13 @@ export async function getVanillaVersions() {
 
 export async function getForgeVersions() {
   return getOrSet('forge-versions', async () => {
-    let res1 = await fetchForgeVersions()
-    let res2 = await fetchForgePromos()
+    const res1 = await fetchJson('https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json', 'Failed to fetch Forge versions')
+    const res2 = await fetchJson(
+      'https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json',
+      'Failed to fetch Forge promotions'
+    )
 
-    let versions = []
+    let versions: LoaderVersion[] = []
     for (const [version, data] of Object.entries(res1)) {
       versions.push(
         ...(data as any).map((v: any) => ({
@@ -60,6 +63,7 @@ export async function getForgeVersions() {
       const minecraftVersion = version.split('-')[0]
       const type = version.split('-')[1] as 'recommended' | 'latest'
       const i = versions.findIndex((v) => v.loaderVersion.startsWith(`${minecraftVersion}-${data}`))
+      if (i === -1) continue
       versions[i].type =
         (versions[i].type.includes('recommended') || versions[i].type.includes('latest')) && !versions[i].type.includes(type)
           ? ['latest', 'recommended']
@@ -68,7 +72,35 @@ export async function getForgeVersions() {
 
     versions = versions.reverse()
 
-    return versions as LoaderVersion[]
+    return versions
+  })
+}
+
+export async function getFabricVersions() {
+  return getOrSet('fabric-versions', async () => {
+    const gameVersions = await fetchJson('https://meta.fabricmc.net/v2/versions/game', 'Failed to fetch Fabric game versions')
+    const loaderVersions = await fetchJson('https://meta.fabricmc.net/v2/versions/loader', 'Failed to fetch Fabric loader versions')
+
+    const latestLoader = loaderVersions.find((l: any) => l.stable)?.version || loaderVersions[0].version
+
+    let versions: LoaderVersion[] = []
+    let currentMajor = 'Snapshots'
+
+    for (const gv of gameVersions) {
+      const match = gv.version.match(/^1\.\d+/)
+
+      if (match) {
+        currentMajor = match[0]
+      }
+
+      versions.push({
+        minecraftVersion: currentMajor,
+        loaderVersion: `${gv.version}+${latestLoader}`,
+        type: [gv.stable ? 'release' : 'snapshot']
+      })
+    }
+
+    return versions
   })
 }
 
@@ -79,9 +111,10 @@ export async function checkVanillaLoader(minecraftVersion: string, loaderVersion
   }
 
   if (minecraftVersion !== 'latest_release' && minecraftVersion !== 'latest_snapshot') {
-    const vanillaVersions = (await fetchVanillaVersions()) as { versions: { id: string; type: string }[] }
+    const vanillaVersions = (await getVanillaVersions()) as any
+    const exists = vanillaVersions.some((v: any) => v.loaderVersion === minecraftVersion)
 
-    if (!vanillaVersions.versions.find((v) => v.id === minecraftVersion)) {
+    if (!exists) {
       console.warn('Invalid Minecraft version:', minecraftVersion)
       throw new BusinessError('Invalid Minecraft version', NotificationCode.FILESUPDATER_MINECRAFT_VERSION_NOT_FOUND, 400)
     }
@@ -94,31 +127,68 @@ export async function checkForgeLoader(minecraftVersion: string, loaderVersion: 
     throw new BusinessError('Loader version and Minecraft version mismatch', NotificationCode.FILESUPDATER_VERSIONS_MISMATCH, 400)
   }
 
-  const forgeVersions = await fetchForgeVersions()
+  const forgeVersions = await getForgeVersions()
+  const exists = forgeVersions.some((v) => v.loaderVersion === loaderVersion)
 
-  if (
-    !Object.keys(forgeVersions).includes(minecraftVersion.replace('-', '_')) ||
-    !forgeVersions[minecraftVersion.replace('-', '_')].includes(loaderVersion)
-  ) {
+  if (!exists) {
     console.warn('Invalid Forge version:', loaderVersion, minecraftVersion)
     throw new BusinessError('Invalid Forge version', NotificationCode.FILESUPDATER_FORGE_VERSION_NOT_FOUND, 400)
   }
 }
 
+export async function checkFabricLoader(minecraftVersion: string, loaderVersion: string) {
+  const gameVersions = await fetchJson('https://meta.fabricmc.net/v2/versions/game', 'Failed to fetch Fabric game versions')
+  const existsGameVersion = gameVersions.find((v: any) => v.version === minecraftVersion)
+
+  if (!existsGameVersion) {
+    console.warn('Invalid Minecraft version for Fabric:', minecraftVersion)
+    throw new BusinessError('Invalid Minecraft version', NotificationCode.FILESUPDATER_MINECRAFT_VERSION_NOT_FOUND, 400)
+  }
+
+  const loaders = await fetchJson('https://meta.fabricmc.net/v2/versions/loader', 'Failed to fetch Fabric loader versions')
+  const existsLoader = loaders.find((l: any) => l.version === loaderVersion)
+  if (!existsLoader) {
+    console.warn('Invalid Fabric loader version:', loaderVersion)
+    throw new BusinessError('Invalid Fabric loader version', NotificationCode.FILESUPDATER_FABRIC_VERSION_NOT_FOUND, 400)
+  }
+}
+
 export async function getForgeFile(loaderVersion: string) {
-  const forgeMeta = (await getForgeMeta(loaderVersion)).classifiers
+  const forgeMeta = (
+    await fetchJson(`https://files.minecraftforge.net/net/minecraftforge/forge/${loaderVersion}/meta.json`, 'Failed to fetch Forge meta')
+  ).classifiers
 
   const format = getFormat(forgeMeta)
   const ext = Object.keys(forgeMeta[format])[0]
+const url = `https://maven.minecraftforge.net/net/minecraftforge/forge/${loaderVersion}/forge-${loaderVersion}-${format.toLowerCase()}.${ext}`
 
   return {
     format: getTypedFormat(format),
     file: {
       name: `forge-${loaderVersion}.jar`,
       path: `versions/forge-${loaderVersion}/`,
-      url: `https://maven.minecraftforge.net/net/minecraftforge/forge/${loaderVersion}/forge-${loaderVersion}-${format.toLowerCase()}.${ext}`,
-      size: await getForgeArtifactSize(loaderVersion, format, ext),
-      sha1: await getForgeArtifactSha1(loaderVersion, format, ext),
+      url: url,
+      size: await getRemoteFileSize(url, 'Failed to fetch Forge artifact size'),
+      sha1: await getRemoteFileSha1(`${url}.sha1`, 'Failed to fetch Forge artifact SHA1'),
+      type: 'OTHER' as const
+    }
+  }
+}
+
+export async function getFabricFile(loaderVersion: string) {
+  const installers = await fetchJson('https://meta.fabricmc.net/v2/versions/installer', 'Failed to fetch Fabric installers')
+  const latestInstaller = installers.find((i: any) => i.stable) || installers[0]
+  const version = latestInstaller.version
+  const url = latestInstaller.url
+
+  return {
+    format: ILoaderFormat.INSTALLER,
+    file: {
+      name: `fabric-installer-${version}.jar`,
+      path: `versions/fabric-installer-${version}/`,
+      url: url,
+      size: await getRemoteFileSize(url, 'Failed to fetch Fabric artifact size'),
+      sha1: await getRemoteFileSha1(`${url}.sha1`, 'Failed to fetch Fabric artifact SHA1'),
       type: 'OTHER' as const
     }
   }
@@ -154,97 +224,45 @@ export async function updateLoader(loader: Partial<Loader>) {
   }
 }
 
-async function fetchVanillaVersions() {
+async function fetchJson(url: string, errorMsg: string) {
   try {
-    const response = await fetch(`https://launchermeta.mojang.com/mc/game/version_manifest.json`, { headers: { Connection: 'close' } })
+    const response = await fetch(url, { headers: { Connection: 'close' } })
     if (!response.ok) {
-      console.error('Failed to fetch Minecraft versions:', response.statusText)
-      throw new ServerError('Failed to fetch Minecraft versions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+      console.error(`${errorMsg}:`, response.statusText)
+      throw new ServerError(errorMsg, null, NotificationCode.EXTERNAL_API_ERROR, response.status)
     }
     return await response.json()
   } catch (err) {
-    console.error('Failed to fetch Minecraft versions:', err)
-    throw new ServerError('Failed to fetch Minecraft versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
+    console.error(`${errorMsg}:`, err)
+    throw new ServerError(errorMsg, err, NotificationCode.EXTERNAL_API_ERROR, 500)
   }
 }
 
-async function fetchForgeVersions() {
+async function getRemoteFileSize(url: string, errorMsg: string) {
   try {
-    const response = await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/maven-metadata.json`, {
-      headers: { Connection: 'close' }
-    })
+    const response = await fetch(url, { method: 'HEAD', headers: { Connection: 'close' } })
     if (!response.ok) {
-      console.error('Failed to fetch Forge versions:', response.statusText)
-      throw new ServerError('Failed to fetch Forge versions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
-    }
-    return await response.json()
-  } catch (err) {
-    console.error('Failed to fetch Forge versions:', err)
-    throw new ServerError('Failed to fetch Forge versions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
-  }
-}
-
-async function fetchForgePromos() {
-  try {
-    const response = await fetch(`https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json`, {
-      headers: { Connection: 'close' }
-    })
-    if (!response.ok) {
-      console.error('Failed to fetch Forge promotions:', response.statusText)
-      throw new ServerError('Failed to fetch Forge promotions', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
-    }
-    return await response.json()
-  } catch (err) {
-    console.error('Failed to fetch Forge promotions:', err)
-    throw new ServerError('Failed to fetch Forge promotions', err, NotificationCode.EXTERNAL_API_ERROR, 500)
-  }
-}
-
-async function getForgeMeta(version: string) {
-  try {
-    const response = await fetch(`https://files.minecraftforge.net/net/minecraftforge/forge/${version}/meta.json`, {
-      headers: { Connection: 'close' }
-    })
-    if (!response.ok) {
-      console.error('Failed to fetch Forge meta:', response.statusText)
-      throw new ServerError('Failed to fetch Forge meta', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
-    }
-    return await response.json()
-  } catch (err) {
-    console.error('Failed to fetch Forge meta:', err)
-    throw new ServerError('Failed to fetch Forge meta', err, NotificationCode.EXTERNAL_API_ERROR, 500)
-  }
-}
-
-async function getForgeArtifactSize(version: string, format: string, ext: string) {
-  try {
-    const response = await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}`, {
-      headers: { Connection: 'close' }
-    })
-    if (!response.ok) {
-      console.error('Failed to fetch Forge artifact size:', response.statusText)
-      throw new ServerError('Failed to fetch Forge artifact size', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+      console.error(`${errorMsg}:`, response.statusText)
+      throw new ServerError(errorMsg, null, NotificationCode.EXTERNAL_API_ERROR, response.status)
     }
     return Number(response.headers.get('Content-Length') ?? 0)
   } catch (err) {
-    console.error('Failed to fetch Forge artifact size:', err)
-    throw new ServerError('Failed to fetch Forge artifact size', err, NotificationCode.EXTERNAL_API_ERROR, 500)
+    console.error(`${errorMsg}:`, err)
+    throw new ServerError(errorMsg, err, NotificationCode.EXTERNAL_API_ERROR, 500)
   }
 }
 
-async function getForgeArtifactSha1(version: string, format: string, ext: string) {
+async function getRemoteFileSha1(url: string, errorMsg: string) {
   try {
-    const response = await fetch(`https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-${format}.${ext}.sha1`, {
-      headers: { Connection: 'close' }
-    })
+    const response = await fetch(url, { headers: { Connection: 'close' } })
     if (!response.ok) {
-      console.error('Failed to fetch Forge artifact SHA1:', response.statusText)
-      throw new ServerError('Failed to fetch Forge artifact SHA1', null, NotificationCode.EXTERNAL_API_ERROR, response.status)
+      console.error(`${errorMsg}:`, response.statusText)
+      throw new ServerError(errorMsg, null, NotificationCode.EXTERNAL_API_ERROR, response.status)
     }
     return await response.text().then((text) => text.trim())
   } catch (err) {
-    console.error('Failed to fetch Forge artifact SHA1:', err)
-    throw new ServerError('Failed to fetch Forge artifact SHA1', err, NotificationCode.EXTERNAL_API_ERROR, 500)
+    console.error(`${errorMsg}:`, err)
+    throw new ServerError(errorMsg, err, NotificationCode.EXTERNAL_API_ERROR, 500)
   }
 }
 

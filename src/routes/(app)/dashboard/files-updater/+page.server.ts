@@ -7,7 +7,7 @@ import { cacheFiles, createFile, deleteFile, editFile, getCachedFilesParsed, get
 import { BusinessError, ServerError } from '$lib/utils/errors'
 import { db } from '$lib/server/db'
 import { ILoaderFormat, ILoaderType, type Loader, type LoaderFormat } from '$lib/utils/db'
-import { checkForgeLoader, checkVanillaLoader, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
+import { checkFabricLoader, checkForgeLoader, checkVanillaLoader, getFabricFile, getFabricVersions, getForgeFile, getForgeVersions, getVanillaVersions, updateLoader } from '$lib/server/loader'
 import path_ from 'node:path'
 
 export const load = (async (event) => {
@@ -43,7 +43,8 @@ export const load = (async (event) => {
 
     const loaderList = {
       [ILoaderType.VANILLA]: await getVanillaVersions(),
-      [ILoaderType.FORGE]: await getForgeVersions()
+      [ILoaderType.FORGE]: await getForgeVersions(),
+      [ILoaderType.FABRIC]: await getFabricVersions()
     }
 
     return { loader, loaderList, files }
@@ -268,6 +269,11 @@ export const actions: Actions = {
       } else if (type === ILoaderType.FORGE) {
         checkForgeLoader(minecraftVersion, loaderVersion)
         const res = await getForgeFile(loaderVersion)
+        file = res.file
+        format = res.format
+      } else if (type === ILoaderType.FABRIC) {
+        checkFabricLoader(minecraftVersion, loaderVersion)
+        const res = await getFabricFile(loaderVersion)
         file = res.file
         format = res.format
       }
