@@ -115,7 +115,8 @@ function handleSecurityBlocking(event: RequestEvent) {
   if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
     if (requestOrigin && !allowedOrigins.includes(requestOrigin)) {
       console.error(`CSRF Blocked: ${requestOrigin} is not allowed.`)
-      return new Response(JSON.stringify({ message: 'Forbidden: Invalid Origin' }), {
+      console.error(`Allowed origins: ${allowedOrigins.join(', ')}`)
+      return new Response(JSON.stringify({ message: 'Forbidden: Invalid origin' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -247,4 +248,5 @@ function getUserInfo(user: User) {
     isAdmin: user.isAdmin
   }
 }
+
 
