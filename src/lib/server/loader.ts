@@ -79,9 +79,6 @@ export async function getForgeVersions() {
 export async function getFabricVersions() {
   return getOrSet('fabric-versions', async () => {
     const gameVersions = await fetchJson('https://meta.fabricmc.net/v2/versions/game', 'Failed to fetch Fabric game versions')
-    const loaderVersions = await fetchJson('https://meta.fabricmc.net/v2/versions/loader', 'Failed to fetch Fabric loader versions')
-
-    const latestLoader = loaderVersions.find((l: any) => l.stable)?.version || loaderVersions[0].version
 
     let versions: LoaderVersion[] = []
     let currentMajor = 'Snapshots'
@@ -95,13 +92,18 @@ export async function getFabricVersions() {
 
       versions.push({
         minecraftVersion: currentMajor,
-        loaderVersion: `${gv.version}+${latestLoader}`,
+        loaderVersion: `${gv.version}`,
         type: [gv.stable ? 'release' : 'snapshot']
       })
     }
 
     return versions
   })
+}
+
+export async function getFabricLoaderVersions() {
+  const loaderVersions = await fetchJson('https://meta.fabricmc.net/v2/versions/loader', 'Failed to fetch Fabric loader versions')
+  return loaderVersions.map((lv: any) => lv.version) as string[]
 }
 
 export async function checkVanillaLoader(minecraftVersion: string, loaderVersion: string) {
@@ -160,7 +162,7 @@ export async function getForgeFile(loaderVersion: string) {
 
   const format = getFormat(forgeMeta)
   const ext = Object.keys(forgeMeta[format])[0]
-const url = `https://maven.minecraftforge.net/net/minecraftforge/forge/${loaderVersion}/forge-${loaderVersion}-${format.toLowerCase()}.${ext}`
+  const url = `https://maven.minecraftforge.net/net/minecraftforge/forge/${loaderVersion}/forge-${loaderVersion}-${format.toLowerCase()}.${ext}`
 
   return {
     format: getTypedFormat(format),
@@ -170,25 +172,6 @@ const url = `https://maven.minecraftforge.net/net/minecraftforge/forge/${loaderV
       url: url,
       size: await getRemoteFileSize(url, 'Failed to fetch Forge artifact size'),
       sha1: await getRemoteFileSha1(`${url}.sha1`, 'Failed to fetch Forge artifact SHA1'),
-      type: 'OTHER' as const
-    }
-  }
-}
-
-export async function getFabricFile(loaderVersion: string) {
-  const installers = await fetchJson('https://meta.fabricmc.net/v2/versions/installer', 'Failed to fetch Fabric installers')
-  const latestInstaller = installers.find((i: any) => i.stable) || installers[0]
-  const version = latestInstaller.version
-  const url = latestInstaller.url
-
-  return {
-    format: ILoaderFormat.INSTALLER,
-    file: {
-      name: `fabric-installer-${version}.jar`,
-      path: `versions/fabric-installer-${version}/`,
-      url: url,
-      size: await getRemoteFileSize(url, 'Failed to fetch Fabric artifact size'),
-      sha1: await getRemoteFileSha1(`${url}.sha1`, 'Failed to fetch Fabric artifact SHA1'),
       type: 'OTHER' as const
     }
   }
@@ -209,7 +192,7 @@ export async function updateLoader(loader: Partial<Loader>) {
     minecraftVersion: loader.minecraftVersion ?? 'latest_release',
     loaderVersion: loader.loaderVersion ?? 'latest_release',
     format: loader.format ?? ILoaderFormat.UNIVERSAL,
-    file: loader.file ?? (undefined as any)
+    file: loader.file ?? (null as any)
   }
 
   try {
@@ -282,4 +265,3 @@ function getTypedFormat(format: string) {
       return ILoaderFormat.UNIVERSAL
   }
 }
-
