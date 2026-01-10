@@ -155,7 +155,12 @@
 </svelte:head>
 
 {#if showChangeLoaderModal}
-  <ChangeLoaderModal bind:show={showChangeLoaderModal} loader={data.loader as unknown as Loader} fabricLoaderVersions={data.fabricLoaderVersions} loaderList={data.loaderList} />
+  <ChangeLoaderModal
+    bind:show={showChangeLoaderModal}
+    loader={data.loader as unknown as Loader}
+    fabricLoaderVersions={data.fabricLoaderVersions}
+    loaderList={data.loaderList}
+  />
 {/if}
 
 <h2>Files Updater</h2>

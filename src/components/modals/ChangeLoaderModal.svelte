@@ -1,4 +1,3 @@
-
 <script lang="ts">
   import { ILoaderType, type LoaderType, type Loader } from '$lib/utils/db'
   import type { LoaderVersion } from '$lib/utils/types'
@@ -25,9 +24,7 @@
   let type: LoaderType = $state(loader.type ?? ILoaderType.VANILLA)
   let minecraftVersion = $state(loader.minecraftVersion ?? '')
   let minecraftMajorVersion = $state(
-    loader.minecraftVersion?.includes('latest')
-      ? 'Latest'
-      : (loader.minecraftVersion?.split('.').slice(0, 2).join('.') ?? '')
+    loader.minecraftVersion?.includes('latest') ? 'Latest' : (loader.minecraftVersion?.split('.').slice(0, 2).join('.') ?? '')
   )
   let loaderVersion = $state(loader.loaderVersion ?? '')
   let minecraftVersions = $derived([...new Set(loaderList[type].map((version) => version.minecraftVersion))])
@@ -37,7 +34,7 @@
     return minecraftVersion && loaderVersion && type
   })
   let tempFabricLoaderVersion: string = $state(
-    loader.type === ILoaderType.FABRIC && loader.loaderVersion ? loader.loaderVersion : fabricLoaderVersions[0] ?? ''
+    loader.type === ILoaderType.FABRIC && loader.loaderVersion ? loader.loaderVersion : (fabricLoaderVersions[0] ?? '')
   )
 
   function switchType(newType: LoaderType) {
@@ -161,12 +158,7 @@
         {/if}
         <p class="label sticky-header" style="z-index: 100">Minecraft versions</p>
         {#each minecraftVersions as version}
-          <button
-            class="list"
-            type="button"
-            class:active={minecraftMajorVersion === version}
-            onclick={() => switchMinecraftVersion(version)}
-          >
+          <button class="list" type="button" class:active={minecraftMajorVersion === version} onclick={() => switchMinecraftVersion(version)}>
             {version}
           </button>
         {/each}
@@ -191,7 +183,7 @@
             <p class="no-link">-</p>
           {/each}
         {:else}
-           <p class="no-link">-</p>
+          <p class="no-link">-</p>
         {/each}
       </div>
     </div>
