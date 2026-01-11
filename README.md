@@ -8,6 +8,12 @@
 [<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
 [<img src="https://img.shields.io/badge/version-2.0.0--beta.6-orangered?style=for-the-badge&color=orangered">](package.json)
 
+<p>
+<center>
+  <img src="./.github/assets/gg.png" alt="EML AdminTool Logo" width="300"/>
+</center>
+</p>
+
 ---
 
 ## Features
@@ -63,7 +69,7 @@ You can now make pull requests!
 
 * This repository contains a `.env` file. All the information in this file is fake (random strings), and will be replaced by the real information when you install EML AdminTool.
 * This Web software is under the `GNU AGPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
-* If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
+* If you need some help, you can join [this Discord](https://discord.gg/YVB4k6HzAY).
 
 <br>
 
