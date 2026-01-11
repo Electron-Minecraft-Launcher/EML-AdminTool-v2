@@ -101,6 +101,11 @@
     }
   }
 
+  function isOldFabricVersion(version: string) {
+    const [maj, min, pat] = version.split('.').map((v) => parseInt(v))
+    return maj <= 0 && min < 15
+  }
+
   $effect(() => {
     if (!minecraftVersions.includes(minecraftMajorVersion)) {
       minecraftMajorVersion = minecraftVersions[0]
@@ -152,7 +157,11 @@
           <label for="loader-version" class="sticky-header" style="z-index: 100">Loader version</label>
           <select name="loader-version" id="loader-version" class="loader-list-select" bind:value={tempFabricLoaderVersion}>
             {#each fabricLoaderVersions as version}
-              <option value={version}>{version}</option>
+              <option
+                value={version}
+                title={isOldFabricVersion(version) ? 'Old Fabric Loader version may not support recent Minecraft versions.' : ''}
+                class:old={isOldFabricVersion(version)}>{version}</option
+              >
             {/each}
           </select>
         {/if}
@@ -222,6 +231,10 @@
         display: block;
         width: 100%;
         margin-bottom: 20px;
+
+        option.old {
+          color: #912020;
+        }
       }
     }
 

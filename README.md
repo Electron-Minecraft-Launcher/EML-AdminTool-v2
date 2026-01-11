@@ -12,14 +12,14 @@
 
 ## Features
 
- * **Files Updater**: Update your Minecraft files and loader (Vanilla or Forge).
- * **Bootstraps**: Auto-update your Minecraft Launcher.
- * **Maintenance**: Manage your Minecraft Launcher.
- * **News**: Manage your Minecraft Launcher news.
- * **Background**: Manage your Minecraft Launcher background.
- * **Stats**: See stats about your Launcher.
- * The Admin of the server can manage the users permissions.
- * And more...
+* **Files Updater**: Update your Minecraft files and loader (Vanilla, Forge or Fabric).
+* **Bootstraps**: Auto-update your Minecraft Launcher.
+* **Maintenance**: Manage your Minecraft Launcher.
+* **News**: Manage your Minecraft Launcher news.
+* **Background**: Manage your Minecraft Launcher background.
+* **Stats**: See stats about your Launcher.
+* The Admin of the server can manage the users permissions.
+* And more...
 
 ## Installation
 
