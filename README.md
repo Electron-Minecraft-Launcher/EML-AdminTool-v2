@@ -5,7 +5,7 @@
 ![EML AdminTool](./.github/assets/files-updater.png)
 
 [<img src="https://img.shields.io/badge/Discord-EML-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
-[<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
+[<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms)
 [<img src="https://img.shields.io/badge/version-2.0.0--beta.8-orangered?style=for-the-badge&color=orangered">](package.json)
 
 <p>
