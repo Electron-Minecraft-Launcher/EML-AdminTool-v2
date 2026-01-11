@@ -10,7 +10,9 @@
 
 <p>
 <center>
+<a href="https://discord.gg/YVB4k6HzAY">
   <img src="./.github/assets/gg.png" alt="EML AdminTool Logo" width="300"/>
+</a>
 </center>
 </p>
 
