@@ -70,7 +70,7 @@ export default {
     [NotificationCode.FILESUPDATER_FORGE_VERSION_NOT_FOUND]: `Forgeのバージョンが見つかりません。`,
 
     [NotificationCode.BOOTSTRAPS_MALFORMED_VERSION]: `Bootstrapsのバージョン形式が正しくありません。セマンティックバージョニング (SemVer) に従ってください。`,
-    [NotificationCode.BOOTSTRAPS_INVALID_VERSION]: `Bootstrapsのバージョンが無効です。現在のバージョンより新しいバージョンを指定してください。`,
+    [NotificationCode.BOOTSTRAPS_INVALID_FILES]: `Bootstrapsのバージョンが無効です。現在のバージョンより新しいバージョンを指定してください。`,
 
     [NotificationCode.MAINTENANCE_INVALID_DATES]: `メンテナンス期間が無効です。開始日は終了日より前に設定してください。`,
 

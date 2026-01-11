@@ -2,7 +2,7 @@
   import { scale } from 'svelte/transition'
 
   interface Props {
-    size?: 's' | 'ms' | 'm' | 'l'
+    size?: 's' | 'ms' | 'm' | 'ml' | 'l'
     show: boolean
     translateX?: string
     children?: import('svelte').Snippet
@@ -70,6 +70,12 @@
 
     &.size-m {
       width: 750px;
+      margin-top: 45px;
+      margin-bottom: 30px;
+    }
+
+    &.size-ml {
+      width: 900px;
       margin-top: 45px;
       margin-bottom: 30px;
     }

@@ -4,22 +4,28 @@
 
 ![EML AdminTool](./.github/assets/files-updater.png)
 
-[<p align="center"><img src="https://img.shields.io/badge/Discord-Electron_Minecraft_Launcher-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
-[<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms) 
-[<img src="https://img.shields.io/badge/version-2.0.0--beta.7-orangered?style=for-the-badge&color=orangered">](package.json)</p>
+[<img src="https://img.shields.io/badge/Discord-EML-5561e6?&style=for-the-badge">](https://discord.gg/YVB4k6HzAY)
+[<img src="https://img.shields.io/badge/platforms-Docker-0077DA?style=for-the-badge&color=0077DA">](#platforms)
+[<img src="https://img.shields.io/badge/version-2.0.0--beta.8-orangered?style=for-the-badge&color=orangered">](package.json)
+
+<p>
+<center>
+  <img src="./.github/assets/gg.png" alt="EML AdminTool Logo" width="300"/>
+</center>
+</p>
 
 ---
 
 ## Features
 
- * **Files Updater**: Update your Minecraft files and loader (Vanilla or Forge).
- * **Bootstraps**: Auto-update your Minecraft Launcher.
- * **Maintenance**: Manage your Minecraft Launcher.
- * **News**: Manage your Minecraft Launcher news.
- * **Background**: Manage your Minecraft Launcher background.
- * **Stats**: See stats about your Launcher.
- * The Admin of the server can manage the users permissions.
- * And more...
+* **Files Updater**: Update your Minecraft files and loader (Vanilla, Forge or Fabric).
+* **Bootstraps**: Auto-update your Minecraft Launcher.
+* **Maintenance**: Manage your Minecraft Launcher.
+* **News**: Manage your Minecraft Launcher news.
+* **Background**: Manage your Minecraft Launcher background.
+* **Stats**: See stats about your Launcher.
+* The Admin of the server can manage the users permissions.
+* And more...
 
 ## Installation
 
@@ -63,7 +69,7 @@ You can now make pull requests!
 
 * This repository contains a `.env` file. All the information in this file is fake (random strings), and will be replaced by the real information when you install EML AdminTool.
 * This Web software is under the `GNU AGPLv3` license; to get more information, please read the file `LICENSE`. It is legally obligatory to respect this license.
-* If you need some help, you can join [this Discord](https://discord.gg/nfEHKtghPh).
+* If you need some help, you can join [this Discord](https://discord.gg/YVB4k6HzAY).
 
 <br>
 

@@ -20,7 +20,7 @@ enum UserStatus {
 enum LoaderType {
   VANILLA
   FORGE
-  // FABRIC
+  FABRIC
 }
 
 enum LoaderFormat {

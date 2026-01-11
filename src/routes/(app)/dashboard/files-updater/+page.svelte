@@ -155,7 +155,12 @@
 </svelte:head>
 
 {#if showChangeLoaderModal}
-  <ChangeLoaderModal bind:show={showChangeLoaderModal} loader={data.loader as unknown as Loader} loaderList={data.loaderList} />
+  <ChangeLoaderModal
+    bind:show={showChangeLoaderModal}
+    loader={data.loader as unknown as Loader}
+    fabricLoaderVersions={data.fabricLoaderVersions}
+    loaderList={data.loaderList}
+  />
 {/if}
 
 <h2>Files Updater</h2>
@@ -215,7 +220,7 @@
       <div>
         <p class="label">Loader</p>
         <p>
-          {data.loader.type === ILoaderType.FORGE ? 'Forge' : 'Vanilla'}
+          {data.loader.type === ILoaderType.FORGE ? 'Forge' : data.loader.type === ILoaderType.FABRIC ? 'Fabric' : 'Vanilla'}
         </p>
       </div>
 
@@ -238,7 +243,9 @@
             style="cursor: help"
           ></i>
         </p>
-        <p>{data.loader.format === ILoaderFormat.INSTALLER ? 'Installer' : data.loader.format === ILoaderFormat.UNIVERSAL ? 'Universal' : 'Client'}</p>
+        <p>
+          {data.loader.format === ILoaderFormat.INSTALLER ? 'Installer' : data.loader.format === ILoaderFormat.UNIVERSAL ? 'Universal' : 'Client'}
+        </p>
       </div>
     </div>
   </section>

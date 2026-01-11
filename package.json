@@ -1,6 +1,6 @@
 {
   "name": "eml-admintool",
-  "version": "2.0.0-beta.7",
+  "version": "2.0.0-beta.8",
   "author": "GoldFrite",
   "license": "GPL-3.0-or-later",
   "private": true,
@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "serve": "node ."
+    "serve": "node .",
+    "docker": "docker compose -f docker/docker-compose.dev.yml up"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.6",
