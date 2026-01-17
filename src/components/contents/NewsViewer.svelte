@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { NewsCategory, NewsTag } from '$lib/utils/db'
+  import Markdown from '../layouts/Markdown.svelte'
 
   interface Props {
     title: string
@@ -38,7 +39,7 @@
 <p class="name">{title !== '' ? title : 'Untitled'}</p>
 
 <div class="content">
-  {@html content.markdownToHTML({ p: 13, h1: 20, h2: 18, h3: 16, h4: 14 })}
+  <Markdown source={content} />
 
   <div class="tags">
     {#each tags as tag}

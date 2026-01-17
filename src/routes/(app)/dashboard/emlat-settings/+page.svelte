@@ -11,6 +11,7 @@
   import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
   import { pingServerAndReload, sleep } from '$lib/utils/utils'
   import { callAction } from '$lib/utils/call'
+  import Markdown from '../../../../components/layouts/Markdown.svelte'
 
   let { data = $bindable() }: PageProps = $props()
 
@@ -244,9 +245,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
       </div>
     </div>
     <div class="changelogs">
-      <div class="changelogs-in">
-        {@html data.update.changelogs.markdownToHTML({ h1: 18, h2: 16.5, h3: 15.5, p: 14 })}
-      </div>
+      <Markdown source={data.update.changelogs} />
     </div>
   {/if}
   <!-- {/if} -->
