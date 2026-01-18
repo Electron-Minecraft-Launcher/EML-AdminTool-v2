@@ -26,7 +26,9 @@ const app: Handle = async ({ event, resolve }) => {
     return serveStaticFile(event.url.pathname)
   }
 
-  await loadApplicationContext(event)
+  if (event.url.pathname !== '/api/ping') {
+    await loadApplicationContext(event)
+  }
 
   const response = await resolve(event)
 
