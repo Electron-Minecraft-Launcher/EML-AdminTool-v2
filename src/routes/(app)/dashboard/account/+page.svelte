@@ -15,7 +15,7 @@
   let showEditAccountModal = $state(false)
 
   const enhanceForm: SubmitFunction = ({ formData, cancel }) => {
-    if (!confirm($l.dashboard.account.deleteAccountWarning)) {
+    if (!confirm($l.dashboard.account.dangerZone.deleteAccountWarning)) {
       cancel()
       return
     }
@@ -35,39 +35,39 @@
 </script>
 
 <svelte:head>
-  <title>{$l.dashboard.account.accountSettings} • {env.name} AdminTool</title>
+  <title>{$l.dashboard.account.title} • {env.name} AdminTool</title>
 </svelte:head>
 
 {#if showEditAccountModal}
   <EditAccountModal bind:show={showEditAccountModal} />
 {/if}
 
-<h2>{$l.dashboard.account.accountSettings}</h2>
+<h2>{$l.dashboard.account.title}</h2>
 
 <section class="section">
   <button class="secondary right" onclick={() => (showEditAccountModal = true)} aria-label="Edit account"><i class="fa-solid fa-pen"></i></button>
-  <h3>{$l.dashboard.information}</h3>
+  <h3>{$l.dashboard.account.info.title}</h3>
 
   <div class="container">
     <div>
-      <p class="label">{$l.main.username}</p>
+      <p class="label">{$l.common.username}</p>
       <p>{user.username}</p>
     </div>
 
     <div>
-      <p class="label">{$l.main.password}</p>
+      <p class="label">{$l.common.password}</p>
       <p>••••••••••</p>
     </div>
 
     <div>
-      <p class="label">{$l.dashboard.account.accountType}</p>
+      <p class="label">{$l.dashboard.account.info.accountType}</p>
       <p>{user.isAdmin ? 'Administrator' : 'Standard'}</p>
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h3>{$l.dashboard.permissions}</h3>
+  <h3>{$l.dashboard.account.permissions.title}</h3>
 
   <div class="container">
     <div>
@@ -146,12 +146,12 @@
 
 {#if !user.isAdmin}
   <section class="section">
-    <h3>{$l.dashboard.account.dangerZone}</h3>
+    <h3>{$l.dashboard.account.dangerZone.title}</h3>
 
     <div class="container">
       <div>
         <form method="POST" action="?/delete" use:enhance={enhanceForm}>
-          <button type="submit" class="primary danger">{$l.dashboard.account.deleteAccount}</button>
+          <button type="submit" class="primary danger">{$l.dashboard.account.dangerZone.deleteAccount}</button>
         </form>
       </div>
     </div>

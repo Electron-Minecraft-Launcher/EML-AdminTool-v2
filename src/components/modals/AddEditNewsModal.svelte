@@ -303,8 +303,8 @@
       >
         {mode === 'EDIT' ? 'Preview' : 'Edit'}
       </button>
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary" disabled={title.trim() === ''}>{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary" disabled={title.trim() === ''}>{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

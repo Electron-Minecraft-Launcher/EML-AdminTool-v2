@@ -98,8 +98,8 @@
     <Toggle bind:status text={['Active', 'Inactive']} disabled={disableStatus} />
 
     <div class="actions">
-      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={!name || name == '' || (!file && !selectedBackgroundId)}>{$l.main.save}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.common.cancel}</button>
+      <button class="primary" disabled={!name || name == '' || (!file && !selectedBackgroundId)}>{$l.common.save}</button>
     </div>
 
     <input type="file" id="background" accept="image/*" style="display: none" />

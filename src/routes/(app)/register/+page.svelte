@@ -116,17 +116,17 @@
   <h2>{$l.auth.register}</h2>
   <p>{env.name} AdminTool</p>
 
-  <label for="username">{$l.main.username}</label>
+  <label for="username">{$l.common.username}</label>
   <input type="text" id="username" name="username" bind:value={username} />
 
-  <label for="password">{$l.main.password}</label>
+  <label for="password">{$l.common.password}</label>
   <input type="password" id="password" name="password" bind:value={password} autocomplete="new-password" />
 
   <label for="password-cfr">{$l.auth.confirmPassword}</label>
   <input type="password" id="password-cfr" name="password-cfr" bind:value={passwordCfr} autocomplete="new-password" />
 
   <div class="pin-inputs">
-    <label for="pin-1" style="display: inline-block">{@html $l.main.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
+    <label for="pin-1" style="display: inline-block">{@html $l.auth.pin + ($l.l == 'fr' ? ' :&nbsp;&nbsp;' : ':&nbsp;&nbsp')}</label>
     <input type="text" maxlength="1" size="1" id="pin-1" name="pin-1" onkeydown={handlePinInput} />
     <input type="text" maxlength="1" size="1" id="pin-2" name="pin-2" onkeydown={handlePinInput} />
     <input type="text" maxlength="1" size="1" id="pin-3" name="pin-3" onkeydown={handlePinInput} />
@@ -134,7 +134,7 @@
 
   <button type="submit" class="primary" {disabled}>{$l.auth.register}</button>
   <p class="center">
-    <a class="small-link" href="/login">{$l.auth.alreadyAnAccount}</a>
+    <a class="small-link" href="/login">{$l.auth.logInHere}</a>
   </p>
 </form>
 

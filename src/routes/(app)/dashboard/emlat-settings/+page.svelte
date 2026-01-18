@@ -64,8 +64,8 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
   }
 
   async function reset() {
-    if (!confirm($l.dashboard.emlatSettings.resetEMLATWarning)) return
-    if (!confirm($l.dashboard.emlatSettings.areYouSure)) return
+    if (!confirm($l.dashboard.emlatSettings.dangerZone.resetEMLATWarning)) return
+    if (!confirm($l.dashboard.emlatSettings.dangerZone.areYouSure)) return
 
     updateMessage = 'Resetting...'
     showLoader = true
@@ -105,7 +105,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 </script>
 
 <svelte:head>
-  <title>{$l.dashboard.emlatSettings.emlatSettings} • {env.name} AdminTool</title>
+  <title>{$l.dashboard.emlatSettings.title} • {env.name} AdminTool</title>
 </svelte:head>
 
 {#if showLoader}
@@ -123,41 +123,41 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
   <EditEMLAdminToolModal bind:show={showEditAdminToolModal} />
 {/if}
 
-<h2>{$l.dashboard.emlatSettings.emlatSettings}</h2>
+<h2>{$l.dashboard.emlatSettings.title}</h2>
 
 <section class="section">
   <button class="secondary right" onclick={editAdminToolModal} aria-label="Edit EML AdminTool"><i class="fa-solid fa-pen"></i></button>
-  <h3>{$l.dashboard.information}</h3>
+  <h3>{$l.dashboard.emlatSettings.info.title}</h3>
 
   <div class="container">
     <div>
-      <p class="label">{$l.main.name}</p>
+      <p class="label">{$l.dashboard.emlatSettings.info.atName}</p>
       <p>{data.environment.name}</p>
     </div>
 
     <div>
-      <p class="label">{$l.dashboard.emlatSettings.language}</p>
+      <p class="label">{$l.dashboard.emlatSettings.info.language}</p>
       <p>{$l.language}</p>
     </div>
 
     <div>
-      <p class="label">{$l.main.pin}</p>
+      <p class="label">{$l.dashboard.emlatSettings.info.pin}</p>
       <p><span class="pin">{data.environment.pin}</span></p>
     </div>
 
     <div>
-      <p class="label">{$l.dashboard.emlatSettings.nbUsers}</p>
+      <p class="label">{$l.dashboard.emlatSettings.info.nbUsers}</p>
       <p>{data.users.length}</p>
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h3>{$l.dashboard.emlatSettings.users}</h3>
+  <h3>{$l.dashboard.emlatSettings.usersManagement.title}</h3>
 
   <div class="list-container">
     <div class="list">
-      <p class="label">{$l.dashboard.emlatSettings.users}</p>
+      <p class="label">{$l.dashboard.emlatSettings.usersManagement.users}</p>
       {#each data.users as u}
         {#if u.status === IUserStatus.ACTIVE}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
@@ -166,7 +166,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
         {/if}
       {/each}
 
-      <p class="label">{$l.dashboard.emlatSettings.pendingUsers}</p>
+      <p class="label">{$l.dashboard.emlatSettings.usersManagement.pendingUsers}</p>
       {#each data.users as u}
         {#if u.status === IUserStatus.PENDING}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
@@ -175,7 +175,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
         {/if}
       {/each}
 
-      <p class="label">{$l.dashboard.emlatSettings.wrongPinUsers}</p>
+      <p class="label">{$l.dashboard.emlatSettings.usersManagement.wrongPinUsers}</p>
       {#each data.users as u}
         {#if u.status === IUserStatus.SPAM}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
@@ -184,7 +184,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
         {/if}
       {/each}
 
-      <p class="label">{$l.dashboard.emlatSettings.deletedUsers}</p>
+      <p class="label">{$l.dashboard.emlatSettings.usersManagement.deletedUsers}</p>
       {#each data.users as u}
         {#if u.status === IUserStatus.DELETED}
           <button class="list" class:active={selectedUserId === u.id} onclick={() => (selectedUserId = u.id)}>
@@ -201,7 +201,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 </section>
 
 <section class="section">
-  <h3>{$l.dashboard.emlatSettings.update}</h3>
+  <h3>{$l.dashboard.emlatSettings.update.title}</h3>
 
   <!-- TODO Uncomment this for stable release -->
   <!-- {#if data.update.currentVersion.includes('beta') || data.update.latestVersion.includes('alpha')}
@@ -215,12 +215,12 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
   {:else} -->
   <div class="container">
     <div>
-      <p class="label">{$l.dashboard.emlatSettings.currentVersion}</p>
+      <p class="label">{$l.dashboard.emlatSettings.update.currentVersion}</p>
       <p>EML AdminTool {data.update.currentVersion}</p>
     </div>
 
     <div>
-      <p class="label">{$l.dashboard.emlatSettings.latestVersion}</p>
+      <p class="label">{$l.dashboard.emlatSettings.update.latestVersion}</p>
       <p>EML AdminTool {data.update.latestVersion}</p>
     </div>
   </div>
@@ -233,35 +233,37 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
       <div>
         <p class="release-name"><b>EML AdminTool {data.update.latestVersion}</b></p>
         <p class="release-date">
-          {$l.dashboard.emlatSettings.releasedOn}
-          {new Date(data.update.releaseDate).toLocaleDateString()} –
+          {$l({ date: new Date(data.update.releaseDate).toLocaleDateString() }).dashboard.emlatSettings.update.releasedOn}
+          –
           <a href="https://github.com/Electron-Minecraft-Launcher/EML-AdminTool-v2/releases/tag/v{data.update.latestVersion}" target="_blank">
-            {$l.dashboard.emlatSettings.openGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px"></i>
+            {$l.dashboard.emlatSettings.update.openGithub}&nbsp;&nbsp;<i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px"></i>
           </a>
         </p>
       </div>
       <div class="actions">
-        <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.runUpdate}</button>
+        <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.update.runUpdate}</button>
       </div>
     </div>
     <div class="changelogs">
-      <Markdown source={data.update.changelogs} />
+      <div class="changelogs-in">
+        <Markdown source={data.update.changelogs} />
+      </div>
     </div>
   {/if}
   <!-- {/if} -->
 </section>
 
 <section class="section">
-  <h3>{$l.dashboard.emlatSettings.vpsAndDocker}</h3>
+  <h3>{$l.dashboard.emlatSettings.vpsAndDockerInfo.title}</h3>
 
   <div class="container">
     <div>
-      <p class="label">{$l.dashboard.emlatSettings.dockerInfo}</p>
+      <p class="label">{$l.dashboard.emlatSettings.vpsAndDockerInfo.dockerInfo}</p>
       <p>{data.vps.os}</p>
     </div>
 
     <div>
-      <p class="label">{$l.dashboard.emlatSettings.storage}</p>
+      <p class="label">{$l.dashboard.emlatSettings.vpsAndDockerInfo.storage}</p>
       <span class="storage">
         <span class="storage-progress" style={'width: ' + (data.vps.storage[0] / data.vps.storage[1]) * 200 + 'px'}></span>
       </span>
@@ -271,11 +273,11 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 </section>
 
 <section class="section">
-  <h3>{$l.dashboard.emlatSettings.dangerZone}</h3>
+  <h3>{$l.dashboard.emlatSettings.dangerZone.title}</h3>
 
   <div class="container">
     <div>
-      <button class="primary danger" onclick={reset}>{$l.dashboard.emlatSettings.reset}</button>
+      <button class="primary danger" onclick={reset}>{$l.dashboard.emlatSettings.dangerZone.reset}</button>
     </div>
   </div>
 </section>

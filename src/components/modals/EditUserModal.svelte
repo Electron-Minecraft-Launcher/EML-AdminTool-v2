@@ -7,7 +7,6 @@
   import type { NotificationCode } from '$lib/utils/notifications'
   import LoadingSplash from '../layouts/LoadingSplash.svelte'
   import { emptyUser } from '$lib/stores/user'
-  import { onMount } from 'svelte'
 
   interface Props {
     show: boolean
@@ -60,12 +59,12 @@
   {/if}
 
   <form method="POST" action="?/editUser" use:enhance={enhanceForm}>
-    <h2>{action === 'ACCEPT' ? $l.dashboard.emlatSettings.acceptUser : $l.dashboard.emlatSettings.editUser}</h2>
+    <h2>{action === 'ACCEPT' ? $l.dashboard.emlatSettings.usersManagement.modal.acceptUser : $l.dashboard.emlatSettings.usersManagement.modal.title}</h2>
 
-    <label for="username" style="margin-top: 0">{$l.main.username}</label>
+    <label for="username" style="margin-top: 0">{$l.common.username}</label>
     <input type="text" id="username" name="username" bind:value={selectedUser.username} />
 
-    <p class="label" style="margin-top: 20px">{$l.dashboard.permissions}</p>
+    <p class="label" style="margin-top: 20px">{$l.dashboard.emlatSettings.usersManagement.modal.permissions}</p>
     <div class="permission">
       <p>Files Updater</p>
       <div class="right">
@@ -204,8 +203,8 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary">{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary">{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

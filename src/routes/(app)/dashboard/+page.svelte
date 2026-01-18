@@ -16,9 +16,9 @@
   <title>{env.name} AdminTool</title>
 </svelte:head>
 
-<h2>{$l.main.home}</h2>
+<h2>{$l.common.home}</h2>
 
-<h3>{$l.dashboard.welcome}, {user.username + ($l.l == 'fr' ? ' ' : '')}!</h3>
+<h3>{$l({ username: user.username }).dashboard.welcome}</h3>
 
 <div class="wip">
   <p class="wip">We are still building this area!</p>

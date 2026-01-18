@@ -2,7 +2,6 @@
   import { page } from '$app/state'
   import { l } from '$lib/stores/language'
   import { sleep } from '$lib/utils/utils'
-  import Skeleton from './Skeleton.svelte'
   import { slide } from 'svelte/transition'
   import getUser from '$lib/utils/user'
   import { applyAction, enhance } from '$app/forms'
@@ -65,7 +64,7 @@
     <h1><span>EML</span>AT</h1>
   {/if}
 
-  <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>{$l.main.home}</a>
+  <a href="/dashboard" class:active={page.url.pathname == '/dashboard'}><i class="fa-solid fa-house"></i>{$l.common.home}</a>
   {#if user.isAdmin}
     <a href="/dashboard/emlat-settings" class:active={page.url.pathname == '/dashboard/emlat-settings'}>
       <i class="fa-solid fa-gear"></i>{$l.leftPanel.settings}

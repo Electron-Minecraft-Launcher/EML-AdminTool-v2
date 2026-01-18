@@ -3,20 +3,16 @@ import { NotificationCode } from '$lib/utils/notifications'
 export default {
   l: 'en',
   language: 'English',
-  main: {
+  common: {
     home: 'Home',
-    prev: `Previous`,
+    back: `Back`,
     next: `Next`,
     finish: 'Finish',
     save: `Save`,
     cancel: `Cancel`,
-    more: `More`,
-    name: `Name`,
-    serverName: `Server name`,
+    delete: `Delete`,
     username: `Username`,
-    password: `Password`,
-    pin: `PIN`,
-    actions: `Actions`
+    password: `Password`
   },
   notifications: {
     [NotificationCode.INVALID_INPUT]: `Invalid input.`,
@@ -39,7 +35,7 @@ export default {
     [NotificationCode.EMLAT_UP_TO_DATE]: `EML AdminTool is up-to-date.`,
     [NotificationCode.EMLAT_UPDATE_FAILED]: `Failed to update EML AdminTool. Please see the logs for more details.`,
     [NotificationCode.EMLAT_RESET_FAILED]: `Failed to reset EML AdminTool. Please see the logs for more details.`,
-    
+
     [NotificationCode.EDIT_USER_USERNAME_TOO_SHORT]: `Username must be at least 2 characters long.`,
     [NotificationCode.EDIT_USER_USERNAME_TOO_LONG]: `Username must be at most 64 characters long.`,
 
@@ -90,7 +86,7 @@ export default {
     [NotificationCode.UPDATER_ERROR]: `Updater error.`,
     [NotificationCode.FILE_SYSTEM_ERROR]: `File system error.`,
     [NotificationCode.INTERNAL_SERVER_ERROR]: `Unexpected error.`,
-    [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`,
+    [NotificationCode.EXTERNAL_API_ERROR]: `External API error.`
   },
   setup: {
     setup: `Setup`,
@@ -98,14 +94,13 @@ export default {
       title: `Firstly, choose the language of your EML&nbsp;AdminTool:`,
       subtitle: `This language will be applied for all users.`,
       other: `I speak another language.`,
-      modals: {
-        language: {
-          title: `You speak another language?`,
-          content: `EML AdminTool is currently available in only five languages.<br>
+      modal: {
+        title: `You speak another language?`,
+        content: `EML AdminTool is currently available in only five languages.<br>
 However, we are thrilled to see that this project is reaching more and more people in different countries!<br>
 <br>
-Therefore, if you would like to help us translate EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of EML AdminTool!`
-        }
+Therefore, if you would like to help us translate EML AdminTool, you can find the JSON files on our GitHub and a guide on how to submit your translation. If it is accepted, it will be included as a default option in a future version of EML AdminTool!`,
+        more: `More`
       }
     },
     step2: {
@@ -131,7 +126,8 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
     register: `Register`,
     confirmPassword: `Confirm password`,
     createAccount: `Create an account here.`,
-    alreadyAnAccount: `Log in here.`
+    logInHere: `Log in here.`,
+    pin: `PIN`
   },
   leftPanel: {
     settings: `Settings`,
@@ -139,62 +135,91 @@ Therefore, if you would like to help us translate EML AdminTool, you can find th
     logout: `Log out`
   },
   dashboard: {
-    welcome: `Welcome`,
-    information: `Information`,
-    permissions: `Permissions`,
+    welcome: `Welcome, {{username}}!`,
     emlatSettings: {
-      emlatSettings: `EML AdminTool settings`,
-      language: `Language`,
-      newName: `New name`,
-      nbUsers: `Number of users`,
-      users: `Users`,
-      pendingUsers: `Pending users`,
-      wrongPinUsers: `Wrong-PIN users`,
-      infoOf: `Info of`,
-      update: `Update`,
-      currentVersion: `Current version`,
-      latestVersion: `Latest version`,
-      releasedOn: `Released on`,
-      runUpdate: `Update`,
-      openGithub: `Open GitHub...`,
-      vpsAndDocker: `VPS & Docker`,
-      dockerInfo: `Docker information`,
-      storage: `Storage`,
-      dangerZone: `Danger zone`,
-      reset: `Reset EML AdminTool`,
-      emlAdminToolName: `EML AdminTool name`,
-      editEMLAT: `Edit EML AdminTool information`,
-      leaveBlank: `Leave blank if you don't want to change.`,
-      nameWarn: `Changing EML AdminTool name also changes your username!`,
-      regeneratePin: `Regenerate PIN`,
-      acceptUser: `Accept user`,
-      refuseUser: `Refuse user`,
-      refuseUserWarning: `Are you sure you want to refuse this user? The user will not be able to access EML AdminTool anymore.`,
-      deletedUsers: `Deleted users`,
-      deleteUserWarning: `Are you sure you want to delete this user?
-The user will not be able to access EML AdminTool anymore. However, the user's actions and data will not be deleted.`,
-      deleteUserForeverWarning: `Are you sure you want to delete this user forever?
-All the user's actions and data will be deleted, including published news. This action is irreversible.`,
-      editUser: `Edit user`,
-      resetEMLATWarning: `Are you sure you want to reset EML AdminTool? All the data will be lost and EML AdminTool will be reset to its initial state. This action is irreversible.
+      title: `EML AdminTool settings`,
+      info: {
+        title: `Information`,
+        atName: `AdminTool name`,
+        language: `Language`,
+        pin: `PIN`,
+        nbUsers: `Number of users`,
+        modal: {
+          title: `Edit EML AdminTool information`,
+          atName: `AdminTool name`,
+          nameWarn: `Changing EML AdminTool name also changes your username!`,
+          language: `Language`,
+          pin: `PIN`,
+          regeneratePin: `Regenerate PIN`
+        }
+      },
+      usersManagement: {
+        title: `Users management`,
+        users: `Users`,
+        pendingUsers: `Pending users`,
+        wrongPinUsers: `Wrong-PIN users`,
+        deletedUsers: `Deleted users`,
+        infoOf: `{{username}}'s information`,
+        permissions: `Permissions`,
+        refuseUser: `Refuse user`,
+        refuseUserWarning: `Are you sure you want to refuse this user? The user will not be able to access EML AdminTool anymore.`,
+        deleteUserWarning: `Are you sure you want to delete this user?
+        The user will not be able to access EML AdminTool anymore. However, the user's actions and data will not be deleted.`,
+        deleteUserForeverWarning: `Are you sure you want to delete this user forever?
+        All the user's actions and data will be deleted, including published news. This action is irreversible.`,
+        modal: {
+          title: `Edit user information`,
+          acceptUser: `Accept user`,
+          permissions: `Permissions`
+        }
+      },
+      update: {
+        title: `Update`,
+        currentVersion: `Current version`,
+        latestVersion: `Latest version`,
+        releasedOn: `Released on {{date}}`,
+        openGithub: `Open GitHub`,
+        runUpdate: `Run update`
+      },
+      vpsAndDockerInfo: {
+        title: `VPS & Docker information`,
+        dockerInfo: `Docker information`,
+        storage: `Storage`
+      },
+      dangerZone: {
+        title: `Danger zone`,
+        reset: `Reset EML AdminTool`,
+        resetEMLATWarning: `Are you sure you want to reset EML AdminTool? All the data will be lost and EML AdminTool will be reset to its initial state. This action is irreversible.
 Moreover, be sure that nobody can access EML AdminTool during the reset: EML AdminTool is not protected during the setup!`,
-      areYouSure: `Are you sure?`
+        areYouSure: `Are you sure?`
+      }
     },
     account: {
-      accountSettings: `Account settings`,
-      accountType: `Account type`,
-      editAccount: `Edit account information`,
-      leaveBlank: `Leave blank if you don't want to change.`,
-      newUsername: `New username`,
-      usernameWarn: `Changing your username will also change the EML AdminTool name!`,
-      newPassword: `New password`,
-      dangerZone: `Danger zone`,
-      deleteAccount: `Delete account`,
-      deleteAccountWarning: `Are you sure you want to delete your account? You will not be able to access EML AdminTool anymore. However, your actions and data will not be deleted.`
+      title: `Account settings`,
+      info: {
+        title: `Account information`,
+        accountType: `Account type`,
+        modal: {
+          title: `Edit account information`,
+          usernameWarn: `Changing your username will also change the EML AdminTool name!`,
+          leaveBlankPassword: `Leave blank if you don't want to change your password.`,
+          newPassword: `New password`,
+          confirmPassword: `Confirm password`
+        }
+      },
+      permissions: {
+        title: `Permissions`
+      },
+      dangerZone: {
+        title: `Danger zone`,
+        deleteAccount: `Delete account`,
+        deleteAccountWarning: `Are you sure you want to delete your account? You will not be able to access EML AdminTool anymore. However, your actions and data will not be deleted.`
+      }
     },
     filesUpdater: {
-      size: 'Size',
-      b: 'B'
+      fileName: `File name`,
+      size: `Size`,
+      b: `B`
     }
   }
 }

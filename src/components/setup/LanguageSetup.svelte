@@ -74,7 +74,7 @@
   </div>
 
   <div class="actions">
-    <button type="submit" class="primary" disabled={!setupData.language}>{$l.main.next}&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></button>
+    <button type="submit" class="primary" disabled={!setupData.language}>{$l.common.next}&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></button>
   </div>
 </form>
 

@@ -47,16 +47,16 @@
     <LoadingSplash transparent />
   {/if}
 
-  <h2>{$l.dashboard.emlatSettings.editEMLAT}</h2>
+  <h2>{$l.dashboard.emlatSettings.info.modal.title}</h2>
 
   <form method="POST" action="?/editEMLAT" use:enhance={enhanceForm}>
     <!-- <p>{$l.dashboard.emlatSettings.leaveBlank}</p> -->
 
-    <label for="name">{$l.dashboard.emlatSettings.emlAdminToolName}</label>
+    <label for="name">{$l.dashboard.emlatSettings.info.modal.atName}</label>
     <input type="text" id="name" name="name" bind:value={name} autocomplete="username" />
-    <p class="warn">{$l.dashboard.emlatSettings.nameWarn}</p>
+    <p class="warn">{$l.dashboard.emlatSettings.info.modal.nameWarn}</p>
 
-    <p class="label">{$l.dashboard.emlatSettings.language}</p>
+    <p class="label">{$l.dashboard.emlatSettings.info.modal.language}</p>
     <div class="language">
       <button type="button" class="secondary" class:selected={language === 'en'} id="en-button" onclick={() => language = 'en'}>
         <p>
@@ -96,15 +96,15 @@
       </button>
     </div>
 
-    <p class="label">{$l.main.pin}</p>
+    <p class="label">{$l.dashboard.emlatSettings.info.modal.pin}</p>
     <label class="p" for="regenerate-pin">
       <input type="checkbox" id="regenerate-pin" name="regenerate-pin" />
-      {$l.dashboard.emlatSettings.regeneratePin}
+      {$l.dashboard.emlatSettings.info.modal.regeneratePin}
     </label>
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary">{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary">{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>
