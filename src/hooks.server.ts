@@ -14,6 +14,7 @@ import fs from 'node:fs'
 import mime from 'mime-types'
 import { dev } from '$app/environment'
 import { sequence } from '@sveltejs/kit/hooks'
+import '$lib/utils/prototypes'
 
 const filesDir = path.resolve(process.cwd(), 'files')
 
