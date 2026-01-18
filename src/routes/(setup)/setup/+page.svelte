@@ -4,7 +4,7 @@
   import ConfigurationLanguage from '../../../components/setup/LanguageSetup.svelte'
   import { l, type LanguageCode } from '$lib/stores/language'
   import type { PageProps } from './$types'
-  import { pingServerAndReload, sleep } from '$lib/utils/utils'
+  import { waitForServerRestart, sleep } from '$lib/utils/utils'
   import { fade } from 'svelte/transition'
   import { getContext, onMount } from 'svelte'
   import type { Env } from '$lib/utils/types'
@@ -38,10 +38,10 @@
     await sleep(2000)
     showH1 = false
     await sleep(1000)
+    showLoader = true
     try {
       await callAction({ url: '/setup', action: 'finish', formData: new FormData() }, $l)
-      showLoader = true
-      await pingServerAndReload(8, 5000)
+      await waitForServerRestart(12, '/')
     } catch (err) {
       console.error('Failed to mark as configured:', err)
       // TODO

@@ -9,7 +9,7 @@
   import { IUserStatus } from '$lib/utils/db'
   import UserManagement from '../../../../components/contents/UserManagement.svelte'
   import EditEMLAdminToolModal from '../../../../components/modals/EditEMLAdminToolModal.svelte'
-  import { pingServerAndReload, sleep } from '$lib/utils/utils'
+  import { waitForServerRestart, sleep } from '$lib/utils/utils'
   import { callAction } from '$lib/utils/call'
   import Markdown from '../../../../components/layouts/Markdown.svelte'
 
@@ -38,11 +38,12 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
     showEditAdminToolModal = true
   }
 
-  async function update() {
+  async function runUpdate() {
     if (!confirm(updateWarning)) return
+
+    updateMessage = 'Updating...'
     showLoader = true
     document.body.style.overflow = 'hidden'
-    updateMessage = 'Updating...'
 
     try {
       const status = await callAction({ url: '/dashboard/emlat-settings', action: 'updateEMLAT', formData: new FormData() }, $l)
@@ -52,7 +53,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
         await sleep(2000)
         window.location.href = '/dashboard/emlat-settings?updated=true'
       } else {
-        checkUpdateEnded()
+        await waitForServerRestart(12, '/dashboard/emlat-settings?updated=true', data.update.currentVersion)
       }
     } catch (err) {
       console.error('Failed to update:', err)
@@ -72,34 +73,13 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
 
     try {
       await callAction({ url: '/dashboard/emlat-settings', action: 'resetEMLAT', formData: new FormData() }, $l)
-      await pingServerAndReload(8, 5000)
+      await waitForServerRestart(10)
     } catch (err) {
       console.error('Failed to reset:', err)
       addNotification('ERROR', $l.notifications.EMLAT_RESET_FAILED)
       showLoader = false
       document.body.style.overflow = 'auto'
       return
-    }
-  }
-
-  async function checkUpdateEnded() {
-    for (let i = 0; i < 40; i++) {
-      await sleep(3000)
-      try {
-        const response = await fetch('/api/ping')
-        if (response.ok) {
-          const version = await response.text()
-          if (env.version !== version) {
-            updateMessage = `Restarting...`
-            window.location.href = '/dashboard/emlat-settings?updated=true'
-            return
-          }
-        } else {
-          updateMessage = `Restarting...`
-        }
-      } catch (err) {
-        updateMessage = `Restarting...`
-      }
     }
   }
 </script>
@@ -241,7 +221,7 @@ Please note that EML AdminTool, and therefore the Launchers too, will be unavail
         </p>
       </div>
       <div class="actions">
-        <button class="secondary" onclick={update}>{$l.dashboard.emlatSettings.update.runUpdate}</button>
+        <button class="secondary" onclick={runUpdate}>{$l.dashboard.emlatSettings.update.runUpdate}</button>
       </div>
     </div>
     <div class="changelogs">

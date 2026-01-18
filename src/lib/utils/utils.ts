@@ -10,25 +10,43 @@ export function sleep(duration: number) {
 
 /**
  * Pings the server and reloads the page if successful. The function first waits for `sleepDuration` before attempting to ping the server.
- * @param retrying Number of times to retry pinging the server. Default is `5`.
- * @param sleepDuration Duration to wait between retries in ms. Default is `1000`.
+ * @param retrying Number of times to retry pinging the server. Default is `10`, so the client will retry for about 1 minute.
+ * @param reload Whether to reload the page upon successful ping. If a string is provided, it will redirect to that URL instead. Default is `true`.
+ * @param oldVersion The old version string to compare against. If provided, the function will only reload/redirect if the server version has changed.
  */
-export async function pingServerAndReload(retrying: number = 5, sleepDuration: number = 1000) {
+export async function waitForServerRestart(retrying: number = 10, reload: boolean | string = true, oldVersion?: string) {
+  let delay = 1000
+
   for (let i = 0; i < retrying; i++) {
-    await sleep(sleepDuration)
+    await sleep(delay)
+    delay = Math.min(delay * 1.5, 10000)
+
     try {
-      const response = await fetch('/api/ping')
+      const response = await fetch(`/api/ping?t=${Date.now()}`)
+
       if (response.ok) {
-        goto('/')
+        if (oldVersion) {
+          const newVersion = await response.text()
+
+          if (newVersion.trim() === oldVersion.trim()) {
+            console.log(`Server is up but version is still ${oldVersion}. Waiting for update...`)
+            continue
+          }
+        }
+
+        if (typeof reload === 'string') window.location.href = reload
+        else if (reload) window.location.reload()
         return
       } else {
-        console.error('Ping failed:', response.statusText)
+        console.warn(`Server responded with status ${response.status}, waiting...`)
       }
     } catch (err) {
-      console.error('Ping failed, retrying...', err)
+      console.log(`Server unreachable (attempt ${i + 1}/${retrying}), retrying in ${Math.round(delay)}ms...`)
     }
   }
-  throw new Error('Failed to ping server after multiple attempts.')
+
+  console.error('Failed to contact server after multiple attempts.')
+  alert('The server seems to be taking a long time to restart. Please try refreshing the page manually.')
 }
 
 /**
@@ -107,4 +125,3 @@ export function getFileIcon(file: File_) {
       return 'fa-solid fa-file'
   }
 }
-
