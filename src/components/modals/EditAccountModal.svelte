@@ -51,25 +51,26 @@
   {/if}
 
   <form method="POST" action="?/edit" use:enhance={enhanceForm}>
-    <h2>{$l.dashboard.account.editAccount}</h2>
+    <h2>{$l.dashboard.account.info.modal.title}</h2>
 
-    <p>{$l.dashboard.account.leaveBlank}</p>
-
-    <label for="username">{$l.main.username}</label>
+    
+    <label for="username">{$l.common.username}</label>
     <input type="text" id="username" name="username" bind:value={username} autocomplete="username" />
     {#if user.isAdmin}
-      <p class="warn">{$l.dashboard.account.usernameWarn}</p>
+    <p class="warn">{$l.dashboard.account.info.modal.usernameWarn}</p>
     {/if}
+    
+    <p>{$l.dashboard.account.info.modal.leaveBlankPassword}</p>
 
-    <label for="password">{$l.dashboard.account.newPassword}</label>
+    <label for="password">{$l.dashboard.account.info.modal.newPassword}</label>
     <input type="password" id="password" name="password" bind:value={password} autocomplete="new-password" />
 
-    <label for="password-cfr">{$l.auth.confirmPassword}</label>
+    <label for="password-cfr">{$l.dashboard.account.info.modal.confirmPassword}</label>
     <input type="password" id="password-cfr" bind:value={passwordCfr} autocomplete="new-password" />
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary" {disabled}>{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary" {disabled}>{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

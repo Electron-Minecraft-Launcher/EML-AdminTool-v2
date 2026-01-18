@@ -62,10 +62,10 @@
   <p><b>{@html $l.setup.step3.subtitle}</b></p>
 
   <div>
-    <label for="admin-username">{$l.main.username}</label>
+    <label for="admin-username">{$l.common.username}</label>
     <input type="text" name="admin-username" id="admin-username" bind:value={setupData.adminUsername} />
 
-    <label for="admin-password">{$l.main.password}</label>
+    <label for="admin-password">{$l.common.password}</label>
     <input type="password" name="admin-password" id="admin-password" bind:value={setupData.adminPassword} />
 
     <div class="rel-progress">
@@ -86,9 +86,9 @@
 
   <div class="actions">
     <button type="submit" class="primary" disabled={pwdStrength[0] < 2 || !setupData.adminUsername || passwordCfr !== setupData.adminPassword}>
-      {$l.main.finish}&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i>
+      {$l.common.finish}&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i>
     </button>
-    <button type="button" class="secondary" onclick={() => step--}><i class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;{$l.main.prev}</button>
+    <button type="button" class="secondary" onclick={() => step--}><i class="fa-solid fa-arrow-left"></i>&nbsp;&nbsp;{$l.common.back}</button>
   </div>
 </form>
 

@@ -48,10 +48,10 @@
   <h2>{$l.auth.login}</h2>
   <p>{env.name} AdminTool</p>
 
-  <label for="username">{$l.main.username}</label>
+  <label for="username">{$l.common.username}</label>
   <input type="text" id="username" name="username" autocomplete="username" bind:value={username} />
 
-  <label for="password">{$l.main.password}</label>
+  <label for="password">{$l.common.password}</label>
   <input type="password" id="password" name="password" autocomplete="current-password" bind:value={password} />
 
   <button type="submit" class="primary">{$l.auth.login}</button>

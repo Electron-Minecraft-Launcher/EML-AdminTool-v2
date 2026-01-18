@@ -59,8 +59,8 @@
     <input type="color" id="color" name="color" bind:value={color} />
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary" disabled={name.trim().replaceAll('.', '') === ''}>{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary" disabled={name.trim().replaceAll('.', '') === ''}>{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

@@ -15,7 +15,7 @@ export async function callAction({ url, action, formData, apply = true, notify =
   let response: Response
   try {
     response = await fetch(`${url}?/${action}`, { method: 'POST', body: formData })
-  } catch {
+  } catch (err) {
     if (notify) addNotification('ERROR', $l.notifications.INTERNAL_SERVER_ERROR)
     return null
   }
@@ -23,13 +23,13 @@ export async function callAction({ url, action, formData, apply = true, notify =
   let result
   try {
     result = await response.json()
-  } catch {
+  } catch (err) {
     if (notify) addNotification('ERROR', $l.notifications.INTERNAL_SERVER_ERROR)
     return null
   }
 
-  if (notify) {
-    if (result.type === 'failure') {
+  if (result.type === 'failure') {
+    if (notify) {
       const code = result.data?.failure as NotificationCode
       const msg = $l.notifications[code] ?? $l.notifications.INTERNAL_SERVER_ERROR
       addNotification('ERROR', msg)
@@ -73,4 +73,3 @@ function denormalize(dataString: string) {
     return null
   }
 }
-

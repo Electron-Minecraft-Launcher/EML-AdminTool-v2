@@ -163,8 +163,8 @@
     {/if}
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary" {disabled}>{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary" {disabled}>{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

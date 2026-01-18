@@ -84,8 +84,8 @@ You will need to disable maintenance manually.`
     <input type="text" name="message" id="message" bind:value={message} disabled={!status} />
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary">{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary">{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

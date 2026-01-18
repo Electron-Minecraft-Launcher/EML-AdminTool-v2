@@ -198,8 +198,8 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.main.cancel}</button>
-      <button type="submit" class="primary" disabled={!isFormValid}>{$l.main.save}</button>
+      <button type="button" class="secondary" onclick={() => (show = false)}>{$l.common.cancel}</button>
+      <button type="submit" class="primary" disabled={!isFormValid}>{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

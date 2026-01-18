@@ -10,7 +10,6 @@
   import CreateFileModal from '../modals/CreateFileModal.svelte'
   import EditFileModal from '../modals/EditFileModal.svelte'
   import { callAction } from '$lib/utils/call'
-  import { NotificationCode } from '$lib/utils/notifications'
   import { addNotification } from '$lib/stores/notifications'
 
   interface Props {
@@ -257,7 +256,7 @@
     <thead>
       <tr>
         <th class="icon"></th>
-        <th class="name">{$l.main.name}</th>
+        <th class="name">{$l.dashboard.filesUpdater.fileName}</th>
         <th class="size">{$l.dashboard.filesUpdater.size}</th>
       </tr>
     </thead>

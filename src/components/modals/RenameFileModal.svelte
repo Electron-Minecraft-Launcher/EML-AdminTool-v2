@@ -62,8 +62,8 @@
     <input type="text" id="new-name" name="new-name" bind:value={newName} bind:this={newNameInput} />
 
     <div class="actions">
-      <button class="secondary" onclick={() => (show = false)} type="button">{$l.main.cancel}</button>
-      <button class="primary" disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.main.save}</button>
+      <button class="secondary" onclick={() => (show = false)} type="button">{$l.common.cancel}</button>
+      <button class="primary" disabled={newName.replaceAll(' ', '').replaceAll('.', '') === ''}>{$l.common.save}</button>
     </div>
   </form>
 </ModalTemplate>

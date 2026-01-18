@@ -263,8 +263,10 @@ export async function restartUpdater() {
 }
 
 export async function restartServer() {
-  await sleep(100)
-  process.exit(0)
+  console.log('Restarting server...')
+  setTimeout(() => {
+    process.exit(0)
+  }, 1000)
 }
 
 function updateEnv(dbPassword: string) {
